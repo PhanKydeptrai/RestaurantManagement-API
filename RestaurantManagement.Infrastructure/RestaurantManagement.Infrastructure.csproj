@@ -15,8 +15,12 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\RestaurantManagement.Application\RestaurantManagement.Application.csproj" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<ProjectReference Include="..\RestaurantManagement.Application\RestaurantManagement.Application.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>RestaurantManagement.UnitTest</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 </Project>
