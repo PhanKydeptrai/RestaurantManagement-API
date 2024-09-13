@@ -33,6 +33,36 @@ public class MealRepository : IMealRepository
         return await _context.Meals.FirstOrDefaultAsync(m => m.MealId == id);
     }
 
+    public async Task<IEnumerable<Meal>> GetMealsByCategory(Guid categoryId)
+    {
+        return await _context.Meals.Where(m => m.CategoryId == categoryId).ToListAsync();
+    }
+
+    public async Task<string?> GetMealStatus(Guid id)
+    {
+        return await _context.Meals.Where(m => m.MealId == id)
+                                    .Select(m => m.MealStatus)
+                                    .FirstOrDefaultAsync();
+    }
+
+    public IQueryable<Meal> GetQueryableOfMeal()
+    {
+        IQueryable<Meal> meals = _context.Meals;
+        return meals;
+    }
+
+    public async Task<string?> GetSellStatus(Guid id)
+    {
+        return await _context.Meals.Where(m => m.MealId == id)
+                                    .Select(m => m.SellStatus)
+                                    .FirstOrDefaultAsync();
+    }
+
+    public Task<bool> IsMealNameUnique(string name)
+    {
+        return _context.Meals.AnyAsync(n => n.MealName == name);
+    }
+
     public void UpdateMeal(Meal meal)
     {
         _context.Meals.Update(meal);    

@@ -62,7 +62,7 @@ public class RestaurantManagementDbContext : DbContext
         modelBuilder.Entity<Customer>(entity =>
         {
             entity.HasKey(k => k.CustomerId);
-            entity.Property(p => p.UserId).IsRequired();
+            // entity.Property(p => p.UserId).IsRequired(false);
             entity.Property(p => p.CustomerStatus).IsRequired().HasColumnType("varchar(20)");
             entity.Property(p => p.CustomerType).IsRequired().HasColumnType("varchar(20)");
             //Quan hệ 1 - N với bảng Order
@@ -146,6 +146,7 @@ public class RestaurantManagementDbContext : DbContext
         {
             entity.HasKey(k => k.TableId);
             entity.Property(p => p.TableType).IsRequired().HasColumnType("varchar(20)");
+            entity.Property(p => p.TableName).IsRequired().HasColumnType("nvarchar(30)");
             entity.Property(p => p.TableStatus).IsRequired().HasColumnType("varchar(20)");
             entity.Property(p => p.TableStatus).IsRequired(false).HasColumnType("varchar(255)");
         });

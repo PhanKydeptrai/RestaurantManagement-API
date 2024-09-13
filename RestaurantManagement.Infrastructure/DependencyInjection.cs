@@ -10,7 +10,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         //Đăng ký dependency injection cho các repository tại đây
-        
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
         return services;
     }
 }

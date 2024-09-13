@@ -4,16 +4,16 @@ namespace RestaurantManagement.Domain.IRepos;
 
 public interface ITableRepository
 {
-    //Get list of table
+    //CRUD
     Task<IEnumerable<Table>> GetAllTables();
-    //Get table by id
     Task<Table?> GetTableById(Guid id);
-    //Add table 
     Task AddTable(Table table);
-    //Update table
     void UpdateTable(Table table);
-    //Delete table
     void DeleteTable(Table table);
-    //Get table status 
-    Task<string?> GetTableStatus(Guid id);
+    
+    //Queries
+    Task<string?> GetTableStatus(Guid id); //Get table status 
+    IQueryable<Table> GetQueryableOfTable(); //Get IQueryable of Table
+    Task<bool> IsTableNameAvailable(string tableName); //Check if table name is available
+    
 }

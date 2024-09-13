@@ -28,16 +28,31 @@ public class TableRepository : ITableRepository
         return await _context.Tables.ToListAsync();
     }
 
+    public IQueryable<Table> GetQueryableOfTable()
+    {
+        IQueryable<Table> tables = _context.Tables;
+        return tables;
+    }
+
+
     public async Task<Table?> GetTableById(Guid id)
     {
         return await _context.Tables.FirstOrDefaultAsync(t => t.TableId == id);
     }
 
+    
+    
+    
     public async Task<string?> GetTableStatus(Guid id)
     {
         return await _context.Tables.Where(t => t.TableId == id)
                                     .Select(t => t.TableStatus)
                                     .FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> IsTableNameAvailable(string tableName)
+    {
+        return await _context.Tables.AnyAsync(t => t.TableName == tableName);
     }
 
     public void UpdateTable(Table table)
