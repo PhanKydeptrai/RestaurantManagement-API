@@ -38,9 +38,9 @@ public class RestaurantManagementDbContext : DbContext
             entity.Property(p => p.UserImage).IsRequired(false).HasColumnType("varbinary(max)");
 
             //Quan hệ 1-1 với bảng Employee
-            entity.HasOne(e => e.Employee).WithOne(u => u.User).HasForeignKey<User>(e => e.UserId);
+            entity.HasOne(e => e.Employee).WithOne(u => u.User).HasForeignKey<Employee>(e => e.UserId);
             //Quan hệ 1-1 với bảng Customer
-            entity.HasOne(e => e.Customer).WithOne(u => u.User).HasForeignKey<User>(e => e.UserId);
+            entity.HasOne(e => e.Customer).WithOne(u => u.User).HasForeignKey<Customer>(e => e.UserId);
             //Quan hệ 1-N với bảng Notification
             entity.HasMany(e => e.Notifications).WithOne(u => u.User).HasForeignKey(e => e.UserId);
 
@@ -148,7 +148,7 @@ public class RestaurantManagementDbContext : DbContext
             entity.Property(p => p.TableType).IsRequired().HasColumnType("varchar(20)");
             entity.Property(p => p.TableName).IsRequired().HasColumnType("nvarchar(30)");
             entity.Property(p => p.TableStatus).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.TableStatus).IsRequired(false).HasColumnType("varchar(255)");
+            entity.Property(p => p.Desciption).IsRequired(false).HasColumnType("varchar(255)");
         });
         #endregion
 
