@@ -282,9 +282,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("LogId");
 

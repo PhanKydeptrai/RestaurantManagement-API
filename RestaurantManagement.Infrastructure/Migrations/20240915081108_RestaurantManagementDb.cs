@@ -32,7 +32,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     LogId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LogDetail = table.Column<string>(type: "varchar(20)", nullable: false),
                     LogDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
