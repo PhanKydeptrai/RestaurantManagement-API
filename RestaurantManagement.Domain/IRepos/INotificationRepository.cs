@@ -7,7 +7,7 @@ public interface INotificationRepository
     //CRUD
     Task CreateNotification(Notification notification);
     Task<IEnumerable<Notification>> GetAllNotifications();
-    Task<Notification> GetNotificationById(Guid id);
+    Task<Notification?> GetNotificationById(Guid id);
     void UpdateNotification(Notification notification);
     void DeleteNotification(Notification notification);
     //Queries
