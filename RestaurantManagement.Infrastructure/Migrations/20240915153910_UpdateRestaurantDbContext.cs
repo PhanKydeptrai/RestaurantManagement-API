@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RestaurantManagementDb : Migration
+    public partial class UpdateRestaurantDbContext : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -103,7 +103,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 {
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CustomerStatus = table.Column<string>(type: "varchar(20)", nullable: false),
                     CustomerType = table.Column<string>(type: "varchar(20)", nullable: false)
                 },
                 constraints: table =>
@@ -123,7 +122,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 {
                     EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EmployeeStatus = table.Column<string>(type: "varchar(20)", nullable: false),
                     Role = table.Column<string>(type: "varchar(20)", nullable: false)
                 },
                 constraints: table =>

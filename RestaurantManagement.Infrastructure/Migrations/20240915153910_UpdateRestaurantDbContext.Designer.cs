@@ -12,8 +12,8 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20240915081108_RestaurantManagementDb")]
-    partial class RestaurantManagementDb
+    [Migration("20240915153910_UpdateRestaurantDbContext")]
+    partial class UpdateRestaurantDbContext
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,10 +109,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CustomerStatus")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
-
                     b.Property<string>("CustomerType")
                         .IsRequired()
                         .HasColumnType("varchar(20)");
@@ -133,10 +129,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<Guid>("EmployeeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("EmployeeStatus")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("Role")
                         .IsRequired()
