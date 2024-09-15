@@ -13,6 +13,15 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         //Đăng ký dependency injection cho các repository tại đây
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
+        services.AddScoped<IMealRepository, MealRepository>();
+        services.AddScoped<IMealRepository, MealRepository>();
+        services.AddScoped<ITableRepository, TableRepository>();
+        services.AddScoped<IBookingRepository, BookingRepository>();
+        services.AddScoped<IBookingDetailRepository, BookingDetailRepository>();
+        services.AddScoped<ISystemLogRepository, SystemLogRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();  
         return services;
     }
 }

@@ -5,11 +5,11 @@ using RestaurantManagement.Infrastructure.Persistence;
 
 namespace RestaurantManagement.Infrastructure.Repos;
 
-public class NoficationRepository : INotificationRepository
+public class NotificationRepository : INotificationRepository
 {
 
     private readonly RestaurantManagementDbContext _context;
-    public NoficationRepository(RestaurantManagementDbContext context)
+    public NotificationRepository(RestaurantManagementDbContext context)
     {
         _context = context;
     }
