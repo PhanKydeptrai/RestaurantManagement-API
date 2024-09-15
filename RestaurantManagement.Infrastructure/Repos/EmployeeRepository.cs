@@ -27,19 +27,13 @@ namespace RestaurantManagement.Infrastructure.Repos
             _context.Employees.Remove(employee);
         }
 
-        public async Task<bool> GetEmployeeByEmail(string email)
+        public async Task<bool> IsEmployyeEmailExist(string email)
         {
             return await _context.Users
                 .Include(e => e.Employee)
                 .AnyAsync(e => e.Email == email && e.Employee != null); // Kiểm tra email trong employee đã tồn tại trong user hay chưa
         }
-        public  async Task<bool> GetEmployeeByName(string firstname)
-        {
-            return await _context.Users
-                .Include(e => e.Employee)
-                .AnyAsync(e => e.FirstName == firstname);
-        }
-        public async Task<bool> GetEmployeeByPhone(string phone)
+        public async Task<bool> IsEmployeePhoneExist(string phone)
         {
             return await _context.Users
                 .Include(e => e.Employee)
@@ -58,6 +52,11 @@ namespace RestaurantManagement.Infrastructure.Repos
         public void UpdateEmployee(Employee employee)
         {
             _context.Employees.Update(employee);
+        }
+
+        public IQueryable<Employee> GetEmployeeQueryable(string firstname)
+        {
+            return _context.Employees.AsQueryable();
         }
     }
 }
