@@ -34,15 +34,11 @@ public class CustomerRepository : ICustomerRepository
 
     public IQueryable<Customer> GetCustomersQueryable()
     {
-        IQueryable<Customer> customers = _context.Customers;
-        return customers;
+        return _context.Customers.AsQueryable();
     }
 
     public async Task<bool> IsCustomerEmailExist(string email)
     {
-        //Yêu cầu: Kiểm tra xem email đã tồn tại trong database chưa
-        //Nếu có thì trả về true, ngược lại trả về false
-        
         return await _context.Customers
             .Include(c => c.User)
             .AnyAsync(a => a.User != null && a.User.Email == email);
