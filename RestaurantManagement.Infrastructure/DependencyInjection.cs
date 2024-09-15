@@ -12,7 +12,7 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         //Đăng ký dependency injection cho các repository tại đây
-        
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
         return services;
     }
 }
