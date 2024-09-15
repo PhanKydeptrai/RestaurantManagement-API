@@ -29,7 +29,7 @@ public class BookingRepository : IBookingRepository
 
     public async Task<Booking?> GetBookingById(Guid id)
     {
-        return await _context.Bookings.FirstOrDefaultAsync(i => i.BookingId == id);
+        return await _context.Bookings.FindAsync(id);
     }
 
     public async Task<IEnumerable<Booking>> GetBookingsByCustomerId(Guid id)

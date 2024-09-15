@@ -24,7 +24,7 @@ public class OrderDetailRepository : IOrderDetailRepository
 
     public async Task<OrderDetail?> GetOrderDetailById(Guid id)
     {
-        return await _context.OrderDetails.FirstOrDefaultAsync(x => x.OrderDetailId == id);
+        return await _context.OrderDetails.FindAsync(id);
     }
 
     public async Task<ICollection<OrderDetail>> GetOrderDetails()

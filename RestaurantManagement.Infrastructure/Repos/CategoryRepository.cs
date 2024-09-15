@@ -39,7 +39,7 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task<Category?> GetCategoryById(Guid id)
     {
-        return await _context.Categories.FirstOrDefaultAsync(i => i.CategoryId == id);
+        return await _context.Categories.FindAsync(id);
     }
 
     public void UpdateCategory(Category category)

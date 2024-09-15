@@ -30,7 +30,7 @@ public class NoficationRepository : INotificationRepository
 
     public async Task<Notification?> GetNotificationById(Guid id)
     {
-        return await _context.Notifications.FirstOrDefaultAsync(x => x.NotificationId == id);
+        return await _context.Notifications.FindAsync(id);
     }
 
     public async Task<IEnumerable<Notification>> GetNotificationsByUserId(Guid id)

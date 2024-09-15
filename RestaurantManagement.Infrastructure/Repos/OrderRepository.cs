@@ -30,7 +30,7 @@ public class OrderRepository : IOrderRepository
 
     public async Task<Order?> GetOrderById(Guid id)
     {
-        return await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == id);
+        return await _context.Orders.FindAsync(id);
     }
 
     public async Task<IEnumerable<Order>> GetOrdersByCustomerId(Guid id)

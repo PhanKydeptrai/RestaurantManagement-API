@@ -30,7 +30,7 @@ public class MealRepository : IMealRepository
 
     public async Task<Meal?> GetMealById(Guid id)
     {
-        return await _context.Meals.FirstOrDefaultAsync(m => m.MealId == id);
+        return await _context.Meals.FindAsync(id);
     }
 
     public async Task<IEnumerable<Meal>> GetMealsByCategory(Guid categoryId)

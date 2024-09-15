@@ -37,7 +37,7 @@ public class TableRepository : ITableRepository
 
     public async Task<Table?> GetTableById(Guid id)
     {
-        return await _context.Tables.FirstOrDefaultAsync(t => t.TableId == id);
+        return await _context.Tables.FindAsync(id);
     }
 
     

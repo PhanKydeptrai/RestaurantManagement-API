@@ -32,9 +32,9 @@ public class SystemLogRepository : ISystemLogRepository
         return _context.SystemLogs.AsQueryable();
     }
 
-    public Task<SystemLog?> GetSystemLogById(Guid id)
+    public async Task<SystemLog?> GetSystemLogById(Guid id)
     {
-        return _context.SystemLogs.FirstOrDefaultAsync(i => i.LogId == id);
+        return await _context.SystemLogs.FindAsync(id);
     }
 
     public async Task<IEnumerable<SystemLog>> GetSystemLogsByUserId(Guid id)

@@ -29,7 +29,7 @@ public class CustomerRepository : ICustomerRepository
 
     public async Task<Customer?> GetCustomerById(Guid id)
     {
-        return await _context.Customers.FirstOrDefaultAsync(c => c.CustomerId == id);
+        return await _context.Customers.FindAsync(id);
     }
 
     public IQueryable<Customer> GetCustomersQueryable()
