@@ -43,36 +43,17 @@ public class CustomerRepository : ICustomerRepository
         //Yêu cầu: Kiểm tra xem email đã tồn tại trong database chưa
         //Nếu có thì trả về true, ngược lại trả về false
         
-        User[] userArray = await _context.Users
-                                    .Where(u => u.Email == email)
-                                    .ToArrayAsync();
+        return await _context.Customers
+            .Include(c => c.User)
+            .AnyAsync(a => a.User != null && a.User.Email == email);
 
-        foreach(var user in userArray)
-        {
-            if(await _context.Customers.AnyAsync(u => u.UserId == user.UserId))
-            {
-                Console.WriteLine(await _context.Customers.AnyAsync(u => u.UserId == user.UserId));
-                return true;
-                
-            }
-        }
-        return false;
     }
 
     public async Task<bool> IsCustomerPhoneExist(string phone)
     {
-        User[] userArray = await _context.Users
-                                    .Where(u => u.PhoneNumber == phone)
-                                    .ToArrayAsync();
-
-        foreach(var user in userArray)
-        {
-            if(await _context.Customers.AnyAsync(u => u.UserId == user.UserId))
-            {
-                return true;
-            }
-        }
-        return false;
+        return await _context.Customers
+            .Include(c => c.User)
+            .AnyAsync(a => a.User != null && a.User.PhoneNumber == phone);
     }
 
     public void UpdateCustomer(Customer customer)
