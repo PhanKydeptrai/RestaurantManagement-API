@@ -106,10 +106,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CustomerStatus")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
-
                     b.Property<string>("CustomerType")
                         .IsRequired()
                         .HasColumnType("varchar(20)");
@@ -130,10 +126,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<Guid>("EmployeeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("EmployeeStatus")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("Role")
                         .IsRequired()
