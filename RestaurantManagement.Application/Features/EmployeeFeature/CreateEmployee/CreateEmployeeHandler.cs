@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using RestaurantManagement.Domain.Entities;
 
 
-namespace RestaurantManagement.Application.Features.EmployeeFeature
+namespace RestaurantManagement.Application.Features.EmployeeFeature.CreateEmployee
 {
     public class CreateEmployeeHandler : IRequestHandler<CreateEmployeeCommand, Result<bool>>
     {
@@ -66,13 +66,17 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature
                 PhoneNumber = request.PhoneNumber,
                 Status = "Active",
             };
-            
+            var employee = new Employee
+            {
+                Role = request.Role,
+            };
             await _userRepository.CreateUser(user);
+            await _employeeRepository.CreateEmployee(employee);
             await _unitOfWork.SaveChangesAsync();
-            result.ResultValue = true;  
+            result.ResultValue = true;
             result.IsSuccess = true;
 
             return result;
-        }    
+        }
     }
 }

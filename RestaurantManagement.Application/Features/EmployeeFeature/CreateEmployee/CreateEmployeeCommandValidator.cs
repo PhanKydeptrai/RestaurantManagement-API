@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using RestaurantManagement.Application.Features.EmployeeFeature;
 using RestaurantManagement.Domain.IRepos;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestaurantManagement.Application.Features.EmployeeFeature
+namespace RestaurantManagement.Application.Features.EmployeeFeature.CreateEmployee
 {
     public class CreateEmployeeCommandValidator : AbstractValidator<CreateEmployeeCommand>
     {

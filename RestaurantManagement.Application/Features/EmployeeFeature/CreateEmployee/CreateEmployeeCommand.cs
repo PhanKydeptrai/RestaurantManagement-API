@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestaurantManagement.Application.Features.EmployeeFeature
+namespace RestaurantManagement.Application.Features.EmployeeFeature.CreateEmployee
 {
     public class CreateEmployeeCommand : IRequest<Result<bool>>
     {
