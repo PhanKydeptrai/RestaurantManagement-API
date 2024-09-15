@@ -8,7 +8,7 @@ public class Booking
     public string Status { get; set; }
     public Customer? Customer { get; set; }
     public Guid CustomerId { get; set; }
-    public string Note { get; set; }
+    public string? Note { get; set; }
     public ICollection<BookingDetail>? BookingDetails { get; set; }
 
 }

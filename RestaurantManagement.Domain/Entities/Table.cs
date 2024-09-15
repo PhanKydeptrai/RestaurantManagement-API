@@ -8,5 +8,5 @@ public class Table
     public ICollection<BookingDetail>? BookingDetails { get; set; }
     public string TableType { get; set; }
     public string TableStatus { get; set; }
-    public string Desciption { get; set; }
+    public string? Desciption { get; set; }
 }

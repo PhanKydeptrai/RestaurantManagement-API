@@ -52,7 +52,6 @@ public class RestaurantManagementDbContext : DbContext
         {
             entity.HasKey(k => k.EmployeeId);
             entity.Property(p => p.UserId).IsRequired();
-            entity.Property(p => p.EmployeeStatus).IsRequired().HasColumnType("varchar(20)");
             entity.Property(p => p.Role).IsRequired().HasColumnType("varchar(20)");
 
         });
@@ -63,7 +62,6 @@ public class RestaurantManagementDbContext : DbContext
         {
             entity.HasKey(k => k.CustomerId);
             // entity.Property(p => p.UserId).IsRequired(false);
-            entity.Property(p => p.CustomerStatus).IsRequired().HasColumnType("varchar(20)");
             entity.Property(p => p.CustomerType).IsRequired().HasColumnType("varchar(20)");
             //Quan hệ 1 - N với bảng Order
             entity.HasMany(e => e.Orders).WithOne(u => u.Customer).HasForeignKey(e => e.CustomerId);
