@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using RestaurantManagement.Domain;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Domain.Entities;
 
 namespace RestaurantManagement.Infrastructure.Persistence;
 
-public class RestaurantManagementDbContext : DbContext
+public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
 {
     public RestaurantManagementDbContext(DbContextOptions<RestaurantManagementDbContext> options) : base(options) { }
     public DbSet<User> Users { get; set; }
