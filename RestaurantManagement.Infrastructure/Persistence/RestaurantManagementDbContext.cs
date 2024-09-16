@@ -103,7 +103,7 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
             entity.Property(p => p.MealName).IsRequired().HasColumnType("nvarchar(30)");
             entity.Property(p => p.Price).IsRequired().HasColumnType("decimal");
             entity.Property(p => p.Image).IsRequired(false).HasColumnType("varbinary(max)");
-            entity.Property(p => p.Description).IsRequired().HasColumnType("nvarchar(100)");
+            entity.Property(p => p.Description).IsRequired(false).HasColumnType("nvarchar(100)");
 
         });
 
@@ -115,7 +115,8 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
             entity.HasKey(k => k.CategoryId);
             entity.Property(p => p.CategoryStatus).IsRequired().HasColumnType("varchar(20)");
             entity.Property(p => p.CategoryName).IsRequired().HasColumnType("nvarchar(50)");
-            entity.Property(p => p.Desciption).IsRequired().HasColumnType("nvarchar(100)");
+            entity.Property(p => p.Image).IsRequired(false).HasColumnType("varbinary(max)");
+            entity.Property(p => p.Desciption).IsRequired(false).HasColumnType("nvarchar(100)");
 
             //Quan hệ 1 - N với bảng Meal
             entity.HasMany(e => e.Meals).WithOne(u => u.Category).HasForeignKey(e => e.CategoryId);

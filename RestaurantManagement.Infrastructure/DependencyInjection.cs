@@ -22,6 +22,7 @@ public static class DependencyInjection
         services.AddScoped<IBookingDetailRepository, BookingDetailRepository>();
         services.AddScoped<ISystemLogRepository, SystemLogRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();  
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         return services;
     }
 }
