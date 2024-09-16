@@ -1,6 +1,4 @@
-using RestaurantManagement.Domain.Entities;
-
-namespace RestaurantManagement.Domain;
+namespace RestaurantManagement.Domain.Entities;
 
 public class Category
 {
