@@ -1,3 +1,5 @@
+using RestaurantManagement.Domain.Entities;
+
 namespace RestaurantManagement.Domain.IRepos;
 
 public interface ICategoryRepository

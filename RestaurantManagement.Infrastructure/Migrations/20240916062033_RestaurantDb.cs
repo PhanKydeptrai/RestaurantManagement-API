@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateRestaurantDbContext : Migration
+    public partial class RestaurantDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CategoryName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     CategoryStatus = table.Column<string>(type: "varchar(20)", nullable: false),
-                    Desciption = table.Column<string>(type: "nvarchar(100)", nullable: false)
+                    Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    Desciption = table.Column<string>(type: "nvarchar(100)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -81,7 +82,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     MealName = table.Column<string>(type: "nvarchar(30)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,0)", nullable: false),
                     Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(100)", nullable: true),
                     MealStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SellStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)

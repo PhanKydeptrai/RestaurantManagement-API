@@ -1,6 +1,4 @@
 using MediatR;
-using MediatR.NotificationPublishers;
-using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.Response;
 
 namespace RestaurantManagement.Application.Features.CustomerFeature.GetAllCustomer;

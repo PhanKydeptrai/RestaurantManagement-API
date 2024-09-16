@@ -22,29 +22,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("RestaurantManagement.Domain.Category", b =>
-                {
-                    b.Property<Guid>("CategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("CategoryStatus")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<string>("Desciption")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("CategoryId");
-
-                    b.ToTable("Categories");
-                });
-
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Booking", b =>
                 {
                     b.Property<Guid>("BookingId")
@@ -100,6 +77,31 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.ToTable("BookingDetails");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.Category", b =>
+                {
+                    b.Property<Guid>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CategoryStatus")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("Desciption")
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("varbinary(max)");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Customer", b =>
                 {
                     b.Property<Guid>("CustomerId")
@@ -152,7 +154,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<byte[]>("Image")
@@ -401,7 +402,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Meal", b =>
                 {
-                    b.HasOne("RestaurantManagement.Domain.Category", "Category")
+                    b.HasOne("RestaurantManagement.Domain.Entities.Category", "Category")
                         .WithMany("Meals")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -451,14 +452,14 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("RestaurantManagement.Domain.Category", b =>
-                {
-                    b.Navigation("Meals");
-                });
-
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Booking", b =>
                 {
                     b.Navigation("BookingDetails");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.Category", b =>
+                {
+                    b.Navigation("Meals");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Customer", b =>
