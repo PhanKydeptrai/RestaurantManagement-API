@@ -41,8 +41,11 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         Category category = new Category
         {
             CategoryName = request.Name,
-            CategoryStatus = "kd"
+            CategoryStatus = "kd",
+            Image = request.Image,
+            Desciption = request.Description
         };
+        
         result.ResultValue = true;
         result.IsSuccess = true;
         await _categoryRepository.AddCatgory(category);

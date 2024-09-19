@@ -215,7 +215,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<Guid?>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("OrderStatus")
@@ -295,6 +295,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("Desciption")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<byte[]>("TableImage")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("TableName")
                         .IsRequired()
                         .HasColumnType("nvarchar(30)");
@@ -325,6 +328,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -426,9 +432,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 {
                     b.HasOne("RestaurantManagement.Domain.Entities.Customer", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerId");
 
                     b.Navigation("Customer");
                 });

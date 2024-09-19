@@ -1,5 +1,3 @@
-
-
 namespace RestaurantManagement.Domain.Entities;
 
 public class Employee

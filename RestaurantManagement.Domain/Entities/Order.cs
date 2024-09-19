@@ -6,7 +6,7 @@ public class Order
     public string OrderStatus { get; set; }
     public decimal Total { get; set; }
     public DateTime OrderTime { get; set; }
-    public Guid CustomerId { get; set; }
+    public Guid? CustomerId { get; set; }
     public Customer? Customer { get; set; }
 
     // Liên kết với OrderDetail

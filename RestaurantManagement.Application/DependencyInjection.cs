@@ -1,5 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using RestaurantManagement.Domain.Entities;
+using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.Application;
 
@@ -13,7 +15,7 @@ public static class DependencyInjection
         });
         // Đăng ký FluentValidation
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
-        
+        services.AddScoped<IBookingRepository>(provider => provider.GetRequiredService<IBookingRepository>());
         return services;
     }
 

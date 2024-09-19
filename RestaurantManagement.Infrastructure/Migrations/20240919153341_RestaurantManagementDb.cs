@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RestaurantDb : Migration
+    public partial class RestaurantManagementDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -47,6 +47,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     TableId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BookingDetailId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TableName = table.Column<string>(type: "nvarchar(30)", nullable: false),
+                    TableImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     TableType = table.Column<string>(type: "varchar(20)", nullable: false),
                     TableStatus = table.Column<string>(type: "varchar(20)", nullable: false),
                     Desciption = table.Column<string>(type: "varchar(255)", nullable: true)
@@ -67,6 +68,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     PhoneNumber = table.Column<string>(type: "varchar(10)", nullable: true),
                     Status = table.Column<string>(type: "varchar(20)", nullable: false),
                     Email = table.Column<string>(type: "varchar(30)", nullable: false),
+                    Gender = table.Column<string>(type: "varchar(10)", nullable: true),
                     UserImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
@@ -187,7 +189,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     OrderStatus = table.Column<string>(type: "varchar(20)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(18,0)", nullable: false),
                     OrderTime = table.Column<DateTime>(type: "datetime", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -196,8 +198,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         name: "FK_Orders_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "CustomerId");
                 });
 
             migrationBuilder.CreateTable(
