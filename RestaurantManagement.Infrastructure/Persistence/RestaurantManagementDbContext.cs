@@ -140,7 +140,6 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
         });
         #endregion
 
-
         #region Cấu hình cho bảng Table
         modelBuilder.Entity<Table>(entity =>
         {
@@ -150,9 +149,11 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
             entity.Property(p => p.TableStatus).IsRequired().HasColumnType("varchar(20)");
             entity.Property(p => p.Desciption).IsRequired(false).HasColumnType("varchar(255)");
             entity.Property(p => p.TableImage).IsRequired(false).HasColumnType("varbinary(max)");
+
+            //Quan hệ 1 - N với bảng Order
+            entity.HasMany(e => e.Orders).WithOne(u => u.Table).HasForeignKey(e => e.TableId);
         });
         #endregion
-
 
         #region Cấu hình cho bảng SystemLog
         modelBuilder.Entity<SystemLog>(entity =>

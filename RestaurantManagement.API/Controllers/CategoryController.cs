@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using RestaurantManagement.Application.Features.CategoryFeature.CategoryFilter;
-using RestaurantManagement.Application.Features.CategoryFeature.CreateCategory;
-using RestaurantManagement.Application.Features.CategoryFeature.GetAllCategory;
-using RestaurantManagement.Application.Features.CategoryFeature.GetCategoryById;
-using RestaurantManagement.Application.Features.CategoryFeature.UpdateCategory;
+using RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
+using RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
+using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
+using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetAllCategory;
+using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 using RestaurantManagement.Domain.Response;
 
 namespace RestaurantManagement.API.Controllers;
