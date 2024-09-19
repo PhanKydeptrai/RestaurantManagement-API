@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
+using RestaurantManagement.Application.Features.CategoryFeature.DTOs;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.GetAllCategory;

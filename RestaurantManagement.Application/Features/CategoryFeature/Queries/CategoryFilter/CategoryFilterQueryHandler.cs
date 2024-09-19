@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Features.CategoryFeature.DTOs;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 
