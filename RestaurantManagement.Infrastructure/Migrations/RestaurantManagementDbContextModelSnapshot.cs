@@ -35,8 +35,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Status")
                         .IsRequired()

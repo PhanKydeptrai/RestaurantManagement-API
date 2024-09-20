@@ -172,7 +172,7 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
             entity.Property(p => p.CustomerId).IsRequired();
             entity.Property(p => p.BookingPrice).IsRequired().HasColumnType("decimal");
             entity.Property(p => p.Status).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.Note).IsRequired(false).HasColumnName("nvarchar(255)");
+            entity.Property(p => p.Note).IsRequired(false).HasColumnType("nvarchar(255)");
             entity.Property(p => p.Time).IsRequired().HasColumnType("datetime");
 
             //Quan hệ 1 - N với bảng BookingDetail

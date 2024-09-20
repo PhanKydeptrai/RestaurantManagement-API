@@ -168,7 +168,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     BookingPrice = table.Column<decimal>(type: "decimal(18,0)", nullable: false),
                     Status = table.Column<string>(type: "varchar(20)", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    nvarchar255 = table.Column<string>(name: "nvarchar(255)", type: "nvarchar(max)", nullable: true)
+                    Note = table.Column<string>(type: "nvarchar(255)", nullable: true)
                 },
                 constraints: table =>
                 {
