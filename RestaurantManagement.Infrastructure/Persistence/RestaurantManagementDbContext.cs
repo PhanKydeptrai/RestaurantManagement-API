@@ -33,6 +33,7 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
             entity.Property(p => p.LastName).IsRequired().HasColumnType("nvarchar(10)");
             entity.Property(p => p.Password).IsRequired(false).HasColumnType("varchar(64)");
             entity.Property(p => p.PhoneNumber).IsRequired(false).HasColumnType("varchar(10)");
+            entity.Property(p => p.Gender).IsRequired(false).HasColumnType("varchar(10)");
             entity.Property(p => p.Status).IsRequired().HasColumnType("varchar(20)");
             entity.Property(p => p.Email).IsRequired().HasColumnType("varchar(30)");
             entity.Property(p => p.UserImage).IsRequired(false).HasColumnType("varbinary(max)");
@@ -64,7 +65,7 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
             // entity.Property(p => p.UserId).IsRequired(false);
             entity.Property(p => p.CustomerType).IsRequired().HasColumnType("varchar(20)");
             //Quan hệ 1 - N với bảng Order
-            entity.HasMany(e => e.Orders).WithOne(u => u.Customer).HasForeignKey(e => e.CustomerId);
+            entity.HasMany(e => e.Orders).WithOne(u => u.Customer).HasForeignKey(e => e.CustomerId).IsRequired(false);
             //Quan hệ 1 nhiều với bảng Booking
             entity.HasMany(e => e.Bookings).WithOne(u => u.Customer).HasForeignKey(e => e.CustomerId);
         });
@@ -85,7 +86,7 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(k => k.OrderId);
-            entity.Property(p => p.CustomerId).IsRequired();
+            entity.Property(p => p.CustomerId).IsRequired(false);
             entity.Property(p => p.OrderStatus).IsRequired().HasColumnType("varchar(20)");
             entity.Property(p => p.Total).IsRequired().HasColumnType("decimal");
             entity.Property(p => p.OrderTime).IsRequired().HasColumnType("datetime");
@@ -139,7 +140,6 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
         });
         #endregion
 
-
         #region Cấu hình cho bảng Table
         modelBuilder.Entity<Table>(entity =>
         {
@@ -148,9 +148,12 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
             entity.Property(p => p.TableName).IsRequired().HasColumnType("nvarchar(30)");
             entity.Property(p => p.TableStatus).IsRequired().HasColumnType("varchar(20)");
             entity.Property(p => p.Desciption).IsRequired(false).HasColumnType("varchar(255)");
+            entity.Property(p => p.TableImage).IsRequired(false).HasColumnType("varbinary(max)");
+
+            //Quan hệ 1 - N với bảng Order
+            entity.HasMany(e => e.Orders).WithOne(u => u.Table).HasForeignKey(e => e.TableId);
         });
         #endregion
-
 
         #region Cấu hình cho bảng SystemLog
         modelBuilder.Entity<SystemLog>(entity =>
@@ -169,7 +172,7 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
             entity.Property(p => p.CustomerId).IsRequired();
             entity.Property(p => p.BookingPrice).IsRequired().HasColumnType("decimal");
             entity.Property(p => p.Status).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.Note).IsRequired(false).HasColumnName("nvarchar(255)");
+            entity.Property(p => p.Note).IsRequired(false).HasColumnType("nvarchar(255)");
             entity.Property(p => p.Time).IsRequired().HasColumnType("datetime");
 
             //Quan hệ 1 - N với bảng BookingDetail

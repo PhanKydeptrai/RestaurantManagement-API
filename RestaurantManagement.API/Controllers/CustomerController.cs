@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using RestaurantManagement.Application.Features.CustomerFeature.GetAllCustomer;
 
 namespace RestaurantManagement.API.Controllers
 {
@@ -14,17 +13,19 @@ namespace RestaurantManagement.API.Controllers
             _sender = sender;   
         }
 
-        [HttpGet]   
-        public async Task<IActionResult> Customers()
-        {
-            var result = await _sender.Send(new GetAllCustomerQuery());
+        //Get all user
+        //[HttpGet]   
+        //public async Task<IActionResult> Customers()
+        //{
+        //    var result = await _sender.Send(new GetAllCustomerQuery());
             
-            if (result.IsSuccess)
-            {
-                return Ok(result.ResultValue);
-            }
-            return NotFound("No customers found");
-        }
+        //    if (result.IsSuccess)
+        //    {
+        //        return Ok(result.ResultValue);
+        //    }
+        //    return NotFound("No customers found");
+        //}
 
     }
+        
 }

@@ -9,6 +9,7 @@ public class User
     public string? PhoneNumber { get; set; }
     public string Status { get; set; }
     public string Email { get; set; }
+    public string? Gender { get; set; }
     public byte[]? UserImage { get; set; }
     
     //property
