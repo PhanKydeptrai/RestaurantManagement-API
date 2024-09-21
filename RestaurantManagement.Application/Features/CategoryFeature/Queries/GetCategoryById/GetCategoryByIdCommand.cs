@@ -1,6 +1,6 @@
 using MediatR;
-using RestaurantManagement.Application.Features.CategoryFeature.DTOs;
-using RestaurantManagement.Domain.Response;
+using RestaurantManagement.Domain.DTOs.CategoryDto;
+using RestaurantManagement.Domain.DTOs.Common;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 

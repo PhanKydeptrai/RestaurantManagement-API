@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Net.WebSockets;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
@@ -8,11 +7,11 @@ using RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateC
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetAllCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
-using RestaurantManagement.Domain.Response;
+using RestaurantManagement.Domain.DTOs.Common;
 
 namespace RestaurantManagement.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/category")]
 [ApiController]
 public class CategoryController : ControllerBase
 {
@@ -23,7 +22,7 @@ public class CategoryController : ControllerBase
         _sender = sender;
     }
 
-    [HttpGet] // api/category/search?searchTerm=abc&page=1&pageSize=10
+    [HttpGet("search")] // api/category/search?searchTerm=abc&page=1&pageSize=10
     public async Task<IActionResult> Category(
         [FromQuery] string? searchTerm,
         [FromQuery] int page,
@@ -34,7 +33,7 @@ public class CategoryController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("Categorys")] // api/category
+    [HttpGet] // api/category
     public async Task<IActionResult> Categorys()
     {
         GetAllCategoryQuery query = new GetAllCategoryQuery();
@@ -89,8 +88,8 @@ public class CategoryController : ControllerBase
 
     }
 
-    [HttpPut] // api/category/
-    public async Task<IActionResult> Category([FromQuery, Required] Guid id, 
+    [HttpPut("{id}")] // api/category/
+    public async Task<IActionResult> Category([FromRoute]Guid id, 
                                             [FromBody] UpdateCategoryRequest request)
     {
         UpdateCategoryCommand command = new UpdateCategoryCommand
@@ -121,5 +120,6 @@ public class CategoryController : ControllerBase
         return BadRequest("Remove failed! Please check category status");
     }
 
+    
 
 }

@@ -1,8 +1,8 @@
 using FluentValidation.Results;
 using MediatR;
+using RestaurantManagement.Domain.DTOs.Common;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
-using RestaurantManagement.Domain.Response;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 

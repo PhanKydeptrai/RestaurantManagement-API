@@ -1,5 +1,6 @@
 ﻿using MediatR;
-using RestaurantManagement.Application.Features.CategoryFeature.DTOs;
+using RestaurantManagement.Application.Features.Paging;
+using RestaurantManagement.Domain.DTOs.CategoryDto;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 

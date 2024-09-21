@@ -1,5 +1,5 @@
 using MediatR;
-using RestaurantManagement.Application.Features.CategoryFeature.DTOs;
+using RestaurantManagement.Domain.DTOs.CategoryDto;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.GetAllCategory;
 

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using RestaurantManagement.Application.Data;
-using RestaurantManagement.Application.Features.CategoryFeature.DTOs;
+using RestaurantManagement.Application.Features.Paging;
+using RestaurantManagement.Domain.DTOs.CategoryDto;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 
@@ -21,17 +22,6 @@ public class CategoryFilterQueryHandler : IRequestHandler<CategoryFilterQuery, P
         {
             categoriesQuery = categoriesQuery.Where(x => x.CategoryName.Contains(request.searchTerm));
         }
-
-        // var categories = await categoriesQuery
-        //     .Skip((request.page - 1) * request.pageSize)
-        //     .Take(request.pageSize).Select(a => new CategoryResponse
-        //     {
-        //         CategoryId = a.CategoryId,
-        //         CategoryName = a.CategoryName,
-        //         CategoryStatus = a.CategoryStatus,
-        //         Image = a.CategoryId.ToString() + ".jpg",
-        //         Desciption = a.Desciption
-        //     }).ToListAsync();
 
         var categories = categoriesQuery
             .Select(a => new CategoryResponse

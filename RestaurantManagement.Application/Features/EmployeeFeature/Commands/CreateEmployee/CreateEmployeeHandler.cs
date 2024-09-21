@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using FluentValidation.Results;
 using RestaurantManagement.Domain.IRepos;
-using RestaurantManagement.Domain.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RestaurantManagement.Domain.Entities;
+using RestaurantManagement.Domain.DTOs.Common;
 
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee

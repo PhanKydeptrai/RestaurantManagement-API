@@ -1,7 +1,7 @@
 using MediatR;
+using RestaurantManagement.Domain.DTOs.Common;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
-using RestaurantManagement.Domain.Response;
 
 namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateCustomer;
 
