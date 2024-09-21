@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateCustomer;
 
 namespace RestaurantManagement.API.Controllers
 {
@@ -25,6 +26,17 @@ namespace RestaurantManagement.API.Controllers
         //    }
         //    return NotFound("No customers found");
         //}
+        [HttpPost]
+        public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerCommand request)
+        {
+            var result = await _sender.Send(request);
+            if (result.IsSuccess)
+            {
+                return Ok("Customer created successfully!");
+            } 
+            string[]? errorMessages = result.Errors.ToArray();
+            return BadRequest(errorMessages);
+        }
 
     }
         

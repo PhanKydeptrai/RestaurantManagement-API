@@ -19,9 +19,7 @@ public class GetCategoryByIdCommandHandler : IRequestHandler<GetCategoryByIdComm
     {
         Result<CategoryResponse> result = new Result<CategoryResponse>
         {
-            ResultValue = new CategoryResponse(),
-            IsSuccess = false,
-            Errors = new List<string>()
+            ResultValue = new CategoryResponse()
         };
         result.ResultValue = await _context.Categories.Select(a => new CategoryResponse
         {

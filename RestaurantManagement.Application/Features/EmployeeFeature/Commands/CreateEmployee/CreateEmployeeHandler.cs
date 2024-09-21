@@ -27,9 +27,7 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
         {
             var result = new Result<bool>
             {
-                ResultValue = false,
-                IsSuccess = false,
-                Errors = new List<string>()
+                ResultValue = false
             };
 
             // validate
@@ -37,23 +35,21 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
             ValidationResult validationResult = validator.Validate(request); // Phải dùng thư viện using FluentValidation.Results;
             if (validationResult.IsValid)
             {
-                foreach (var error in validationResult.Errors)
-                {
-                    result.Errors.Add(error.ErrorMessage);
-                }
+                validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
+
                 return result;
             }
             // email already exist
             var isEmailExist = await _employeeRepository.IsEmployyeEmailExist(request.Email);
             if (isEmailExist)
             {
-                result.Errors.Add("Email is already exist");
+                result.Errors = new string[] { "Email is already exist" };
                 return result;
             }
             var isPhoneNumberExist = await _employeeRepository.IsEmployeePhoneExist(request.PhoneNumber);
             if (isPhoneNumberExist)
             {
-                result.Errors.Add("Phone number is already exist");
+                result.Errors = new string[] { "Phone number is already exist" };
                 return result;
             }
             // create new

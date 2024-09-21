@@ -22,9 +22,7 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Upd
         {
             var result = new Result<bool>
             {
-                ResultValue = false,
-                IsSuccess = false,
-                Errors = new List<string>()
+                ResultValue = false
             };
 
 

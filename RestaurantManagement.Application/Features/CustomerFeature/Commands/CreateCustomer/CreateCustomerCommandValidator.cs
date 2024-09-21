@@ -1,3 +1,4 @@
+using System.Data;
 using FluentValidation;
 using RestaurantManagement.Domain.IRepos;
 
@@ -6,46 +7,36 @@ namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.Cre
 public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
 {
 
-    public CreateCustomerCommandValidator(ICustomerRepository customerRepository)
+    public CreateCustomerCommandValidator(ICustomerRepository _customerRepository)
     {
-        RuleFor(p => p.FirstName)
-            .NotEmpty()
-            .WithMessage("First name is required")
-            .NotNull()
-            .WithMessage("First name is required")
-            .MaximumLength(50)
-            .WithMessage("First name cannot be longer than 50 characters");
-
-        RuleFor(p => p.LastName)
-            .NotEmpty()
-            .WithMessage("Last name is required")
-            .MaximumLength(50)
-            .WithMessage("Last name cannot be longer than 50 characters");
-
-        RuleFor(p => p.Password)
-            .NotEmpty()
-            .WithMessage("Password is required")
-            .NotNull()
-            .WithMessage("Password is required")
-            .MinimumLength(8)
-            .WithMessage("Password must be at least 8 characters long")
-            .MaximumLength(8)
-            .WithMessage("Password cannot be longer than 8 characters");
-
-        RuleFor(p => p.PhoneNumber)
-            .NotEmpty()
-            .WithMessage("Phone number is required")
-            .NotNull().WithMessage("Phone number is required")
-            .Matches(@"^0\d{9}$").WithMessage("Phone number must be 10 digits long");
-
-        RuleFor(p => p.Email)
-            .NotEmpty()
-            .WithMessage("Email is required")
-            .NotNull()
-            .WithMessage("Email is required")
-            .EmailAddress()
-            .WithMessage("Email is not valid")
-            .Must(p => customerRepository.IsCustomerEmailExist(p).Result == false)
+        RuleFor(b => b.FirstName)
+            .NotNull().WithMessage("FirstName is required")
+            .NotEmpty().WithMessage("FirstName must not be empty")
+            .MaximumLength(10).WithMessage("FirstName must not exceed 10 characters.");
+        RuleFor(b => b.LastName)
+            .NotNull().WithMessage("LastName is required")
+            .NotEmpty().WithMessage("LastName must not be empty")
+            .MaximumLength(10).WithMessage("LastName must not exceed 10 characters.");
+        RuleFor(b => b.Password)
+            .NotNull().WithMessage("Password is required")
+            .NotEmpty().WithMessage("Password must not be empty")
+            .MinimumLength(8).WithMessage("Password must be at least 8 characters.");
+        RuleFor(b => b.PhoneNumber)
+            .NotNull().WithMessage("PhoneNumber is required")
+            .NotEmpty().WithMessage("PhoneNumber must not be empty")
+            .MaximumLength(10).WithMessage("PhoneNumber must not exceed 10 characters.")
+            .Matches(@"^0\d{9}$").WithMessage("PhoneNumber must start with 0 and be 10 digits long.")
+            .Must(a => _customerRepository.IsCustomerPhoneExist(a).Result == false);
+        RuleFor(b => b.Email)
+            .NotEmpty().WithMessage("Email must not be empty")
+            .NotNull().WithMessage("Email is required")
+            .EmailAddress().WithMessage("Email is not valid")
+            .Must(a => _customerRepository.IsCustomerEmailExist(a).Result == false)
             .WithMessage("Email already exists");
+        RuleFor(b => b.Gender)
+            .NotNull().WithMessage("Gender is required")
+            .NotEmpty().WithMessage("Gender must not be empty") 
+            .Must(b => b == "Male" || b == "Female");
+        
     }
 }

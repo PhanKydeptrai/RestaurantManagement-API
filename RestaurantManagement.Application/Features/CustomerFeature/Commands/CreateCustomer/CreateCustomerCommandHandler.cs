@@ -1,6 +1,3 @@
-
-
-using FluentValidation.Results;
 using MediatR;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -10,61 +7,58 @@ namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.Cre
 
 public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<bool>>
 {
-    private readonly IUserRepository _userRepository;
     private readonly ICustomerRepository _customerRepository;
+    private readonly IUserRepository _userRepository;   
     private readonly IUnitOfWork _unitOfWork;
-    public CreateCustomerCommandHandler(IUserRepository userRepository, ICustomerRepository customerRepository, IUnitOfWork unitOfWork)
+    public CreateCustomerCommandHandler(ICustomerRepository customerRepository, IUnitOfWork unitOfWork, IUserRepository userRepository)
     {
         _customerRepository = customerRepository;
-        _userRepository = userRepository;
         _unitOfWork = unitOfWork;
+        _userRepository = userRepository;
     }
     public async Task<Result<bool>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
-        var result = new Result<bool>
-        {
-            IsSuccess = false,
-            ResultValue = false,
-            Errors = new List<string>()
-        };
+        Result<bool> result = new Result<bool>();
 
-        //Validate
+        //Validation
         CreateCustomerCommandValidator validator = new CreateCustomerCommandValidator(_customerRepository);
-        ValidationResult validationResult = validator.Validate(request);
+        var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
-            foreach (var error in validationResult.Errors)
-            {
-                result.Errors.Add(error.ErrorMessage);
-            }
+            //result.Errors = validationResult.Errors.Select(x => x.ErrorMessage).ToArray();
+            result.Errors = validationResult.Errors
+                                .Select(x => x.ErrorMessage)
+                                .ToArray();
             return result;
         }
 
-        //Create User
-        var user = new User
+        //Create Customer
+        User user = new User
         {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
             UserId = Guid.NewGuid(),
             Email = request.Email,
-            Status = "Active",
+            PhoneNumber = request.PhoneNumber,
             Password = request.Password,
-            PhoneNumber = request.PhoneNumber
+            FirstName = request.FirstName,
+            Status = "hd",
+            LastName = request.LastName,
+            Gender = request.Gender
         };
 
-        //Create Customer
-        var customer = new Customer
+        Customer customer = new Customer
         {
             CustomerId = Guid.NewGuid(),
-            UserId = user.UserId
+            UserId = user.UserId,
+            CustomerType = "dk"
         };
 
         await _userRepository.CreateUser(user);
         await _customerRepository.CreateCustomer(customer);
         await _unitOfWork.SaveChangesAsync();
-        result.ResultValue = result.IsSuccess = true;
-
+        result.ResultValue = true;
+        result.IsSuccess = true;
         return result;
+        
     }
 }
 

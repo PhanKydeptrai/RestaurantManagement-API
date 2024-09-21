@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Net.WebSockets;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
+using RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetAllCategory;
@@ -23,7 +25,7 @@ public class CategoryController : ControllerBase
 
     [HttpGet] // api/category/search?searchTerm=abc&page=1&pageSize=10
     public async Task<IActionResult> Category(
-        [FromQuery] string? searchTerm, 
+        [FromQuery] string? searchTerm,
         [FromQuery] int page,
         [FromQuery] int pageSize)
     {
@@ -52,22 +54,24 @@ public class CategoryController : ControllerBase
         return NotFound("Category not found!");
     }
 
-    
-
-    
 
     [HttpPost] // api/category
     public async Task<IActionResult> Category(
-        IFormFile Image, 
-        [FromForm]string name, 
-        [FromForm]string? description)
+        IFormFile? Image,
+        [FromForm] string name,
+        [FromForm] string? description)
     {
-        byte[] imageData;
-        using (var memoryStream = new MemoryStream())
+        byte[] imageData = null;
+        if (Image != null)
         {
-            await Image.CopyToAsync(memoryStream);
-            imageData = memoryStream.ToArray();
+            
+            using (var memoryStream = new MemoryStream())
+            {
+                await Image.CopyToAsync(memoryStream);
+                imageData = memoryStream.ToArray();
+            }
         }
+
 
         CreateCategoryCommand command = new CreateCategoryCommand
         {
@@ -86,7 +90,8 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPut] // api/category/
-    public async Task<IActionResult> Category([FromQuery, Required] Guid id, [FromBody] UpdateCategoryRequest request)
+    public async Task<IActionResult> Category([FromQuery, Required] Guid id, 
+                                            [FromBody] UpdateCategoryRequest request)
     {
         UpdateCategoryCommand command = new UpdateCategoryCommand
         {
@@ -97,10 +102,24 @@ public class CategoryController : ControllerBase
         };
 
         var result = await _sender.Send(command);
-        if(result.IsSuccess)
+        if (result.IsSuccess)
         {
             return Ok("Update successfully!");
         }
         return BadRequest(result.Errors);
     }
+
+    [HttpDelete("{id}")] // api/category/{id}
+    public async Task<IActionResult> RemoveCategory(Guid id)
+    {
+        RemoveCategoryCommand request = new RemoveCategoryCommand(id);
+        var isSuccess = await _sender.Send(request);
+        if(isSuccess)
+        {
+            return Ok("Remove successfully!");
+        }
+        return BadRequest("Remove failed! Please check category status");
+    }
+
+
 }
