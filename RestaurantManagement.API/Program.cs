@@ -4,6 +4,7 @@ using RestaurantManagement.Application;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using RestaurantManagement.API.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,5 +91,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapCategoryEndpoint();
 app.Run();

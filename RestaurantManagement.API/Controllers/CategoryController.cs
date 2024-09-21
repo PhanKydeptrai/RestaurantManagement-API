@@ -1,125 +1,81 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
-using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetAllCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 using RestaurantManagement.Domain.DTOs.Common;
 
 namespace RestaurantManagement.API.Controllers;
 
-[Route("api/category")]
-[ApiController]
-public class CategoryController : ControllerBase
+
+public static class CategoryController
 {
-    private readonly ISender _sender;
-
-    public CategoryController(ISender sender)
+    public static void MapCategoryEndpoint(this IEndpointRouteBuilder app)
     {
-        _sender = sender;
-    }
-
-    [HttpGet("search")] // api/category/search?searchTerm=abc&page=1&pageSize=10
-    public async Task<IActionResult> Category(
-        [FromQuery] string? searchTerm,
-        [FromQuery] int page,
-        [FromQuery] int pageSize)
-    {
-        var query = new CategoryFilterQuery(searchTerm, page, pageSize);
-        var response = await _sender.Send(query);
-        return Ok(response);
-    }
-
-    [HttpGet] // api/category
-    public async Task<IActionResult> Categorys()
-    {
-        GetAllCategoryQuery query = new GetAllCategoryQuery();
-        var response = await _sender.Send(query);
-        return Ok(response);
-    }
-
-    [HttpGet("{id}")] // api/category/{id}
-    public async Task<IActionResult> Category(Guid id)
-    {
-        GetCategoryByIdCommand command = new GetCategoryByIdCommand(id);
-        var result = await _sender.Send(command);
-        if (result.IsSuccess)
+        app.MapGet("api/category", async (string? seachTerm, int page, int pageSize, ISender sender) =>
         {
-            return Ok(result.ResultValue);
-        }
-        return NotFound("Category not found!");
-    }
+            var query = new CategoryFilterQuery(seachTerm, page, pageSize);
+            var response = await sender.Send(query);
+            return Results.Ok(response);
+        });
 
-
-    [HttpPost] // api/category
-    public async Task<IActionResult> Category(
-        IFormFile? Image,
-        [FromForm] string name,
-        [FromForm] string? description)
-    {
-        byte[] imageData = null;
-        if (Image != null)
+        app.MapGet("api/category/{id}", async (Guid id, ISender sender) =>
         {
-            
-            using (var memoryStream = new MemoryStream())
+            GetCategoryByIdCommand request = new GetCategoryByIdCommand(id);
+            var response = await sender.Send(request);
+            if (response.IsSuccess)
             {
-                await Image.CopyToAsync(memoryStream);
-                imageData = memoryStream.ToArray();
+                return Results.Ok(response.ResultValue);
             }
-        }
+            return Results.BadRequest("Category not found!");
+        });
 
-
-        CreateCategoryCommand command = new CreateCategoryCommand
+        app.MapPost("api/category", async (IFormFile? Image, string name, string? description, ISender sender) =>
         {
-            Name = name,
-            Description = description,
-            Image = imageData
-        };
+            byte[] imageData = null!;
+            if (Image != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await Image.CopyToAsync(memoryStream);
+                    imageData = memoryStream.ToArray();
+                }
+            }
 
-        Result<bool> result = await _sender.Send(command);
-        if (result.IsSuccess)
+            var command = new CreateCategoryCommand(name, description, imageData);
+
+            Result<bool> result = await sender.Send(command);
+            if (result.IsSuccess)
+            {
+                return Results.Ok("Create successfully!");
+            }
+            return Results.BadRequest(result.Errors);
+        });
+
+        app.MapPut("api/category/{id}", async (Guid id, UpdateCategoryRequest request, ISender sender) =>
         {
-            return Ok("Create successfully!");
-        }
-        return BadRequest(result.Errors);
+            var command = new UpdateCategoryCommand(
+                id, request.CategoryName, 
+                request.CategoryStatus,
+                request.Desciption);
+            var result = await sender.Send(command);   
+            if (result.IsSuccess)
+            {
+                return Results.Ok("Update successfully!");
+            }
+            return Results.BadRequest(result.Errors);
+        });
 
+        app.MapDelete("api/category/{id}", async (Guid id, ISender sender) =>
+        {
+            var request = new RemoveCategoryCommand(id);
+            var isSuccess = await sender.Send(request);
+            if(isSuccess)
+            {
+                return Results.Ok("Remove successfully!");
+            }
+            return Results.BadRequest("Remove failed! Please check category status");
+        });
     }
-
-    [HttpPut("{id}")] // api/category/
-    public async Task<IActionResult> Category([FromRoute]Guid id, 
-                                            [FromBody] UpdateCategoryRequest request)
-    {
-        UpdateCategoryCommand command = new UpdateCategoryCommand
-        {
-            CategoryId = id,
-            CategoryName = request.CategoryName,
-            CategoryStatus = request.CategoryStatus,
-            Desciption = request.Desciption
-        };
-
-        var result = await _sender.Send(command);
-        if (result.IsSuccess)
-        {
-            return Ok("Update successfully!");
-        }
-        return BadRequest(result.Errors);
-    }
-
-    [HttpDelete("{id}")] // api/category/{id}
-    public async Task<IActionResult> RemoveCategory(Guid id)
-    {
-        RemoveCategoryCommand request = new RemoveCategoryCommand(id);
-        var isSuccess = await _sender.Send(request);
-        if(isSuccess)
-        {
-            return Ok("Remove successfully!");
-        }
-        return BadRequest("Remove failed! Please check category status");
-    }
-
-    
-
 }
