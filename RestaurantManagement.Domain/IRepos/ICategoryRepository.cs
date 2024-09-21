@@ -9,8 +9,11 @@ public interface ICategoryRepository
     Task<Category?> GetCategoryById(Guid id);
     Task AddCatgory(Category category);
     void UpdateCategory(Category category);
+    void SoftDeleteCategory(Guid id);
     void DeleteCategory(Category category);
     //Queries
     IQueryable<Category> GetCategoriesQueryable();
-    Task<bool> CategoryExists(string name);
+    Task<bool> IsCategoryNameExists(string name);
+    Task<bool> IsCategoryNameExistsWhenUpdate(string name);
+    Task<bool> CheckStatusOfCategory(Guid id);
 }

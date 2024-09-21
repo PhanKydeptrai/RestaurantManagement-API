@@ -1,8 +1,8 @@
 ﻿using FluentValidation.Results;
 using MediatR;
+using RestaurantManagement.Domain.DTOs.Common;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
-using RestaurantManagement.Domain.Response;
 using System.Drawing;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
@@ -20,20 +20,15 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
     {
         Result<bool> result = new Result<bool>
         {
-            IsSuccess = false,
-            ResultValue = false,
-            Errors = new List<string>()
+            ResultValue = false
         };
 
         //Validator
-        CreateCategoryCommandValidator validator = new CreateCategoryCommandValidator();
+        CreateCategoryCommandValidator validator = new CreateCategoryCommandValidator(_categoryRepository);
         ValidationResult validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
-            foreach (var error in validationResult.Errors)
-            {
-                result.Errors.Add(error.ErrorMessage);
-            }
+            validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
             return result;
         }
 

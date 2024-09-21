@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
+namespace RestaurantManagement.Application.Features.Paging;
 
 public class PagedList<T>
 {

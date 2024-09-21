@@ -1,3 +1,4 @@
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -17,7 +18,7 @@ public class CategoryRepository : ICategoryRepository
         await _context.Categories.AddAsync(category);
     }
 
-    public async Task<bool> CategoryExists(string name)
+    public async Task<bool> IsCategoryNameExists(string name)
     {
         return await _context.Categories.AnyAsync(n => n.CategoryName == name);
     }
@@ -45,5 +46,31 @@ public class CategoryRepository : ICategoryRepository
     public void UpdateCategory(Category category)
     {
         _context.Categories.Update(category);
+    }
+
+    public async Task<bool> CheckStatusOfCategory(Guid id)
+    {
+        //Check status of category
+
+        return await _context.Categories
+                                .Where(x => x.CategoryId == id)
+                                .AnyAsync(a => a.CategoryStatus == "kd"); 
+        // return true if category status is "kd"
+    }
+
+    public void SoftDeleteCategory(Guid id)
+    {
+        var category = _context.Categories.Find(id);
+        category.CategoryStatus = "nkd";
+
+    }
+
+    public async Task<bool> IsCategoryNameExistsWhenUpdate(string name)
+    {
+        if(await _context.Categories.CountAsync(a => a.CategoryName == name) > 1)
+        {
+            return true;
+        }
+        return false;
     }
 }

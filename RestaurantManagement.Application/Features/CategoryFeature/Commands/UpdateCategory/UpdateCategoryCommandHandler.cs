@@ -1,8 +1,8 @@
 using FluentValidation.Results;
 using MediatR;
+using RestaurantManagement.Domain.DTOs.Common;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
-using RestaurantManagement.Domain.Response;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 
@@ -18,24 +18,17 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
     }
     public async Task<Result<bool>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
-        Result<bool> result = new Result<bool>
-        {
-            Errors = new List<string>(),
-            IsSuccess = false,
-            ResultValue = false
-        };
-
+        Result<bool> result = new Result<bool>();
+    
         //validation
-        UpdateCategoryValidator validator = new UpdateCategoryValidator();
+        UpdateCategoryValidator validator = new UpdateCategoryValidator(_categoryRepository);
         ValidationResult validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
-            foreach (var error in validationResult.Errors)
-            {
-                result.Errors.Add(error.ErrorMessage);
-            }
+            result.Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
             return result;
         }
+        
         Category category = new Category
         {
             CategoryId = request.CategoryId,

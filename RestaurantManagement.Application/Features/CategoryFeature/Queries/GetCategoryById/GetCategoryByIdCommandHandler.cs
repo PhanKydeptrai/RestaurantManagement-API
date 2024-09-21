@@ -1,8 +1,8 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Data;
-using RestaurantManagement.Application.Features.CategoryFeature.DTOs;
-using RestaurantManagement.Domain.Response;
+using RestaurantManagement.Domain.DTOs.CategoryDto;
+using RestaurantManagement.Domain.DTOs.Common;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 
@@ -19,9 +19,7 @@ public class GetCategoryByIdCommandHandler : IRequestHandler<GetCategoryByIdComm
     {
         Result<CategoryResponse> result = new Result<CategoryResponse>
         {
-            ResultValue = new CategoryResponse(),
-            IsSuccess = false,
-            Errors = new List<string>()
+            ResultValue = new CategoryResponse()
         };
         result.ResultValue = await _context.Categories.Select(a => new CategoryResponse
         {

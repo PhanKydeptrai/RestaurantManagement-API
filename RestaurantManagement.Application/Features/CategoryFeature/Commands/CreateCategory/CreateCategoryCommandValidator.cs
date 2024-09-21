@@ -1,10 +1,11 @@
 ﻿using FluentValidation;
+using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
 
 public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCommand>
 {
-    public CreateCategoryCommandValidator()
+    public CreateCategoryCommandValidator(ICategoryRepository _categoryRepository)
     {
         RuleFor(p => p.Name)
             .NotNull()
@@ -12,6 +13,11 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
             .NotEmpty()
             .WithMessage("Name is required")
             .MaximumLength(50)
-            .WithMessage("Name cannot be longer than 50 characters");
+            .WithMessage("Name cannot be longer than 50 characters")
+            .Must(a => _categoryRepository.IsCategoryNameExists(a).Result == false)
+            .WithMessage("Category name already exists");
+        RuleFor(p => p.Description)
+            .MaximumLength(200)
+            .WithMessage("Description cannot be longer than 200 characters");
     }
 }

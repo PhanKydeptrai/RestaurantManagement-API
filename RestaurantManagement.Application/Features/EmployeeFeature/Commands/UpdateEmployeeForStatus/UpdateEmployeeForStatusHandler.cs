@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using RestaurantManagement.Domain.DTOs.Common;
 using RestaurantManagement.Domain.IRepos;
-using RestaurantManagement.Domain.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +22,7 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Upd
         {
             var result = new Result<bool>
             {
-                ResultValue = false,
-                IsSuccess = false,
-                Errors = new List<string>()
+                ResultValue = false
             };
 
 

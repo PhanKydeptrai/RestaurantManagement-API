@@ -1,4 +1,4 @@
-﻿namespace RestaurantManagement.Application.Features.CategoryFeature.DTOs;
+﻿namespace RestaurantManagement.Domain.DTOs.CategoryDto;
 
 public record CategoryResponse()
 {

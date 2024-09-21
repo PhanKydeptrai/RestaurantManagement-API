@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.Application.Features.CustomerFeature.DTOs;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Infrastructure.Persistence;
@@ -27,9 +28,22 @@ public class CustomerRepository : ICustomerRepository
         return await _context.Customers.ToListAsync();
     }
 
-    public async Task<Customer?> GetCustomerById(Guid id)
+    public async Task<CustomerResponse?> GetCustomerById(Guid id)
     {
-        return await _context.Customers.FindAsync(id);
+        return await _context.Customers
+            .Include(a => a.User)
+            .Where(a => a.CustomerId == id)
+            .Select(a => new CustomerResponse
+            {
+                CustomerId = a.CustomerId,
+                FirstName = a.User.FirstName,
+                LastName = a.User.LastName,
+                Email = a.User.Email,
+                PhoneNumber = a.User.PhoneNumber,
+                Gender = a.User.Gender,
+                UserImage = a.User.UserImage
+            }).FirstOrDefaultAsync();
+            
     }
 
     public IQueryable<Customer> GetCustomersQueryable()
@@ -42,7 +56,13 @@ public class CustomerRepository : ICustomerRepository
         return await _context.Customers
             .Include(c => c.User)
             .AnyAsync(a => a.User != null && a.User.Email == email);
+    }
 
+    public async Task<bool> IsCustomerEmailExist_update(Guid id, string email)
+    {
+        return await _context.Customers
+            .Include(a => a.User)
+            .AnyAsync(a => a.User != null && a.User.Email == email && a.CustomerId != id);
     }
 
     public async Task<bool> IsCustomerPhoneExist(string phone)
@@ -50,6 +70,13 @@ public class CustomerRepository : ICustomerRepository
         return await _context.Customers
             .Include(c => c.User)
             .AnyAsync(a => a.User != null && a.User.PhoneNumber == phone);
+    }
+
+    public async Task<bool> IsCustomerPhoneExist_update(Guid id, string phone)
+    {
+        return await _context.Customers
+            .Include(c => c.User)
+            .AnyAsync(a => a.User != null && a.User.PhoneNumber == phone && a.CustomerId != id);
     }
 
     public void UpdateCustomer(Customer customer)
