@@ -1,9 +1,7 @@
-﻿using FluentValidation.Results;
-using MediatR;
+﻿using MediatR;
 using RestaurantManagement.Domain.DTOs.Common;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
-using System.Drawing;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
 
@@ -24,8 +22,8 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         };
 
         //Validator
-        CreateCategoryCommandValidator validator = new CreateCategoryCommandValidator(_categoryRepository);
-        ValidationResult validationResult = validator.Validate(request);
+        var validator = new CreateCategoryCommandValidator(_categoryRepository);
+        var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
             validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
@@ -35,7 +33,8 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         //Create Category
         Category category = new Category
         {
-            CategoryName = request.Name,
+            CategoryId = Guid.NewGuid(),
+            CategoryName = request.Name,    
             CategoryStatus = "kd",
             Image = request.Image,
             Desciption = request.Description
