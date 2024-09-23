@@ -3,6 +3,7 @@ using RestaurantManagement.Application.Features.CustomerFeature.DTOs;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Infrastructure.Persistence;
+using System.Numerics;
 
 namespace RestaurantManagement.Infrastructure.Repos;
 
@@ -55,21 +56,22 @@ public class CustomerRepository : ICustomerRepository
     {
         return await _context.Customers
             .Include(c => c.User)
-            .AnyAsync(a => a.User != null && a.User.Email == email);
+            .AnyAsync(a => a.User.Email == email);
     }
 
-    public async Task<bool> IsCustomerEmailExist_update(Guid id, string email)
+    
+    public async Task<bool> IsCustomerEmailExist_update(Guid id,string email)
     {
         return await _context.Customers
-            .Include(a => a.User)
-            .AnyAsync(a => a.User != null && a.User.Email == email && a.CustomerId != id);
+            .Include(c => c.User)
+            .AnyAsync(a => a.User.Email == email && a.CustomerId != id);
     }
 
     public async Task<bool> IsCustomerPhoneExist(string phone)
     {
         return await _context.Customers
             .Include(c => c.User)
-            .AnyAsync(a => a.User != null && a.User.PhoneNumber == phone);
+            .AnyAsync(a => a.User.PhoneNumber == phone);
     }
 
     public async Task<bool> IsCustomerPhoneExist_update(Guid id, string phone)
@@ -78,7 +80,7 @@ public class CustomerRepository : ICustomerRepository
             .Include(c => c.User)
             .AnyAsync(a => a.User != null && a.User.PhoneNumber == phone && a.CustomerId != id);
     }
-
+    
     public void UpdateCustomer(Customer customer)
     {
         _context.Customers.Update(customer);

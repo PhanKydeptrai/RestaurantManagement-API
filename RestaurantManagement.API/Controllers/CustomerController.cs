@@ -1,5 +1,7 @@
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateCustomer;
+using RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
 
@@ -9,7 +11,7 @@ namespace RestaurantManagement.API.Controllers
     {
         public static void MapCustomerEndpoint(this IEndpointRouteBuilder app)
         {
-            var endpoints = app.MapGroup("api/customer").WithTags("Customer");
+            var endpoints = app.MapGroup("api/customer").WithTags("Customer").DisableAntiforgery();
 
             // Get all with pagination
             endpoints.MapGet("", async (ISender sender, string? seachTerm, int page, int pageSize) =>
@@ -40,7 +42,44 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result.Errors);
             });
+
             //Update infomation
+            endpoints.MapPut("{id}", async (
+                [FromRoute] Guid id,
+                [FromForm] IFormFile? image, 
+                [FromForm]string? FirstName, 
+                [FromForm]string? LastName, 
+                [FromForm]string? PhoneNumber, 
+                [FromForm]string? Gender,
+                [FromServices] ISender sender) =>
+            {
+                byte[] imageBytes = null!;
+
+                if (image != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await image.CopyToAsync(memoryStream);
+                        imageBytes = memoryStream.ToArray();
+                    }
+                }
+
+                var updateCustomerCommand = new UpdateCustomerCommand(
+                    id,
+                    FirstName,
+                    LastName,
+                    PhoneNumber,
+                    imageBytes,
+                    Gender);
+
+                var result = await sender.Send(updateCustomerCommand);
+                if(result.IsSuccess)
+                {
+                    return Results.Ok("Customer updated successfully!");
+                }
+                return Results.BadRequest(result.Errors);
+            });
+
         }
 
         

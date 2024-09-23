@@ -13,7 +13,7 @@ public static class CategoryController
 
     public static void MapCategoryEndpoint(this IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("api/category").WithTags("Category");
+        var endpoints = app.MapGroup("api/category").WithTags("Category").DisableAntiforgery();
 
         endpoints.MapGet("", async Task<IResult> (
             [FromQuery] string? seachTerm,
@@ -36,7 +36,7 @@ public static class CategoryController
             }
             return Results.BadRequest("Category not found!");
         });
-
+        
         endpoints.MapPost("", async (
             [FromForm] IFormFile? Image,
             [FromForm] string name,
@@ -61,7 +61,7 @@ public static class CategoryController
             }
 
             return Results.BadRequest(result.Errors);
-        }).DisableAntiforgery();
+        });
 
         endpoints.MapPut("{id}", async (Guid id, UpdateCategoryRequest request, ISender sender) =>
         {

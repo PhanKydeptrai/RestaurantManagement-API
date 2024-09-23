@@ -1,0 +1,13 @@
+using MediatR;
+using RestaurantManagement.Domain.DTOs.Common;
+
+namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
+
+public record UpdateCustomerCommand(
+    Guid CustomerId, //* This is the id of the customer to be updated
+    string? FirstName, 
+    string? LastName, 
+    string? PhoneNumber, 
+    byte[]? UserImage, 
+    string? Gender) : IRequest<Result<bool>>;
+

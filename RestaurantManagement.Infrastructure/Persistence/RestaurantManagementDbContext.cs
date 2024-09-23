@@ -29,8 +29,8 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(k => k.UserId);
-            entity.Property(p => p.FirstName).IsRequired().HasColumnType("nvarchar(10)");
-            entity.Property(p => p.LastName).IsRequired().HasColumnType("nvarchar(10)");
+            entity.Property(p => p.FirstName).IsRequired().HasColumnType("nvarchar(20)");
+            entity.Property(p => p.LastName).IsRequired().HasColumnType("nvarchar(20)");
             entity.Property(p => p.Password).IsRequired(false).HasColumnType("varchar(64)");
             entity.Property(p => p.PhoneNumber).IsRequired(false).HasColumnType("varchar(10)");
             entity.Property(p => p.Gender).IsRequired(false).HasColumnType("varchar(10)");
