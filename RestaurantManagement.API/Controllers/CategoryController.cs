@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
@@ -7,20 +8,25 @@ using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCateg
 using RestaurantManagement.Domain.DTOs.Common;
 
 namespace RestaurantManagement.API.Controllers;
-
-
 public static class CategoryController
 {
+
     public static void MapCategoryEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapGet("api/category", async (string? seachTerm, int page, int pageSize, ISender sender) =>
+        var endpoints = app.MapGroup("api/category").WithTags("Category").DisableAntiforgery();
+
+        endpoints.MapGet("", async Task<IResult> (
+            [FromQuery] string? seachTerm,
+            [FromQuery] int page,
+            [FromQuery] int pageSize, ISender sender) =>
         {
             var query = new CategoryFilterQuery(seachTerm, page, pageSize);
             var response = await sender.Send(query);
             return Results.Ok(response);
         });
+        
 
-        app.MapGet("api/category/{id}", async (Guid id, ISender sender) =>
+        endpoints.MapGet("{id}", async (Guid id, ISender sender) =>
         {
             GetCategoryByIdCommand request = new GetCategoryByIdCommand(id);
             var response = await sender.Send(request);
@@ -30,8 +36,11 @@ public static class CategoryController
             }
             return Results.BadRequest("Category not found!");
         });
-
-        app.MapPost("api/category", async (IFormFile? Image, string name, string? description, ISender sender) =>
+        
+        endpoints.MapPost("", async (
+            [FromForm] IFormFile? Image,
+            [FromForm] string name,
+            [FromForm] string? description, ISender sender) =>
         {
             byte[] imageData = null!;
             if (Image != null)
@@ -50,16 +59,17 @@ public static class CategoryController
             {
                 return Results.Ok("Create successfully!");
             }
+
             return Results.BadRequest(result.Errors);
         });
 
-        app.MapPut("api/category/{id}", async (Guid id, UpdateCategoryRequest request, ISender sender) =>
+        endpoints.MapPut("{id}", async (Guid id, UpdateCategoryRequest request, ISender sender) =>
         {
             var command = new UpdateCategoryCommand(
-                id, request.CategoryName, 
+                id, request.CategoryName,
                 request.CategoryStatus,
                 request.Desciption);
-            var result = await sender.Send(command);   
+            var result = await sender.Send(command);
             if (result.IsSuccess)
             {
                 return Results.Ok("Update successfully!");
@@ -67,15 +77,18 @@ public static class CategoryController
             return Results.BadRequest(result.Errors);
         });
 
-        app.MapDelete("api/category/{id}", async (Guid id, ISender sender) =>
+        endpoints.MapDelete("{id}", async (Guid id, ISender sender) =>
         {
             var request = new RemoveCategoryCommand(id);
             var isSuccess = await sender.Send(request);
-            if(isSuccess)
+            if (isSuccess)
             {
                 return Results.Ok("Remove successfully!");
             }
             return Results.BadRequest("Remove failed! Please check category status");
         });
     }
+
+    
+
 }

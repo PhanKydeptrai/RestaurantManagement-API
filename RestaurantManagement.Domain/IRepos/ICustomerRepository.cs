@@ -8,13 +8,13 @@ public interface ICustomerRepository
     Task CreateCustomer(Customer customer);
     Task<IEnumerable<Customer>> GetAllCustomers();
     Task<CustomerResponse?> GetCustomerById(Guid id);
-    void UpdateCustomer(Customer customer);
+    void UpdateCustomer(Customer customer); 
     void DeleteMeal(Customer customer);
 
     //Queries
     IQueryable<Customer> GetCustomersQueryable();
     Task<bool> IsCustomerEmailExist(string email);
-    Task<bool> IsCustomerEmailExist_update(Guid id, string email);
+    Task<bool> IsCustomerEmailExist_update(Guid id,string email);
     Task<bool> IsCustomerPhoneExist(string phone);
-    Task<bool> IsCustomerPhoneExist_update(Guid id, string phone);
+    Task<bool> IsCustomerPhoneExist_update(Guid id,string phone);
 }

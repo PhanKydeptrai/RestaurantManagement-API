@@ -1,5 +1,6 @@
 ﻿namespace RestaurantManagement.Domain.DTOs.CategoryDto;
 
+//TODO: need rafactor
 public record CategoryResponse()
 {
     public Guid CategoryId { get; set; }

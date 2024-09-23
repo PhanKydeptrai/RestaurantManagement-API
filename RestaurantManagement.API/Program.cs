@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using RestaurantManagement.API.Controllers;
+using RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
+using RestaurantManagement.Domain.IRepos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,7 +51,7 @@ builder.Services.AddAuthentication(options =>
 // Cấu hình cho swaggergen
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Ecommerce", Version = "v3" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "RestaurantManagement-API", Version = "v1" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -89,7 +91,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
 app.MapControllers();
+
+app.MapCustomerEndpoint();
+
 app.MapCategoryEndpoint();
+
 app.Run();

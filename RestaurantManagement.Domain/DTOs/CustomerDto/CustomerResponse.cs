@@ -1,5 +1,6 @@
 namespace RestaurantManagement.Application.Features.CustomerFeature.DTOs;
 
+//TODO: need rafactor
 public record CustomerResponse()
 {
     public Guid CustomerId { get; set; }
