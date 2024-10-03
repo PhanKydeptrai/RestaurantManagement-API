@@ -2,11 +2,6 @@
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantManagement.Infrastructure.Repos
 {
@@ -37,9 +32,9 @@ namespace RestaurantManagement.Infrastructure.Repos
         {
             return await _context.Users
                 .Include(e => e.Employee)
-                .AnyAsync(e => e.PhoneNumber == phone);
+                .AnyAsync(e => e.Phone == phone);
         }
-        public async Task<Employee?> GetEmployeeById(Guid id)
+        public async Task<Employee?> GetEmployeeById(Ulid id)
         {
             return await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id);
         }

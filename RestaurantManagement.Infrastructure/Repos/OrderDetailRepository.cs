@@ -22,7 +22,7 @@ public class OrderDetailRepository : IOrderDetailRepository
         _context.OrderDetails.Remove(orderDetail);
     }
 
-    public async Task<OrderDetail?> GetOrderDetailById(Guid id)
+    public async Task<OrderDetail?> GetOrderDetailById(Ulid id)
     {
         return await _context.OrderDetails.FindAsync(id);
     }
@@ -32,7 +32,7 @@ public class OrderDetailRepository : IOrderDetailRepository
         return await _context.OrderDetails.ToListAsync();
     }
 
-    public async Task<ICollection<OrderDetail>> GetOrderDetailsByOrderId(Guid id)
+    public async Task<ICollection<OrderDetail>> GetOrderDetailsByOrderId(Ulid id)
     {
         return await _context.OrderDetails.Where(x => x.OrderId == id).ToListAsync();
     }

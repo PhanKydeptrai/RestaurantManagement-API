@@ -5,7 +5,6 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Upd
 
 
 public record UpdateCategoryCommand(
-    Guid CategoryId, 
+    Ulid CategoryId, 
     string CategoryName, 
-    string CategoryStatus, 
-    string Desciption) : IRequest<Result<bool>>;
+    string CategoryStatus) : IRequest<Result<bool>>;

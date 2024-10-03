@@ -27,12 +27,12 @@ public class BookingRepository : IBookingRepository
         return await _context.Bookings.ToListAsync();
     }
 
-    public async Task<Booking?> GetBookingById(Guid id)
+    public async Task<Booking?> GetBookingById(Ulid id)
     {
         return await _context.Bookings.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Booking>> GetBookingsByCustomerId(Guid id)
+    public async Task<IEnumerable<Booking>> GetBookingsByCustomerId(Ulid id)
     {
         return await _context.Bookings.Where(i => i.CustomerId == id).ToListAsync();
     }

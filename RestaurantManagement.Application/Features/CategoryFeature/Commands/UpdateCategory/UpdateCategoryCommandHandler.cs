@@ -33,8 +33,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
         {
             CategoryId = request.CategoryId,
             CategoryName = request.CategoryName,
-            CategoryStatus = request.CategoryStatus,
-            Desciption = request.Desciption
+            CategoryStatus = request.CategoryStatus
         };
 
         _categoryRepository.UpdateCategory(category);

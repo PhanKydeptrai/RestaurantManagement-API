@@ -26,7 +26,7 @@ public static class CategoryController
         });
         
 
-        endpoints.MapGet("{id}", async (Guid id, ISender sender) =>
+        endpoints.MapGet("{id}", async (Ulid id, ISender sender) =>
         {
             GetCategoryByIdCommand request = new GetCategoryByIdCommand(id);
             var response = await sender.Send(request);
@@ -63,12 +63,11 @@ public static class CategoryController
             return Results.BadRequest(result.Errors);
         });
 
-        endpoints.MapPut("{id}", async (Guid id, UpdateCategoryRequest request, ISender sender) =>
+        endpoints.MapPut("{id}", async (Ulid id, UpdateCategoryRequest request, ISender sender) =>
         {
             var command = new UpdateCategoryCommand(
                 id, request.CategoryName,
-                request.CategoryStatus,
-                request.Desciption);
+                request.CategoryStatus);
             var result = await sender.Send(command);
             if (result.IsSuccess)
             {
@@ -77,7 +76,7 @@ public static class CategoryController
             return Results.BadRequest(result.Errors);
         });
 
-        endpoints.MapDelete("{id}", async (Guid id, ISender sender) =>
+        endpoints.MapDelete("{id}", async (Ulid id, ISender sender) =>
         {
             var request = new RemoveCategoryCommand(id);
             var isSuccess = await sender.Send(request);

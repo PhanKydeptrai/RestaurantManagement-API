@@ -2,15 +2,16 @@ namespace RestaurantManagement.Domain.Entities;
 
 public class Order
 {
-    public Guid OrderId { get; set; }
-    public string OrderStatus { get; set; }
+    public Ulid OrderId { get; set; }
+    public string PaymentStatus { get; set; }
     public decimal Total { get; set; }
+    public Ulid? CustomerId { get; set; }
+    public Ulid TableId { get; set; }
     public DateTime OrderTime { get; set; }
-    public Guid? CustomerId { get; set; }
-    public Guid TableId { get; set; }   
+    public string? Note { get; set; }
     public Customer? Customer { get; set; }
-    public Table? Table { get; set; }
-
-    // Liên kết với OrderDetail
     public ICollection<OrderDetail>? OrderDetails { get; set; }
+    public ICollection<OrderChangeLog>? OrderChangeLogs { get; set; }
+    public Table? Table { get; set; }
+    public Bill? Bill { get; set; }
 }

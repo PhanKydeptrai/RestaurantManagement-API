@@ -5,7 +5,7 @@ namespace RestaurantManagement.Domain.IRepos;
 public interface IEmployeeRepository
 {
     Task<IEnumerable<Employee>> GetEmployees();
-    Task<Employee?> GetEmployeeById(Guid id);
+    Task<Employee?> GetEmployeeById(Ulid id);
     Task<bool> IsEmployyeEmailExist(string email);
     IQueryable<Employee> GetEmployeeQueryable(string firstname);
     Task<bool> IsEmployeePhoneExist(string phone);

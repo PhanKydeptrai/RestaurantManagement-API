@@ -29,8 +29,7 @@ public class CategoryFilterQueryHandler : IRequestHandler<CategoryFilterQuery, P
                 CategoryId = a.CategoryId,
                 CategoryName = a.CategoryName,
                 CategoryStatus = a.CategoryStatus,
-                Image = a.CategoryId.ToString() + ".jpg",
-                Desciption = a.Desciption
+                Image = a.CategoryId.ToString() + ".jpg"
             });
         var categoriesList = await PagedList<CategoryResponse>.CreateAsync(categories, request.page, request.pageSize);
 

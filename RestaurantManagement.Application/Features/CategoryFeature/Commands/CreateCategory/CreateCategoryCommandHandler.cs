@@ -31,13 +31,13 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         }
 
         //Create Category
+        
         Category category = new Category
         {
-            CategoryId = Guid.NewGuid(),
+            CategoryId = Ulid.NewUlid(),
             CategoryName = request.Name,    
             CategoryStatus = "kd",
-            Image = request.Image,
-            Desciption = request.Description
+            CategoryImage = request.Image
         };
 
         result.ResultValue = true;

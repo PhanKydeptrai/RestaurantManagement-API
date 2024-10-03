@@ -59,7 +59,7 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
                 LastName = request.LastName,
                 Email = request.Email,
                 Password = request.Password,
-                PhoneNumber = request.PhoneNumber,
+                Phone = request.PhoneNumber,
                 Status = "Active",
             };
             var employee = new Employee

@@ -26,7 +26,7 @@ namespace RestaurantManagement.API.Controllers
             });
 
             //Get by id
-            endpoints.MapGet("{id}", async (Guid id, ISender sender) =>
+            endpoints.MapGet("{id}", async (Ulid id, ISender sender) =>
             {
                 GetCustomerByIdQuery request = new GetCustomerByIdQuery(id);
                 var result = await sender.Send(request);
@@ -45,7 +45,7 @@ namespace RestaurantManagement.API.Controllers
 
             //Update infomation
             endpoints.MapPut("{id}", async (
-                [FromRoute] Guid id,
+                [FromRoute] Ulid id,
                 [FromForm] IFormFile? image, 
                 [FromForm]string? FirstName, 
                 [FromForm]string? LastName, 

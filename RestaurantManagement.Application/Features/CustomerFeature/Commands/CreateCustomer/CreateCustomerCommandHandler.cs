@@ -35,9 +35,9 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComman
         //Create Customer
         User user = new User
         {
-            UserId = Guid.NewGuid(),
+            UserId = Ulid.NewUlid(),
             Email = request.Email,
-            PhoneNumber = request.PhoneNumber,
+            Phone = request.PhoneNumber,
             Password = request.Password,
             FirstName = request.FirstName,
             Status = "hd",
@@ -47,7 +47,7 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComman
 
         Customer customer = new Customer
         {
-            CustomerId = Guid.NewGuid(),
+            CustomerId = Ulid.NewUlid(),
             UserId = user.UserId,
             CustomerType = "dk"
         };

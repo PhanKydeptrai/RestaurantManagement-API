@@ -45,7 +45,7 @@ public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComman
         {
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
-            user.PhoneNumber = request.PhoneNumber;
+            user.Phone = request.PhoneNumber;
             user.UserImage = request.UserImage ?? user.UserImage;
             //? Should we add a email field to the UpdateCustomerCommand class?
             await _unitOfWork.SaveChangesAsync();

@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Features.CustomerFeature.DTOs;
-using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.Application.Features.CustomerFeature.Queries.GetAllCustomer;
 
@@ -28,7 +27,7 @@ public class GetAllCustomerQueryHandler : IRequestHandler<GetAllCustomerQuery, L
                         FirstName = a.User.FirstName,
                         LastName = a.User.LastName,
                         Email = a.User.Email,
-                        PhoneNumber = a.User.PhoneNumber,
+                        PhoneNumber = a.User.Phone,
                         UserImage = a.User.UserImage
                     }).ToListAsync();
 

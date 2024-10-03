@@ -4,4 +4,4 @@ using RestaurantManagement.Domain.DTOs.Common;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 
-public record GetCategoryByIdCommand(Guid Id) : IRequest<Result<CategoryResponse>>;
+public record GetCategoryByIdCommand(Ulid Id) : IRequest<Result<CategoryResponse>>;
