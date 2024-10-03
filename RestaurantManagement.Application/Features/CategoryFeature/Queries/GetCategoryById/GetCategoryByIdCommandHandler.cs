@@ -26,8 +26,8 @@ public class GetCategoryByIdCommandHandler : IRequestHandler<GetCategoryByIdComm
             CategoryId = a.CategoryId,
             CategoryName = a.CategoryName,
             CategoryStatus = a.CategoryStatus,
-            Image = a.CategoryId.ToString() + ".jpg", //NOTE: This will be changed to byte[] in the future
-            Desciption = a.Desciption
+            Image = a.CategoryId.ToString() + ".jpg" //NOTE: This will be changed to byte[] in the future
+            
         }).FirstOrDefaultAsync(a => a.CategoryId == request.Id);
 
         if (result.ResultValue != null)

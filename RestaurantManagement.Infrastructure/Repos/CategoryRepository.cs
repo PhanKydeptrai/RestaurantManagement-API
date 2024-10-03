@@ -38,7 +38,7 @@ public class CategoryRepository : ICategoryRepository
         return _context.Categories.AsQueryable();
     }
 
-    public async Task<Category?> GetCategoryById(Guid id)
+    public async Task<Category?> GetCategoryById(Ulid id)
     {
         return await _context.Categories.FindAsync(id);
     }
@@ -48,7 +48,7 @@ public class CategoryRepository : ICategoryRepository
         _context.Categories.Update(category);
     }
 
-    public async Task<bool> CheckStatusOfCategory(Guid id)
+    public async Task<bool> CheckStatusOfCategory(Ulid id)
     {
         //Check status of category
 
@@ -58,7 +58,7 @@ public class CategoryRepository : ICategoryRepository
         // return true if category status is "kd"
     }
 
-    public void SoftDeleteCategory(Guid id)
+    public void SoftDeleteCategory(Ulid id)
     {
         var category = _context.Categories.Find(id);
         category.CategoryStatus = "nkd";

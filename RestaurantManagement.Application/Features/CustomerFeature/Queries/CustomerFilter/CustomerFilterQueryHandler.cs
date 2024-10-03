@@ -23,7 +23,7 @@ public class CustomerFilterQueryHandler : IRequestHandler<CustomerFilterQuery, P
             customerQuery =  customerQuery.Where(x => x.User.FirstName.Contains(request.searchTerm) || 
                                                     x.User.LastName.Contains(request.searchTerm) ||
                                                     x.User.Email.Contains(request.searchTerm)||
-                                                    x.User.PhoneNumber.Contains(request.searchTerm));
+                                                    x.User.Phone.Contains(request.searchTerm));
         }
 
         var customers = customerQuery.Select(a => new CustomerResponse{
@@ -31,7 +31,7 @@ public class CustomerFilterQueryHandler : IRequestHandler<CustomerFilterQuery, P
             FirstName = a.User.FirstName,
             LastName = a.User.LastName,
             Email = a.User.Email,
-            PhoneNumber = a.User.PhoneNumber,
+            PhoneNumber = a.User.Phone,
             Gender = a.User.Gender,
             UserImage = a.User.UserImage
         }).AsQueryable();

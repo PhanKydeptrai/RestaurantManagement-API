@@ -6,14 +6,14 @@ public interface ICategoryRepository
 {
     //CRUD
     Task<IEnumerable<Category>> GetAllCategories();
-    Task<Category?> GetCategoryById(Guid id);
+    Task<Category?> GetCategoryById(Ulid id);
     Task AddCatgory(Category category);
     void UpdateCategory(Category category);
-    void SoftDeleteCategory(Guid id);
+    void SoftDeleteCategory(Ulid id);
     void DeleteCategory(Category category);
     //Queries
     IQueryable<Category> GetCategoriesQueryable();
     Task<bool> IsCategoryNameExists(string name);
     Task<bool> IsCategoryNameExistsWhenUpdate(string name);
-    Task<bool> CheckStatusOfCategory(Guid id);
+    Task<bool> CheckStatusOfCategory(Ulid id);
 }

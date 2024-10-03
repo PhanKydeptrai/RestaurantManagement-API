@@ -29,7 +29,7 @@ public class CustomerRepository : ICustomerRepository
         return await _context.Customers.ToListAsync();
     }
 
-    public async Task<CustomerResponse?> GetCustomerById(Guid id)
+    public async Task<CustomerResponse?> GetCustomerById(Ulid id)
     {
         return await _context.Customers
             .Include(a => a.User)
@@ -40,7 +40,7 @@ public class CustomerRepository : ICustomerRepository
                 FirstName = a.User.FirstName,
                 LastName = a.User.LastName,
                 Email = a.User.Email,
-                PhoneNumber = a.User.PhoneNumber,
+                PhoneNumber = a.User.Phone,
                 Gender = a.User.Gender,
                 UserImage = a.User.UserImage
             }).FirstOrDefaultAsync();
@@ -60,7 +60,7 @@ public class CustomerRepository : ICustomerRepository
     }
 
     
-    public async Task<bool> IsCustomerEmailExist_update(Guid id,string email)
+    public async Task<bool> IsCustomerEmailExist_update(Ulid id,string email)
     {
         return await _context.Customers
             .Include(c => c.User)
@@ -71,14 +71,14 @@ public class CustomerRepository : ICustomerRepository
     {
         return await _context.Customers
             .Include(c => c.User)
-            .AnyAsync(a => a.User.PhoneNumber == phone);
+            .AnyAsync(a => a.User.Phone == phone);
     }
 
-    public async Task<bool> IsCustomerPhoneExist_update(Guid id, string phone)
+    public async Task<bool> IsCustomerPhoneExist_update(Ulid id, string phone)
     {
         return await _context.Customers
             .Include(c => c.User)
-            .AnyAsync(a => a.User != null && a.User.PhoneNumber == phone && a.CustomerId != id);
+            .AnyAsync(a => a.User != null && a.User.Phone == phone && a.CustomerId != id);
     }
     
     public void UpdateCustomer(Customer customer)

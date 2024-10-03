@@ -28,17 +28,17 @@ public class MealRepository : IMealRepository
         return await _context.Meals.ToListAsync();
     }
 
-    public async Task<Meal?> GetMealById(Guid id)
+    public async Task<Meal?> GetMealById(Ulid id)
     {
         return await _context.Meals.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Meal>> GetMealsByCategory(Guid categoryId)
+    public async Task<IEnumerable<Meal>> GetMealsByCategory(Ulid categoryId)
     {
         return await _context.Meals.Where(m => m.CategoryId == categoryId).ToListAsync();
     }
 
-    public async Task<string?> GetMealStatus(Guid id)
+    public async Task<string?> GetMealStatus(Ulid id)
     {
         return await _context.Meals.Where(m => m.MealId == id)
                                     .Select(m => m.MealStatus)
@@ -51,7 +51,7 @@ public class MealRepository : IMealRepository
         return meals;
     }
 
-    public async Task<string?> GetSellStatus(Guid id)
+    public async Task<string?> GetSellStatus(Ulid id)
     {
         return await _context.Meals.Where(m => m.MealId == id)
                                     .Select(m => m.SellStatus)

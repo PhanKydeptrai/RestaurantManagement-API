@@ -2,11 +2,9 @@ namespace RestaurantManagement.Domain.Entities;
 
 public class Category
 {
-    public Guid CategoryId { get; set; }    
+    public Ulid CategoryId { get; set; }
     public string CategoryName { get; set; }
+    public byte[]? CategoryImage { get; set; }
     public string CategoryStatus { get; set; }
-    public byte[]? Image { get; set; }
-    public string? Desciption { get; set; }
-    // Liên kết với Meal    
-    public ICollection<Meal> Meals { get; set; }
+    public ICollection<Meal>? Meals { get; set; }
 }

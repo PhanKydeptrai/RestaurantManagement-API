@@ -2,10 +2,10 @@ namespace RestaurantManagement.Domain.Entities;
 
 public class Notification
 {
-    public Guid NotificationId { get; set; }
-    public string Pagragraph { get; set; }
+    public Ulid NotificationId { get; set; }
+    public string Paragraph { get; set; }
     public DateTime Time { get; set; }
-    public string Status { get; set; } // Xem hay chưa
-    public Guid? UserId { get; set; }
+    public Ulid UserId { get; set; }
+    public string Status { get; set; }
     public User? User { get; set; }
 }

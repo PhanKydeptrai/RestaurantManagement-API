@@ -20,7 +20,6 @@ public class GetAllCategoryQueryHandler : IRequestHandler<GetAllCategoryQuery, L
         {
             CategoryId = c.CategoryId,
             CategoryName = c.CategoryName,
-            Desciption = c.Desciption,
             Image = c.CategoryId.ToString() + ".jpg"
         }).ToListAsync();
 

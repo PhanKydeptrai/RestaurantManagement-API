@@ -1,195 +1,324 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Domain.Entities;
+using RestaurantManagement.Infrastructure.Converter;
 
 namespace RestaurantManagement.Infrastructure.Persistence;
 
 public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
 {
-    public RestaurantManagementDbContext(DbContextOptions<RestaurantManagementDbContext> options) : base(options) { }
-    public DbSet<User> Users { get; set; }
-    public DbSet<Employee> Employees { get; set; }
-    public DbSet<Customer> Customers { get; set; }
-    public DbSet<Notification> Notifications { get; set; }
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<Meal> Meals { get; set; }
-    public DbSet<Category> Categories { get; set; }
-    public DbSet<OrderDetail> OrderDetails { get; set; }
-    public DbSet<Table> Tables { get; set; }
-    public DbSet<SystemLog> SystemLogs { get; set; }
+    public RestaurantManagementDbContext(DbContextOptions<RestaurantManagementDbContext> options) : base(options)
+    {
+    }
+
+    public DbSet<Bill> Bills { get; set; }
+    public DbSet<BookingChangeLog> BookingChangeLogs { get; set; }
+    public DbSet<CustomerVoucher> CustomerVouchers { get; set; }
+    public DbSet<OrderChangeLog> OrderChangeLogs { get; set; }
+    public DbSet<PaymentType> PaymentTypes { get; set; }
+    public DbSet<TableType> TableTypes { get; set; }
+    public DbSet<Voucher> Vouchers { get; set; }
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<BookingDetail> BookingDetails { get; set; }
-
-
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<Employee> Employees { get; set; }
+    public DbSet<Meal> Meals { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderDetail> OrderDetails { get; set; }
+    public DbSet<SystemLog> SystemLogs { get; set; }
+    public DbSet<Table> Tables { get; set; }
+    public DbSet<User> Users { get; set; }
 
     //Cấu hình fluent api
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        #region Cấu hình bảng User
-        modelBuilder.Entity<User>(entity =>
+
+        modelBuilder.Entity<Bill>(e =>
         {
-            entity.HasKey(k => k.UserId);
-            entity.Property(p => p.FirstName).IsRequired().HasColumnType("nvarchar(20)");
-            entity.Property(p => p.LastName).IsRequired().HasColumnType("nvarchar(20)");
-            entity.Property(p => p.Password).IsRequired(false).HasColumnType("varchar(64)");
-            entity.Property(p => p.PhoneNumber).IsRequired(false).HasColumnType("varchar(10)");
-            entity.Property(p => p.Gender).IsRequired(false).HasColumnType("varchar(10)");
-            entity.Property(p => p.Status).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.Email).IsRequired().HasColumnType("varchar(30)");
-            entity.Property(p => p.UserImage).IsRequired(false).HasColumnType("varbinary(max)");
+            e.HasKey(a => a.BillId);
+            e.Property(a => a.BillId).IsRequired().HasConversion<UlidToStringConverter>();
 
-            //Quan hệ 1-1 với bảng Employee
-            entity.HasOne(e => e.Employee).WithOne(u => u.User).HasForeignKey<Employee>(e => e.UserId);
-            //Quan hệ 1-1 với bảng Customer
-            entity.HasOne(e => e.Customer).WithOne(u => u.User).HasForeignKey<Customer>(e => e.UserId);
-            //Quan hệ 1-N với bảng Notification
-            entity.HasMany(e => e.Notifications).WithOne(u => u.User).HasForeignKey(e => e.UserId);
+            e.Property(a => a.PaymentStatus).IsRequired().HasColumnType("varchar(20)");
 
-        });
-        #endregion
+            e.Property(a => a.OrderId).IsRequired().HasConversion<UlidToStringConverter>();
 
-        #region Cấu hình bảng Employee
-        modelBuilder.Entity<Employee>(entity =>
-        {
-            entity.HasKey(k => k.EmployeeId);
-            entity.Property(p => p.UserId).IsRequired();
-            entity.Property(p => p.Role).IsRequired().HasColumnType("varchar(20)");
+            e.Property(a => a.BookId).IsRequired(false).HasConversion<UlidToStringConverter>();
 
-        });
-        #endregion
+            e.Property(a => a.VoucherId).IsRequired(false).HasConversion<UlidToStringConverter>();
 
-        #region Cấu hình bảng Customer
-        modelBuilder.Entity<Customer>(entity =>
-        {
-            entity.HasKey(k => k.CustomerId);
-            // entity.Property(p => p.UserId).IsRequired(false);
-            entity.Property(p => p.CustomerType).IsRequired().HasColumnType("varchar(20)");
-            //Quan hệ 1 - N với bảng Order
-            entity.HasMany(e => e.Orders).WithOne(u => u.Customer).HasForeignKey(e => e.CustomerId).IsRequired(false);
-            //Quan hệ 1 nhiều với bảng Booking
-            entity.HasMany(e => e.Bookings).WithOne(u => u.Customer).HasForeignKey(e => e.CustomerId);
-        });
-        #endregion
+            e.Property(a => a.PaymentTypeId).IsRequired().HasConversion<UlidToStringConverter>();
 
-        #region Cấu hình bảng Notification
-        modelBuilder.Entity<Notification>(entity =>
-        {
-            entity.HasKey(k => k.NotificationId);
-            entity.Property(p => p.UserId).IsRequired();
-            entity.Property(p => p.Status).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.Pagragraph).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.Time).IsRequired().HasColumnType("datetime");
-        });
-        #endregion
+            e.Property(a => a.Total).IsRequired().HasColumnType("decimal(18,2)");
 
-        #region Cấu hình bảng Order
-        modelBuilder.Entity<Order>(entity =>
-        {
-            entity.HasKey(k => k.OrderId);
-            entity.Property(p => p.CustomerId).IsRequired(false);
-            entity.Property(p => p.OrderStatus).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.Total).IsRequired().HasColumnType("decimal");
-            entity.Property(p => p.OrderTime).IsRequired().HasColumnType("datetime");
-
-            //Quan hệ 1 - N với bảng OrderDetail
-            entity.HasMany(e => e.OrderDetails).WithOne(u => u.Order).HasForeignKey(e => e.OrderId);
-        });
-        #endregion
-
-        #region Cấu hình bảng Meal
-        modelBuilder.Entity<Meal>(entity =>
-        {
-            entity.HasKey(k => k.MealId);
-            entity.Property(p => p.CategoryId).IsRequired();
-            entity.Property(p => p.MealName).IsRequired().HasColumnType("nvarchar(30)");
-            entity.Property(p => p.Price).IsRequired().HasColumnType("decimal");
-            entity.Property(p => p.Image).IsRequired(false).HasColumnType("varbinary(max)");
-            entity.Property(p => p.Description).IsRequired(false).HasColumnType("nvarchar(100)");
-
+            //ForeignKey
+            //Một bill có một order
+            e.HasOne(a => a.Order).WithOne(a => a.Bill).HasForeignKey<Bill>(a => a.OrderId);
+            //Một bill có một booking?
+            e.HasOne(a => a.Booking).WithOne(a => a.Bill).HasForeignKey<Bill>(a => a.BookId).IsRequired(false);
+            //Một voucher có nhiều bill
+            e.HasOne(a => a.Voucher).WithMany(a => a.Bills).HasForeignKey(a => a.VoucherId);
+            //Một payment type có nhiều bill
+            e.HasOne(a => a.PaymentType).WithMany(a => a.Bills).HasForeignKey(a => a.PaymentTypeId);
         });
 
-        #endregion
-
-        #region Cấu hình bảng Category
-        modelBuilder.Entity<Category>(entity =>
+        modelBuilder.Entity<PaymentType>(e =>
         {
-            entity.HasKey(k => k.CategoryId);
-            entity.Property(p => p.CategoryStatus).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.CategoryName).IsRequired().HasColumnType("nvarchar(50)");
-            entity.Property(p => p.Image).IsRequired(false).HasColumnType("varbinary(max)");
-            entity.Property(p => p.Desciption).IsRequired(false).HasColumnType("nvarchar(100)");
+            e.HasKey(a => a.PaymentTypeId);
+            e.Property(a => a.PaymentTypeId).IsRequired().HasConversion<UlidToStringConverter>();
 
-            //Quan hệ 1 - N với bảng Meal
-            entity.HasMany(e => e.Meals).WithOne(u => u.Category).HasForeignKey(e => e.CategoryId);
+            e.Property(a => a.Name).IsRequired().HasColumnType("varchar(50)");
         });
-        #endregion
 
-        #region Cấu hình bảng OrderDetail
-        modelBuilder.Entity<OrderDetail>(entity =>
+        modelBuilder.Entity<Booking>(e =>
         {
-            entity.HasKey(k => k.OrderDetailId);
-            entity.Property(p => p.OrderId).IsRequired();
-            entity.Property(p => p.MealId).IsRequired();
-            entity.Property(p => p.Quantity).IsRequired().HasColumnType("int");
-            entity.Property(p => p.Note).IsRequired(false).HasColumnType("nvarchar(255)");
+            e.HasKey(a => a.BookId);
+            e.Property(a => a.BookId).IsRequired().HasConversion<UlidToStringConverter>();
 
-            //Quan hệ 1 - N với bảng Meal
-            entity.HasOne(e => e.Meal).WithMany(u => u.OrderDetails).HasForeignKey(e => e.MealId);
-            
+            e.Property(a => a.Time).IsRequired().HasColumnType("datetime");
+            e.Property(a => a.BookingPrice).IsRequired().HasColumnType("decimal(18,2)");
+            e.Property(a => a.PaymentStatus).IsRequired().HasColumnType("varchar(20)");
+            e.Property(a => a.CustomerId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.Note).IsRequired(false).HasColumnType("nvarchar(255)");
 
+            //ForeignKey
+            //Một Customer có nhiều booking
+            e.HasOne(a => a.Customer).WithMany(a => a.Bookings).HasForeignKey(a => a.CustomerId);
+            //Một booking có nhiều bookingchangelog
+            e.HasMany(a => a.BookingChangeLogs).WithOne(a => a.Booking).HasForeignKey(a => a.BookId);
+            //Một booking có nhiều bookingdetail
+            e.HasMany(a => a.BookingDetails).WithOne(a => a.Booking).HasForeignKey(a => a.BookId);
         });
-        #endregion
 
-        #region Cấu hình cho bảng Table
-        modelBuilder.Entity<Table>(entity =>
+        modelBuilder.Entity<BookingDetail>(e =>
         {
-            entity.HasKey(k => k.TableId);
-            entity.Property(p => p.TableType).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.TableName).IsRequired().HasColumnType("nvarchar(30)");
-            entity.Property(p => p.TableStatus).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.Desciption).IsRequired(false).HasColumnType("varchar(255)");
-            entity.Property(p => p.TableImage).IsRequired(false).HasColumnType("varbinary(max)");
+            e.HasKey(a => a.BookingDetailId);
+            e.Property(a => a.BookingDetailId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.TableId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.Status).IsRequired().HasColumnType("varchar(20)");
+            e.Property(a => a.Quantity).IsRequired().HasColumnType("int");
+            e.Property(a => a.UnitPrice).IsRequired().HasColumnType("decimal(18,2)");
+            e.Property(a => a.BookId).IsRequired().HasConversion<UlidToStringConverter>();
 
-            //Quan hệ 1 - N với bảng Order
-            entity.HasMany(e => e.Orders).WithOne(u => u.Table).HasForeignKey(e => e.TableId);
+            //ForeignKey
+            //một table có nhiều bookingdetail
+            e.HasOne(a => a.Table).WithMany(a => a.BookingDetails).HasForeignKey(a => a.TableId);
         });
-        #endregion
 
-        #region Cấu hình cho bảng SystemLog
-        modelBuilder.Entity<SystemLog>(entity =>
+        modelBuilder.Entity<TableType>(e =>
         {
-            entity.HasKey(k => k.LogId);
-            entity.Property(p => p.UserId).IsRequired();
-            entity.Property(p => p.LogDetail).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.LogDate).IsRequired().HasColumnType("datetime");
-        });
-        #endregion
+            e.HasKey(a => a.TableTypeId);
+            e.Property(a => a.TableTypeId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.TableImage).IsRequired(false).HasColumnType("varbinary(max)");
+            e.Property(a => a.TablePrice).IsRequired().HasColumnType("decimal(18,2)");
+            e.Property(a => a.Description).IsRequired(false).HasColumnType("nvarchar(255)");
 
-        #region Cấu hình cho bảng Booking
-        modelBuilder.Entity<Booking>(entity =>
+            //ForeignKey
+            //Một tabletype có nhiều table
+            e.HasMany(a => a.Tables).WithOne(a => a.TableType).HasForeignKey(a => a.TableTypeId);
+        });
+
+        modelBuilder.Entity<Table>(e =>
         {
-            entity.HasKey(k => k.BookingId);
-            entity.Property(p => p.CustomerId).IsRequired();
-            entity.Property(p => p.BookingPrice).IsRequired().HasColumnType("decimal");
-            entity.Property(p => p.Status).IsRequired().HasColumnType("varchar(20)");
-            entity.Property(p => p.Note).IsRequired(false).HasColumnType("nvarchar(255)");
-            entity.Property(p => p.Time).IsRequired().HasColumnType("datetime");
+            e.HasKey(a => a.TableId);
+            e.Property(a => a.TableId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.TableTypeId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.TableStatus).IsRequired().HasColumnType("varchar(20)");
 
-            //Quan hệ 1 - N với bảng BookingDetail
-            entity.HasMany(e => e.BookingDetails).WithOne(u => u.Booking).HasForeignKey(e => e.BookId);
+            //ForeignKey
+            //Một table có nhiều order
+            e.HasMany(a => a.Orders).WithOne(a => a.Table).HasForeignKey(a => a.TableId);
+
         });
-        #endregion
 
-        #region Cấu hình cho bảng BookingDetail
-            modelBuilder.Entity<BookingDetail>(entity =>{
-                entity.HasKey(k => k.BookingDetailId);
-                entity.Property(p => p.TableId).IsRequired();
-                entity.Property(p => p.BookId).IsRequired();
-                entity.Property(p => p.Status).IsRequired().HasColumnType("varchar(20)");
-                //Quan hệ 1 - N với bảng Table
-                entity.HasOne(e => e.Table).WithMany(u => u.BookingDetails).HasForeignKey(e => e.TableId);
-            });
-        #endregion
-                
+        modelBuilder.Entity<Order>(e =>
+        {
+            e.HasKey(a => a.OrderId);
+            e.Property(a => a.OrderId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.PaymentStatus).IsRequired().HasColumnType("varchar(20)");
+            e.Property(a => a.Total).IsRequired().HasColumnType("decimal(18,2)");
+            e.Property(a => a.CustomerId).IsRequired(false).HasConversion<UlidToStringConverter>();
+            e.Property(a => a.TableId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.OrderTime).IsRequired().HasColumnType("datetime");
+            e.Property(a => a.Note).IsRequired(false).HasColumnType("nvarchar(255)");
+
+            //ForeignKey
+            //Một order có nhiều orderdetail
+            e.HasMany(a => a.OrderDetails).WithOne(a => a.Order).HasForeignKey(a => a.OrderId);
+            //Một order có nhiều orderchangelog
+            e.HasMany(a => a.OrderChangeLogs).WithOne(a => a.Order).HasForeignKey(a => a.OrderId);
+            //Một Customer có nhiều order
+            e.HasOne(a => a.Customer).WithMany(a => a.Orders).HasForeignKey(a => a.CustomerId).IsRequired(false);
+        });
+
+        modelBuilder.Entity<Customer>(e =>
+        {
+            e.HasKey(a => a.CustomerId);
+            e.Property(a => a.CustomerId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.UserId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.CustomerStatus).IsRequired().HasColumnType("varchar(20)");
+            e.Property(a => a.CustomerType).IsRequired().HasColumnType("varchar(20)");
+
+            //ForeignKey
+            //Một customer có một user
+            e.HasOne(a => a.User).WithOne(a => a.Customer).HasForeignKey<Customer>(a => a.UserId);
+            //Một customer có nhiều customerVoucher
+            e.HasMany(a => a.CustomerVouchers).WithOne(a => a.Customer).HasForeignKey(a => a.CustomerId);
+
+
+        });
+
+        modelBuilder.Entity<CustomerVoucher>(e =>
+        {
+            e.HasKey(a => a.CustomerVoucherId);
+            e.Property(a => a.CustomerVoucherId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.VoucherId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.CustomerId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.Quantity).IsRequired().HasColumnType("int");
+
+            //ForeignKey
+            //Một voucher có nhiều customerVoucher
+            e.HasOne(a => a.Voucher).WithMany(a => a.CustomerVouchers).HasForeignKey(a => a.VoucherId);
+
+        });
+
+
+        modelBuilder.Entity<Voucher>(e =>
+        {
+            e.HasKey(a => a.VoucherId);
+            e.Property(a => a.VoucherId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.VoucherName).IsRequired().HasColumnType("varchar(50)");
+            e.Property(a => a.MaxDiscount).IsRequired().HasColumnType("decimal(18,2)");
+            e.Property(a => a.VoucherCondition).IsRequired().HasColumnType("decimal(18,2)");
+            e.Property(a => a.Description).IsRequired(false).HasColumnType("nvarchar(255)");
+        });
+
+        modelBuilder.Entity<OrderDetail>(e =>
+        {
+            e.HasKey(a => a.OrderDetailId);
+            e.Property(a => a.OrderDetailId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.OrderId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.MealId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.Quantity).IsRequired().HasColumnType("int");
+            e.Property(a => a.Note).IsRequired(false).HasColumnType("nvarchar(255)");
+            e.Property(a => a.UnitPrice).IsRequired().HasColumnType("decimal(18,2)");
+
+            //ForeignKey
+            //Một meal có nhiều orderdetail
+            e.HasOne(a => a.Meal).WithMany(a => a.OrderDetails).HasForeignKey(a => a.MealId);
+
+        });
+
+        modelBuilder.Entity<Meal>(e =>
+        {
+            e.HasKey(a => a.MealId);
+            e.Property(a => a.MealId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.MealName).IsRequired().HasColumnType("varchar(100)");
+            e.Property(a => a.Price).IsRequired().HasColumnType("decimal(18,2)");
+            e.Property(a => a.Image).IsRequired(false).HasColumnType("varbinary(max)");
+            e.Property(a => a.Description).IsRequired(false).HasColumnType("nvarchar(255)");
+            e.Property(a => a.SellStatus).IsRequired().HasColumnType("varchar(50)");
+            e.Property(a => a.MealStatus).IsRequired().HasColumnType("varchar(50)");
+            e.Property(a => a.CategoryId).IsRequired().HasConversion<UlidToStringConverter>();
+        });
+
+        modelBuilder.Entity<Category>(e =>
+        {
+            e.HasKey(a => a.CategoryId);
+            e.Property(a => a.CategoryId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.CategoryName).IsRequired().HasColumnType("varchar(100)");
+            e.Property(a => a.CategoryImage).IsRequired(false).HasColumnType("varbinary(max)");
+            e.Property(a => a.CategoryStatus).IsRequired().HasColumnType("varchar(50)");
+        });
+
+        modelBuilder.Entity<OrderChangeLog>(e =>
+        {
+            e.HasKey(a => a.OrderChangeLogId);
+            e.Property(a => a.OrderChangeLogId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.UserId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.LogMessage).IsRequired().HasColumnType("nvarchar(255)");
+            e.Property(a => a.Note).IsRequired(false).HasColumnType("nvarchar(255)");
+            e.Property(a => a.LogDate).IsRequired().HasColumnType("datetime");
+            e.Property(a => a.OrderId).IsRequired().HasConversion<UlidToStringConverter>();
+
+            //ForeignKey
+            //Một user có nhiều orderchangelog
+            e.HasOne(a => a.User).WithMany(a => a.OrderChangeLogs).HasForeignKey(a => a.UserId);
+
+        });
+
+        modelBuilder.Entity<User>(e =>
+        {
+            e.HasKey(a => a.UserId);
+            e.Property(a => a.UserId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.FirstName).IsRequired().HasColumnType("nvarchar(50)");
+            e.Property(a => a.LastName).IsRequired().HasColumnType("nvarchar(50)");
+            e.Property(a => a.Password).IsRequired(false).HasColumnType("varchar(64)");
+            e.Property(a => a.Phone).IsRequired(false).HasColumnType("varchar(20)");
+            e.Property(a => a.Status).IsRequired().HasColumnType("varchar(20)");
+            e.Property(a => a.Email).IsRequired(false).HasColumnType("varchar(50)");
+            e.Property(a => a.UserImage).IsRequired(false).HasColumnType("varbinary(max)");
+            e.Property(a => a.Gender).IsRequired(false).HasColumnType("varchar(10)");
+
+            //ForeignKey
+            //Một user có nhiều notification
+            e.HasMany(a => a.Notifications).WithOne(a => a.User).HasForeignKey(a => a.UserId);
+            //Một user có nhiều systemlog
+            e.HasMany(a => a.SystemLogs).WithOne(a => a.User).HasForeignKey(a => a.UserId);
+            //Một user có nhiều BookingChangeLog
+            e.HasMany(a => a.BookingChangeLogs).WithOne(a => a.User).HasForeignKey(a => a.UserId).OnDelete(DeleteBehavior.NoAction); ;
+            //một user có một employee
+            e.HasOne(a => a.Employee).WithOne(a => a.User).HasForeignKey<Employee>(a => a.UserId);
+        });
+
+        modelBuilder.Entity<Employee>(e =>
+        {
+            e.HasKey(a => a.EmployeeId);
+            e.Property(a => a.EmployeeId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.UserId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.EmployeeStatus).IsRequired().HasColumnType("varchar(20)");
+            e.Property(a => a.Role).IsRequired().HasColumnType("varchar(20)");
+        });
+
+        modelBuilder.Entity<Notification>(e =>
+        {
+            e.HasKey(a => a.NotificationId);
+            e.Property(a => a.NotificationId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.Paragraph).IsRequired().HasColumnType("nvarchar(255)");
+            e.Property(a => a.Time).IsRequired().HasColumnType("datetime");
+            e.Property(a => a.UserId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.Status).IsRequired().HasColumnType("varchar(20)");
+        });
+
+        modelBuilder.Entity<SystemLog>(e =>
+        {
+            e.HasKey(a => a.SystemLogId);
+            e.Property(a => a.SystemLogId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.LogDetail).IsRequired().HasColumnType("nvarchar(255)");
+            e.Property(a => a.UserId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.LogDate).IsRequired().HasColumnType("datetime");
+
+        });
+
+        modelBuilder.Entity<BookingChangeLog>(e =>
+        {
+            e.HasKey(a => a.BookingChangeLogId);
+            e.Property(a => a.BookingChangeLogId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.UserId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.LogMessage).IsRequired().HasColumnType("nvarchar(255)");
+            e.Property(a => a.Note).IsRequired(false).HasColumnType("nvarchar(255)");
+            e.Property(a => a.LogDate).IsRequired().HasColumnType("datetime");
+            e.Property(a => a.BookId).IsRequired().HasConversion<UlidToStringConverter>();
+
+        });
+
     }
+
+    //protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    //{
+    //    configurationBuilder
+    //        .Properties<Ulid>()
+    //        .HaveConversion<UlidToStringConverter>();
+    //}
 }

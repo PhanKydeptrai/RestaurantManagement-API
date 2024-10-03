@@ -1,12 +1,10 @@
-using RestaurantManagement.Infrastructure.Extentions;
-using RestaurantManagement.Infrastructure;
-using RestaurantManagement.Application;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RestaurantManagement.API.Controllers;
-using RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
-using RestaurantManagement.Domain.IRepos;
+using RestaurantManagement.Application;
+using RestaurantManagement.Infrastructure;
+using RestaurantManagement.Infrastructure.Extentions;
 
 var builder = WebApplication.CreateBuilder(args);
 

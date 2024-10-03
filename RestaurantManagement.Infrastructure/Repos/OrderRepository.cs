@@ -28,19 +28,19 @@ public class OrderRepository : IOrderRepository
         return await _context.Orders.ToListAsync();
     }
 
-    public async Task<Order?> GetOrderById(Guid id)
+    public async Task<Order?> GetOrderById(Ulid id)
     {
         return await _context.Orders.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Order>> GetOrdersByCustomerId(Guid id)
+    public async Task<IEnumerable<Order>> GetOrdersByCustomerId(Ulid id)
     {
         return await _context.Orders.Where(c => c.CustomerId == id).ToListAsync();
     }
 
     public async Task<IEnumerable<Order>> GetOrdersByOrderStatus(string status)
     {
-        return await _context.Orders.Where(s => s.OrderStatus == status).ToListAsync();
+        return await _context.Orders.Where(s => s.PaymentStatus == status).ToListAsync();
     }
 
     public IQueryable<Order> GetOrdersQueryable()
@@ -50,7 +50,7 @@ public class OrderRepository : IOrderRepository
 
     public Task<bool> IsStatusExist(string status)
     {
-        return _context.Orders.AnyAsync(s => s.OrderStatus == status);
+        return _context.Orders.AnyAsync(s => s.PaymentStatus == status);
     }
 
     public void UpdateOrder(Order order)

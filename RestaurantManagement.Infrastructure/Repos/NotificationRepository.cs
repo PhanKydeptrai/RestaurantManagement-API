@@ -28,12 +28,12 @@ public class NotificationRepository : INotificationRepository
         return await _context.Notifications.ToListAsync();
     }
 
-    public async Task<Notification?> GetNotificationById(Guid id)
+    public async Task<Notification?> GetNotificationById(Ulid id)
     {
         return await _context.Notifications.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Notification>> GetNotificationsByUserId(Guid id)
+    public async Task<IEnumerable<Notification>> GetNotificationsByUserId(Ulid id)
     {
         return await _context.Notifications.Where(x => x.UserId == id).ToListAsync();
     }

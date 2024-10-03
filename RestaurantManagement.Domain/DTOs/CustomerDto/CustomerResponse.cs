@@ -3,7 +3,7 @@ namespace RestaurantManagement.Application.Features.CustomerFeature.DTOs;
 //TODO: need rafactor
 public record CustomerResponse()
 {
-    public Guid CustomerId { get; set; }
+    public Ulid CustomerId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }

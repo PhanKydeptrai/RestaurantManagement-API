@@ -35,7 +35,7 @@ public class TableRepository : ITableRepository
     }
 
 
-    public async Task<Table?> GetTableById(Guid id)
+    public async Task<Table?> GetTableById(Ulid id)
     {
         return await _context.Tables.FindAsync(id);
     }
@@ -43,16 +43,11 @@ public class TableRepository : ITableRepository
     
     
     
-    public async Task<string?> GetTableStatus(Guid id)
+    public async Task<string?> GetTableStatus(Ulid id)
     {
         return await _context.Tables.Where(t => t.TableId == id)
                                     .Select(t => t.TableStatus)
                                     .FirstOrDefaultAsync();
-    }
-
-    public async Task<bool> IsTableNameAvailable(string tableName)
-    {
-        return await _context.Tables.AnyAsync(t => t.TableName == tableName);
     }
 
     public void UpdateTable(Table table)
