@@ -16,9 +16,13 @@ public static class DependencyInjection
         // Đăng ký FluentValidation
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         
-        // Đăng ký logging
+        // Đăng ký pipeline behaviors cho log
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
+        //Đăng ký pipeline behaviors cho validation
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
         return services;
+
+
 
     }
 

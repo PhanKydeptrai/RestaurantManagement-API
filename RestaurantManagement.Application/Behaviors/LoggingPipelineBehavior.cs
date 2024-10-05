@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using RestaurantManagement.Domain.DTOs.Common;
+using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Behaviors;
 

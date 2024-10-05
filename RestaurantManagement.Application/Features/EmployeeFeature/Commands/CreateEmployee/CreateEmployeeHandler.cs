@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RestaurantManagement.Domain.Entities;
-using RestaurantManagement.Domain.DTOs.Common;
+using RestaurantManagement.Domain.Shared;
 
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee
@@ -32,7 +32,7 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
 
             // validate
             CreateEmployeeCommandValidator validator = new CreateEmployeeCommandValidator();
-            ValidationResult validationResult = validator.Validate(request); // Phải dùng thư viện using FluentValidation.Results;
+            var validationResult = validator.Validate(request); // Phải dùng thư viện using FluentValidation.Results;
             if (validationResult.IsValid)
             {
                 validationResult.Errors.Select(e => e.ErrorMessage).ToArray();

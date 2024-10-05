@@ -1,4 +1,4 @@
-namespace RestaurantManagement.Domain.DTOs.Common;
+namespace RestaurantManagement.Domain.Shared;
 
 public class ResultForLog
 {
@@ -16,7 +16,7 @@ public class ResultForLog
 
         IsSuccess = isSuccess;
         Error = error;
-    } 
+    }
 
     public bool IsSuccess { get; }
 

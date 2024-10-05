@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using NETCore.Encrypt;
 using RestaurantManagement.Application.Data;
-using RestaurantManagement.Domain.DTOs.Common;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
+using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
 

@@ -1,5 +1,5 @@
 using MediatR;
-using RestaurantManagement.Domain.DTOs.Common;
+using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 
