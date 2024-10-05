@@ -1,4 +1,4 @@
-namespace RestaurantManagement.Domain.DTOs.Common;
+namespace RestaurantManagement.Domain.Shared;
 
 public class Result<T>
 {

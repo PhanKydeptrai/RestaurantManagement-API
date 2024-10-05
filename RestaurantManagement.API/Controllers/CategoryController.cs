@@ -5,7 +5,7 @@ using RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveC
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
-using RestaurantManagement.Domain.DTOs.Common;
+using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.API.Controllers;
 public static class CategoryController

@@ -1,8 +1,8 @@
 using FluentValidation.Results;
 using MediatR;
-using RestaurantManagement.Domain.DTOs.Common;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
+using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 
@@ -21,8 +21,8 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
         Result<bool> result = new Result<bool>();
     
         //validation
-        UpdateCategoryValidator validator = new UpdateCategoryValidator(_categoryRepository);
-        ValidationResult validationResult = validator.Validate(request);
+        var validator = new UpdateCategoryValidator(_categoryRepository);
+        var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
             result.Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();

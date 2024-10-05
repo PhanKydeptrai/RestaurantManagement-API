@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using RestaurantManagement.Domain.DTOs.Common;
+using RestaurantManagement.Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;

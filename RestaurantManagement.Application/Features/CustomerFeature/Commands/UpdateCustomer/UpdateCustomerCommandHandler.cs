@@ -1,8 +1,8 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Data;
-using RestaurantManagement.Domain.DTOs.Common;
 using RestaurantManagement.Domain.IRepos;
+using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
 
