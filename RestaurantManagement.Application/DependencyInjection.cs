@@ -1,5 +1,7 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using RestaurantManagement.Application.Behaviors;
 
 namespace RestaurantManagement.Application;
 
@@ -13,7 +15,11 @@ public static class DependencyInjection
         });
         // Đăng ký FluentValidation
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+        
+        // Đăng ký logging
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
         return services;
+
     }
 
 }

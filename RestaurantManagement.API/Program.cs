@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructureExtentions(builder.Configuration)
                 .AddInfrastructure()
                 .AddApplication();
+
 //JWT
 #region Cấu hình JWT
 builder.Services.AddAuthentication(options =>
