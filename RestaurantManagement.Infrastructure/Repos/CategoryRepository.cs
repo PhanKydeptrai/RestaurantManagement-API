@@ -1,4 +1,3 @@
-using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -65,12 +64,9 @@ public class CategoryRepository : ICategoryRepository
 
     }
 
-    public async Task<bool> IsCategoryNameExistsWhenUpdate(string name)
+    public async Task<bool> IsCategoryNameExistsWhenUpdate(Ulid id,string name)
     {
-        if(await _context.Categories.CountAsync(a => a.CategoryName == name) > 1)
-        {
-            return true;
-        }
-        return false;
+        return await _context.Categories
+                         .AnyAsync(a => a.CategoryName == name && a.CategoryId != id);
     }
 }

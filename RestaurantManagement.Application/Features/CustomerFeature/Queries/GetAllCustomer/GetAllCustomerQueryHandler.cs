@@ -20,16 +20,18 @@ public class GetAllCustomerQueryHandler : IRequestHandler<GetAllCustomerQuery, L
         return await _customerRepository.Customers
                     .Include(x => x.User)
                     .Where(a => a.User.UserId == a.UserId)
-                    .Select(a => new CustomerResponse
-                    {
-                        CustomerId = a.CustomerId,
-                        Gender = a.User.Gender,
-                        FirstName = a.User.FirstName,
-                        LastName = a.User.LastName,
-                        Email = a.User.Email,
-                        PhoneNumber = a.User.Phone,
-                        UserImage = a.User.UserImage
-                    }).ToListAsync();
+                    .Select(a => new CustomerResponse(
+                        a.CustomerId,
+                        a.User.FirstName,
+                        a.User.LastName,
+                        a.User.Email,
+                        a.User.Phone,
+                        a.User.Gender,
+                        a.User.Status,
+                        a.CustomerStatus,
+                        a.CustomerType,
+                        a.User.UserImage
+                    )).ToListAsync();
 
 
     }

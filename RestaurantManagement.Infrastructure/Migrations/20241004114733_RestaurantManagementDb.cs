@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RestaurantDb : Migration
+    public partial class RestaurantManagementDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -142,6 +142,26 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     table.PrimaryKey("PK_Customers", x => x.CustomerId);
                     table.ForeignKey(
                         name: "FK_Customers_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmailVerificationToken",
+                columns: table => new
+                {
+                    EmailVerificationTokenId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ExpiredDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailVerificationToken", x => x.EmailVerificationTokenId);
+                    table.ForeignKey(
+                        name: "FK_EmailVerificationToken_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -500,6 +520,11 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "VoucherId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmailVerificationToken_UserId",
+                table: "EmailVerificationToken",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Employees_UserId",
                 table: "Employees",
                 column: "UserId",
@@ -570,6 +595,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "CustomerVouchers");
+
+            migrationBuilder.DropTable(
+                name: "EmailVerificationToken");
 
             migrationBuilder.DropTable(
                 name: "Employees");

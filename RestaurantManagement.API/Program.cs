@@ -91,8 +91,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
+// Map endpoints
 app.MapCustomerEndpoint();
-
+app.MapAccountEnpoint();
 app.MapCategoryEndpoint();
 
 app.Run();

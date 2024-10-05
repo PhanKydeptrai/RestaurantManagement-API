@@ -10,12 +10,11 @@ using RestaurantManagement.Domain.DTOs.Common;
 namespace RestaurantManagement.API.Controllers;
 public static class CategoryController
 {
-
     public static void MapCategoryEndpoint(this IEndpointRouteBuilder app)
     {
         var endpoints = app.MapGroup("api/category").WithTags("Category").DisableAntiforgery();
 
-        endpoints.MapGet("", async Task<IResult> (
+        endpoints.MapGet("", async (
             [FromQuery] string? seachTerm,
             [FromQuery] int page,
             [FromQuery] int pageSize, ISender sender) =>

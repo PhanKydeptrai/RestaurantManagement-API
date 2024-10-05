@@ -19,4 +19,5 @@ public class User
     public ICollection<SystemLog>? SystemLogs { get; set; }
     public ICollection<BookingChangeLog>? BookingChangeLogs { get; set; }
     public ICollection<OrderChangeLog>? OrderChangeLogs { get; set; }
+    public ICollection<EmailVerificationToken>? EmailVerificationTokens { get; set; }
 }

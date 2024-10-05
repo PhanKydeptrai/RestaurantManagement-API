@@ -23,7 +23,7 @@ public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComman
     }
 
 
-    //Todo: Refactor phương thức này để sử dụng repository
+    //TODO: Refactor phương thức này để sử dụng repository
     public async Task<Result<bool>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
     {
         var result = new Result<bool>();

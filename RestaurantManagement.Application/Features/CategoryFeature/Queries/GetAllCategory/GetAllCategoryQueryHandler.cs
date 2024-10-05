@@ -16,12 +16,11 @@ public class GetAllCategoryQueryHandler : IRequestHandler<GetAllCategoryQuery, L
     public async Task<List<CategoryResponse>> Handle(GetAllCategoryQuery request, CancellationToken cancellationToken)
     {
         var categoriesQuery = _categoryRepository.GetCategoriesQueryable();
-        var categoryResponses = await categoriesQuery.Select(c => new CategoryResponse
-        {
-            CategoryId = c.CategoryId,
-            CategoryName = c.CategoryName,
-            Image = c.CategoryId.ToString() + ".jpg"
-        }).ToListAsync();
+        var categoryResponses = await categoriesQuery.Select(c => new CategoryResponse(
+            c.CategoryId, 
+            c.CategoryName, 
+            c.CategoryStatus, 
+            c.CategoryId + ".jpg")).ToListAsync();
 
         return categoryResponses;
     }
