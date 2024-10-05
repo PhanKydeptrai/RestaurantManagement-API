@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Infrastructure.Converter;
@@ -29,6 +30,7 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
     public DbSet<Table> Tables { get; set; }
     public DbSet<User> Users { get; set; }
 
+    
     //Cấu hình fluent api
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

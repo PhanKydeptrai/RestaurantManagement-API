@@ -33,12 +33,15 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<string>>
         }
 
         var encryptedPassword = EncryptProvider.Sha256(request.passWord);
-
+        //Lưu ý
         User? user = await _context.Customers
             .Where(a => a.User.Password == encryptedPassword 
             &&(a.User.Email == request.loginString || a.User.Phone == request.loginString) 
-            &&a.CustomerType == "Subscriber")
+            && a.CustomerType == "Subscriber")
             .Select(a => a.User).FirstOrDefaultAsync(); 
+
+        
+        
 
         if (user == null)
         {
