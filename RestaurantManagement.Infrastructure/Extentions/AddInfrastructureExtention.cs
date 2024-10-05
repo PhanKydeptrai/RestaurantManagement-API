@@ -10,8 +10,12 @@ public static class AddInfrastructureExtention
 {
     public static IServiceCollection AddInfrastructureExtentions(this IServiceCollection services, IConfiguration configuration)
     {
+
         services.AddDbContext<RestaurantManagementDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("MyDB")));
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<RestaurantManagementDbContext>());
+
+        // services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Emai:Sender"])
+        //     .AddSmtpSender(configuration["Email:Host"], configuration.GetValue<int>("Email:Port"));
         return services;
     }
 }

@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateCustomer;
 using RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
@@ -32,18 +32,8 @@ namespace RestaurantManagement.API.Controllers
                 var result = await sender.Send(request);
                 return Results.Ok(result);
             });
-            //Create new
-            endpoints.MapPost("",async (CreateCustomerCommand request, ISender sender) =>
-            {
-                var result = await sender.Send(request);
-                if (result.IsSuccess)
-                {
-                    return Results.Ok("Customer created successfully!");
-                }
-                return Results.BadRequest(result.Errors);
-            });
 
-            //Update infomation
+            //Update information for a customer
             endpoints.MapPut("{id}", async (
                 [FromRoute] Ulid id,
                 [FromForm] IFormFile? image, 

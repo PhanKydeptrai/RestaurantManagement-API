@@ -49,7 +49,7 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
         RuleFor(b => b.Gender)
             .NotNull().WithMessage("Gender is required")
             .NotEmpty().WithMessage("Gender must not be empty") 
-            .Must(b => b == "Male" || b == "Female");
+            .Must(b => b == "Male" || b == "Female" || b == "Other");
         
     }
 }

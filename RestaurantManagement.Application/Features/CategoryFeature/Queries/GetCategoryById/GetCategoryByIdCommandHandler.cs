@@ -17,18 +17,12 @@ public class GetCategoryByIdCommandHandler : IRequestHandler<GetCategoryByIdComm
 
     public async Task<Result<CategoryResponse>> Handle(GetCategoryByIdCommand request, CancellationToken cancellationToken)
     {
-        Result<CategoryResponse> result = new Result<CategoryResponse>
-        {
-            ResultValue = new CategoryResponse()
-        };
-        result.ResultValue = await _context.Categories.Select(a => new CategoryResponse
-        {
-            CategoryId = a.CategoryId,
-            CategoryName = a.CategoryName,
-            CategoryStatus = a.CategoryStatus,
-            Image = a.CategoryId.ToString() + ".jpg" //NOTE: This will be changed to byte[] in the future
-            
-        }).FirstOrDefaultAsync(a => a.CategoryId == request.Id);
+        Result<CategoryResponse> result = new Result<CategoryResponse>();
+        result.ResultValue = await _context.Categories.Select(a => new CategoryResponse(
+            a.CategoryId, 
+            a.CategoryName, 
+            a.CategoryStatus, 
+            a.CategoryId + ".jpg")).FirstOrDefaultAsync(a => a.CategoryId == request.Id);
 
         if (result.ResultValue != null)
         {

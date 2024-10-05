@@ -12,8 +12,8 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241003102057_RestaurantDb")]
-    partial class RestaurantDb
+    [Migration("20241004114733_RestaurantManagementDb")]
+    partial class RestaurantManagementDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,6 +229,28 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.HasIndex("VoucherId");
 
                     b.ToTable("CustomerVouchers");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.EmailVerificationToken", b =>
+                {
+                    b.Property<string>("EmailVerificationTokenId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("ExpiredDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.HasKey("EmailVerificationTokenId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EmailVerificationToken");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Employee", b =>
@@ -663,6 +685,17 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("Voucher");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.EmailVerificationToken", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
+                        .WithMany("EmailVerificationTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Employee", b =>
                 {
                     b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
@@ -832,6 +865,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("BookingChangeLogs");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("EmailVerificationTokens");
 
                     b.Navigation("Employee");
 

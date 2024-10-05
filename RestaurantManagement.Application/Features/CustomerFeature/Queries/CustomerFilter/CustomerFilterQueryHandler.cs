@@ -26,15 +26,18 @@ public class CustomerFilterQueryHandler : IRequestHandler<CustomerFilterQuery, P
                                                     x.User.Phone.Contains(request.searchTerm));
         }
 
-        var customers = customerQuery.Select(a => new CustomerResponse{
-            CustomerId = a.CustomerId,
-            FirstName = a.User.FirstName,
-            LastName = a.User.LastName,
-            Email = a.User.Email,
-            PhoneNumber = a.User.Phone,
-            Gender = a.User.Gender,
-            UserImage = a.User.UserImage
-        }).AsQueryable();
+        var customers = customerQuery.Select(a => new CustomerResponse(
+            a.CustomerId, 
+            a.User.FirstName, 
+            a.User.LastName,
+            a.User.Email,
+            a.User.Phone,
+            a.User.Gender,
+            a.User.Status,
+            a.CustomerStatus,
+            a.CustomerType,
+            a.User.UserImage
+            )).AsQueryable();
 
 
         var customerList = await PagedList<CustomerResponse>.CreateAsync(customers, request.page, request.pageSize);

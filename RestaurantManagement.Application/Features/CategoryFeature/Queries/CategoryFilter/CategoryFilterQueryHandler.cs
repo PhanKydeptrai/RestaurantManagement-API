@@ -24,13 +24,11 @@ public class CategoryFilterQueryHandler : IRequestHandler<CategoryFilterQuery, P
         }
 
         var categories = categoriesQuery
-            .Select(a => new CategoryResponse
-            {
-                CategoryId = a.CategoryId,
-                CategoryName = a.CategoryName,
-                CategoryStatus = a.CategoryStatus,
-                Image = a.CategoryId.ToString() + ".jpg"
-            });
+            .Select(a => new CategoryResponse(
+                a.CategoryId, 
+                a.CategoryName, 
+                a.CategoryStatus,
+                a.CategoryId.ToString() + ".jpg"));
         var categoriesList = await PagedList<CategoryResponse>.CreateAsync(categories, request.page, request.pageSize);
 
         return categoriesList;

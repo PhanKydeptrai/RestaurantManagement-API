@@ -7,9 +7,7 @@ namespace RestaurantManagement.Infrastructure.Persistence;
 
 public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
 {
-    public RestaurantManagementDbContext(DbContextOptions<RestaurantManagementDbContext> options) : base(options)
-    {
-    }
+    public RestaurantManagementDbContext(DbContextOptions<RestaurantManagementDbContext> options) : base(options) { }
 
     public DbSet<Bill> Bills { get; set; }
     public DbSet<BookingChangeLog> BookingChangeLogs { get; set; }
@@ -313,6 +311,20 @@ public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
 
         });
 
+        
+        modelBuilder.Entity<EmailVerificationToken>(e =>
+        {
+            e.HasKey(a => a.EmailVerificationTokenId);
+            e.Property(a => a.EmailVerificationTokenId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.UserId).IsRequired().HasConversion<UlidToStringConverter>();
+            e.Property(a => a.CreatedDate).IsRequired().HasColumnType("datetime");
+            e.Property(a => a.ExpiredDate).IsRequired().HasColumnType("datetime");
+
+            //ForeignKey
+            //Một user có nhiều emailverificationtoken
+            e.HasOne(a => a.User).WithMany(a => a.EmailVerificationTokens).HasForeignKey(a => a.UserId);
+
+        });
     }
 
     //protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

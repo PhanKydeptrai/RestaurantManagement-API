@@ -40,7 +40,7 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComman
             Phone = request.PhoneNumber,
             Password = request.Password,
             FirstName = request.FirstName,
-            Status = "hd",
+            Status = "NotActivated",
             LastName = request.LastName,
             Gender = request.Gender
         };
@@ -49,7 +49,8 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComman
         {
             CustomerId = Ulid.NewUlid(),
             UserId = user.UserId,
-            CustomerType = "dk"
+            CustomerStatus = "Active",
+            CustomerType = "Normal"
         };
 
         await _userRepository.CreateUser(user);

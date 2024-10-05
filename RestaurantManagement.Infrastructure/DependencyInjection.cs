@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using RestaurantManagement.Domain.IRepos;
+using RestaurantManagement.Infrastructure.Authentication;
 using RestaurantManagement.Infrastructure.Repos;
 
 namespace RestaurantManagement.Infrastructure;
@@ -13,6 +14,7 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         //Đăng ký dependency injection cho các repository tại đây
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
         services.AddScoped<IMealRepository, MealRepository>();
