@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.Register;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
 
@@ -20,7 +21,7 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok("Register successfully!");
                 }
-                return Results.BadRequest(result.Errors);
+                return Results.BadRequest(result.ToProblemDetails);
             });
 
             //Login for customer
@@ -29,7 +30,7 @@ namespace RestaurantManagement.API.Controllers
                 var result = await sender.Send(query);
                 if (result.IsSuccess)
                 {
-                    return Results.Ok(result.ResultValue);
+                    return Results.Ok(result.Value);
                 }
                 return Results.BadRequest(result.Errors);
             });

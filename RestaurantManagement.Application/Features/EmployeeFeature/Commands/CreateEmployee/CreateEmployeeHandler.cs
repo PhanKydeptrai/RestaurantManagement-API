@@ -1,18 +1,12 @@
 ﻿using MediatR;
-using FluentValidation.Results;
 using RestaurantManagement.Domain.IRepos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.Shared;
 
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee
 {
-    public class CreateEmployeeHandler : IRequestHandler<CreateEmployeeCommand, Result<bool>>
+    public class CreateEmployeeHandler : IRequestHandler<CreateEmployeeCommand, Result>
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IUserRepository _userRepository;
@@ -23,35 +17,21 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
         }
-        public async Task<Result<bool>> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
         {
-            var result = new Result<bool>
-            {
-                ResultValue = false
-            };
-
+            
             // validate
-            CreateEmployeeCommandValidator validator = new CreateEmployeeCommandValidator();
+            var validator = new CreateEmployeeCommandValidator(_employeeRepository);
             var validationResult = validator.Validate(request); // Phải dùng thư viện using FluentValidation.Results;
             if (validationResult.IsValid)
             {
-                validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
+                Error[] errors = validationResult.Errors
+                    .Select(a => new Error(a.ErrorCode, a.ErrorMessage))
+                    .ToArray();
 
-                return result;
+                return Result.Failure(errors);
             }
-            // email already exist
-            var isEmailExist = await _employeeRepository.IsEmployyeEmailExist(request.Email);
-            if (isEmailExist)
-            {
-                result.Errors = new string[] { "Email is already exist" };
-                return result;
-            }
-            var isPhoneNumberExist = await _employeeRepository.IsEmployeePhoneExist(request.PhoneNumber);
-            if (isPhoneNumberExist)
-            {
-                result.Errors = new string[] { "Phone number is already exist" };
-                return result;
-            }
+            
             // create new
             var user = new User
             {
@@ -69,10 +49,8 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
             await _userRepository.CreateUser(user);
             await _employeeRepository.CreateEmployee(employee);
             await _unitOfWork.SaveChangesAsync();
-            result.ResultValue = true;
-            result.IsSuccess = true;
 
-            return result;
+            return Result.Success();
         }
     }
 }

@@ -41,7 +41,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true, // Kiểm tra thời gian hết hạn của token
         ClockSkew = TimeSpan.Zero // Loại bỏ thời gian trễ mặc định
                                   // Đảm bảo token chứa claim về vai trò
-                                  // RoleClaimType = ClaimTypes.Role
+        // RoleClaimType = ClaimTypes.Role
 
     };
 

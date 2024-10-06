@@ -9,5 +9,5 @@ public record UpdateCustomerCommand(
     string? LastName, 
     string? PhoneNumber, 
     byte[]? UserImage, 
-    string? Gender) : IRequest<Result<bool>>;
+    string? Gender) : IRequest<Result>;
 

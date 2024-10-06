@@ -1,10 +1,11 @@
 using MediatR;
 using RestaurantManagement.Application.Features.CustomerFeature.DTOs;
 using RestaurantManagement.Domain.IRepos;
+using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
 
-public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery, CustomerResponse>
+public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery, Result<CustomerResponse>>
 {
     private readonly ICustomerRepository _customerRepository;
 
@@ -13,10 +14,14 @@ public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery,
         _customerRepository = customerRepository;
     }
     
-    public async Task<CustomerResponse> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<CustomerResponse>> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
     {
         CustomerResponse customer = await _customerRepository.GetCustomerById(request.id);
-        
-        return customer;
+        if(customer == null)
+        {
+            Error[] error = { new Error("Customer", "Customer not found") };
+            return Result<CustomerResponse>.Failure(error);
+        }
+        return Result<CustomerResponse>.Success(customer);
     }
 }

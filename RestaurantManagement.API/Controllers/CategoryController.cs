@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
-using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.API.Controllers;
 public static class CategoryController
@@ -31,9 +31,9 @@ public static class CategoryController
             var response = await sender.Send(request);
             if (response.IsSuccess)
             {
-                return Results.Ok(response.ResultValue);
+                return Results.Ok(response.Value);
             }
-            return Results.BadRequest("Category not found!");
+            return Results.BadRequest(response.Errors);
         });
         
         endpoints.MapPost("", async (
@@ -51,15 +51,15 @@ public static class CategoryController
                 }
             }
 
-            var command = new CreateCategoryCommand(name, description, imageData);
+            var command = new CreateCategoryCommand(name, imageData);
 
-            Result<bool> result = await sender.Send(command);
+            var result = await sender.Send(command);
             if (result.IsSuccess)
             {
                 return Results.Ok("Create successfully!");
             }
-
-            return Results.BadRequest(result.Errors);
+            
+            return Results.BadRequest(result.ToProblemDetails());
         });
 
         endpoints.MapPut("{id}", async (Ulid id, UpdateCategoryRequest request, ISender sender) =>
@@ -72,18 +72,20 @@ public static class CategoryController
             {
                 return Results.Ok("Update successfully!");
             }
-            return Results.BadRequest(result.Errors);
+            return Results.BadRequest(result.ToProblemDetails());
+           
+            
         });
 
         endpoints.MapDelete("{id}", async (Ulid id, ISender sender) =>
         {
             var request = new RemoveCategoryCommand(id);
-            var isSuccess = await sender.Send(request);
-            if (isSuccess)
+            var result = await sender.Send(request);
+            if (result.IsSuccess)
             {
                 return Results.Ok("Remove successfully!");
             }
-            return Results.BadRequest("Remove failed! Please check category status");
+            return Results.BadRequest(result.ToProblemDetails());
         });
     }
 

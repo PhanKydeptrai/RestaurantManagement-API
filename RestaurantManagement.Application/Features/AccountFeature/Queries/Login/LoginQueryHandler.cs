@@ -21,15 +21,16 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<string>>
     //TODO: Refactor this method
     public async Task<Result<string>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
-        var result = new Result<string>();
+        
         //validate
         var loginQueryValidator = new LoginQueryValidator();
         var validationResult = loginQueryValidator.Validate(request);
         if (!validationResult.IsValid)
         {
-            result.Errors = validationResult.Errors
-                .Select(x => x.ErrorMessage).ToArray();
-            return result;
+            var errors = validationResult.Errors
+                .Select(x => new Error(x.ErrorCode, x.ErrorMessage))
+                .ToArray();
+            return Result<string>.Failure(errors);
         }
 
         var encryptedPassword = EncryptProvider.Sha256(request.passWord);
@@ -37,7 +38,8 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<string>>
         User? user = await _context.Customers
             .Where(a => a.User.Password == encryptedPassword 
             &&(a.User.Email == request.loginString || a.User.Phone == request.loginString) 
-            && a.CustomerType == "Subscriber")
+            && a.CustomerType == "Subscriber"
+            && a.CustomerStatus == "Active")
             .Select(a => a.User).FirstOrDefaultAsync(); 
 
         
@@ -45,18 +47,18 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<string>>
 
         if (user == null)
         {
-            result.Errors = new string[] { "Invalid login credentials" };
-            return result;
+            Error[] a = { new Error("Login", "Invalid login") };
+            return Result<string>.Failure(a);
         }
 
         if(user.Status != "Activated") //Chỉ khách hàng đã kích hoạt mới được đăng nhập
         {
-            result.Errors = new string[] { "Please active your account" };
-            return result;
+            Error[] a = { new Error("Login", "Account is not activated") };
+            return Result<string>.Failure(a);
         }
 
-        result.ResultValue = _jwtProvider.GenerateJwtToken(user);
-        result.IsSuccess = true;
-        return result;
+        var token = _jwtProvider.GenerateJwtToken(user);
+        
+        return Result<string>.Success(token);
     }
 }

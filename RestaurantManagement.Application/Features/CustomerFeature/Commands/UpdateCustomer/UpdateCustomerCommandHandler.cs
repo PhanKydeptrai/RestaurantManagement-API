@@ -6,15 +6,15 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
 
-public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<bool>>
+public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result>
 {
     private readonly IApplicationDbContext _context;
     private readonly ICustomerRepository _customerRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public UpdateCustomerCommandHandler(
-        IUnitOfWork unitOfWork, 
-        ICustomerRepository customerRepository, 
+        IUnitOfWork unitOfWork,
+        ICustomerRepository customerRepository,
         IApplicationDbContext context)
     {
         _unitOfWork = unitOfWork;
@@ -24,34 +24,38 @@ public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComman
 
 
     //TODO: Refactor phương thức này để sử dụng repository
-    public async Task<Result<bool>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
     {
-        var result = new Result<bool>();
+
         //validation
         var validator = new UpdateCustomerCommandValidator(_customerRepository);
         var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
-            result.Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
-            return result;
+            var errors = validationResult.Errors
+                .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
+                .ToArray();
+
+            return Result.Failure(errors);
         }
 
         var user = await _context.Customers
             .Include(a => a.User)
             .Where(a => a.CustomerId == request.CustomerId)
             .Select(a => a.User).FirstAsync();
-    
-        if(user != null)
+
+        if (user == null)
         {
-            user.FirstName = request.FirstName;
-            user.LastName = request.LastName;
-            user.Phone = request.PhoneNumber;
-            user.UserImage = request.UserImage ?? user.UserImage;
-            //? Should we add a email field to the UpdateCustomerCommand class?
-            await _unitOfWork.SaveChangesAsync();
-            result.ResultValue = result.IsSuccess = true;
+            Error[] error = { new Error("Customer", "Customer not found") };
+            return Result.Failure(error);
         }
 
-        return result;
+        user.FirstName = request.FirstName;
+        user.LastName = request.LastName;
+        user.Phone = request.PhoneNumber;
+        user.UserImage = request.UserImage ?? user.UserImage;
+        //? Should we add a email field to the UpdateCustomerCommand class?
+        await _unitOfWork.SaveChangesAsync();
+        return Result.Success();
     }
 }

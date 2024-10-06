@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateCustomer;
 using RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;

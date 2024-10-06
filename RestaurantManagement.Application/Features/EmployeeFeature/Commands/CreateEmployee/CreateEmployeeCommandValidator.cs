@@ -1,18 +1,11 @@
 ﻿using FluentValidation;
 using RestaurantManagement.Domain.IRepos;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee
 {
     public class CreateEmployeeCommandValidator : AbstractValidator<CreateEmployeeCommand>
     {
-        public CreateEmployeeCommandValidator()
+        public CreateEmployeeCommandValidator(IEmployeeRepository employeeRepository)
         {
             RuleFor(u => u.FirstName)
                 .NotEmpty().WithMessage("First is Empty.")
@@ -31,11 +24,15 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
             RuleFor(u => u.PhoneNumber)
                 .NotEmpty().WithMessage("PhoneNumber is Empty.")
                 .NotNull().WithMessage("PhoneNumber is Null.")
-                 .Matches(@"^0\d{9}$").WithMessage("PhoneNumber must start with 0 and be exactly 10 digits long.");
+                .Matches(@"^0\d{9}$").WithMessage("PhoneNumber must start with 0 and be exactly 10 digits long.")
+                .Must(a => employeeRepository.IsEmployeePhoneExist(a).Result == false)
+                .WithMessage("PhoneNumber is already exist.");
             RuleFor(u => u.Email)
                 .NotEmpty().WithMessage("Email is Empty.")
                 .NotNull().WithMessage("Email is Null.")
-                .EmailAddress().WithMessage("Email must be a valid email address.");
+                .EmailAddress().WithMessage("Email must be a valid email address.")
+                .Must(a => employeeRepository.IsEmployeePhoneExist(a).Result == false)
+                .WithMessage("Email is already exist.");
         }
     }
 }

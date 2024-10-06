@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Infrastructure.Converter;

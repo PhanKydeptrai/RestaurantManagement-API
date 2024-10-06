@@ -17,8 +17,5 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
             .Must(a => _categoryRepository.IsCategoryNameExists(a).Result == false)
             .WithMessage("Category name already exists");
             
-        RuleFor(p => p.Description)
-            .MaximumLength(200)
-            .WithMessage("Description cannot be longer than 200 characters");
     }
 }
