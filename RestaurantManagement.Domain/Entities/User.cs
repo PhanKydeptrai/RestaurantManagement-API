@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace RestaurantManagement.Domain.Entities;
 
 public class User

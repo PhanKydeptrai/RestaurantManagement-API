@@ -8,7 +8,7 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Register;
 
-public class ResgisterCommandHandler : IRequestHandler<RegisterCommand, Result<bool>>
+public class ResgisterCommandHandler : IRequestHandler<RegisterCommand, Result>
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IUserRepository _userRepository;
@@ -26,18 +26,18 @@ public class ResgisterCommandHandler : IRequestHandler<RegisterCommand, Result<b
         _context = context;
     }
 
-    public async Task<Result<bool>> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var result = new Result<bool>();
+        
         //validation
         var validator = new RegisterCommandValidator(_customerRepository);
         var validationResult = await validator.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
-            result.Errors = validationResult.Errors
-                .Select(a => a.ErrorMessage)
+            var errors = validationResult.Errors
+                .Select(a => new Error(a.ErrorCode, a.ErrorMessage))
                 .ToArray();
-            return result;
+            return Result.Failure(errors);
         }
         //TODO: Refactor phương thức cập nhật
         // 1. Sử dụng repository
@@ -55,8 +55,8 @@ public class ResgisterCommandHandler : IRequestHandler<RegisterCommand, Result<b
             normalCustomer.User.Gender = request.Gender;
             normalCustomer.User.Password = EncryptProvider.Sha256(request.Password);
             await _unitOfWork.SaveChangesAsync();
-            result.IsSuccess = true;
-            return result;
+            
+            return Result.Success();
         }
 
 
@@ -85,7 +85,6 @@ public class ResgisterCommandHandler : IRequestHandler<RegisterCommand, Result<b
         await _userRepository.CreateUser(user);
         await _customerRepository.CreateCustomer(customer);
         await _unitOfWork.SaveChangesAsync();
-        result.IsSuccess = true;
-        return result;
+        return Result.Success();
     }
 }

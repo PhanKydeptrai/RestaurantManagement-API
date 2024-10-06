@@ -9,4 +9,4 @@ public record RegisterCommand(
     string Email,
     string Password,
     string Phone,
-    string Gender) : IRequest<Result<bool>>;
+    string Gender) : IRequest<Result>;

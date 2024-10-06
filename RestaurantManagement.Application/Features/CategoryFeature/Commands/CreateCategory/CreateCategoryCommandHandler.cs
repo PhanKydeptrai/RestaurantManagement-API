@@ -5,33 +5,33 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
 
-public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<bool>>
+public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result>
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly IUnitOfWork _unitOfWork;
-    public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
+    public CreateCategoryCommandHandler(
+        ICategoryRepository categoryRepository, 
+        IUnitOfWork unitOfWork)
     {
         _categoryRepository = categoryRepository;
         _unitOfWork = unitOfWork;
     }
-    public async Task<Result<bool>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        Result<bool> result = new Result<bool>
-        {
-            ResultValue = false
-        };
+        
 
         //Validator
         var validator = new CreateCategoryCommandValidator(_categoryRepository);
         var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
-            validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
-            return result;
+            Error[] errors = validationResult.Errors
+                .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
+                .ToArray();
+            return Result.Failure(errors);
         }
 
         //Create Category
-        
         Category category = new Category
         {
             CategoryId = Ulid.NewUlid(),
@@ -40,11 +40,8 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
             CategoryImage = request.Image
         };
 
-        result.ResultValue = true;
-        result.IsSuccess = true;
         await _categoryRepository.AddCatgory(category);
         await _unitOfWork.SaveChangesAsync();
-        return result;
-
+        return Result.Success();
     }
 }

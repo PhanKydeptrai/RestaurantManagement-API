@@ -1,14 +1,9 @@
 ﻿using MediatR;
 using RestaurantManagement.Domain.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee
 {
-    public class CreateEmployeeCommand : IRequest<Result<bool>>
+    public class CreateEmployeeCommand : IRequest<Result>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

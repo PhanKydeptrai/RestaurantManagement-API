@@ -15,20 +15,25 @@ public class GetCategoryByIdCommandHandler : IRequestHandler<GetCategoryByIdComm
         _context = context;
     }
 
-    public async Task<Result<CategoryResponse>> Handle(GetCategoryByIdCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CategoryResponse>> Handle(
+        GetCategoryByIdCommand request, 
+        CancellationToken cancellationToken)
     {
-        Result<CategoryResponse> result = new Result<CategoryResponse>();
-        result.ResultValue = await _context.Categories.Select(a => new CategoryResponse(
-            a.CategoryId, 
-            a.CategoryName, 
-            a.CategoryStatus, 
-            a.CategoryId + ".jpg")).FirstOrDefaultAsync(a => a.CategoryId == request.Id);
+        
+        var result = await _context.Categories
+            .Select(a => new CategoryResponse(
+                a.CategoryId, 
+                a.CategoryName, 
+                a.CategoryStatus, 
+                a.CategoryId + ".jpg"))
+            .FirstOrDefaultAsync(a => a.CategoryId == request.Id);
 
-        if (result.ResultValue != null)
+        if(result == null)
         {
-            result.IsSuccess = true;
+            Error[] a = { new Error("Category", "Category not found") };
+            return Result<CategoryResponse>.Failure(a);
         }
 
-        return result;
+        return Result<CategoryResponse>.Success(result);
     }
 }

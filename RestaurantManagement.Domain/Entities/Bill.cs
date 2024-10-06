@@ -1,5 +1,3 @@
-using System;
-
 namespace RestaurantManagement.Domain.Entities;
 
 public class Bill
