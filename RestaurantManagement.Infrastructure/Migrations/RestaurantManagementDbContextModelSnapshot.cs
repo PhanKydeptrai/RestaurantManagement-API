@@ -247,7 +247,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("EmailVerificationToken");
+                    b.ToTable("EmailVerificationTokens");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Employee", b =>

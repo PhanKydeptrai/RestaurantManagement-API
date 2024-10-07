@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241004114733_RestaurantManagementDb")]
+    [Migration("20241007101247_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -250,7 +250,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("EmailVerificationToken");
+                    b.ToTable("EmailVerificationTokens");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Employee", b =>
