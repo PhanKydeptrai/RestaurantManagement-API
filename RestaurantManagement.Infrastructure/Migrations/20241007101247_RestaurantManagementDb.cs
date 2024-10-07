@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -148,7 +149,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EmailVerificationToken",
+                name: "EmailVerificationTokens",
                 columns: table => new
                 {
                     EmailVerificationTokenId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -158,9 +159,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmailVerificationToken", x => x.EmailVerificationTokenId);
+                    table.PrimaryKey("PK_EmailVerificationTokens", x => x.EmailVerificationTokenId);
                     table.ForeignKey(
-                        name: "FK_EmailVerificationToken_Users_UserId",
+                        name: "FK_EmailVerificationTokens_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -519,8 +520,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "VoucherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmailVerificationToken_UserId",
-                table: "EmailVerificationToken",
+                name: "IX_EmailVerificationTokens_UserId",
+                table: "EmailVerificationTokens",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -596,7 +597,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "CustomerVouchers");
 
             migrationBuilder.DropTable(
-                name: "EmailVerificationToken");
+                name: "EmailVerificationTokens");
 
             migrationBuilder.DropTable(
                 name: "Employees");
