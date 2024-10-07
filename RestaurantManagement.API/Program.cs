@@ -5,7 +5,8 @@ using RestaurantManagement.API.Controllers;
 using RestaurantManagement.Application;
 using RestaurantManagement.Infrastructure;
 using RestaurantManagement.Infrastructure.Extentions;
-
+using RestaurantManagement.API.Extentions;
+using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -19,7 +20,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructureExtentions(builder.Configuration)
                 .AddInfrastructure()
                 .AddApplication();
-
+//Add endpoints
+builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 //JWT
 #region Cấu hình JWT
 builder.Services.AddAuthentication(options =>
@@ -91,10 +93,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 app.MapControllers();
-
 // Map endpoints
-app.MapCustomerEndpoint();
-app.MapAccountEnpoint();
-app.MapCategoryEndpoint();
-
+app.MapEndpoints();
 app.Run();
