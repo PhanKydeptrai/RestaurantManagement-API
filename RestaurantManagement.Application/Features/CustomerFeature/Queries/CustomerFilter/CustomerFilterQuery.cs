@@ -1,4 +1,4 @@
-using MediatR;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Features.CustomerFeature.DTOs;
 using RestaurantManagement.Application.Features.Paging;
 
@@ -7,5 +7,5 @@ namespace RestaurantManagement.Application.Features.CustomerFeature.Queries.Cust
 public record CustomerFilterQuery(
     string? searchTerm, 
     int page, 
-    int pageSize) : IRequest<PagedList<CustomerResponse>>;
+    int pageSize) : IQuery<PagedList<CustomerResponse>>;
 

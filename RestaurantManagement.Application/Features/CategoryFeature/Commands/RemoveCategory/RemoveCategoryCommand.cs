@@ -1,8 +1,7 @@
-using MediatR;
-using RestaurantManagement.Domain.Shared;
+using RestaurantManagement.Application.Abtractions;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveCategory;
 
-public record RemoveCategoryCommand(Ulid Id) : IRequest<Result>;
+public record RemoveCategoryCommand(Ulid Id) : ICommand;
  
  

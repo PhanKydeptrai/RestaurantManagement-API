@@ -1,11 +1,11 @@
-using MediatR;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 
-public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, Result>
+public class UpdateCategoryCommandHandler : ICommand<UpdateCategoryCommand>
 {
 
     private readonly IUnitOfWork _unitOfWork;

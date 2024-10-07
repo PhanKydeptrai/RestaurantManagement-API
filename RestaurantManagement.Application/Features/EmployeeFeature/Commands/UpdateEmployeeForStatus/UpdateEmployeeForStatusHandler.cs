@@ -1,10 +1,10 @@
-﻿using MediatR;
+﻿using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.UpdateEmployeeForStatus
 {
-    public class UpdateEmployeeForStatusHandler : IRequestHandler<UpdateEmployeeForStatusCommand, Result>
+    public class UpdateEmployeeForStatusHandler : ICommand<UpdateEmployeeForStatusCommand>
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IUnitOfWork _unitOfWork;

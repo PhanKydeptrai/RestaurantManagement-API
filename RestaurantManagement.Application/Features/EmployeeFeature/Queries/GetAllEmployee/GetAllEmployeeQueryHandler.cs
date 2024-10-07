@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using RestaurantManagement.Domain.Entities;
-using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetAllEmployee

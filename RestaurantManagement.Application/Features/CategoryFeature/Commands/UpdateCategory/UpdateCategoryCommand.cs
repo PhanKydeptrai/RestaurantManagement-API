@@ -1,5 +1,4 @@
-using MediatR;
-using RestaurantManagement.Domain.Shared;
+using RestaurantManagement.Application.Abtractions;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 
@@ -7,4 +6,4 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Upd
 public record UpdateCategoryCommand(
     Ulid CategoryId, 
     string CategoryName, 
-    string CategoryStatus) : IRequest<Result>;
+    string CategoryStatus) : ICommand;

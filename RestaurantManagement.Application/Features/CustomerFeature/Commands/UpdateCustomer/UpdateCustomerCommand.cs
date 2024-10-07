@@ -1,5 +1,4 @@
-using MediatR;
-using RestaurantManagement.Domain.Shared;
+using RestaurantManagement.Application.Abtractions;
 
 namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
 
@@ -9,5 +8,5 @@ public record UpdateCustomerCommand(
     string? LastName, 
     string? PhoneNumber, 
     byte[]? UserImage, 
-    string? Gender) : IRequest<Result>;
+    string? Gender) : ICommand;
 
