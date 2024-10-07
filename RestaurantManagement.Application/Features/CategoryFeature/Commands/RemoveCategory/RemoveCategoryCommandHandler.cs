@@ -1,10 +1,10 @@
-using MediatR;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveCategory;
 
-public class RemoveCategoryCommandHandler : IRequestHandler<RemoveCategoryCommand, Result>
+public class RemoveCategoryCommandHandler : ICommandHandler<RemoveCategoryCommand>
 {
     private readonly ICategoryRepository _categoryRepository;
 

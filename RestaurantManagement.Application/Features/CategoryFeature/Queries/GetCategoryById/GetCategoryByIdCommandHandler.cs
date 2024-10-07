@@ -1,12 +1,12 @@
-using MediatR;
 using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Domain.DTOs.CategoryDto;
 using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 
-public class GetCategoryByIdCommandHandler : IRequestHandler<GetCategoryByIdCommand, Result<CategoryResponse>>
+public class GetCategoryByIdCommandHandler : IQueryHandler<GetCategoryByIdCommand, CategoryResponse>
 {
     private readonly IApplicationDbContext _context;
 
@@ -15,11 +15,8 @@ public class GetCategoryByIdCommandHandler : IRequestHandler<GetCategoryByIdComm
         _context = context;
     }
 
-    public async Task<Result<CategoryResponse>> Handle(
-        GetCategoryByIdCommand request, 
-        CancellationToken cancellationToken)
+    public async Task<Result<CategoryResponse>> Handle(GetCategoryByIdCommand request, CancellationToken cancellationToken)
     {
-        
         var result = await _context.Categories
             .Select(a => new CategoryResponse(
                 a.CategoryId, 

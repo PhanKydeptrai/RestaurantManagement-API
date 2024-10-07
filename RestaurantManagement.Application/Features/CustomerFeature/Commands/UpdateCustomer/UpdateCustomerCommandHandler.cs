@@ -1,12 +1,12 @@
-using MediatR;
 using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
 
-public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result>
+public class UpdateCustomerCommandHandler : ICommandHandler<UpdateCustomerCommand>
 {
     private readonly IApplicationDbContext _context;
     private readonly ICustomerRepository _customerRepository;

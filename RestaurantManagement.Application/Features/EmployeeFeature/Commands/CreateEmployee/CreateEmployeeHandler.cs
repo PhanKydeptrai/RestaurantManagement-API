@@ -1,12 +1,12 @@
-﻿using MediatR;
-using RestaurantManagement.Domain.IRepos;
+﻿using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.Shared;
+using RestaurantManagement.Application.Abtractions;
 
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee
 {
-    public class CreateEmployeeHandler : IRequestHandler<CreateEmployeeCommand, Result>
+    public class CreateEmployeeHandler : ICommand<CreateEmployeeCommand>
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IUserRepository _userRepository;

@@ -1,7 +1,6 @@
-using MediatR;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Domain.DTOs.CategoryDto;
-using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 
-public record GetCategoryByIdCommand(Ulid Id) : IRequest<Result<CategoryResponse>>;
+public record GetCategoryByIdCommand(Ulid Id) : IQuery<CategoryResponse>;

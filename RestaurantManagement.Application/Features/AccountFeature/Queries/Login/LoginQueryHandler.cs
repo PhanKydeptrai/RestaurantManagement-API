@@ -21,7 +21,6 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<string>>
     //TODO: Refactor this method
     public async Task<Result<string>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
-        
         //validate
         var loginQueryValidator = new LoginQueryValidator();
         var validationResult = loginQueryValidator.Validate(request);

@@ -9,5 +9,4 @@ public record CustomerResponse(
     string UserStatus,
     string CustomerStatus,
     string CustomerType, 
-    byte[]? UserImage
-    );
+    byte[]? UserImage);

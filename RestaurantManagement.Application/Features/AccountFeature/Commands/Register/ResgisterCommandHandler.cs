@@ -55,7 +55,6 @@ public class ResgisterCommandHandler : IRequestHandler<RegisterCommand, Result>
             normalCustomer.User.Gender = request.Gender;
             normalCustomer.User.Password = EncryptProvider.Sha256(request.Password);
             await _unitOfWork.SaveChangesAsync();
-            
             return Result.Success();
         }
 
