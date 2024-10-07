@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveCategory;
@@ -8,12 +9,11 @@ using RestaurantManagement.Application.Features.CategoryFeature.Queries.Category
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 
 namespace RestaurantManagement.API.Controllers;
-public static class CategoryController
+public class CategoryController : IEndpoint
 {
-    public static void MapCategoryEndpoint(this IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         var endpoints = app.MapGroup("api/category").WithTags("Category").DisableAntiforgery();
-
         endpoints.MapGet("", async (
             [FromQuery] string? seachTerm,
             [FromQuery] int page,
@@ -22,9 +22,8 @@ public static class CategoryController
             var query = new CategoryFilterQuery(seachTerm, page, pageSize);
             var response = await sender.Send(query);
             return Results.Ok(response);
+            
         });
-        
-
         endpoints.MapGet("{id}", async (Ulid id, ISender sender) =>
         {
             GetCategoryByIdCommand request = new GetCategoryByIdCommand(id);
@@ -87,8 +86,10 @@ public static class CategoryController
             }
             return Results.BadRequest(result.ToProblemDetails());
         });
-    }
 
+
+    }
+    
     
 
 }

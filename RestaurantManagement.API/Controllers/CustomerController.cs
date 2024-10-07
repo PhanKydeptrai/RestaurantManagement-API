@@ -1,14 +1,17 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
 
+
 namespace RestaurantManagement.API.Controllers
 {
-    public static class CustomerController
+    public class CustomerController : IEndpoint
     {
-        public static void MapCustomerEndpoint(this IEndpointRouteBuilder app)
+    
+        public void MapEndpoint(IEndpointRouteBuilder app)
         {
             var endpoints = app.MapGroup("api/customer").WithTags("Customer").DisableAntiforgery();
 
@@ -68,12 +71,7 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result.Errors);
             });
-
         }
-
-        
-        
-
     }
 
 }
