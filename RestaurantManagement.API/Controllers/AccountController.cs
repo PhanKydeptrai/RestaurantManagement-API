@@ -20,7 +20,6 @@ namespace RestaurantManagement.API.Controllers
                 var result = await sender.Send(command);
                 if (result.IsSuccess)
                 {
-                   
                     return Results.Ok("Register successfully!");
                 }
 

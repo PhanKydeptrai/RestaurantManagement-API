@@ -24,4 +24,5 @@ public interface IApplicationDbContext
     DbSet<TableType> TableTypes { get; set; }
     DbSet<User> Users { get; set; }
     DbSet<Voucher> Vouchers { get; set; }
+    DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
 }

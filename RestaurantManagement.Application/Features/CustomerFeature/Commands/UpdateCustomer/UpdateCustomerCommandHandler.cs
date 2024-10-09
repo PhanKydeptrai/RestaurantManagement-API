@@ -23,7 +23,7 @@ public class UpdateCustomerCommandHandler : ICommandHandler<UpdateCustomerComman
     }
 
 
-    //TODO: Refactor phương thức này để sử dụng repository
+    //REFACTOR
     public async Task<Result> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
     {
 

@@ -39,7 +39,7 @@ public class ResgisterCommandHandler : IRequestHandler<RegisterCommand, Result>
                 .ToArray();
             return Result.Failure(errors);
         }
-        //TODO: Refactor phương thức cập nhật
+        //REFACTOR:
         // 1. Sử dụng repository
         // 2. Tối ưu trường hợp khách đăng ký bị chéo thông tin giữa hai cặp tài khoản thường.
         var normalCustomer = await _context.Customers.Include(a => a.User)
@@ -84,6 +84,9 @@ public class ResgisterCommandHandler : IRequestHandler<RegisterCommand, Result>
         await _userRepository.CreateUser(user);
         await _customerRepository.CreateCustomer(customer);
         await _unitOfWork.SaveChangesAsync();
+
+        //TODO: gửi mail kích hoạt tài khoản
+
         return Result.Success();
     }
 }

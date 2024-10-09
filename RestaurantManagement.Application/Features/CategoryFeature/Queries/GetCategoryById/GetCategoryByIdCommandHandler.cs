@@ -14,7 +14,7 @@ public class GetCategoryByIdCommandHandler : IQueryHandler<GetCategoryByIdComman
     {
         _context = context;
     }
-
+    //REFACOTR
     public async Task<Result<CategoryResponse>> Handle(GetCategoryByIdCommand request, CancellationToken cancellationToken)
     {
         var result = await _context.Categories

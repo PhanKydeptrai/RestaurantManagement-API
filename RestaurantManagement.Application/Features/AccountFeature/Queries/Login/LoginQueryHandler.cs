@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NETCore.Encrypt;
 using RestaurantManagement.Application.Data;
-using RestaurantManagement.Domain.Entities;
+using RestaurantManagement.Domain.DTOs.CustomerDto;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -18,7 +18,6 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<string>>
         _jwtProvider = jwtProvider;
     }
 
-    //TODO: Refactor this method
     public async Task<Result<string>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         //validate
@@ -33,31 +32,35 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<string>>
         }
 
         var encryptedPassword = EncryptProvider.Sha256(request.passWord);
-        //Lưu ý
-        User? user = await _context.Customers
+        //REFACTOR
+        CustomerLoginResponse? loginResponse = await _context.Customers
             .Where(a => a.User.Password == encryptedPassword 
-            &&(a.User.Email == request.loginString || a.User.Phone == request.loginString) 
+            &&(a.User.Email == request.loginString 
+            || a.User.Phone == request.loginString) 
             && a.CustomerType == "Subscriber"
             && a.CustomerStatus == "Active")
-            .Select(a => a.User).FirstOrDefaultAsync(); 
+            .Select(a => new CustomerLoginResponse(
+                a.User.UserId.ToString(), 
+                a.User.Email, 
+                a.CustomerType,
+                a.User.Status))
+            .FirstOrDefaultAsync(); 
 
-        
-        
-
-        if (user == null)
+    
+        if (loginResponse == null)
         {
-            Error[] a = { new Error("Login", "Invalid login") };
+            Error[] a = { new Error("Login Fail", "Invalid login") };
             return Result<string>.Failure(a);
         }
 
-        if(user.Status != "Activated") //Chỉ khách hàng đã kích hoạt mới được đăng nhập
+        if(loginResponse.UserStatus != "Activated") //Chỉ khách hàng đã kích hoạt mới được đăng nhập
         {
-            Error[] a = { new Error("Login", "Account is not activated") };
+            Error[] a = { new Error("Login Fail", "Account is not activated") };
             return Result<string>.Failure(a);
         }
 
-        var token = _jwtProvider.GenerateJwtToken(user);
-        
+        var token = _jwtProvider.GenerateJwtTokenForCustomer(loginResponse);
+
         return Result<string>.Success(token);
     }
 }
