@@ -20,7 +20,8 @@ public class CategoryFilterQueryHandler : IQueryHandler<CategoryFilterQuery, Pag
         var categoriesQuery = _context.Categories.AsQueryable();
         if (!string.IsNullOrEmpty(request.searchTerm))
         {
-            categoriesQuery = categoriesQuery.Where(x => x.CategoryName.Contains(request.searchTerm));
+            categoriesQuery = categoriesQuery.Where(x => x.CategoryName.Contains(request.searchTerm) 
+            || x.CategoryStatus.Contains(request.searchTerm));
         }
 
         var categories = categoriesQuery

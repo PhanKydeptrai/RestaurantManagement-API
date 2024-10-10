@@ -23,7 +23,14 @@ builder.Services.AddInfrastructureExtentions(builder.Configuration)
 //Add endpoints
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowAnyOrigin());
+});
 
 //JWT
 #region Cấu hình JWT
@@ -92,7 +99,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
 // Map endpoints
