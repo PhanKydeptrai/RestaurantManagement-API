@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NETCore.Encrypt;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Domain.DTOs.CustomerDto;
 using RestaurantManagement.Domain.IRepos;
@@ -8,7 +9,7 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
 
-public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<string>>
+public class LoginQueryHandler : ICommandHandler<LoginQuery, string>
 {
     private readonly IApplicationDbContext _context;
     private readonly IJwtProvider _jwtProvider;

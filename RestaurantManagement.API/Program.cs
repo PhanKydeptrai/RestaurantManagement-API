@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using RestaurantManagement.API.Controllers;
 using RestaurantManagement.Application;
 using RestaurantManagement.Infrastructure;
 using RestaurantManagement.Infrastructure.Extentions;
@@ -20,9 +19,12 @@ builder.Services.AddSwaggerGen();
 // Add infrastructure extentions to get connection string
 builder.Services.AddInfrastructureExtentions(builder.Configuration)
                 .AddInfrastructure()
-                .AddApplication();
+                .AddApplication(builder.Configuration);
 //Add endpoints
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
+
+
+
 //JWT
 #region Cấu hình JWT
 builder.Services.AddAuthentication(options =>

@@ -1,4 +1,4 @@
-using MediatR;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Register;
@@ -9,4 +9,4 @@ public record RegisterCommand(
     string Email,
     string Password,
     string Phone,
-    string Gender) : IRequest<Result>;
+    string Gender) : ICommand;

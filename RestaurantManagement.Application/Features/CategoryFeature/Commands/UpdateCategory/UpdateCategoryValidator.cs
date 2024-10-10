@@ -14,11 +14,13 @@ public class UpdateCategoryValidator : AbstractValidator<UpdateCategoryCommand>
             .WithMessage("Category name is required.")
             .MaximumLength(50)
             .WithMessage("Category name must not exceed 50 characters.")
-            .Must((id, name) => _categoryRepository.IsCategoryNameExistsWhenUpdate(id.CategoryId, name).Result == false);
+            .Must((id, name) => _categoryRepository.IsCategoryNameExistsWhenUpdate(id.CategoryId, name).Result == false)
+            .WithMessage("Category name already exists.");
         RuleFor(p => p.CategoryStatus)
             .NotEmpty()
             .WithMessage("Category status is required.")
-            .Must(p => p == "kd" || p == "nkd");
+            .Must(p => p == "kd" || p == "nkd")
+            .WithMessage("Category status must be 'kd' or 'nkd'.");
     }
 
 }
