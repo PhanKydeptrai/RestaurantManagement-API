@@ -4,15 +4,18 @@ using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.Register;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
+using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers
 {
 
     public class AccountController : IEndpoint
     {
+        
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             var endpoints = app.MapGroup("api/account").WithTags("Account").DisableAntiforgery();
+            
             //Register for customer
             endpoints.MapPost("register", async(
                 [FromBody]RegisterCommand command, ISender sender) =>
@@ -24,7 +27,7 @@ namespace RestaurantManagement.API.Controllers
                 }
 
 
-                return Results.BadRequest(result.ToProblemDetails);
+                return Results.BadRequest(result.ToProblemDetails());
             });
 
             //Login for customer
@@ -37,6 +40,14 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result.Errors);
             });
+
+
+            //verify email
+            endpoints.MapGet("verify-email", async (Ulid token, IEmailVerify verify)=>{
+                bool result = await verify.Handle(token);
+                return result ? Results.Ok("Email verified successfully!") : Results.BadRequest("Email verification failed!");
+            });
+
         }
     }
 }

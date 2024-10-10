@@ -1,19 +1,22 @@
 using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 
-public class UpdateCategoryCommandHandler : ICommand<UpdateCategoryCommand>
+public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryCommand>
 {
 
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICategoryRepository _categoryRepository;
-    public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
+    private readonly ISystemLogRepository _systemLogRepository;
+    public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork, ISystemLogRepository systemLogRepository)
     {
         _categoryRepository = categoryRepository;
         _unitOfWork = unitOfWork;
+        _systemLogRepository = systemLogRepository;
     }
     public async Task<Result> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
@@ -29,14 +32,24 @@ public class UpdateCategoryCommandHandler : ICommand<UpdateCategoryCommand>
             return Result.Failure(errors);
         }
         
-        Category category = new Category
+        _categoryRepository.UpdateCategory(new Category
         {
             CategoryId = request.CategoryId,
             CategoryName = request.CategoryName,
-            CategoryStatus = request.CategoryStatus
-        };
+            CategoryStatus = request.CategoryStatus,
+            CategoryImage = request.CategoryImage
+        });
 
-        _categoryRepository.UpdateCategory(category);
+        var claims = JwtHelper.DecodeJwt(request.Token);
+        claims.TryGetValue("sub", out var userId);
+        //Create System Log
+        await _systemLogRepository.CreateSystemLog(new SystemLog
+        {
+            SystemLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetail = $"Tạo danh mục {request.CategoryName}",
+            UserId = Ulid.Parse(userId)
+        });
         await _unitOfWork.SaveChangesAsync();
         
         return Result.Success();

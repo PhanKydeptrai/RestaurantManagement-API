@@ -17,9 +17,10 @@ public static class ResultExtensions
             type: "https://tools.ietf.org/html/rfc7231#section-6.5.1",
             extensions: new Dictionary<string, object?>
             {
-                { "errors",  result.Errors }
+                { "errors", new[] { result.Errors } }
             });
         
     }
 
+    
 }

@@ -26,6 +26,8 @@ public static class DependencyInjection
         services.AddScoped<INotificationRepository, NotificationRepository>();  
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ISystemLogRepository, SystemLogRepository>();
+        services.AddScoped<IEmailVerify, EmailVerify>();
+        services.AddHttpContextAccessor();
         return services;
     }
 }
