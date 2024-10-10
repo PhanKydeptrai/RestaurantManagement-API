@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
@@ -7,6 +8,8 @@ using RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveC
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
+using RestaurantManagement.Domain.Entities;
+using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
 public class CategoryController : IEndpoint
@@ -14,6 +17,9 @@ public class CategoryController : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         var endpoints = app.MapGroup("api/category").WithTags("Category").DisableAntiforgery();
+
+
+        //Lấy danh sách category
         endpoints.MapGet("", async (
             [FromQuery] string? seachTerm,
             [FromQuery] int page,
@@ -22,8 +28,10 @@ public class CategoryController : IEndpoint
             var query = new CategoryFilterQuery(seachTerm, page, pageSize);
             var response = await sender.Send(query);
             return Results.Ok(response);
-            
+
         });
+
+        //Lấy category theo id
         endpoints.MapGet("{id}", async (Ulid id, ISender sender) =>
         {
             GetCategoryByIdCommand request = new GetCategoryByIdCommand(id);
@@ -34,11 +42,17 @@ public class CategoryController : IEndpoint
             }
             return Results.BadRequest(response.Errors);
         });
-        
+
+
+        //Tạo mới category
         endpoints.MapPost("", async (
             [FromForm] IFormFile? Image,
             [FromForm] string name,
-            [FromForm] string? description, ISender sender) =>
+            [FromForm] string? description,
+            HttpContext httpContext,
+            ISender sender, 
+            ISystemLogRepository systemLogRepository,
+            IUnitOfWork unitOfWork) =>
         {
             byte[] imageData = null!;
             if (Image != null)
@@ -49,18 +63,24 @@ public class CategoryController : IEndpoint
                     imageData = memoryStream.ToArray();
                 }
             }
+            //lấy token
+            var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
+            //Trích xuất token
+            var token = authHeader.Substring("Bearer ".Length).Trim();
 
-            var command = new CreateCategoryCommand(name, imageData);
-
+            //Gửi command
+            var command = new CreateCategoryCommand(name, imageData, token);
             var result = await sender.Send(command);
             if (result.IsSuccess)
             {
+                //Thêm chi tiết cho response
                 return Results.Ok("Create successfully!");
             }
-            
-            return Results.BadRequest(result.ToProblemDetails());
-        });
 
+            return Results.BadRequest(result.ToProblemDetails());
+        }).RequireAuthorization();
+
+        //Cập nhật category
         endpoints.MapPut("{id}", async (Ulid id, UpdateCategoryRequest request, ISender sender) =>
         {
             var command = new UpdateCategoryCommand(
@@ -72,24 +92,29 @@ public class CategoryController : IEndpoint
                 return Results.Ok("Update successfully!");
             }
             return Results.BadRequest(result.ToProblemDetails());
-           
-            
+
+
         });
 
-        endpoints.MapDelete("{id}", async (Ulid id, ISender sender) =>
+        //Xóa category
+        endpoints.MapDelete("{id}", async (Ulid id, ISender sender, HttpContext httpContext) =>
         {
-            var request = new RemoveCategoryCommand(id);
+            //lấy token
+            var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
+            //Trích xuất token
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var request = new RemoveCategoryCommand(id,token);
             var result = await sender.Send(request);
             if (result.IsSuccess)
             {
                 return Results.Ok("Remove successfully!");
             }
             return Results.BadRequest(result.ToProblemDetails());
-        });
+        }).RequireAuthorization();
 
 
     }
-    
-    
+
+
 
 }

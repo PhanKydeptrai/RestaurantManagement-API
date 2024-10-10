@@ -25,6 +25,7 @@ public static class DependencyInjection
         services.AddScoped<ISystemLogRepository, SystemLogRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();  
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ISystemLogRepository, SystemLogRepository>();
         return services;
     }
 }
