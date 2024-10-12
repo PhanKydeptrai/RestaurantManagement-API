@@ -1,27 +1,23 @@
-using FluentValidation;
+﻿using FluentValidation;
 using RestaurantManagement.Domain.IRepos;
 
-namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
+namespace RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateCustomerInformation;
 
-public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCommand>
+public class UpdateCustomerInformationCommandValidator : AbstractValidator<UpdateCustomerInformationCommand>
 {
-    
-    public UpdateCustomerCommandValidator(ICustomerRepository customerRepository)
+    public UpdateCustomerInformationCommandValidator(ICustomerRepository customerRepository)
     {
-
         //* Rule for last name
         RuleFor(p => p.LastName)
             .NotNull().WithMessage("Last name is required")
             .NotEmpty().WithMessage("Last name is required")
-            .MaximumLength(20).WithMessage("Last name must not exceed 50 characters")
-            .Matches("^[a-zA-Z]*$").WithMessage("Last name must not contain numbers or special characters");
+            .MaximumLength(20).WithMessage("Last name must not exceed 20 characters");
 
         //* Rule for first number
         RuleFor(p => p.FirstName)
             .NotNull().WithMessage("Last name is required")
             .NotEmpty().WithMessage("Last name is required")
-            .MaximumLength(20).WithMessage("Last name must not exceed 50 characters")
-            .Matches("^[a-zA-Z]*$").WithMessage("Last name must not contain numbers or special characters");
+            .MaximumLength(20).WithMessage("Last name must not exceed 20 characters");
 
         //* Rule for phone number
         RuleFor(p => p.PhoneNumber)
@@ -31,8 +27,8 @@ public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCo
             .Must((command, phoneNumber) => customerRepository
             .IsCustomerPhoneExist_update(command.CustomerId, phoneNumber).Result == false)
             .WithMessage("PhoneNumber number already exists");
-            
-            
+
+
         // ? should customer be able to update email?
         //* Rule for email
         // RuleFor(b => b.Email)
@@ -45,8 +41,7 @@ public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCo
         //* Rule for Gender
         RuleFor(b => b.Gender)
             .NotNull().WithMessage("Gender is required")
-            .NotEmpty().WithMessage("Gender must not be empty") 
+            .NotEmpty().WithMessage("Gender must not be empty")
             .Must(b => b == "Male" || b == "Female");
-
     }
 }

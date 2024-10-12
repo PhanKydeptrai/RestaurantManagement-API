@@ -1,34 +1,36 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
+namespace RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateCustomerInformation;
 
-public class UpdateCustomerCommandHandler : ICommandHandler<UpdateCustomerCommand>
+public class UpdateCustomerInformationCommandHandler : ICommandHandler<UpdateCustomerInformationCommand>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICustomerRepository _customerRepository;
     private readonly IUnitOfWork _unitOfWork;
-
-    public UpdateCustomerCommandHandler(
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IApplicationDbContext _context;
+    private readonly ISystemLogRepository _systemLogRepository;
+    public UpdateCustomerInformationCommandHandler(
         IUnitOfWork unitOfWork,
         ICustomerRepository customerRepository,
-        IApplicationDbContext context)
+        IApplicationDbContext context,
+        ISystemLogRepository systemLogRepository)
     {
         _unitOfWork = unitOfWork;
         _customerRepository = customerRepository;
         _context = context;
+        _systemLogRepository = systemLogRepository;
     }
 
-
-    //REFACTOR
-    public async Task<Result> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateCustomerInformationCommand request, CancellationToken cancellationToken)
     {
 
         //validation
-        var validator = new UpdateCustomerCommandValidator(_customerRepository);
+        var validator = new UpdateCustomerInformationCommandValidator(_customerRepository);
         var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
@@ -53,8 +55,21 @@ public class UpdateCustomerCommandHandler : ICommandHandler<UpdateCustomerComman
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.Phone = request.PhoneNumber;
+        user.Gender = request.Gender;
         user.UserImage = request.UserImage ?? user.UserImage;
         //? Should we add a email field to the UpdateCustomerCommand class?
+        //Ghi log
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
+        //Create System Log
+        await _systemLogRepository.CreateSystemLog(new SystemLog
+        {
+            SystemLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetail = $"{userId} cập nhật thông tin tài khoản",
+            UserId = Ulid.Parse(userId)
+        });
+
         await _unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

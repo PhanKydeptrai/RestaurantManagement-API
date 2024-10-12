@@ -49,7 +49,10 @@ public class ResgisterCommandHandler : ICommandHandler<RegisterCommand>
         // 2. Tối ưu trường hợp khách đăng ký bị chéo thông tin giữa hai cặp tài khoản thường.
         var normalCustomer = await _context.Customers.Include(a => a.User)
             .FirstOrDefaultAsync(a => a.User.Email == request.Email || a.User.Phone == request.Phone);
-        if(normalCustomer != null)
+
+        
+
+        if(normalCustomer != null && normalCustomer.CustomerType != "Subscriber")
         {
             //Update tài khoản
             normalCustomer.CustomerType = "Subscriber";
@@ -62,8 +65,7 @@ public class ResgisterCommandHandler : ICommandHandler<RegisterCommand>
             await _unitOfWork.SaveChangesAsync();
             return Result.Success();
         }
-
-
+        
         //create user
         var user = new User
         {
@@ -98,7 +100,7 @@ public class ResgisterCommandHandler : ICommandHandler<RegisterCommand>
         await _customerRepository.CreateCustomer(customer);
         await _unitOfWork.SaveChangesAsync();
 
-        //TODO: gửi mail kích hoạt tài khoản
+        //gửi mail kích hoạt tài khoản
         var verificationLink = _emailVerify.Create(emailVerificationToken);
         await _fluentEmail.To(user.Email).Subject("Kích hoạt tài khoản")
             .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)

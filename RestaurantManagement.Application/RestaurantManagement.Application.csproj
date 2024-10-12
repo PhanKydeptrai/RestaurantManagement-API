@@ -20,4 +20,8 @@
     <ProjectReference Include="..\RestaurantManagement.Domain\RestaurantManagement.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\CustomerFeature\Commands\" />
+  </ItemGroup>
+
 </Project>
