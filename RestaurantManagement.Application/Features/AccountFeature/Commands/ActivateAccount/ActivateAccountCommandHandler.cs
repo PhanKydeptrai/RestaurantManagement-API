@@ -5,25 +5,25 @@ using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.AccountFeature.Queries.ActivateAccount;
+namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ActivateAccount;
 
 public class ActivateAccountCommandHandler : ICommandHandler<ActivateAccountCommand>
 {
     private readonly IEmailVerificationTokenRepository _emailVerificationTokenRepository;
-    private readonly IApplicationDbContext _context;
+    
     private readonly IEmailVerify _emailVerify;
     private readonly IFluentEmail _fluentEmail;
     private readonly IUnitOfWork _unitOfWork;
 
     public ActivateAccountCommandHandler(
-        IEmailVerificationTokenRepository emailVerificationTokenRepository, 
-        IApplicationDbContext context, 
-        IEmailVerify emailVerify, 
-        IFluentEmail fluentEmail, 
+        IEmailVerificationTokenRepository emailVerificationTokenRepository,
+        IApplicationDbContext context,
+        IEmailVerify emailVerify,
+        IFluentEmail fluentEmail,
         IUnitOfWork unitOfWork)
     {
         _emailVerificationTokenRepository = emailVerificationTokenRepository;
-        _context = context;
+        
         _emailVerify = emailVerify;
         _fluentEmail = fluentEmail;
         _unitOfWork = unitOfWork;
@@ -63,7 +63,7 @@ public class ActivateAccountCommandHandler : ICommandHandler<ActivateAccountComm
             .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
             .SendAsync();
 
-            await _context.EmailVerificationTokens.AddAsync(emailVerificationToken);
+            await _emailVerificationTokenRepository.CreateVerificationToken(emailVerificationToken);
             _emailVerificationTokenRepository.RemoveVerificationToken(token);
             await _unitOfWork.SaveChangesAsync();
             return Result.Failure(errors);

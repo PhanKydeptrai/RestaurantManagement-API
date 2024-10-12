@@ -6,7 +6,7 @@ using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.AccountFeature.Queries.ResetPasswordVerify;
+namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ResetPasswordVerify;
 
 public class ResetPasswordVerifyCommandHandler : ICommandHandler<ResetPasswordVerifyCommand>
 {
@@ -61,6 +61,8 @@ public class ResetPasswordVerifyCommandHandler : ICommandHandler<ResetPasswordVe
         await _fluentEmail.To(token.User.Email).Subject("Mật khẩu mới")
             .Body($"Mật khẩu mới của bạn là: {randomPass}", isHtml: true)
             .SendAsync();
+        //Xóa token
+        _emailVerificationTokenRepository.RemoveVerificationToken(token);
         await _unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

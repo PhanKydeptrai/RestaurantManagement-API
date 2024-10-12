@@ -35,6 +35,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("boss", policy => policy.RequireClaim(ClaimTypes.Role, "Boss"));
+    options.AddPolicy("customer", policy => policy.RequireClaim(ClaimTypes.Role, "Subscriber"));
+
 });
 //JWT
 #region Cấu hình JWT

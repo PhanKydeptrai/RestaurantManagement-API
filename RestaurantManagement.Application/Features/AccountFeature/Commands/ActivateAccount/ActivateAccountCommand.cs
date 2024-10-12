@@ -1,5 +1,5 @@
 ﻿using RestaurantManagement.Application.Abtractions;
 
-namespace RestaurantManagement.Application.Features.AccountFeature.Queries.ActivateAccount;
+namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ActivateAccount;
 
 public record ActivateAccountCommand(Ulid tokenId) : ICommand;

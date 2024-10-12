@@ -40,7 +40,6 @@ public class UpdateEmployeeInformationCommandHandler : ICommandHandler<UpdateEmp
         }
 
         var user = await _context.Employees
-            .Include(a => a.User)
             .Where(a => a.EmployeeId == request.EmployeeId)
             .Select(a => a.User)
             .FirstAsync();
@@ -55,7 +54,7 @@ public class UpdateEmployeeInformationCommandHandler : ICommandHandler<UpdateEmp
         user.LastName = request.LastName;
         user.Phone = request.PhoneNumber;
         user.UserImage = request.UserImage ?? user.UserImage;
-
+        //Decode token to get userId
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
         //Create System Log
