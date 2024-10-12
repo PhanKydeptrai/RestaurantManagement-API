@@ -154,6 +154,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 {
                     EmailVerificationTokenId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    Temporary = table.Column<string>(type: "varchar(255)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     ExpiredDate = table.Column<DateTime>(type: "datetime", nullable: false)
                 },

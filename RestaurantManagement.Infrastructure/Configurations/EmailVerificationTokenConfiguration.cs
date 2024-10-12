@@ -14,6 +14,7 @@ internal sealed class EmailVerificationTokenConfiguration : IEntityTypeConfigura
         builder.Property(a => a.UserId).IsRequired().HasConversion<UlidToStringConverter>();
         builder.Property(a => a.CreatedDate).IsRequired().HasColumnType("datetime");
         builder.Property(a => a.ExpiredDate).IsRequired().HasColumnType("datetime");
+        builder.Property(a => a.Temporary).IsRequired(false).HasColumnType("varchar(255)");
 
         //ForeignKey
         //Một user có nhiều emailverificationtoken

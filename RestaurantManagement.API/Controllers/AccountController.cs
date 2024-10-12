@@ -1,13 +1,16 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
+using RestaurantManagement.Application.Features.AccountFeature.Commands.ActivateAccount;
+using RestaurantManagement.Application.Features.AccountFeature.Commands.ChangeCustomerPassword;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotPassword;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.Register;
-using RestaurantManagement.Application.Features.AccountFeature.Queries.ActivateAccount;
+using RestaurantManagement.Application.Features.AccountFeature.Commands.ResetPasswordVerify;
+using RestaurantManagement.Application.Features.AccountFeature.Commands.VerifyChangeCustomerPassword;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
-using RestaurantManagement.Application.Features.AccountFeature.Queries.ResetPasswordVerify;
-using RestaurantManagement.Domain.IRepos;
+using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.API.Controllers
 {
@@ -87,6 +90,36 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result.Errors[0].Message);
 
             });
+
+            //verify email to change pass
+            endpoints.MapGet("verify-change-password", async (Ulid token, ISender sender) =>
+            {
+                var result = await sender.Send(new VerifyChangeCustomerPasswordCommand(token));
+                if (result.IsSuccess)
+                {
+                    return Results.Ok("Change password successfully!");
+                }
+
+                return Results.BadRequest(result.Errors[0].Message);
+            });
+
+            endpoints.MapPost("change-password", async (
+                [FromBody]ChangeCustomerPasswordRequest request,
+                HttpContext httpContext,
+                ISender sender) =>
+            {
+                //lấy token
+                var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
+                //Trích xuất token
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+
+                var result = await sender.Send(new ChangeCustomerPasswordCommand(request.oldPass, request.newPass, token));
+                if (result.IsSuccess)
+                {
+                    return Results.Ok("Please check your email!");
+                }
+                return Results.BadRequest(result.Errors);
+            }).RequireAuthorization("customer");
         }
     }
 }

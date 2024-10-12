@@ -239,6 +239,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<DateTime>("ExpiredDate")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("Temporary")
+                        .HasColumnType("varchar(255)");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(26)");

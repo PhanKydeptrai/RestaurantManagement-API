@@ -1,11 +1,8 @@
 ﻿using FluentEmail.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
-using NETCore.Encrypt;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
-using RestaurantManagement.Domain.Shared;
 using RestaurantManagement.Infrastructure.Persistence;
 
 namespace RestaurantManagement.Infrastructure.Repos;
@@ -56,8 +53,12 @@ public class EmailVerify : IEmailVerify
         return link;
     }
 
-
-    //Active Tài khoản
+    public string CreateLinkForChangePass(EmailVerificationToken emailVerificationToken)
+    {
+        string? link = "https://localhost:7057/api/account/verify-change-password?token=" + emailVerificationToken.EmailVerificationTokenId.ToString();
+        return link;
+    }
+    
 
 
     

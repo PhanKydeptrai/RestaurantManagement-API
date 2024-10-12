@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241007101247_RestaurantManagementDb")]
+    [Migration("20241012150649_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -241,6 +241,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.Property<DateTime>("ExpiredDate")
                         .HasColumnType("datetime");
+
+                    b.Property<string>("Temporary")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
