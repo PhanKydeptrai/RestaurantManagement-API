@@ -34,6 +34,21 @@ namespace RestaurantManagement.Infrastructure.Repos
                 .Include(e => e.Employee)
                 .AnyAsync(e => e.Phone == phone);
         }
+
+        public async Task<bool> IsEmployeePhoneExist_update(Ulid id, string phone)
+        {
+            return await _context.Employees
+                .Select(a => a.User)
+                .AnyAsync(a => a.Phone == phone && a.Employee.EmployeeId != id);
+        }
+
+        public async Task<bool> IsEmployeeEmailExist_update(Ulid id, string email)
+        {
+            return await _context.Employees
+                .Select(a => a.User)
+                .AnyAsync(a => a.Email == email && a.Employee.EmployeeId != id);
+        }
+
         public async Task<Employee?> GetEmployeeById(Ulid id)
         {
             return await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id);

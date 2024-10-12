@@ -120,7 +120,7 @@ public class CategoryController : IEndpoint
             return Results.BadRequest(result.ToProblemDetails());
 
 
-        }).RequireAuthorization();
+        }).RequireAuthorization("Boss");
 
         //Xóa category
         endpoints.MapDelete("{id}", async (Ulid id, ISender sender, HttpContext httpContext) =>
@@ -136,7 +136,7 @@ public class CategoryController : IEndpoint
                 return Results.Ok("Remove successfully!");
             }
             return Results.BadRequest(result.ToProblemDetails());
-        }).RequireAuthorization();
+        }).RequireAuthorization("Boss");
 
 
         //Xóa nhiều category
@@ -159,7 +159,7 @@ public class CategoryController : IEndpoint
             }
             return Results.BadRequest(result.ToProblemDetails());
 
-        }).RequireAuthorization();
+        }).RequireAuthorization("Boss");
 
         //Khôi phục category
         endpoints.MapPut ("restore/{id}", async (Ulid id, HttpContext httpContext, ISender sender) =>
@@ -175,7 +175,7 @@ public class CategoryController : IEndpoint
                 return Results.Ok("Restore successfully!");
             }
             return Results.BadRequest(result.ToProblemDetails());
-        }).RequireAuthorization();
+        }).RequireAuthorization("Boss");
 
         //Khôi phục nhiều category
         endpoints.MapPut("restore", async (
@@ -195,7 +195,7 @@ public class CategoryController : IEndpoint
             }
             return Results.BadRequest(result.ToProblemDetails());
 
-        }).RequireAuthorization();
+        }).RequireAuthorization("Boss");
 
     }
 

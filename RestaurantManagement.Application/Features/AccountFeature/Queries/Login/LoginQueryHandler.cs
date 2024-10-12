@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NETCore.Encrypt;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;

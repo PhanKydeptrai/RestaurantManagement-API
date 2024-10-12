@@ -51,8 +51,7 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
             UserId = Ulid.Parse(userId)
         });
         await _unitOfWork.SaveChangesAsync();
-        
-        return Result.Success();
 
+        return Result.Success();
     }
 }

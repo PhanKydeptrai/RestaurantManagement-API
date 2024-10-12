@@ -32,6 +32,10 @@ builder.Services.AddCors(options =>
             .AllowAnyOrigin());
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("boss", policy => policy.RequireClaim(ClaimTypes.Role, "Boss"));
+});
 //JWT
 #region Cấu hình JWT
 builder.Services.AddAuthentication(options =>

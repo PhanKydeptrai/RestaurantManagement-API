@@ -28,7 +28,7 @@ public class CustomerFilterQueryHandler : IQueryHandler<CustomerFilterQuery, Pag
         }
 
         var customers = customerQuery.Select(a => new CustomerResponse(
-            a.CustomerId, 
+            a.UserId, 
             a.User.FirstName, 
             a.User.LastName,
             a.User.Email,

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
-using RestaurantManagement.Application.Features.CustomerFeature.Commands.UpdateCustomer;
+using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateCustomerInformation;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
 
@@ -10,7 +10,6 @@ namespace RestaurantManagement.API.Controllers
 {
     public class CustomerController : IEndpoint
     {
-    
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             var endpoints = app.MapGroup("api/customer").WithTags("Customer").DisableAntiforgery();
@@ -37,13 +36,14 @@ namespace RestaurantManagement.API.Controllers
 
             //Update information for a customer
             endpoints.MapPut("{id}", async (
-                [FromRoute] Ulid id,
+                Ulid id,
                 [FromForm] IFormFile? image, 
                 [FromForm]string? FirstName, 
                 [FromForm]string? LastName, 
                 [FromForm]string? PhoneNumber, 
                 [FromForm]string? Gender,
-                [FromServices] ISender sender) =>
+                ISender sender, 
+                HttpContext httpContext) =>
             {
                 byte[] imageBytes = null!;
 
@@ -56,13 +56,19 @@ namespace RestaurantManagement.API.Controllers
                     }
                 }
 
-                var updateCustomerCommand = new UpdateCustomerCommand(
+                //lấy token
+                var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
+                //Trích xuất token
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+
+                var updateCustomerCommand = new UpdateCustomerInformationCommand(
                     id,
                     FirstName,
                     LastName,
                     PhoneNumber,
                     imageBytes,
-                    Gender);
+                    Gender,
+                    token);
 
                 var result = await sender.Send(updateCustomerCommand);
                 if(result.IsSuccess)
@@ -70,7 +76,8 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok("Customer updated successfully!");
                 }
                 return Results.BadRequest(result.Errors);
-            });
+
+            }).RequireAuthorization();
         }
     }
 

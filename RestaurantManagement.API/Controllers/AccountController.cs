@@ -2,8 +2,11 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
+using RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotPassword;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.Register;
+using RestaurantManagement.Application.Features.AccountFeature.Queries.ActivateAccount;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
+using RestaurantManagement.Application.Features.AccountFeature.Queries.ResetPasswordVerify;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers
@@ -26,7 +29,6 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok("Register successfully!");
                 }
 
-
                 return Results.BadRequest(result.ToProblemDetails());
             });
 
@@ -41,13 +43,50 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result.Errors);
             });
 
+            //login for employee
 
-            //verify email
-            endpoints.MapGet("verify-email", async (Ulid token, IEmailVerify verify)=>{
-                bool result = await verify.Handle(token);
-                return result ? Results.Ok("Email verified successfully!") : Results.BadRequest("Email verification failed!");
+            
+
+            //reset password
+            endpoints.MapPost("reset-password", async (
+                ForgotCustomerPasswordCommand command, 
+                ISender sender) =>
+            {
+                var result = await sender.Send(command);
+                if (result.IsSuccess)
+                {
+                    return Results.Ok("Check your email!");
+                }
+                return Results.BadRequest(result.Errors);
             });
 
+
+            //verify email (Active account for customer)
+            endpoints.MapGet("verify-email", async (Ulid token, ISender sender) =>
+            {
+                
+                var result = await sender.Send(new ActivateAccountCommand(token));
+                if (result.IsSuccess)
+                {
+                    return Results.Ok("Email verified successfully!");
+                }
+
+                return Results.BadRequest(result.Errors[0].Message);
+
+            });
+
+            //verify email to reset pass
+            endpoints.MapGet("verify-reset-password", async (Ulid token, ISender sender) =>
+            {
+                var result = await sender.Send(new ResetPasswordVerifyCommand(token));
+                if (result.IsSuccess)
+                {
+                    return Results.Ok("Email verified successfully!");
+                }
+
+                return Results.BadRequest(result.Errors[0].Message);
+
+            });
         }
     }
 }

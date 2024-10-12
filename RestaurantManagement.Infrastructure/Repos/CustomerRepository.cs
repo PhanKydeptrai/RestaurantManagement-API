@@ -31,8 +31,7 @@ public class CustomerRepository : ICustomerRepository
     public async Task<CustomerResponse?> GetCustomerById(Ulid id)
     {
         return await _context.Customers
-            .Include(a => a.User)
-            .Where(a => a.CustomerId == id)
+            .Where(a => a.UserId == id)
             .Select(a => new CustomerResponse(
                 a.CustomerId, 
                 a.User.FirstName, 
