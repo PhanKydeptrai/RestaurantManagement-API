@@ -78,8 +78,7 @@ public class EmployeeController : IEndpoint
             var result = await sender.Send(
                 new CreateEmployeeCommand(
                     FirstName, 
-                    LastName, 
-                    Password, 
+                    LastName,
                     PhoneNumber, 
                     Email, 
                     imageData, 
@@ -90,9 +89,9 @@ public class EmployeeController : IEndpoint
             {
                 return Results.BadRequest(result.Errors);
             }
-            return Results.Ok();
+            return Results.Ok("Create employee successfully");
 
         });
     
-}
+    }
 }

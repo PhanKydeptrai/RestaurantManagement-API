@@ -5,7 +5,6 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
     public record CreateEmployeeCommand(
         string FirstName,
         string LastName,
-        string Password,
         string PhoneNumber,
         string Email,
         byte[]? UserImage,
