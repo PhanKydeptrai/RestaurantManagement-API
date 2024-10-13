@@ -35,14 +35,15 @@ public class RemoveCategoryCommandHandler : ICommandHandler<RemoveCategoryComman
         var claims = JwtHelper.DecodeJwt(request.Token);
 
         claims.TryGetValue("sub", out var userId);
-        await _systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            UserId = Ulid.Parse(userId),
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Xóa danh mục {request.Id}",
+        //Create System Log
+        //await _systemLogRepository.CreateSystemLog(new SystemLog
+        //{
+        //    UserId = Ulid.Parse(userId),
+        //    SystemLogId = Ulid.NewUlid(),
+        //    LogDate = DateTime.Now,
+        //    LogDetail = $"Xóa danh mục {request.Id}",
 
-        });
+        //});
         await _unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

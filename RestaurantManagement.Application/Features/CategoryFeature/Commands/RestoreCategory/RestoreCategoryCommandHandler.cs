@@ -38,14 +38,15 @@ public class RestoreCategoryCommandHandler : ICommandHandler<RestoreCategoryComm
         //Decode token
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
-        await _systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            UserId = Ulid.Parse(userId),
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"khôi phục danh mục {request.id}",
+        //Create System Log
+        //await _systemLogRepository.CreateSystemLog(new SystemLog
+        //{
+        //    UserId = Ulid.Parse(userId),
+        //    SystemLogId = Ulid.NewUlid(),
+        //    LogDate = DateTime.Now,
+        //    LogDetail = $"khôi phục danh mục {request.id}",
 
-        });
+        //});
         await _unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

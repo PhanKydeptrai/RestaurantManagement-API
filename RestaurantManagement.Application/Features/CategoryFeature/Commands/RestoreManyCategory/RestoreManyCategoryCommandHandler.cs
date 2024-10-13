@@ -33,13 +33,14 @@ public class RestoreManyCategoryCommandHandler : ICommandHandler<RestoreManyCate
             {
                 return Result.Failure(new[] { new Error("Category", $"Category {Id} still sell") });
             }
-            await _systemLogRepository.CreateSystemLog(new SystemLog
-            {
-                UserId = Ulid.Parse(userId),
-                SystemLogId = Ulid.NewUlid(),
-                LogDate = DateTime.Now,
-                LogDetail = $"Khôi phục danh mục {Id}",
-            });
+
+            //await _systemLogRepository.CreateSystemLog(new SystemLog
+            //{
+            //    UserId = Ulid.Parse(userId),
+            //    SystemLogId = Ulid.NewUlid(),
+            //    LogDate = DateTime.Now,
+            //    LogDetail = $"Khôi phục danh mục {Id}",
+            //});
 
             var category = await _categoryRepository.GetCategoryById(Id);
             category.CategoryStatus = "kd";

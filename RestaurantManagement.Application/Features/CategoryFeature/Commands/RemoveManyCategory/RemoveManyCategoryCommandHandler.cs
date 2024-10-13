@@ -32,14 +32,15 @@ public class RemoveManyCategoryCommandHandler : ICommandHandler<RemoveManyCatego
             {
                 return Result.Failure(new[] { new Error("Category", $"Category {id} not found") });
             }
-                
-            await _systemLogRepository.CreateSystemLog(new SystemLog
-            {
-                UserId = Ulid.Parse(userId),
-                SystemLogId = Ulid.NewUlid(),
-                LogDate = DateTime.Now,
-                LogDetail = $"Xóa danh mục {id}",
-            });
+
+            //Create System Log
+            //await _systemLogRepository.CreateSystemLog(new SystemLog
+            //{
+            //    UserId = Ulid.Parse(userId),
+            //    SystemLogId = Ulid.NewUlid(),
+            //    LogDate = DateTime.Now,
+            //    LogDetail = $"Xóa danh mục {id}",
+            //});
             _categoryRepository.SoftDeleteCategory(id);
         }
         await _unitOfWork.SaveChangesAsync();
