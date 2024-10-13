@@ -81,7 +81,7 @@ public class CategoryController : IEndpoint
             }
 
             return Results.BadRequest(result.ToProblemDetails());
-        }).RequireAuthorization();
+        });
 
         //Cập nhật category
         endpoints.MapPut("{id}", async (

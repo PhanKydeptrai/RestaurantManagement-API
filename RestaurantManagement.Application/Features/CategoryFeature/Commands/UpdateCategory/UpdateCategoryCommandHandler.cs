@@ -43,13 +43,13 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
         var claims = JwtHelper.DecodeJwt(request.Token);
         claims.TryGetValue("sub", out var userId);
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Tạo danh mục {request.CategoryName}",
-            UserId = Ulid.Parse(userId)
-        });
+        //await _systemLogRepository.CreateSystemLog(new SystemLog
+        //{
+        //    SystemLogId = Ulid.NewUlid(),
+        //    LogDate = DateTime.Now,
+        //    LogDetail = $"Tạo danh mục {request.CategoryName}",
+        //    UserId = Ulid.Parse(userId)
+        //});
         await _unitOfWork.SaveChangesAsync();
 
         return Result.Success();

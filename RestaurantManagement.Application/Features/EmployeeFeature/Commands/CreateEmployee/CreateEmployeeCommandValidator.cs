@@ -31,8 +31,14 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
                 .NotEmpty().WithMessage("Email is Empty.")
                 .NotNull().WithMessage("Email is Null.")
                 .EmailAddress().WithMessage("Email must be a valid email address.")
-                .Must(a => employeeRepository.IsEmployeePhoneExist(a).Result == false)
+                .Must(a => employeeRepository.IsEmployyeEmailExist(a).Result == false)
                 .WithMessage("Email is already exist.");
+            //Validate Role
+            RuleFor(u => u.Gender)
+                .NotNull().WithMessage("Gender is required")
+                .NotEmpty().WithMessage("Gender must not be empty")
+                .Must(b => b == "Male" || b == "Female" || b == "Orther")
+                .WithMessage("Gender must be Male, Female or Orther");
         }
     }
 }
