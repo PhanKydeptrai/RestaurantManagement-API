@@ -58,6 +58,13 @@ public class CustomerRepository : ICustomerRepository
             .AnyAsync(a => a.User.Email == email && a.CustomerType == "Subscriber");
     }
 
+    public async Task<bool> IsCustomerAccountActive(string email)
+    {
+        return await _context.Customers
+            .Include(c => c.User)
+            .AnyAsync(a => a.User.Email == email && a.CustomerType == "Subscriber" && a.CustomerStatus == "Active");
+    }
+
     public async Task<bool> IsCustomerPhoneExist(string phone)
     {
         return await _context.Customers

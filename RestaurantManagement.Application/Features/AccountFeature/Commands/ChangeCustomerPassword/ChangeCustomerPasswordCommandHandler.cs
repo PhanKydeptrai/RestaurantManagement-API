@@ -1,7 +1,6 @@
 ﻿using FluentEmail.Core;
 using NETCore.Encrypt;
 using RestaurantManagement.Application.Abtractions;
-using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -12,13 +11,13 @@ namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Chan
 public class ChangeCustomerPasswordCommandHandler : ICommandHandler<ChangeCustomerPasswordCommand>
 {
     private readonly IUserRepository _userRepository;
-    private readonly IApplicationDbContext _context;
+    
     private readonly IFluentEmail _fluentEmail;
     private readonly IEmailVerificationTokenRepository _emailVerificationTokenRepository;
     private readonly IEmailVerify _emailVerify;
     private readonly IUnitOfWork _unitOfWork;
     public ChangeCustomerPasswordCommandHandler(
-        IApplicationDbContext context,
+        
         IUserRepository userRepository,
         IFluentEmail fluentEmail,
         IEmailVerificationTokenRepository emailVerificationTokenRepository,
@@ -26,7 +25,7 @@ public class ChangeCustomerPasswordCommandHandler : ICommandHandler<ChangeCustom
         IUnitOfWork unitOfWork)
     {
 
-        _context = context;
+        
         _userRepository = userRepository;
         _fluentEmail = fluentEmail;
         _emailVerificationTokenRepository = emailVerificationTokenRepository;
@@ -52,7 +51,7 @@ public class ChangeCustomerPasswordCommandHandler : ICommandHandler<ChangeCustom
         claims.TryGetValue("sub", out var userId);
 
         //Kiểm tra mật khẩu cũ
-        var user = await _context.Users.FindAsync(Ulid.Parse(userId));
+        var user = await _userRepository.GetUserById(Ulid.Parse(userId));
         string encryptPass = EncryptProvider.Sha256(request.oldPass);
         if (encryptPass != user.Password)
         {

@@ -59,7 +59,10 @@ public class LoginQueryHandler : ICommandHandler<LoginQuery, string>
             return Result<string>.Failure(a);
         }
 
-        var token = _jwtProvider.GenerateJwtTokenForCustomer(loginResponse);
+        var token = _jwtProvider.GenerateJwtToken(
+                loginResponse.UserId, 
+                loginResponse.Email, 
+                loginResponse.CustomerType);
 
         return Result<string>.Success(token);
     }

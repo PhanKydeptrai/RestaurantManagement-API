@@ -46,8 +46,49 @@ public class JwtProvider : IJwtProvider
     //Generate token for employee
     public string GenerateJwtTokenForEmployee(EmployeeLoginResponse loginResponse)
     {
-        throw new NotImplementedException();
+        var claims = new List<Claim>()
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, loginResponse.UserId.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, loginResponse.Email),
+            new Claim(ClaimTypes.Role, loginResponse.Role)
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddHours(10),
+            SigningCredentials = credentials,
+            Issuer = _config["JWT:Issuer"],
+            Audience = _config["JWT:Audience"]
+
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return tokenHandler.WriteToken(token);
     }
 
+    public string GenerateJwtToken(string userId, string email, string role)
+    {
+        var claims = new List<Claim>()
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, userId),
+            new Claim(JwtRegisteredClaimNames.Email, email),
+            new Claim(ClaimTypes.Role, role)
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddHours(10),
+            SigningCredentials = credentials,
+            Issuer = _config["JWT:Issuer"],
+            Audience = _config["JWT:Audience"]
 
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return tokenHandler.WriteToken(token);
+    }
 }

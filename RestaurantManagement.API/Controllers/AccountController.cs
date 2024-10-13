@@ -1,16 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ActivateAccount;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ChangeCustomerPassword;
-using RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotPassword;
+using RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotCustomerPassword;
+using RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotEmployeePassword;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.Register;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ResetPasswordVerify;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.VerifyChangeCustomerPassword;
+using RestaurantManagement.Application.Features.AccountFeature.Queries.EmployeeLogin;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
-using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.API.Controllers
 {
@@ -36,7 +36,9 @@ namespace RestaurantManagement.API.Controllers
             });
 
             //Login for customer
-            endpoints.MapPost("login", async([FromBody]LoginQuery query, ISender sender) =>
+            endpoints.MapPost("login", async(
+                [FromBody]LoginQuery query, 
+                ISender sender) =>
             {
                 var result = await sender.Send(query);
                 if (result.IsSuccess)
@@ -47,11 +49,21 @@ namespace RestaurantManagement.API.Controllers
             });
 
             //login for employee
+            endpoints.MapPost("employee-login", async (
+                [FromBody]EmployeeLoginQuery query, 
+                ISender sender) =>
+            {
+                var result = await sender.Send(query);
+                if (result.IsSuccess)
+                {
+                    return Results.Ok(result.Value);
+                }
+                return Results.BadRequest(result.Errors);
+            });
 
-            
 
-            //reset password
-            endpoints.MapPost("reset-password", async (
+            //reset customer password 
+            endpoints.MapPost("customer-password", async (
                 ForgotCustomerPasswordCommand command, 
                 ISender sender) =>
             {
@@ -63,6 +75,18 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result.Errors);
             });
 
+            //reset employee password 
+            endpoints.MapPost("employee-password", async (
+                ForgotEmployeePasswordCommand command,
+                ISender sender) =>
+            {
+                var result = await sender.Send(command);
+                if (result.IsSuccess)
+                {
+                    return Results.Ok("Check your email!");
+                }
+                return Results.BadRequest(result.Errors);
+            });
 
             //verify email (Active account for customer)
             endpoints.MapGet("verify-email", async (Ulid token, ISender sender) =>
@@ -103,6 +127,7 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result.Errors[0].Message);
             });
 
+            //Change password Customer
             endpoints.MapPost("change-password", async (
                 [FromBody]ChangeCustomerPasswordRequest request,
                 HttpContext httpContext,

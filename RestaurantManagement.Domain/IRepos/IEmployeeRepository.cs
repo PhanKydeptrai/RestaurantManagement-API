@@ -12,6 +12,7 @@ public interface IEmployeeRepository
     Task CreateEmployee(Employee employee);
     void UpdateEmployee(Employee employee);
     void DeleteEmployee(Employee employee);
+    Task<bool> IsEmployeeAccountActive(string email);
     Task<bool> IsEmployeePhoneExist_update(Ulid id, string phone);
     Task<bool> IsEmployeeEmailExist_update(Ulid id, string email);
     

@@ -26,8 +26,16 @@ namespace RestaurantManagement.Infrastructure.Repos
         {
             return await _context.Users
                 .Include(e => e.Employee)
-                .AnyAsync(e => e.Email == email && e.Employee != null); // Kiểm tra email trong employee đã tồn tại trong user hay chưa
+                .AnyAsync(e => e.Email == email); // Kiểm tra email trong employee đã tồn tại trong user hay chưa
         }
+
+        //Kiểm tra tình trạng hoạt động của tài khoản
+        public async Task<bool> IsEmployeeAccountActive(string email)
+        {
+            return await _context.Employees.Include(e => e.User)
+                .AnyAsync(e => e.User.Email == email && e.EmployeeStatus == "Active");
+        }
+
         public async Task<bool> IsEmployeePhoneExist(string phone)
         {
             return await _context.Users
