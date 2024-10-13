@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using RestaurantManagement.Domain.IRepos;
 
-namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotPassword;
+namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotCustomerPassword;
 
 public class ForgotCustomerPasswordCommandValidator : AbstractValidator<ForgotCustomerPasswordCommand>
 {
@@ -11,7 +11,7 @@ public class ForgotCustomerPasswordCommandValidator : AbstractValidator<ForgotCu
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .EmailAddress().WithMessage("{PropertyName} is not a valid email address.")
-            .Must(a => customerRepository.IsCustomerEmailExist(a).Result)
+            .Must(a => customerRepository.IsCustomerAccountActive(a).Result)
             .WithMessage("Email is not Exist");
 
     }

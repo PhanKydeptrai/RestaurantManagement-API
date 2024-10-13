@@ -15,6 +15,7 @@ public interface ICustomerRepository
     IQueryable<Customer> GetCustomersQueryable();
     Task<bool> IsCustomerEmailExist(string email);
     Task<bool> IsCustomerEmailExist_update(Ulid id,string email);
+    Task<bool> IsCustomerAccountActive(string email);
     Task<bool> IsCustomerPhoneExist(string phone);
    
     Task<bool> IsCustomerPhoneExist_update(Ulid id,string phone);

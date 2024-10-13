@@ -6,7 +6,7 @@ using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotPassword;
+namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotCustomerPassword;
 
 internal class ForgotCustomerPasswordCommandHandler : ICommandHandler<ForgotCustomerPasswordCommand>
 {
