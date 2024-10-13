@@ -85,10 +85,10 @@ public class CategoryController : IEndpoint
 
         //Cập nhật category
         endpoints.MapPut("{id}", async (
-            Ulid id, 
-            [FromForm]string categoryName,
-            [FromForm]string categoryStatus,
-            [FromForm]IFormFile? categoryImage,
+            Ulid id,
+            [FromForm] string categoryName,
+            [FromForm] string categoryStatus,
+            [FromForm] IFormFile? categoryImage,
             ISender sender,
             HttpContext httpContext) =>
         {
@@ -120,7 +120,7 @@ public class CategoryController : IEndpoint
             return Results.BadRequest(result.ToProblemDetails());
 
 
-        }).RequireAuthorization("Boss");
+        });
 
         //Xóa category
         endpoints.MapDelete("{id}", async (Ulid id, ISender sender, HttpContext httpContext) =>
@@ -129,40 +129,40 @@ public class CategoryController : IEndpoint
             var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
             //Trích xuất token
             var token = authHeader.Substring("Bearer ".Length).Trim();
-            var request = new RemoveCategoryCommand(id,token);
+            var request = new RemoveCategoryCommand(id, token);
             var result = await sender.Send(request);
             if (result.IsSuccess)
             {
                 return Results.Ok("Remove successfully!");
             }
             return Results.BadRequest(result.ToProblemDetails());
-        }).RequireAuthorization("Boss");
+        });
 
 
         //Xóa nhiều category
-        endpoints.MapDelete("", async(
-            [FromForm]Ulid[] id, 
+        endpoints.MapDelete("", async (
+            [FromForm] Ulid[] id,
             HttpContext httpContext,
             ISender sender) =>
         {
-            
+
             //lấy token
             var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
             //Trích xuất token
             var token = authHeader.Substring("Bearer ".Length).Trim();
-            
+
             //Gửi command
-            var result = await sender.Send(new RemoveManyCategoryCommand(id,token));
-            if(result.IsSuccess)
+            var result = await sender.Send(new RemoveManyCategoryCommand(id, token));
+            if (result.IsSuccess)
             {
                 return Results.Ok("Remove successfully!");
             }
             return Results.BadRequest(result.ToProblemDetails());
 
-        }).RequireAuthorization("Boss");
+        });
 
         //Khôi phục category
-        endpoints.MapPut ("restore/{id}", async (Ulid id, HttpContext httpContext, ISender sender) =>
+        endpoints.MapPut("restore/{id}", async (Ulid id, HttpContext httpContext, ISender sender) =>
         {
 
             //lấy token
@@ -175,11 +175,11 @@ public class CategoryController : IEndpoint
                 return Results.Ok("Restore successfully!");
             }
             return Results.BadRequest(result.ToProblemDetails());
-        }).RequireAuthorization("Boss");
+        });
 
         //Khôi phục nhiều category
         endpoints.MapPut("restore", async (
-            [FromForm]Ulid[] id,
+            [FromForm] Ulid[] id,
             HttpContext httpContext,
             ISender sender) =>
         {
@@ -189,13 +189,13 @@ public class CategoryController : IEndpoint
             var token = authHeader.Substring("Bearer ".Length).Trim();
             //Gửi command
             var result = await sender.Send(new RestoreManyCategoryCommand(id, token));
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
-               return Results.Ok("Restore successfully!");
+                return Results.Ok("Restore successfully!");
             }
             return Results.BadRequest(result.ToProblemDetails());
 
-        }).RequireAuthorization("Boss");
+        });
 
     }
 
