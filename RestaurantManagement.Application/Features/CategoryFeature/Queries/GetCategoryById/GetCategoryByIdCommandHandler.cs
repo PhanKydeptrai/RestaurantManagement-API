@@ -18,19 +18,18 @@ public class GetCategoryByIdCommandHandler : IQueryHandler<GetCategoryByIdComman
     public async Task<Result<CategoryResponse>> Handle(GetCategoryByIdCommand request, CancellationToken cancellationToken)
     {
         var result = await _context.Categories
-            .Select(a => new CategoryResponse(
-                a.CategoryId, 
-                a.CategoryName, 
-                a.CategoryStatus, 
-                a.CategoryImage))
-            .FirstOrDefaultAsync(a => a.CategoryId == request.Id);
+            .FindAsync(request.Id);
 
-        if(result == null)
+        if (result == null)
         {
             Error[] a = { new Error("Category", "Category not found") };
             return Result<CategoryResponse>.Failure(a);
         }
 
-        return Result<CategoryResponse>.Success(result);
+        return Result<CategoryResponse>.Success(new CategoryResponse(
+                    result.CategoryId,
+                    result.CategoryName,
+                    result.CategoryStatus,
+                    result.CategoryImage));
     }
 }
