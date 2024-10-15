@@ -29,7 +29,7 @@ public class LoginQueryValidator : AbstractValidator<LoginQuery>
                         context.AddFailure("PhoneNumber must start with 0 and be 10 digits long.");
                     }
                 }
-            });
+            }).When(a => !string.IsNullOrEmpty(a.loginString));
 
         RuleFor(a => a.passWord)
             .NotEmpty().NotNull()

@@ -7,6 +7,7 @@ using RestaurantManagement.Infrastructure.Extentions;
 using RestaurantManagement.API.Extentions;
 using System.Reflection;
 using System.Security.Claims;
+using RestaurantManagement.API.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -104,10 +105,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 // Map endpoints
 app.MapEndpoints();
 app.Run();

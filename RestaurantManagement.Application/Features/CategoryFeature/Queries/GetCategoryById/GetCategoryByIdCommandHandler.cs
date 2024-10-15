@@ -22,7 +22,7 @@ public class GetCategoryByIdCommandHandler : IQueryHandler<GetCategoryByIdComman
                 a.CategoryId, 
                 a.CategoryName, 
                 a.CategoryStatus, 
-                a.CategoryId + ".jpg"))
+                a.CategoryImage))
             .FirstOrDefaultAsync(a => a.CategoryId == request.Id);
 
         if(result == null)
