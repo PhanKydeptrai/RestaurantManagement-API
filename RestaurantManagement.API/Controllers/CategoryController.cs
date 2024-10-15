@@ -80,6 +80,8 @@ public class CategoryController : IEndpoint
                 return Results.Ok("Create successfully!");
             }
 
+            //return Results.BadRequest(result.ToProblemDetails());
+
             return Results.BadRequest(result.ToProblemDetails());
         });
 
@@ -136,6 +138,7 @@ public class CategoryController : IEndpoint
                 return Results.Ok("Remove successfully!");
             }
             return Results.BadRequest(result.ToProblemDetails());
+            
         });
 
 

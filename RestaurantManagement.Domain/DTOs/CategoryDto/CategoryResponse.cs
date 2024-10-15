@@ -5,4 +5,4 @@ public record CategoryResponse(
     Ulid CategoryId, 
     string CategoryName, 
     string CategoryStatus, 
-    string Image);//NOTE: This will be changed to byte[] in the future
+    byte[]? Image);//NOTE: This will be changed to byte[] in the future
