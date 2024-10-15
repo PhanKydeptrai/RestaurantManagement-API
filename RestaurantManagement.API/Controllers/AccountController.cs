@@ -29,7 +29,7 @@ namespace RestaurantManagement.API.Controllers
                 var result = await sender.Send(command);
                 if (result.IsSuccess)
                 {
-                    return Results.Ok("Register successfully!");
+                    return Results.Ok(result);
                 }
 
                 return Results.BadRequest(result.ToProblemDetails());
@@ -43,9 +43,9 @@ namespace RestaurantManagement.API.Controllers
                 var result = await sender.Send(query);
                 if (result.IsSuccess)
                 {
-                    return Results.Ok(result.Value);
+                    return Results.Ok(result);
                 }
-                return Results.BadRequest(result.Errors);
+                return Results.BadRequest(result.ToProblemDetails());
             });
 
             //login for employee
@@ -56,9 +56,9 @@ namespace RestaurantManagement.API.Controllers
                 var result = await sender.Send(query);
                 if (result.IsSuccess)
                 {
-                    return Results.Ok(result.Value);
+                    return Results.Ok(result);
                 }
-                return Results.BadRequest(result.Errors);
+                return Results.BadRequest(result.ToProblemDetails());
             });
 
 
@@ -72,7 +72,7 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok("Check your email!");
                 }
-                return Results.BadRequest(result.Errors);
+                return Results.BadRequest(result.ToProblemDetails());
             });
 
             //reset employee password 
@@ -85,7 +85,7 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok("Check your email!");
                 }
-                return Results.BadRequest(result.Errors);
+                return Results.BadRequest(result.ToProblemDetails());   
             });
 
             //verify email (Active account for customer)
@@ -143,8 +143,8 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok("Please check your email!");
                 }
-                return Results.BadRequest(result.Errors);
-            }).RequireAuthorization("customer");
+                return Results.BadRequest(result.ToProblemDetails());
+            }).RequireAuthorization();
         }
     }
 }

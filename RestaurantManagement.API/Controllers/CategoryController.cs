@@ -37,13 +37,12 @@ public class CategoryController : IEndpoint
         //Lấy category theo id
         endpoints.MapGet("{id}", async (Ulid id, ISender sender) =>
         {
-            GetCategoryByIdCommand request = new GetCategoryByIdCommand(id);
-            var response = await sender.Send(request);
+            var response = await sender.Send(new GetCategoryByIdCommand(id));
             if (response.IsSuccess)
             {
-                return Results.Ok(response.Value);
+                return Results.Ok(response);
             }
-            return Results.BadRequest(response.Errors);
+            return Results.BadRequest(response.ToProblemDetails());
         });
 
 
@@ -77,10 +76,8 @@ public class CategoryController : IEndpoint
             if (result.IsSuccess)
             {
                 //Thêm chi tiết cho response
-                return Results.Ok("Create successfully!");
+                return Results.Ok(result);
             }
-
-            //return Results.BadRequest(result.ToProblemDetails());
 
             return Results.BadRequest(result.ToProblemDetails());
         });
@@ -117,11 +114,9 @@ public class CategoryController : IEndpoint
             var result = await sender.Send(command);
             if (result.IsSuccess)
             {
-                return Results.Ok("Update successfully!");
+                return Results.Ok(result);
             }
             return Results.BadRequest(result.ToProblemDetails());
-
-
         });
 
         //Xóa category
@@ -135,7 +130,7 @@ public class CategoryController : IEndpoint
             var result = await sender.Send(request);
             if (result.IsSuccess)
             {
-                return Results.Ok("Remove successfully!");
+                return Results.Ok(result);
             }
             return Results.BadRequest(result.ToProblemDetails());
             
@@ -158,7 +153,7 @@ public class CategoryController : IEndpoint
             var result = await sender.Send(new RemoveManyCategoryCommand(id, token));
             if (result.IsSuccess)
             {
-                return Results.Ok("Remove successfully!");
+                return Results.Ok(result);
             }
             return Results.BadRequest(result.ToProblemDetails());
 
@@ -175,7 +170,7 @@ public class CategoryController : IEndpoint
             var result = await sender.Send(new RestoreCategoryCommand(id, token));
             if (result.IsSuccess)
             {
-                return Results.Ok("Restore successfully!");
+                return Results.Ok(result);
             }
             return Results.BadRequest(result.ToProblemDetails());
         });

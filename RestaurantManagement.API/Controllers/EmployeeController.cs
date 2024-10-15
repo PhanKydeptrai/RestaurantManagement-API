@@ -48,7 +48,7 @@ public class EmployeeController : IEndpoint
 
             if(result.IsSuccess)
             {
-                return Results.Ok();
+                return Results.Ok(result);
             }
             return Results.BadRequest(result.ToProblemDetails);
         }).RequireAuthorization();
@@ -89,7 +89,7 @@ public class EmployeeController : IEndpoint
             {
                 return Results.BadRequest(result.Errors);
             }
-            return Results.Ok("Create employee successfully");
+            return Results.Ok(result);
 
         });
     
