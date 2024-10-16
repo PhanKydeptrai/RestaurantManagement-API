@@ -4,6 +4,8 @@ using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateCustomerInformation;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
+using RestaurantManagement.Domain.IRepos;
+using RestaurantManagement.Infrastructure.Authentication;
 
 
 namespace RestaurantManagement.API.Controllers
@@ -35,7 +37,8 @@ namespace RestaurantManagement.API.Controllers
             });
 
             //Update information for a customer
-            endpoints.MapPut("{id}", async (
+            endpoints.MapPut("{id}", 
+            async (
                 Ulid id,
                 [FromForm] IFormFile? image, 
                 [FromForm]string? FirstName, 
@@ -43,7 +46,8 @@ namespace RestaurantManagement.API.Controllers
                 [FromForm]string? PhoneNumber, 
                 [FromForm]string? Gender,
                 ISender sender, 
-                HttpContext httpContext) =>
+                HttpContext httpContext,
+                IJwtProvider jwtProvider) =>
             {
                 byte[] imageBytes = null!;
 
@@ -56,10 +60,8 @@ namespace RestaurantManagement.API.Controllers
                     }
                 }
 
-                //lấy token
-                var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
-                //Trích xuất token
-                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var token = jwtProvider.GetTokenFromHeader(httpContext);
+
 
                 var updateCustomerCommand = new UpdateCustomerInformationCommand(
                     id,
@@ -68,7 +70,8 @@ namespace RestaurantManagement.API.Controllers
                     PhoneNumber,
                     imageBytes,
                     Gender,
-                    token);
+                    token
+                );
 
                 var result = await sender.Send(updateCustomerCommand);
                 if(result.IsSuccess)

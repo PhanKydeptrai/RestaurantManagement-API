@@ -4,6 +4,7 @@ using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateEmployeeInformation;
 using RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee;
+using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
 
@@ -14,14 +15,16 @@ public class EmployeeController : IEndpoint
         var endpoints = app.MapGroup("api/employee").WithTags("Employee").DisableAntiforgery();
 
         //Update information for employee
-        endpoints.MapPut("{id}", async (
+        endpoints.MapPut("{id}", 
+        async (
             Ulid id, 
             [FromForm]string FirstName,
             [FromForm]string LastName,
             [FromForm]string PhoneNumber,
             [FromForm]IFormFile? UserImage,
             HttpContext httpContext,
-            ISender sender) => 
+            ISender sender,
+            IJwtProvider jwtProvider) => 
         {
             byte[] imageData = null!;
             if (UserImage != null)
@@ -33,9 +36,8 @@ public class EmployeeController : IEndpoint
                 }
             }
             //lấy token
-            var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
-            //Trích xuất token
-            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+
 
             var result = await sender.Send(
                 new UpdateEmployeeInformationCommand(
@@ -54,7 +56,8 @@ public class EmployeeController : IEndpoint
         }).RequireAuthorization();
 
         //Create employee
-        endpoints.MapPost("", async(
+        endpoints.MapPost("", 
+        async(
             [FromForm] string FirstName,
             [FromForm] string LastName,
             [FromForm] string Password,
@@ -87,7 +90,7 @@ public class EmployeeController : IEndpoint
 
             if (!result.IsSuccess)
             {
-                return Results.BadRequest(result.Errors);
+                return Results.BadRequest(result.ToProblemDetails());
             }
             return Results.Ok(result);
 

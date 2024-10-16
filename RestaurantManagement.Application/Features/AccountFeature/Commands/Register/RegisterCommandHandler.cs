@@ -9,7 +9,7 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Register;
 
-public class ResgisterCommandHandler : ICommandHandler<RegisterCommand>
+public class RegisterCommandHandler : ICommandHandler<RegisterCommand>
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IUserRepository _userRepository;
@@ -17,7 +17,7 @@ public class ResgisterCommandHandler : ICommandHandler<RegisterCommand>
     private readonly IApplicationDbContext _context;
     private readonly IFluentEmail _fluentEmail;
     private readonly IEmailVerify _emailVerify;
-    public ResgisterCommandHandler(
+    public RegisterCommandHandler(
         ICustomerRepository customerRepository,
         IUnitOfWork unitOfWork,
         IUserRepository userRepository,

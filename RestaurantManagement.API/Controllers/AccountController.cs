@@ -11,6 +11,8 @@ using RestaurantManagement.Application.Features.AccountFeature.Commands.ResetPas
 using RestaurantManagement.Application.Features.AccountFeature.Commands.VerifyChangeCustomerPassword;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.EmployeeLogin;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
+using RestaurantManagement.Domain.IRepos;
+using RestaurantManagement.Infrastructure.Authentication;
 
 namespace RestaurantManagement.API.Controllers
 {
@@ -131,12 +133,10 @@ namespace RestaurantManagement.API.Controllers
             endpoints.MapPost("change-password", async (
                 [FromBody]ChangeCustomerPasswordRequest request,
                 HttpContext httpContext,
-                ISender sender) =>
+                ISender sender,
+                IJwtProvider jwtProvider) =>
             {
-                //lấy token
-                var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
-                //Trích xuất token
-                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var token = jwtProvider.GetTokenFromHeader(httpContext);
 
                 var result = await sender.Send(new ChangeCustomerPasswordCommand(request.oldPass, request.newPass, token));
                 if (result.IsSuccess)
