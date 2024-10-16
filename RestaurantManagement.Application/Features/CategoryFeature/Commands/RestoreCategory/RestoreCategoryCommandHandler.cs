@@ -38,6 +38,7 @@ public class RestoreCategoryCommandHandler : ICommandHandler<RestoreCategoryComm
         //Decode token
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
+        
         //Create System Log
         //await _systemLogRepository.CreateSystemLog(new SystemLog
         //{

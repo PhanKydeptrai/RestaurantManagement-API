@@ -24,9 +24,9 @@ namespace RestaurantManagement.Infrastructure.Repos
 
         public async Task<bool> IsEmployyeEmailExist(string email)
         {
-            return await _context.Users
-                .Include(e => e.Employee)
-                .AnyAsync(e => e.Email == email); // Kiểm tra email trong employee đã tồn tại trong user hay chưa
+            return await _context.Employees
+                .Include(e => e.User)
+                .AnyAsync(e => e.User.Email == email); // Kiểm tra email trong employee đã tồn tại trong user hay chưa
         }
 
         //Kiểm tra tình trạng hoạt động của tài khoản
@@ -38,9 +38,9 @@ namespace RestaurantManagement.Infrastructure.Repos
 
         public async Task<bool> IsEmployeePhoneExist(string phone)
         {
-            return await _context.Users
-                .Include(e => e.Employee)
-                .AnyAsync(e => e.Phone == phone);
+            return await _context.Employees
+                .Include(e => e.User)
+                .AnyAsync(e => e.User.Phone == phone);
         }
 
         public async Task<bool> IsEmployeePhoneExist_update(Ulid id, string phone)

@@ -15,15 +15,14 @@ using RestaurantManagement.Domain.IRepos;
 namespace RestaurantManagement.API.Controllers;
 public class CategoryController : IEndpoint
 {
-    //TODO:
-    //Refactor, tạo phương thức lấy token từ HttpContext
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         var endpoints = app.MapGroup("api/category").WithTags("Category").DisableAntiforgery();
 
 
         //Lấy danh sách category
-        endpoints.MapGet("", async (
+        endpoints.MapGet("", 
+        async (
             [FromQuery] string? seachTerm,
             [FromQuery] int page,
             [FromQuery] int pageSize, ISender sender) =>
@@ -47,14 +46,16 @@ public class CategoryController : IEndpoint
 
 
         //Tạo mới category
-        endpoints.MapPost("", async (
+        endpoints.MapPost("", 
+        async (
             [FromForm] IFormFile? Image,
             [FromForm] string name,
             [FromForm] string? description,
             HttpContext httpContext,
             ISender sender,
             ISystemLogRepository systemLogRepository,
-            IUnitOfWork unitOfWork) =>
+            IUnitOfWork unitOfWork,
+            IJwtProvider jwtProvider) =>
         {
             byte[] imageData = null!;
             if (Image != null)
@@ -65,10 +66,8 @@ public class CategoryController : IEndpoint
                     imageData = memoryStream.ToArray();
                 }
             }
-            //lấy token
-            var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
-            //Trích xuất token
-            var token = authHeader.Substring("Bearer ".Length).Trim();
+
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
 
             //Gửi command
             var command = new CreateCategoryCommand(name, imageData, token);
@@ -83,13 +82,15 @@ public class CategoryController : IEndpoint
         });
 
         //Cập nhật category
-        endpoints.MapPut("{id}", async (
+        endpoints.MapPut("{id}",
+        async (
             Ulid id,
             [FromForm] string categoryName,
             [FromForm] string categoryStatus,
             [FromForm] IFormFile? categoryImage,
             ISender sender,
-            HttpContext httpContext) =>
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
         {
             byte[] imageData = null!;
             if (categoryImage != null)
@@ -100,10 +101,9 @@ public class CategoryController : IEndpoint
                     imageData = memoryStream.ToArray();
                 }
             }
-            //lấy token
-            var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
-            //Trích xuất token
-            var token = authHeader.Substring("Bearer ".Length).Trim();
+            //1lấy token
+            
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var command = new UpdateCategoryCommand(
                 id, categoryName,
@@ -120,12 +120,15 @@ public class CategoryController : IEndpoint
         });
 
         //Xóa category
-        endpoints.MapDelete("{id}", async (Ulid id, ISender sender, HttpContext httpContext) =>
+        endpoints.MapDelete("{id}", async (
+            Ulid id, 
+            ISender sender, 
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
         {
             //lấy token
-            var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
-            //Trích xuất token
-            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+
             var request = new RemoveCategoryCommand(id, token);
             var result = await sender.Send(request);
             if (result.IsSuccess)
@@ -138,16 +141,16 @@ public class CategoryController : IEndpoint
 
 
         //Xóa nhiều category
-        endpoints.MapDelete("", async (
+        endpoints.MapDelete("", 
+        async (
             [FromForm] Ulid[] id,
             HttpContext httpContext,
-            ISender sender) =>
+            ISender sender,
+            IJwtProvider jwtProvider) =>
         {
 
             //lấy token
-            var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
-            //Trích xuất token
-            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
 
             //Gửi command
             var result = await sender.Send(new RemoveManyCategoryCommand(id, token));
@@ -160,13 +163,18 @@ public class CategoryController : IEndpoint
         });
 
         //Khôi phục category
-        endpoints.MapPut("restore/{id}", async (Ulid id, HttpContext httpContext, ISender sender) =>
+        endpoints.MapPut("restore/{id}", 
+        async (
+            Ulid id, 
+            HttpContext 
+            httpContext, 
+            ISender sender,
+            IJwtProvider jwtProvider) =>
         {
 
             //lấy token
-            var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
-            //Trích xuất token
-            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+
             var result = await sender.Send(new RestoreCategoryCommand(id, token));
             if (result.IsSuccess)
             {
@@ -176,15 +184,16 @@ public class CategoryController : IEndpoint
         });
 
         //Khôi phục nhiều category
-        endpoints.MapPut("restore", async (
+        endpoints.MapPut("restore", 
+        async (
             [FromForm] Ulid[] id,
             HttpContext httpContext,
-            ISender sender) =>
+            ISender sender,
+            IJwtProvider jwtProvider) =>
         {
             //lấy token
-            var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
-            //Trích xuất token
-            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+
             //Gửi command
             var result = await sender.Send(new RestoreManyCategoryCommand(id, token));
             if (result.IsSuccess)

@@ -27,6 +27,7 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
                 .Matches(@"^0\d{9}$").WithMessage("PhoneNumber must start with 0 and be exactly 10 digits long.")
                 .Must(a => employeeRepository.IsEmployeePhoneExist(a).Result == false)
                 .WithMessage("PhoneNumber is already exist.");
+                
             RuleFor(u => u.Email)
                 .NotEmpty().WithMessage("Email is Empty.")
                 .NotNull().WithMessage("Email is Null.")
