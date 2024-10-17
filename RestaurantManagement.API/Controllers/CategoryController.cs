@@ -24,10 +24,12 @@ public class CategoryController : IEndpoint
         endpoints.MapGet("", 
         async (
             [FromQuery] string? seachTerm,
+            [FromQuery] string? sortColumn,
+            [FromQuery] string? sortOrder,
             [FromQuery] int page,
             [FromQuery] int pageSize, ISender sender) =>
         {
-            var query = new CategoryFilterQuery(seachTerm, page, pageSize);
+            var query = new CategoryFilterQuery(seachTerm,sortColumn, sortOrder, page, pageSize);
             var response = await sender.Send(query);
             return Results.Ok(response);
 

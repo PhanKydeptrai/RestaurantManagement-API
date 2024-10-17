@@ -1,11 +1,11 @@
 ﻿using RestaurantManagement.Application.Abtractions;
 
-namespace RestaurantManagement.Application.Features.MealFeature.Commands;
+namespace RestaurantManagement.Application.Features.MealFeature.Commands.CreateMeal;
 
 public record CreateMealCommand(
-    string MealName, 
-    decimal Price, 
-    byte[]? Image, 
+    string MealName,
+    decimal Price,
+    byte[]? Image,
     string? Description,
     Ulid CategoryId,
     string token) : ICommand;

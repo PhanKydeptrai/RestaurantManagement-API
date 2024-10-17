@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using RestaurantManagement.Domain.IRepos;
 
-namespace RestaurantManagement.Application.Features.MealFeature.Commands;
+namespace RestaurantManagement.Application.Features.MealFeature.Commands.CreateMeal;
 public class CreateMealCommandValidator : AbstractValidator<CreateMealCommand>
 {
     public CreateMealCommandValidator(
@@ -22,11 +22,11 @@ public class CreateMealCommandValidator : AbstractValidator<CreateMealCommand>
             .When(p => p != null).WithMessage("{PropertyName} must be a decimal.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull().WithMessage("{PropertyName} is required.");
-        
+
         RuleFor(p => p.CategoryId)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull().WithMessage("{PropertyName} is required.")
-            .Must(p => categoryRepository.CheckStatusOfCategory(p).Result == false)
+            .Must(p => categoryRepository.CheckStatusOfCategory(p).Result)
             .WithMessage("{PropertyName} is not valid");
 
 

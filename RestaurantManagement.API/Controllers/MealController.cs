@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
-using RestaurantManagement.Application.Features.MealFeature.Commands;
+using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
+using RestaurantManagement.Application.Features.MealFeature.Commands.CreateMeal;
+using RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
+using RestaurantManagement.Domain.DTOs.MealDto;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
@@ -53,5 +56,18 @@ public class MealController : IEndpoint
             return Results.Ok(result);
         }).RequireAuthorization("boss");
 
+        //Get all meal
+        endpoints.MapGet("", 
+        async (
+            [FromQuery] string? seachTerm,
+            [FromQuery] string? sortColumn,
+            [FromQuery] string? sortOrder,
+            [FromQuery] int page,
+            [FromQuery] int pageSize, ISender sender) => 
+        {
+            var query = new GetAllMealQuery(seachTerm, sortColumn, sortOrder, page, pageSize);
+            var response = await sender.Send(query);
+            return Results.Ok(response);
+        });
     }
 }

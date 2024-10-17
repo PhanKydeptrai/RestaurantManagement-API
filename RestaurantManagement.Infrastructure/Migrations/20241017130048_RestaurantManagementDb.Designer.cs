@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241012150649_RestaurantManagementDb")]
+    [Migration("20241017130048_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -298,7 +298,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.Property<string>("MealName")
                         .IsRequired()
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("MealStatus")
                         .IsRequired()

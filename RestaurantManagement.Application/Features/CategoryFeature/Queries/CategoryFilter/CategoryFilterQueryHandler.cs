@@ -1,7 +1,9 @@
-﻿using RestaurantManagement.Application.Abtractions;
+﻿using System.Linq.Expressions;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Features.Paging;
 using RestaurantManagement.Domain.DTOs.CategoryDto;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
@@ -23,7 +25,25 @@ public class CategoryFilterQueryHandler : IQueryHandler<CategoryFilterQuery, Pag
             categoriesQuery = categoriesQuery.Where(x => x.CategoryName.Contains(request.searchTerm) 
             || x.CategoryStatus.Contains(request.searchTerm));
         }
+        
+        //sort
+        Expression<Func<Category, object>> keySelector = request.sortColumn?.ToLower() switch
+        {
+            "categoryname" => x => x.CategoryName,
+            "categoryid" => x => x.CategoryId,
+            _ => x => x.CategoryId
+        };
 
+        if(request.sortOrder?.ToLower() == "desc")
+        {
+            categoriesQuery = categoriesQuery.OrderByDescending(keySelector);
+        }
+        else
+        {
+            categoriesQuery = categoriesQuery.OrderBy(keySelector);
+        }
+
+        //paged
         var categories = categoriesQuery
             .Select(a => new CategoryResponse(
                 a.CategoryId, 

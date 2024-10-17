@@ -4,7 +4,7 @@ using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.MealFeature.Commands;
+namespace RestaurantManagement.Application.Features.MealFeature.Commands.CreateMeal;
 
 public class CreateMealCommandHandler(
     IUnitOfWork unitOfWork,
@@ -54,7 +54,7 @@ public class CreateMealCommandHandler(
             SystemLogId = Ulid.NewUlid(),
             UserId = Ulid.Parse(userId)
         });
-        
+
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

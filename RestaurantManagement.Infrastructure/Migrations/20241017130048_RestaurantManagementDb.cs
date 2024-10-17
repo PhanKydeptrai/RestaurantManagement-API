@@ -90,7 +90,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     MealId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    MealName = table.Column<string>(type: "varchar(100)", nullable: false),
+                    MealName = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(255)", nullable: true),
