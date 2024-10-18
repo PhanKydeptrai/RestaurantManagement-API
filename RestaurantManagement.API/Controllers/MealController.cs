@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
-using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 using RestaurantManagement.Application.Features.MealFeature.Commands.CreateMeal;
 using RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
-using RestaurantManagement.Domain.DTOs.MealDto;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
@@ -13,7 +11,7 @@ namespace RestaurantManagement.API.Controllers;
 public class MealController : IEndpoint
 {
     //Add role
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public async void MapEndpoint(IEndpointRouteBuilder app)
     {
         var endpoints = app.MapGroup("api/meal").WithTags("Meal").DisableAntiforgery();
 

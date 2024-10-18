@@ -5,7 +5,9 @@ using RestaurantManagement.Application.Features.Paging;
 namespace RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 
 public record CustomerFilterQuery(
-    string? searchTerm, 
+    string? searchTerm,
+    string? sortColumn,
+    string? sortOrder,
     int page, 
     int pageSize) : IQuery<PagedList<CustomerResponse>>;
 

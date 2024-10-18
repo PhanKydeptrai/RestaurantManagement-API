@@ -58,11 +58,21 @@ public class MealRepository : IMealRepository
                                     .FirstOrDefaultAsync();
     }
 
-    public Task<bool> IsMealNameUnique(string name)
+    public async Task<bool> IsMealExist(Ulid id)
     {
-        return _context.Meals.AnyAsync(n => n.MealName == name);
+        return await _context.Meals.AsNoTracking()
+            .AnyAsync(m => m.MealId == id);
     }
 
+    public async Task<bool> IsMealNameUnique(string name)
+    {
+        return await _context.Meals.AsNoTracking().AnyAsync(n => n.MealName == name);
+    }
+
+    public async Task<bool> IsMealNameUnique_update(Ulid id,string name)
+    {
+        return await _context.Meals.AsNoTracking().AnyAsync(n => n.MealName == name && n.MealId != id);
+    }
     public void UpdateMeal(Meal meal)
     {
         _context.Meals.Update(meal);    

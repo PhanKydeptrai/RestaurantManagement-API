@@ -49,7 +49,7 @@ public class CategoryFilterQueryHandler : IQueryHandler<CategoryFilterQuery, Pag
                 a.CategoryId, 
                 a.CategoryName, 
                 a.CategoryStatus,
-                a.CategoryImage));
+                a.CategoryImage)).AsQueryable();
         var categoriesList = await PagedList<CategoryResponse>.CreateAsync(categories, request.page, request.pageSize);
 
         return Result<PagedList<CategoryResponse>>.Success(categoriesList);

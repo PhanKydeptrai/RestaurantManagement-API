@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateCustomerInformation;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
@@ -17,15 +18,22 @@ namespace RestaurantManagement.API.Controllers
             var endpoints = app.MapGroup("api/customer").WithTags("Customer").DisableAntiforgery();
 
             // Get all with pagination
-            endpoints.MapGet("", async (ISender sender, string? seachTerm, int page, int pageSize) =>
+            endpoints.MapGet("", 
+            async (
+                ISender sender, 
+                [FromQuery] string? seachTerm, 
+                [FromQuery] int page, 
+                [FromQuery] int pageSize,
+                [FromQuery] string? sortColumn,
+                [FromQuery] string? sortOrder ) =>
             {
-                CustomerFilterQuery request = new CustomerFilterQuery(seachTerm, page, pageSize);
+                CustomerFilterQuery request = new CustomerFilterQuery(seachTerm,sortColumn,sortOrder, page, pageSize);
                 var result = await sender.Send(request);
                 if (result != null)
                 {
                     return Results.Ok(result);
                 }
-                return Results.BadRequest("Not Found");
+                return Results.BadRequest(result.ToProblemDetails());
             });
 
             //Get by id

@@ -7,5 +7,5 @@ public record UpdateCategoryCommand(
     Ulid CategoryId, 
     string CategoryName, 
     string CategoryStatus,
-    byte[] CategoryImage,
+    byte[]? CategoryImage,
     string Token) : ICommand;
