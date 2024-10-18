@@ -17,6 +17,7 @@ public interface IMealRepository
     Task<bool> IsMealNameUnique(string name); //Kiểm tra tên món ăn có duy nhất không
     Task<string?> GetMealStatus(Ulid id); //Lấy ra trạng thái của món ăn
     Task<string?> GetSellStatus(Ulid id); //Lấy ra trạng thái bán của món ăn
-
+    Task<bool> IsMealNameUnique_update(Ulid id, string name);
+    Task<bool> IsMealExist(Ulid id);
 
 }

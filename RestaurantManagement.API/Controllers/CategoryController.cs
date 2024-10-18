@@ -24,10 +24,12 @@ public class CategoryController : IEndpoint
         endpoints.MapGet("", 
         async (
             [FromQuery] string? seachTerm,
+            [FromQuery] string? sortColumn,
+            [FromQuery] string? sortOrder,
             [FromQuery] int page,
             [FromQuery] int pageSize, ISender sender) =>
         {
-            var query = new CategoryFilterQuery(seachTerm, page, pageSize);
+            var query = new CategoryFilterQuery(seachTerm,sortColumn, sortOrder, page, pageSize);
             var response = await sender.Send(query);
             return Results.Ok(response);
 
@@ -120,7 +122,8 @@ public class CategoryController : IEndpoint
         });
 
         //Xóa category
-        endpoints.MapDelete("{id}", async (
+        endpoints.MapDelete("{id}", 
+        async (
             Ulid id, 
             ISender sender, 
             HttpContext httpContext,
@@ -198,7 +201,7 @@ public class CategoryController : IEndpoint
             var result = await sender.Send(new RestoreManyCategoryCommand(id, token));
             if (result.IsSuccess)
             {
-                return Results.Ok("Restore successfully!");
+                return Results.Ok(result);
             }
             return Results.BadRequest(result.ToProblemDetails());
 

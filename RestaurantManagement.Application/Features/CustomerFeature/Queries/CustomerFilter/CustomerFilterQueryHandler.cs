@@ -3,7 +3,9 @@ using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Features.CustomerFeature.DTOs;
 using RestaurantManagement.Application.Features.Paging;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.Shared;
+using System.Linq.Expressions;
 
 namespace RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 
@@ -37,8 +39,24 @@ public class CustomerFilterQueryHandler : IQueryHandler<CustomerFilterQuery, Pag
             a.User.Status,
             a.CustomerStatus,
             a.CustomerType,
-            a.User.UserImage
-            )).AsQueryable();
+            a.User.UserImage)).AsQueryable();
+
+        //sort
+        Expression<Func<Customer, object>> keySelector = request.sortColumn?.ToLower() switch
+        {
+            "customername" => x => x.User.FirstName + x.User.LastName,
+            "customerid" => x => x.UserId,
+            _ => x => x.UserId
+        };
+
+        if (request.sortOrder?.ToLower() == "desc")
+        {
+            customerQuery = customerQuery.OrderByDescending(keySelector);
+        }
+        else
+        {
+            customerQuery = customerQuery.OrderBy(keySelector);
+        }
 
 
         var customerList = await PagedList<CustomerResponse>

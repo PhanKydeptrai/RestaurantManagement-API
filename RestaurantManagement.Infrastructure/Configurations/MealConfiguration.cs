@@ -11,7 +11,7 @@ internal sealed class MealConfiguration : IEntityTypeConfiguration<Meal>
     {
         builder.HasKey(a => a.MealId);
         builder.Property(a => a.MealId).IsRequired().HasConversion<UlidToStringConverter>();
-        builder.Property(a => a.MealName).IsRequired().HasColumnType("varchar(100)");
+        builder.Property(a => a.MealName).IsRequired().HasColumnType("nvarchar(100)");
         builder.Property(a => a.Price).IsRequired().HasColumnType("decimal(18,2)");
         builder.Property(a => a.Image).IsRequired(false).HasColumnType("varbinary(max)");
         builder.Property(a => a.Description).IsRequired(false).HasColumnType("nvarchar(255)");

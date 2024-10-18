@@ -20,8 +20,4 @@
     <ProjectReference Include="..\RestaurantManagement.Domain\RestaurantManagement.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\MealFeature\Queries\" />
-  </ItemGroup>
-
 </Project>

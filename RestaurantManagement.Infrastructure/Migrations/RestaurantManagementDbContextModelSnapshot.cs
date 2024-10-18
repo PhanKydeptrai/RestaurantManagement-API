@@ -295,7 +295,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.Property<string>("MealName")
                         .IsRequired()
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("MealStatus")
                         .IsRequired()
