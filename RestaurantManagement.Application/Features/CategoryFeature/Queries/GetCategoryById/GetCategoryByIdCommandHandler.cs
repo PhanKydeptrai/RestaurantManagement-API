@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Domain.DTOs.CategoryDto;
@@ -30,6 +29,6 @@ public class GetCategoryByIdCommandHandler : IQueryHandler<GetCategoryByIdComman
                     result.CategoryId,
                     result.CategoryName,
                     result.CategoryStatus,
-                    result.CategoryImage));
+                    result.ImageUrl));
     }
 }

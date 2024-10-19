@@ -6,6 +6,6 @@ namespace RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMe
 
 public record GetAllMealQuery(string? searchTerm,
     string? sortColumn,
-    string? sortOrder, 
-    int page, 
+    string? sortOrder,
+    int page,
     int pageSize) : IQuery<PagedList<MealResponse>>;

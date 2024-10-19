@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241017130048_RestaurantManagementDb")]
+    [Migration("20241018180311_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -165,9 +165,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("CategoryId")
                         .HasColumnType("nvarchar(26)");
 
-                    b.Property<byte[]>("CategoryImage")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
@@ -175,6 +172,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("CategoryStatus")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("varchar(200)");
 
                     b.HasKey("CategoryId");
 
@@ -293,8 +293,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<byte[]>("Image")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("MealName")
                         .IsRequired()
@@ -507,8 +507,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<byte[]>("TableImage")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("varchar(250)");
 
                     b.Property<decimal>("TablePrice")
                         .HasColumnType("decimal(18,2)");
@@ -533,6 +533,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("varchar(10)");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("varchar(255)");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
@@ -546,9 +549,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("varchar(20)");
-
-                    b.Property<byte[]>("UserImage")
-                        .HasColumnType("varbinary(max)");
 
                     b.HasKey("UserId");
 

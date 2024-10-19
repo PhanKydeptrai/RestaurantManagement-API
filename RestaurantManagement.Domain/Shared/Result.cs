@@ -4,7 +4,7 @@ public class Result
 {
     public Result(bool isSuccess, Error[]? errors)
     {
-        if(isSuccess && errors != null) //Reult không thể có Error khi isSuccess = true
+        if (isSuccess && errors != null) //Reult không thể có Error khi isSuccess = true
         {
             throw new InvalidOperationException();
         }
@@ -19,7 +19,7 @@ public class Result
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
     public Error[]? Errors { get; set; }
-    
+
     //Tạo ra một Result thành công
     public static Result Success() => new(true, null);
     //Tạo ra một Result thất bại
@@ -43,7 +43,7 @@ public class Result<T>
         Errors = errors;
         Value = value;
     }
-    
+
     public T Value { get; }
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;

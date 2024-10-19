@@ -1,8 +1,7 @@
-using System.Net;
-using System.Net.Mail;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Mail;
 
 
 namespace RestaurantManagement.Application;
@@ -20,7 +19,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Email:Sender"])
                 .AddSmtpSender(new SmtpClient(configuration["Email:Host"], int.Parse(configuration["Email:Port"])));
-            
+
 
         //// Đăng ký pipeline behaviors cho log
         //services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));

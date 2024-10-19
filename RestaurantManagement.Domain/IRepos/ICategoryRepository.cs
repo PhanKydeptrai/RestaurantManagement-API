@@ -16,4 +16,5 @@ public interface ICategoryRepository
     Task<bool> IsCategoryNameExists(string name);
     Task<bool> IsCategoryNameExistsWhenUpdate(Ulid id, string name);
     Task<bool> CheckStatusOfCategory(Ulid id);
+    Task<bool> IsCategoryExist(Ulid id);
 }

@@ -12,5 +12,5 @@ public interface ICommand : IRequest<Result>
 //Trừu tượng hóa IRequest để sử dụng Result model (Có tham số trả về)
 public interface ICommand<TResponse> : IRequest<Result<TResponse>>
 {
-    
+
 }

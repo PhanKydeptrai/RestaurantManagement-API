@@ -35,7 +35,7 @@ public class CreateMealCommandHandler(
             MealId = Ulid.NewUlid(),
             MealName = request.MealName,
             Price = request.Price,
-            Image = request.Image,
+            ImageUrl = request.ImageUrl,
             Description = request.Description,
             MealStatus = "kd",
             SellStatus = "kd",

@@ -25,7 +25,7 @@ public class UpdateMealCommandHandler : ICommandHandler<UpdateMealCommand>
         _context = context;
         _categoryRepository = categoryRepository;
         _systemLogRepository = systemLogRepository;
-        
+
     }
 
     public async Task<Result> Handle(UpdateMealCommand request, CancellationToken cancellationToken)
@@ -34,7 +34,7 @@ public class UpdateMealCommandHandler : ICommandHandler<UpdateMealCommand>
         var validator = new UpdateMealValidator(_mealRepository, _categoryRepository);
         var validationResult = await validator.ValidateAsync(request);
 
-        if(!validationResult.IsValid)
+        if (!validationResult.IsValid)
         {
             Error[] errors = validationResult.Errors
                 .Select(a => new Error(a.ErrorCode, a.ErrorMessage))
@@ -47,7 +47,7 @@ public class UpdateMealCommandHandler : ICommandHandler<UpdateMealCommand>
 
         meal.MealName = request.MealName;
         meal.Price = request.Price;
-        meal.Image = request.Image;
+        meal.ImageUrl = request.ImageUrl;
         meal.Description = request.Description;
         meal.CategoryId = request.CategoryId;
 

@@ -29,8 +29,8 @@ public class UpdateEmployeeInformationCommandHandler : ICommandHandler<UpdateEmp
     public async Task<Result> Handle(UpdateEmployeeInformationCommand request, CancellationToken cancellationToken)
     {
         var validator = new UpdateEmployeeInformationCommandValidator(_employeeRepository);
-        var validationResult = await validator.ValidateAsync(request); 
-        if(!validationResult.IsValid)
+        var validationResult = await validator.ValidateAsync(request);
+        if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
@@ -53,7 +53,7 @@ public class UpdateEmployeeInformationCommandHandler : ICommandHandler<UpdateEmp
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.Phone = request.PhoneNumber;
-        user.UserImage = request.UserImage ?? user.UserImage;
+        user.ImageUrl = request.ImageUrl ?? user.ImageUrl;
         //Decode token to get userId
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);

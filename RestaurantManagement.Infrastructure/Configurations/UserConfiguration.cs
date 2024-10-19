@@ -17,7 +17,7 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(a => a.Phone).IsRequired(false).HasColumnType("varchar(20)");
         builder.Property(a => a.Status).IsRequired().HasColumnType("varchar(20)");
         builder.Property(a => a.Email).IsRequired(false).HasColumnType("varchar(50)");
-        builder.Property(a => a.UserImage).IsRequired(false).HasColumnType("varbinary(max)");
+        builder.Property(a => a.ImageUrl).IsRequired(false).HasColumnType("varchar(255)");
         builder.Property(a => a.Gender).IsRequired(false).HasColumnType("varchar(10)");
 
         //ForeignKey

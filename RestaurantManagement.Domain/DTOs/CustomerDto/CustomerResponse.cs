@@ -1,12 +1,12 @@
 namespace RestaurantManagement.Application.Features.CustomerFeature.DTOs;
 public record CustomerResponse(
-    Ulid UserId, 
-    string FirstName, 
-    string LastName, 
+    Ulid UserId,
+    string FirstName,
+    string LastName,
     string Email,
     string? PhoneNumber,
     string Gender,
     string UserStatus,
     string CustomerStatus,
-    string CustomerType, 
-    byte[]? UserImage);
+    string CustomerType,
+    string? UserImage);

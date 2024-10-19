@@ -11,7 +11,7 @@ internal sealed class TableTypeConfiguration : IEntityTypeConfiguration<TableTyp
     {
         builder.HasKey(a => a.TableTypeId);
         builder.Property(a => a.TableTypeId).IsRequired().HasConversion<UlidToStringConverter>();
-        builder.Property(a => a.TableImage).IsRequired(false).HasColumnType("varbinary(max)");
+        builder.Property(a => a.ImageUrl).IsRequired(false).HasColumnType("varchar(250)");
         builder.Property(a => a.TablePrice).IsRequired().HasColumnType("decimal(18,2)");
         builder.Property(a => a.Description).IsRequired(false).HasColumnType("nvarchar(255)");
 

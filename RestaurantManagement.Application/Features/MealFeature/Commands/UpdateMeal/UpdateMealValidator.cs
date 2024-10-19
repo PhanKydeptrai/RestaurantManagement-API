@@ -14,7 +14,7 @@ public class UpdateMealValidator : AbstractValidator<UpdateMealCommand>
             .NotNull().WithMessage("{PropertyName} is required.")
             .MaximumLength(50)
             .WithMessage("{PropertyName} must not exceed 50 characters.")
-            .Must((id, name) => mealRepository.IsMealNameUnique_update(id.MealId,name).Result == false)
+            .Must((id, name) => mealRepository.IsMealNameUnique_update(id.MealId, name).Result == false)
             .WithMessage("{PropertyName} is exist");
 
         RuleFor(p => p.MealId)

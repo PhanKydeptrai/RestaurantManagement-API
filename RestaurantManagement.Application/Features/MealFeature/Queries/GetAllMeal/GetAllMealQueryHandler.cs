@@ -20,7 +20,7 @@ public class GetAllMealQueryHandler : IQueryHandler<GetAllMealQuery, PagedList<M
 
     public async Task<Result<PagedList<MealResponse>>> Handle(GetAllMealQuery request, CancellationToken cancellationToken)
     {
-        var mealQuery= _context.Meals.Include(x => x.Category).AsQueryable();
+        var mealQuery = _context.Meals.Include(x => x.Category).AsQueryable();
 
         if (!string.IsNullOrEmpty(request.searchTerm))
         {
@@ -52,7 +52,7 @@ public class GetAllMealQueryHandler : IQueryHandler<GetAllMealQuery, PagedList<M
                 a.MealId,
                 a.MealName,
                 a.Price,
-                a.Image,
+                a.ImageUrl,
                 a.Description,
                 a.SellStatus,
                 a.MealStatus,

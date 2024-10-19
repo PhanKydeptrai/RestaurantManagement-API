@@ -9,8 +9,8 @@ public class User
     public string? Phone { get; set; }
     public string Status { get; set; }
     public string? Email { get; set; }
-    public byte[]? UserImage { get; set; }
-    public string? Gender { get; set; } 
+    public string? ImageUrl { get; set; }
+    public string? Gender { get; set; }
     public ICollection<Notification>? Notifications { get; set; }
     public Customer? Customer { get; set; }
     public Employee? Employee { get; set; }

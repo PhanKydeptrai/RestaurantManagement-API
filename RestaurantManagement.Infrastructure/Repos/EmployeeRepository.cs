@@ -64,7 +64,7 @@ namespace RestaurantManagement.Infrastructure.Repos
         public async Task<IEnumerable<Employee>> GetEmployees()
         {
             return await _context.Employees.ToListAsync();
-                
+
         }
 
         public void UpdateEmployee(Employee employee)

@@ -15,8 +15,8 @@ public class EmployeeLoginQueryHandler : IQueryHandler<EmployeeLoginQuery, strin
     private readonly IApplicationDbContext _context;
 
     public EmployeeLoginQueryHandler(
-        IApplicationDbContext context, 
-        IJwtProvider jwtProvider, 
+        IApplicationDbContext context,
+        IJwtProvider jwtProvider,
         IEmployeeRepository employeeRepository)
     {
         _context = context;
@@ -56,8 +56,8 @@ public class EmployeeLoginQueryHandler : IQueryHandler<EmployeeLoginQuery, strin
             return Result<string>.Failure(errors);
         }
         string token = _jwtProvider.GenerateJwtToken(
-            loginResponse.UserId, 
-            loginResponse.Email, 
+            loginResponse.UserId,
+            loginResponse.Email,
             loginResponse.Role);
 
         return Result<string>.Success(token);

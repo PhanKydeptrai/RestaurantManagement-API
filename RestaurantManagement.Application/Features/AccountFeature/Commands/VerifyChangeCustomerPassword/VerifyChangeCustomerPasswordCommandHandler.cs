@@ -7,7 +7,7 @@ namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Veri
 
 public class VerifyChangeCustomerPasswordCommandHandler : ICommandHandler<VerifyChangeCustomerPasswordCommand>
 {
-    private readonly IEmailVerificationTokenRepository _emailVerificationTokenRepository; 
+    private readonly IEmailVerificationTokenRepository _emailVerificationTokenRepository;
     private readonly IApplicationDbContext _context;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -38,7 +38,7 @@ public class VerifyChangeCustomerPasswordCommandHandler : ICommandHandler<Verify
 
         if (token.ExpiredDate < DateTime.UtcNow) //token hết hạn
         {
-            Error[] errors = { new Error("Link", "Đường dẫn đã hết hạn") }; 
+            Error[] errors = { new Error("Link", "Đường dẫn đã hết hạn") };
             _emailVerificationTokenRepository.RemoveVerificationToken(token);
             await _unitOfWork.SaveChangesAsync();
             return Result.Failure(errors);

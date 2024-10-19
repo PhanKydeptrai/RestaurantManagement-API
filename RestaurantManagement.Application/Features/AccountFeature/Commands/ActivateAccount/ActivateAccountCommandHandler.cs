@@ -10,7 +10,7 @@ namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Acti
 public class ActivateAccountCommandHandler : ICommandHandler<ActivateAccountCommand>
 {
     private readonly IEmailVerificationTokenRepository _emailVerificationTokenRepository;
-    
+
     private readonly IEmailVerify _emailVerify;
     private readonly IFluentEmail _fluentEmail;
     private readonly IUnitOfWork _unitOfWork;
@@ -23,7 +23,7 @@ public class ActivateAccountCommandHandler : ICommandHandler<ActivateAccountComm
         IUnitOfWork unitOfWork)
     {
         _emailVerificationTokenRepository = emailVerificationTokenRepository;
-        
+
         _emailVerify = emailVerify;
         _fluentEmail = fluentEmail;
         _unitOfWork = unitOfWork;

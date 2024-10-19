@@ -13,5 +13,5 @@ public interface IBookingRepository
 
     //Queries
     IQueryable<Booking> GetQueryableBookings();
-    Task<IEnumerable<Booking>> GetBookingsByCustomerId(Ulid id); 
+    Task<IEnumerable<Booking>> GetBookingsByCustomerId(Ulid id);
 }

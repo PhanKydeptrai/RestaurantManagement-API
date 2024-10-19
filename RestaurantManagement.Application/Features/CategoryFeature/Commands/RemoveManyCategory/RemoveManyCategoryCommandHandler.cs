@@ -1,6 +1,5 @@
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
-using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -26,9 +25,9 @@ public class RemoveManyCategoryCommandHandler : ICommandHandler<RemoveManyCatego
         var claims = JwtHelper.DecodeJwt(request.Token);
         claims.TryGetValue("sub", out var userId);
 
-        foreach(Ulid id in request.id)
-        {   
-            if(await _categoryRepository.CheckStatusOfCategory(id) == false)
+        foreach (Ulid id in request.id)
+        {
+            if (await _categoryRepository.CheckStatusOfCategory(id) == false)
             {
                 return Result.Failure(new[] { new Error("Category", $"Category {id} not found") });
             }

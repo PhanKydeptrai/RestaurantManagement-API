@@ -69,12 +69,12 @@ public class MealRepository : IMealRepository
         return await _context.Meals.AsNoTracking().AnyAsync(n => n.MealName == name);
     }
 
-    public async Task<bool> IsMealNameUnique_update(Ulid id,string name)
+    public async Task<bool> IsMealNameUnique_update(Ulid id, string name)
     {
         return await _context.Meals.AsNoTracking().AnyAsync(n => n.MealName == name && n.MealId != id);
     }
     public void UpdateMeal(Meal meal)
     {
-        _context.Meals.Update(meal);    
+        _context.Meals.Update(meal);
     }
 }

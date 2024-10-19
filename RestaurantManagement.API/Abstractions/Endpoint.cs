@@ -1,6 +1,6 @@
 namespace RestaurantManagement.API.Abstractions;
 
-public interface IEndpoint 
+public interface IEndpoint
 {
     void MapEndpoint(IEndpointRouteBuilder builder);
 }

@@ -34,34 +34,34 @@ public class LoginQueryHandler : ICommandHandler<LoginQuery, string>
         var encryptedPassword = EncryptProvider.Sha256(request.passWord);
         //REFACTOR
         CustomerLoginResponse? loginResponse = await _context.Customers
-            .Where(a => a.User.Password == encryptedPassword 
-            &&(a.User.Email == request.loginString 
-            || a.User.Phone == request.loginString) 
+            .Where(a => a.User.Password == encryptedPassword
+            && (a.User.Email == request.loginString
+            || a.User.Phone == request.loginString)
             && a.CustomerType == "Subscriber"
             && a.CustomerStatus == "Active")
             .Select(a => new CustomerLoginResponse(
-                a.User.UserId.ToString(), 
-                a.User.Email, 
+                a.User.UserId.ToString(),
+                a.User.Email,
                 a.CustomerType,
                 a.User.Status))
-            .FirstOrDefaultAsync(); 
+            .FirstOrDefaultAsync();
 
-    
+
         if (loginResponse == null)
         {
             Error[] a = { new Error("Login Fail", "Invalid login") };
             return Result<string>.Failure(a);
         }
 
-        if(loginResponse.UserStatus != "Activated") //Chỉ khách hàng đã kích hoạt mới được đăng nhập
+        if (loginResponse.UserStatus != "Activated") //Chỉ khách hàng đã kích hoạt mới được đăng nhập
         {
             Error[] a = { new Error("Login Fail", "Account is not activated") };
             return Result<string>.Failure(a);
         }
 
         var token = _jwtProvider.GenerateJwtToken(
-                loginResponse.UserId, 
-                loginResponse.Email, 
+                loginResponse.UserId,
+                loginResponse.Email,
                 loginResponse.CustomerType);
 
         return Result<string>.Success(token);

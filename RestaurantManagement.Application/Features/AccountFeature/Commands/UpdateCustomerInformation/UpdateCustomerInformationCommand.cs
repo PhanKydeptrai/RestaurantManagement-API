@@ -7,6 +7,6 @@ public record UpdateCustomerInformationCommand(
     string? FirstName,
     string? LastName,
     string? PhoneNumber,
-    byte[]? UserImage,
+    string? UserImage,
     string? Gender,
     string token) : ICommand;

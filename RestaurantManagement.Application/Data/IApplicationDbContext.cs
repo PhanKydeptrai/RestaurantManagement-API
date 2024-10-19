@@ -12,7 +12,7 @@ public interface IApplicationDbContext
     DbSet<Category> Categories { get; set; }
     DbSet<Customer> Customers { get; set; }
     DbSet<CustomerVoucher> CustomerVouchers { get; set; }
-    DbSet<Employee> Employees { get; set; } 
+    DbSet<Employee> Employees { get; set; }
     DbSet<Meal> Meals { get; set; }
     DbSet<Notification> Notifications { get; set; }
     DbSet<Order> Orders { get; set; }

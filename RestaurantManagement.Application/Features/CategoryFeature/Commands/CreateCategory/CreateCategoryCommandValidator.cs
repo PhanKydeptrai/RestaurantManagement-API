@@ -16,7 +16,7 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
             .WithMessage("Name cannot be longer than 50 characters")
             .Must(a => _categoryRepository.IsCategoryNameExists(a).Result == false)
             .WithMessage("Category name already exists");
-            
-            
+
+
     }
 }

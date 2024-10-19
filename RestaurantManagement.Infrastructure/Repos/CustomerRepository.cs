@@ -33,8 +33,8 @@ public class CustomerRepository : ICustomerRepository
         return await _context.Customers
             .Where(a => a.UserId == id)
             .Select(a => new CustomerResponse(
-                a.CustomerId, 
-                a.User.FirstName, 
+                a.CustomerId,
+                a.User.FirstName,
                 a.User.LastName,
                 a.User.Email,
                 a.User.Phone,
@@ -42,7 +42,7 @@ public class CustomerRepository : ICustomerRepository
                 a.User.Status,
                 a.CustomerStatus,
                 a.CustomerType,
-                a.User.UserImage
+                a.User.ImageUrl
             )).FirstOrDefaultAsync();
     }
 
@@ -89,5 +89,5 @@ public class CustomerRepository : ICustomerRepository
     public void UpdateCustomer(Customer customer)
     {
         _context.Customers.Update(customer);
-    }    
+    }
 }

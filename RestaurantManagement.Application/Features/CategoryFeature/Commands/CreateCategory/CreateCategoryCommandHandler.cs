@@ -22,7 +22,7 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
     }
     public async Task<Result> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-    
+
         //Validator
         var validator = new CreateCategoryCommandValidator(_categoryRepository);
         var validationResult = validator.Validate(request);
@@ -38,9 +38,9 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
         await _categoryRepository.AddCatgory(new Category
         {
             CategoryId = Ulid.NewUlid(),
-            CategoryName = request.Name,    
+            CategoryName = request.Name,
             CategoryStatus = "kd",
-            CategoryImage = request.Image
+            ImageUrl = request.Image
         });
 
         var claims = JwtHelper.DecodeJwt(request.Token);

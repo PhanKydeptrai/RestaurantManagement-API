@@ -7,7 +7,7 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
         string LastName,
         string PhoneNumber,
         string Email,
-        byte[]? UserImage,
+        string? UserImage,
         string Role,
         string Gender) : ICommand;
 }

@@ -1,6 +1,5 @@
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
-using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -25,12 +24,12 @@ public class RestoreCategoryCommandHandler : ICommandHandler<RestoreCategoryComm
     {
         //Refactor
         var category = await _categoryRepository.GetCategoryById(request.id);
-        if(category == null)
+        if (category == null)
         {
             return Result.Failure(new[] { new Error("Category", "Category not found") });
         }
 
-        if(await _categoryRepository.CheckStatusOfCategory(request.id))
+        if (await _categoryRepository.CheckStatusOfCategory(request.id))
         {
             return Result.Failure(new[] { new Error("Category", "Catgory status is kd") });
         }
@@ -38,7 +37,7 @@ public class RestoreCategoryCommandHandler : ICommandHandler<RestoreCategoryComm
         //Decode token
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
-        
+
         //Create System Log
         //await _systemLogRepository.CreateSystemLog(new SystemLog
         //{

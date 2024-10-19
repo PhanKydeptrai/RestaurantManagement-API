@@ -5,7 +5,7 @@ namespace RestaurantManagement.Application.Features.MealFeature.Commands.CreateM
 public record CreateMealCommand(
     string MealName,
     decimal Price,
-    byte[]? Image,
+    string? ImageUrl,
     string? Description,
     Ulid CategoryId,
     string token) : ICommand;

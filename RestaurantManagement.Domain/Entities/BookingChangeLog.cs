@@ -10,5 +10,5 @@ public class BookingChangeLog
     public Ulid BookId { get; set; }
     public User User { get; set; }
     public Booking? Booking { get; set; }
-    
+
 }

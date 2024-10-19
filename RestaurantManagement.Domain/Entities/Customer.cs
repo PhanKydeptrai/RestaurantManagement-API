@@ -10,5 +10,5 @@ public class Customer
     public ICollection<Booking>? Bookings { get; set; }
     public ICollection<Order>? Orders { get; set; }
     public ICollection<CustomerVoucher>? CustomerVouchers { get; set; }
-    
+
 }

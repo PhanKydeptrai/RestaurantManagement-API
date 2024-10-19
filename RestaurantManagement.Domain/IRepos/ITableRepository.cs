@@ -10,10 +10,10 @@ public interface ITableRepository
     Task AddTable(Table table);
     void UpdateTable(Table table);
     void DeleteTable(Table table);
-    
+
     //Queries
     Task<string?> GetTableStatus(Ulid id); //Get table status 
     IQueryable<Table> GetQueryableOfTable(); //Get IQueryable of Table
-   
-    
+
+
 }

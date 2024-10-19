@@ -4,7 +4,7 @@ using RestaurantManagement.Domain.IRepos;
 namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Register;
 
 public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
-{ 
+{
     public RegisterCommandValidator(ICustomerRepository customerRepository)
     {
         RuleFor(p => p.FirstName)
@@ -37,7 +37,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 
         RuleFor(b => b.Gender)
             .NotNull().WithMessage("Gender is required")
-            .NotEmpty().WithMessage("Gender must not be empty") 
+            .NotEmpty().WithMessage("Gender must not be empty")
             .Must(b => b == "Male" || b == "Female" || b == "Orther")
             .WithMessage("Gender must be Male, Female or Orther");
 
