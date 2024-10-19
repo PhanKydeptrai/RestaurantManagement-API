@@ -1,7 +1,4 @@
-﻿using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using dotenv.net;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
@@ -26,13 +23,14 @@ public class CategoryController : IEndpoint
         //Lấy danh sách category
         endpoints.MapGet("",
         async (
+            [FromQuery] string? filter,
             [FromQuery] string? seachTerm,
             [FromQuery] string? sortColumn,
             [FromQuery] string? sortOrder,
             [FromQuery] int? page,
             [FromQuery] int? pageSize, ISender sender) =>
         {
-            var query = new CategoryFilterQuery(seachTerm, sortColumn, sortOrder, page, pageSize);
+            var query = new CategoryFilterQuery(filter ,seachTerm, sortColumn, sortOrder, page, pageSize);
             var response = await sender.Send(query);
             return Results.Ok(response);
 

@@ -76,14 +76,14 @@ public class CustomerRepository : ICustomerRepository
     {
         return await _context.Customers
             .Include(c => c.User)
-            .AnyAsync(a => a.User.Email == email && a.CustomerId != id);
+            .AnyAsync(a => a.User.Email == email && a.UserId != id);
     }
 
     public async Task<bool> IsCustomerPhoneExist_update(Ulid id, string phone)
     {
         return await _context.Customers
             .Include(c => c.User)
-            .AnyAsync(a => a.User != null && a.User.Phone == phone && a.CustomerId != id);
+            .AnyAsync(a => a.User != null && a.User.Phone == phone && a.UserId != id);
     }
 
     public void UpdateCustomer(Customer customer)

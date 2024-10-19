@@ -34,6 +34,12 @@ builder.Services.AddCors(options =>
             .AllowAnyOrigin());
 });
 
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddSeq();
+});
+
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("boss", policy => policy.RequireClaim(ClaimTypes.Role, "Boss"));

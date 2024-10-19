@@ -51,9 +51,7 @@ public class CategoryRepository : ICategoryRepository
     {
         //Check status of category
 
-        return await _context.Categories
-                                .Where(x => x.CategoryId == id)
-                                .AnyAsync(a => a.CategoryStatus == "kd");
+        return await _context.Categories.AnyAsync(a => a.CategoryStatus == "kd" && a.CategoryId == id);
         // return true if category status is "kd"
     }
 

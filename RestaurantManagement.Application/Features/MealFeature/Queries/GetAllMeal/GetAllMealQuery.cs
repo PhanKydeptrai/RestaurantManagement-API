@@ -4,8 +4,11 @@ using RestaurantManagement.Domain.DTOs.MealDto;
 
 namespace RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
 
-public record GetAllMealQuery(string? searchTerm,
+public record GetAllMealQuery(
+    string? filterSellStatus,
+    string? filterMealStatus,
+    string? searchTerm,
     string? sortColumn,
     string? sortOrder,
-    int page,
-    int pageSize) : IQuery<PagedList<MealResponse>>;
+    int? page,
+    int? pageSize) : IQuery<PagedList<MealResponse>>;

@@ -23,13 +23,14 @@ namespace RestaurantManagement.API.Controllers
             endpoints.MapGet("",
             async (
                 ISender sender,
+                [FromQuery] string ? filter,
                 [FromQuery] string? seachTerm,
-                [FromQuery] int page,
-                [FromQuery] int pageSize,
+                [FromQuery] int? page,
+                [FromQuery] int? pageSize,
                 [FromQuery] string? sortColumn,
                 [FromQuery] string? sortOrder) =>
             {
-                CustomerFilterQuery request = new CustomerFilterQuery(seachTerm, sortColumn, sortOrder, page, pageSize);
+                CustomerFilterQuery request = new CustomerFilterQuery(filter, seachTerm, sortColumn, sortOrder, page, pageSize);
                 var result = await sender.Send(request);
                 if (result != null)
                 {
@@ -59,24 +60,8 @@ namespace RestaurantManagement.API.Controllers
                 HttpContext httpContext,
                 IJwtProvider jwtProvider) =>
             {
-                //Xử lý ảnh
-                DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-                Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
-                cloudinary.Api.Secure = true;
 
-                var memoryStream = new MemoryStream();
-                await image.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-
-                var uploadParams = new ImageUploadParams
-                {
-                    File = new FileDescription(image.FileName, memoryStream),
-                    UploadPreset = "iiwd8tcu"
-                };
-
-                var resultUpload = await cloudinary.UploadAsync(uploadParams);
-                Console.WriteLine(resultUpload.JsonObj);
-
+                //lấy token
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
 
 
@@ -85,7 +70,7 @@ namespace RestaurantManagement.API.Controllers
                     FirstName,
                     LastName,
                     PhoneNumber,
-                    resultUpload.SecureUrl.ToString(),
+                    image,
                     Gender,
                     token
                 );
@@ -93,9 +78,9 @@ namespace RestaurantManagement.API.Controllers
                 var result = await sender.Send(updateCustomerCommand);
                 if (result.IsSuccess)
                 {
-                    return Results.Ok("Customer updated successfully!");
+                    return Results.Ok(result);
                 }
-                return Results.BadRequest(result.Errors);
+                return Results.BadRequest(result.ToProblemDetails());
 
             }).RequireAuthorization();
         }

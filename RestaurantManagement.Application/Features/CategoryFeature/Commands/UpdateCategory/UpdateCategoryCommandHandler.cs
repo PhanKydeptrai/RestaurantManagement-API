@@ -1,6 +1,3 @@
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using dotenv.net;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;

@@ -73,6 +73,7 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand>
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,
+            ImageUrl = string.Empty,
             Phone = request.Phone,
             Password = EncryptProvider.Sha256(request.Password),
             Gender = request.Gender,
