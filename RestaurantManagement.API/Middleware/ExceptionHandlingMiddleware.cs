@@ -19,9 +19,9 @@ public class ExceptionHandlingMiddleware
         {
             await _next(context);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            _logger.LogError(ex,"Exception occured: {Message}", ex.Message);
+            _logger.LogError(ex, "Exception occured: {Message}", ex.Message);
             var problemDetail = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
@@ -34,5 +34,5 @@ public class ExceptionHandlingMiddleware
         }
     }
 
-    
+
 }

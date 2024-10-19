@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -17,7 +16,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 {
                     CategoryId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     CategoryName = table.Column<string>(type: "varchar(100)", nullable: false),
-                    CategoryImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "varchar(200)", nullable: true),
                     CategoryStatus = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
@@ -42,7 +41,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     TableTypeId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    TableImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "varchar(250)", nullable: true),
                     TablePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(255)", nullable: true)
                 },
@@ -62,7 +61,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     Phone = table.Column<string>(type: "varchar(20)", nullable: true),
                     Status = table.Column<string>(type: "varchar(20)", nullable: false),
                     Email = table.Column<string>(type: "varchar(50)", nullable: true),
-                    UserImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "varchar(255)", nullable: true),
                     Gender = table.Column<string>(type: "varchar(10)", nullable: true)
                 },
                 constraints: table =>
@@ -92,7 +91,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     MealId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     MealName = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "varchar(255)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(255)", nullable: true),
                     SellStatus = table.Column<string>(type: "varchar(50)", nullable: false),
                     MealStatus = table.Column<string>(type: "varchar(50)", nullable: false),

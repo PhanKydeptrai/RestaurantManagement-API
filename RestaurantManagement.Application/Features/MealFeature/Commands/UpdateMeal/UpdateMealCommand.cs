@@ -6,7 +6,7 @@ public record UpdateMealCommand(
     Ulid MealId,
     string MealName,
     decimal Price,
-    byte[]? Image,
+    string? ImageUrl,
     string? Description,
     Ulid CategoryId,
     string token) : ICommand;

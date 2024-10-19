@@ -1,6 +1,6 @@
-using System.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RestaurantManagement.API.Abstractions;
+using System.Reflection;
 
 namespace RestaurantManagement.API.Extentions;
 

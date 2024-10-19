@@ -8,7 +8,7 @@ public class BookingDetail
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
     public Ulid BookId { get; set; }
-    public Table? Table { get; set; }   
+    public Table? Table { get; set; }
     public Booking? Booking { get; set; }
 
 }

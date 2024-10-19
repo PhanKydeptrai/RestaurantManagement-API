@@ -1,10 +1,10 @@
-﻿using System.Linq.Expressions;
-using RestaurantManagement.Application.Abtractions;
+﻿using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Features.Paging;
 using RestaurantManagement.Domain.DTOs.CategoryDto;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.Shared;
+using System.Linq.Expressions;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 
@@ -22,10 +22,10 @@ public class CategoryFilterQueryHandler : IQueryHandler<CategoryFilterQuery, Pag
         var categoriesQuery = _context.Categories.AsQueryable();
         if (!string.IsNullOrEmpty(request.searchTerm))
         {
-            categoriesQuery = categoriesQuery.Where(x => x.CategoryName.Contains(request.searchTerm) 
+            categoriesQuery = categoriesQuery.Where(x => x.CategoryName.Contains(request.searchTerm)
             || x.CategoryStatus.Contains(request.searchTerm));
         }
-        
+
         //sort
         Expression<Func<Category, object>> keySelector = request.sortColumn?.ToLower() switch
         {
@@ -34,7 +34,7 @@ public class CategoryFilterQueryHandler : IQueryHandler<CategoryFilterQuery, Pag
             _ => x => x.CategoryId
         };
 
-        if(request.sortOrder?.ToLower() == "desc")
+        if (request.sortOrder?.ToLower() == "desc")
         {
             categoriesQuery = categoriesQuery.OrderByDescending(keySelector);
         }
@@ -46,11 +46,11 @@ public class CategoryFilterQueryHandler : IQueryHandler<CategoryFilterQuery, Pag
         //paged
         var categories = categoriesQuery
             .Select(a => new CategoryResponse(
-                a.CategoryId, 
-                a.CategoryName, 
+                a.CategoryId,
+                a.CategoryName,
                 a.CategoryStatus,
-                a.CategoryImage)).AsQueryable();
-        var categoriesList = await PagedList<CategoryResponse>.CreateAsync(categories, request.page, request.pageSize);
+                a.ImageUrl)).AsQueryable();
+        var categoriesList = await PagedList<CategoryResponse>.CreateAsync(categories, request.page ?? 1, request.pageSize ?? 10);
 
         return Result<PagedList<CategoryResponse>>.Success(categoriesList);
     }

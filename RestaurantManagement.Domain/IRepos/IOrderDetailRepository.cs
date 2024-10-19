@@ -13,5 +13,5 @@ public interface IOrderDetailRepository
     //Queries
     IQueryable<OrderDetail> GetQueryableOrderDetails();
     Task<ICollection<OrderDetail>> GetOrderDetailsByOrderId(Ulid id);
-    
+
 }

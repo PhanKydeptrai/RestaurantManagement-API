@@ -17,8 +17,8 @@ public class JwtProvider : IJwtProvider
         _config = config;
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]));
     }
-    
-    
+
+
 
     public string GenerateJwtToken(string userId, string email, string role)
     {

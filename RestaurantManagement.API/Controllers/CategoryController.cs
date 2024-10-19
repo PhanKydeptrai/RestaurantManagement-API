@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using dotenv.net;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
@@ -21,15 +24,15 @@ public class CategoryController : IEndpoint
 
 
         //Lấy danh sách category
-        endpoints.MapGet("", 
+        endpoints.MapGet("",
         async (
             [FromQuery] string? seachTerm,
             [FromQuery] string? sortColumn,
             [FromQuery] string? sortOrder,
-            [FromQuery] int page,
-            [FromQuery] int pageSize, ISender sender) =>
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize, ISender sender) =>
         {
-            var query = new CategoryFilterQuery(seachTerm,sortColumn, sortOrder, page, pageSize);
+            var query = new CategoryFilterQuery(seachTerm, sortColumn, sortOrder, page, pageSize);
             var response = await sender.Send(query);
             return Results.Ok(response);
 
@@ -48,7 +51,7 @@ public class CategoryController : IEndpoint
 
 
         //Tạo mới category
-        endpoints.MapPost("", 
+        endpoints.MapPost("",
         async (
             [FromForm] IFormFile? Image,
             [FromForm] string name,
@@ -59,20 +62,37 @@ public class CategoryController : IEndpoint
             IUnitOfWork unitOfWork,
             IJwtProvider jwtProvider) =>
         {
-            byte[] imageData = null!;
+
+
+            //Xử lý ảnh
+            string imageUrl = string.Empty;
             if (Image != null)
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await Image.CopyToAsync(memoryStream);
-                    imageData = memoryStream.ToArray();
-                }
-            }
+                DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
+                Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+                cloudinary.Api.Secure = true;
 
+                var memoryStream = new MemoryStream();
+                await Image.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(Image.FileName, memoryStream),
+                    UploadPreset = "iiwd8tcu"
+                };
+
+                var resultUpload = await cloudinary.UploadAsync(uploadParams);
+                imageUrl = resultUpload.SecureUrl.ToString();
+                Console.WriteLine(resultUpload.JsonObj);
+            }
+            
+
+            //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
             //Gửi command
-            var command = new CreateCategoryCommand(name, imageData, token);
+            var command = new CreateCategoryCommand(name, imageUrl, token);
             var result = await sender.Send(command);
             if (result.IsSuccess)
             {
@@ -84,7 +104,7 @@ public class CategoryController : IEndpoint
         });
 
         //Cập nhật category
-        endpoints.MapPut("{id}",
+        endpoints.MapPut("{id}", //TODO: Xử lý ảnh bị thêm khi không cập nhật
         async (
             Ulid id,
             [FromForm] string categoryName,
@@ -94,23 +114,38 @@ public class CategoryController : IEndpoint
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
         {
-            byte[] imageData = null!;
+            //Xử lý ảnh
+            string imageUrl = string.Empty;
             if (categoryImage != null)
             {
-                using (var memoryStream = new MemoryStream())
+                DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
+                Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+                cloudinary.Api.Secure = true;
+
+                var memoryStream = new MemoryStream();
+                await categoryImage.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                var uploadParams = new ImageUploadParams
                 {
-                    await categoryImage.CopyToAsync(memoryStream);
-                    imageData = memoryStream.ToArray();
-                }
+                    File = new FileDescription(categoryImage.FileName, memoryStream),
+                    UploadPreset = "iiwd8tcu"
+                };
+
+                var resultUpload = await cloudinary.UploadAsync(uploadParams);
+                imageUrl = resultUpload.SecureUrl.ToString();
+                Console.WriteLine(resultUpload.JsonObj);
             }
+
+
             //1lấy token
-            
+
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var command = new UpdateCategoryCommand(
                 id, categoryName,
                 categoryStatus,
-                imageData,
+                imageUrl ?? null,
                 token);
 
             var result = await sender.Send(command);
@@ -122,10 +157,10 @@ public class CategoryController : IEndpoint
         });
 
         //Xóa category
-        endpoints.MapDelete("{id}", 
+        endpoints.MapDelete("{id}",
         async (
-            Ulid id, 
-            ISender sender, 
+            Ulid id,
+            ISender sender,
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
         {
@@ -139,12 +174,12 @@ public class CategoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result.ToProblemDetails());
-            
+
         });
 
 
         //Xóa nhiều category
-        endpoints.MapDelete("", 
+        endpoints.MapDelete("",
         async (
             [FromForm] Ulid[] id,
             HttpContext httpContext,
@@ -166,11 +201,11 @@ public class CategoryController : IEndpoint
         });
 
         //Khôi phục category
-        endpoints.MapPut("restore/{id}", 
+        endpoints.MapPut("restore/{id}",
         async (
-            Ulid id, 
-            HttpContext 
-            httpContext, 
+            Ulid id,
+            HttpContext
+            httpContext,
             ISender sender,
             IJwtProvider jwtProvider) =>
         {
@@ -187,7 +222,7 @@ public class CategoryController : IEndpoint
         });
 
         //Khôi phục nhiều category
-        endpoints.MapPut("restore", 
+        endpoints.MapPut("restore",
         async (
             [FromForm] Ulid[] id,
             HttpContext httpContext,

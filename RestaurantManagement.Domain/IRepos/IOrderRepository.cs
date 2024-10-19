@@ -9,7 +9,7 @@ public interface IOrderRepository
     Task<Order?> GetOrderById(Ulid id);
     Task AddOrder(Order order);
     void UpdateOrder(Order order);
-    void DeleteOrder(Order order); 
+    void DeleteOrder(Order order);
     //Queries
     IQueryable<Order> GetOrdersQueryable();
     Task<bool> IsStatusExist(string status); //kiểm tra xem status nào tồn tại hay không?

@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RestaurantManagement.API.Extentions;
+using RestaurantManagement.API.Middleware;
 using RestaurantManagement.Application;
 using RestaurantManagement.Infrastructure;
 using RestaurantManagement.Infrastructure.Extentions;
-using RestaurantManagement.API.Extentions;
 using System.Reflection;
 using System.Security.Claims;
-using RestaurantManagement.API.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -39,6 +40,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("customer", policy => policy.RequireClaim(ClaimTypes.Role, "Subscriber"));
 
 });
+
 //JWT
 #region Cấu hình JWT
 builder.Services.AddAuthentication(options =>
@@ -59,7 +61,7 @@ builder.Services.AddAuthentication(options =>
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])),
         ValidateLifetime = true, // Kiểm tra thời gian hết hạn của token
         ClockSkew = TimeSpan.Zero, // Loại bỏ thời gian trễ mặc định
-                                  // Đảm bảo token chứa claim về vai trò
+                                   // Đảm bảo token chứa claim về vai trò
         RoleClaimType = ClaimTypes.Role
     };
 

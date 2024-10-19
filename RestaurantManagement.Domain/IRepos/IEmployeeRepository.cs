@@ -15,5 +15,5 @@ public interface IEmployeeRepository
     Task<bool> IsEmployeeAccountActive(string email);
     Task<bool> IsEmployeePhoneExist_update(Ulid id, string phone);
     Task<bool> IsEmployeeEmailExist_update(Ulid id, string email);
-    
+
 }

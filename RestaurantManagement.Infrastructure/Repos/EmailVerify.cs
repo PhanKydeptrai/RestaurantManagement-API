@@ -15,9 +15,9 @@ public class EmailVerify : IEmailVerify
     private readonly IFluentEmail _fluentEmail;
 
     public EmailVerify(
-        LinkGenerator linkGenerator, 
-        IHttpContextAccessor httpContextAccessor, 
-        RestaurantManagementDbContext context, 
+        LinkGenerator linkGenerator,
+        IHttpContextAccessor httpContextAccessor,
+        RestaurantManagementDbContext context,
         IFluentEmail fluentEmail)
     {
         _httpContextAccessor = httpContextAccessor;
@@ -58,10 +58,10 @@ public class EmailVerify : IEmailVerify
         string? link = "https://localhost:7057/api/account/verify-change-password?token=" + emailVerificationToken.EmailVerificationTokenId.ToString();
         return link;
     }
-    
 
 
-    
+
+
 }
 
 

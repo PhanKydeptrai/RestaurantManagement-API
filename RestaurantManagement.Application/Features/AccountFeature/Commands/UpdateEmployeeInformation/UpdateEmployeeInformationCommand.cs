@@ -7,4 +7,4 @@ public record UpdateEmployeeInformationCommand(
     string? FirstName,
     string? LastName,
     string? PhoneNumber,
-    byte[]? UserImage, string token) : ICommand;
+    string? ImageUrl, string token) : ICommand;

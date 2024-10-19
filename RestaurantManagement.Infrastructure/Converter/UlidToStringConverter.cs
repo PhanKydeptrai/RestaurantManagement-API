@@ -2,7 +2,7 @@
 
 namespace RestaurantManagement.Infrastructure.Converter;
 
-public class UlidToStringConverter : ValueConverter<Ulid, string>   
+public class UlidToStringConverter : ValueConverter<Ulid, string>
 {
     private static readonly ConverterMappingHints defaultHints = new ConverterMappingHints(size: 26);
 

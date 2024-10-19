@@ -1,6 +1,5 @@
 ﻿using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
-using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -13,8 +12,8 @@ public class RemoveCategoryCommandHandler : ICommandHandler<RemoveCategoryComman
     private readonly IUnitOfWork _unitOfWork;
 
     public RemoveCategoryCommandHandler(
-        ICategoryRepository categoryRepository, 
-        IUnitOfWork unitOfWork, 
+        ICategoryRepository categoryRepository,
+        IUnitOfWork unitOfWork,
         ISystemLogRepository systemLogRepository)
     {
         _categoryRepository = categoryRepository;

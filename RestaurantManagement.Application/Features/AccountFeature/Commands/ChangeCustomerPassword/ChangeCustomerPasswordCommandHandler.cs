@@ -11,13 +11,13 @@ namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Chan
 public class ChangeCustomerPasswordCommandHandler : ICommandHandler<ChangeCustomerPasswordCommand>
 {
     private readonly IUserRepository _userRepository;
-    
+
     private readonly IFluentEmail _fluentEmail;
     private readonly IEmailVerificationTokenRepository _emailVerificationTokenRepository;
     private readonly IEmailVerify _emailVerify;
     private readonly IUnitOfWork _unitOfWork;
     public ChangeCustomerPasswordCommandHandler(
-        
+
         IUserRepository userRepository,
         IFluentEmail fluentEmail,
         IEmailVerificationTokenRepository emailVerificationTokenRepository,
@@ -25,7 +25,7 @@ public class ChangeCustomerPasswordCommandHandler : ICommandHandler<ChangeCustom
         IUnitOfWork unitOfWork)
     {
 
-        
+
         _userRepository = userRepository;
         _fluentEmail = fluentEmail;
         _emailVerificationTokenRepository = emailVerificationTokenRepository;

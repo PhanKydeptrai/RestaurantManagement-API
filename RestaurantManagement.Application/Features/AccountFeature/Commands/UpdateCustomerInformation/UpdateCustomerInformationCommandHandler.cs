@@ -56,7 +56,7 @@ public class UpdateCustomerInformationCommandHandler : ICommandHandler<UpdateCus
         user.LastName = request.LastName;
         user.Phone = request.PhoneNumber;
         user.Gender = request.Gender;
-        user.UserImage = request.UserImage ?? user.UserImage;
+        user.ImageUrl = request.UserImage ?? user.ImageUrl;
         //? Should we add a email field to the UpdateCustomerCommand class?
         //Ghi log
         var claims = JwtHelper.DecodeJwt(request.token);

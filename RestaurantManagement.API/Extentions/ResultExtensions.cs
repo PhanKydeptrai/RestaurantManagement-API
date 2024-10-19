@@ -19,7 +19,7 @@ public static class ResultExtensions
             {
                 { "errors", result.Errors }
             });
-        
+
     }
 
     public static IResult ToProblemDetails<T>(this Result<T> result)

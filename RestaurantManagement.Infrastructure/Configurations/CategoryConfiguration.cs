@@ -12,7 +12,7 @@ internal sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.HasKey(a => a.CategoryId);
         builder.Property(a => a.CategoryId).IsRequired().HasConversion<UlidToStringConverter>();
         builder.Property(a => a.CategoryName).IsRequired().HasColumnType("varchar(100)");
-        builder.Property(a => a.CategoryImage).IsRequired(false).HasColumnType("varbinary(max)");
+        builder.Property(a => a.ImageUrl).IsRequired(false).HasColumnType("varchar(200)");
         builder.Property(a => a.CategoryStatus).IsRequired().HasColumnType("varchar(50)");
     }
 }

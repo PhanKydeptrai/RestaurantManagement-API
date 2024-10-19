@@ -25,7 +25,7 @@ public class CreateEmployeeHandler : ICommandHandler<CreateEmployeeCommand>
     }
     public async Task<Result> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {
-        
+
         // validate
         var validator = new CreateEmployeeCommandValidator(_employeeRepository);
         var validationResult = await validator.ValidateAsync(request); // Phải dùng thư viện using FluentValidation.Results;
@@ -37,7 +37,7 @@ public class CreateEmployeeHandler : ICommandHandler<CreateEmployeeCommand>
 
             return Result.Failure(errors);
         }
-        
+
         // create new
         string password = RandomStringGenerator.GenerateRandomString(10);
         var user = new User
@@ -48,7 +48,7 @@ public class CreateEmployeeHandler : ICommandHandler<CreateEmployeeCommand>
             Email = request.Email,
             Password = EncryptProvider.Sha256(password),
             Phone = request.PhoneNumber,
-            UserImage = request.UserImage,
+            ImageUrl = request.UserImage,
             Gender = request.Gender,
             Status = "Activated"
         };

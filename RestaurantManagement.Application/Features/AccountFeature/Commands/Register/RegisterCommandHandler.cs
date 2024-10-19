@@ -33,7 +33,7 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand>
 
     public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        
+
         //validation
         var validator = new RegisterCommandValidator(_customerRepository);
         var validationResult = await validator.ValidateAsync(request);
@@ -50,9 +50,9 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand>
         var normalCustomer = await _context.Customers.Include(a => a.User)
             .FirstOrDefaultAsync(a => a.User.Email == request.Email || a.User.Phone == request.Phone);
 
-        
 
-        if(normalCustomer != null && normalCustomer.CustomerType != "Subscriber")
+
+        if (normalCustomer != null && normalCustomer.CustomerType != "Subscriber")
         {
             //Update tài khoản
             normalCustomer.CustomerType = "Subscriber";
@@ -65,7 +65,7 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand>
             await _unitOfWork.SaveChangesAsync();
             return Result.Success();
         }
-        
+
         //create user
         var user = new User
         {

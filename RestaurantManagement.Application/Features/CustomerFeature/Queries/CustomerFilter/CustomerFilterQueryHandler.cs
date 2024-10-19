@@ -21,17 +21,17 @@ public class CustomerFilterQueryHandler : IQueryHandler<CustomerFilterQuery, Pag
     public async Task<Result<PagedList<CustomerResponse>>> Handle(CustomerFilterQuery request, CancellationToken cancellationToken)
     {
         var customerQuery = _context.Customers.Include(a => a.User).AsQueryable();
-        if(!string.IsNullOrEmpty(request.searchTerm))
+        if (!string.IsNullOrEmpty(request.searchTerm))
         {
-            customerQuery =  customerQuery.Where(x => x.User.FirstName.Contains(request.searchTerm) || 
+            customerQuery = customerQuery.Where(x => x.User.FirstName.Contains(request.searchTerm) ||
                                                     x.User.LastName.Contains(request.searchTerm) ||
-                                                    x.User.Email.Contains(request.searchTerm)||
+                                                    x.User.Email.Contains(request.searchTerm) ||
                                                     x.User.Phone.Contains(request.searchTerm));
         }
 
         var customers = customerQuery.Select(a => new CustomerResponse(
-            a.UserId, 
-            a.User.FirstName, 
+            a.UserId,
+            a.User.FirstName,
             a.User.LastName,
             a.User.Email,
             a.User.Phone,
@@ -39,7 +39,7 @@ public class CustomerFilterQueryHandler : IQueryHandler<CustomerFilterQuery, Pag
             a.User.Status,
             a.CustomerStatus,
             a.CustomerType,
-            a.User.UserImage)).AsQueryable();
+            a.User.ImageUrl)).AsQueryable();
 
         //sort
         Expression<Func<Customer, object>> keySelector = request.sortColumn?.ToLower() switch

@@ -24,7 +24,7 @@ namespace RestaurantManagement.Infrastructure.Repos
 
         public Task<User> GetUserByEmail(string email)
         {
-            return _context.Users.FirstOrDefaultAsync(e => e.Email == email);   
+            return _context.Users.FirstOrDefaultAsync(e => e.Email == email);
         }
 
         public async Task<User> GetUserById(Ulid id)

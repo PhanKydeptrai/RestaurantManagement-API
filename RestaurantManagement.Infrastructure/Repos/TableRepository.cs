@@ -40,9 +40,9 @@ public class TableRepository : ITableRepository
         return await _context.Tables.FindAsync(id);
     }
 
-    
-    
-    
+
+
+
     public async Task<string?> GetTableStatus(Ulid id)
     {
         return await _context.Tables.Where(t => t.TableId == id)
@@ -52,8 +52,8 @@ public class TableRepository : ITableRepository
 
     public void UpdateTable(Table table)
     {
-        _context.Tables.Update(table);  
+        _context.Tables.Update(table);
     }
-    
+
 
 }

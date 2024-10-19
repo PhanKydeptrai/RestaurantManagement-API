@@ -13,7 +13,7 @@ public interface INotificationRepository
     //Queries
     IQueryable<Notification> GetQueryableNotifications();
     Task<IEnumerable<Notification>> GetNotificationsByUserId(Ulid id);
-    
-    
+
+
 
 }

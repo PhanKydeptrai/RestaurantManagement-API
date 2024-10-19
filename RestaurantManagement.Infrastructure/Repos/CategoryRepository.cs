@@ -53,7 +53,7 @@ public class CategoryRepository : ICategoryRepository
 
         return await _context.Categories
                                 .Where(x => x.CategoryId == id)
-                                .AnyAsync(a => a.CategoryStatus == "kd"); 
+                                .AnyAsync(a => a.CategoryStatus == "kd");
         // return true if category status is "kd"
     }
 
@@ -65,9 +65,14 @@ public class CategoryRepository : ICategoryRepository
 
     }
 
-    public async Task<bool> IsCategoryNameExistsWhenUpdate(Ulid id,string name)
+    public async Task<bool> IsCategoryNameExistsWhenUpdate(Ulid id, string name)
     {
         return await _context.Categories
                          .AnyAsync(a => a.CategoryName == name && a.CategoryId != id);
+    }
+
+    public async Task<bool> IsCategoryExist(Ulid id)
+    {
+        return await _context.Categories.AnyAsync(a => a.CategoryId == id); 
     }
 }

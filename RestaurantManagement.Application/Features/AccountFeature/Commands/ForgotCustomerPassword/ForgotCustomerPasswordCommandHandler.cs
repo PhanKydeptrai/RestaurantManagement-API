@@ -66,6 +66,6 @@ internal class ForgotCustomerPasswordCommandHandler : ICommandHandler<ForgotCust
         await _context.EmailVerificationTokens.AddAsync(emailVerificationToken);
 
         await _unitOfWork.SaveChangesAsync();
-        return Result.Success();   
+        return Result.Success();
     }
 }

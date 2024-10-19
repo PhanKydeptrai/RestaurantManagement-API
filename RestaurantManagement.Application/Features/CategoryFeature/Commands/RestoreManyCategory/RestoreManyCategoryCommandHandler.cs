@@ -1,6 +1,5 @@
 ﻿using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
-using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -12,8 +11,8 @@ public class RestoreManyCategoryCommandHandler : ICommandHandler<RestoreManyCate
     private readonly IUnitOfWork _unitOfWork;
     private readonly ISystemLogRepository _systemLogRepository;
     public RestoreManyCategoryCommandHandler(
-        ICategoryRepository categoryRepository, 
-        IUnitOfWork unitOfWork, 
+        ICategoryRepository categoryRepository,
+        IUnitOfWork unitOfWork,
         ISystemLogRepository systemLogRepository)
     {
         _categoryRepository = categoryRepository;
@@ -27,7 +26,7 @@ public class RestoreManyCategoryCommandHandler : ICommandHandler<RestoreManyCate
         claims.TryGetValue("sub", out var userId);
         foreach (var Id in request.id)
         {
-            
+
 
             if (await _categoryRepository.CheckStatusOfCategory(Id) == true)
             {

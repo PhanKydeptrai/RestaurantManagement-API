@@ -23,6 +23,6 @@ public class ChangeCustomerPasswordCommandValidator : AbstractValidator<ChangeCu
             .WithMessage("Old password is required.")
             .MinimumLength(8)
             .WithMessage("Old password must be at least 8 characters long.");
-        
+
     }
 }

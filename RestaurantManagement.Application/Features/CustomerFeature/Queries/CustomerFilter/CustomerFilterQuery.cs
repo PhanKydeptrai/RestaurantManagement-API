@@ -8,6 +8,6 @@ public record CustomerFilterQuery(
     string? searchTerm,
     string? sortColumn,
     string? sortOrder,
-    int page, 
+    int page,
     int pageSize) : IQuery<PagedList<CustomerResponse>>;
 

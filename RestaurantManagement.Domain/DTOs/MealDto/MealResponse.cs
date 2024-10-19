@@ -1,10 +1,10 @@
 namespace RestaurantManagement.Domain.DTOs.MealDto;
 
 public record MealResponse(
-    Ulid MealId, 
-    string MealName, 
+    Ulid MealId,
+    string MealName,
     decimal Price,
-    byte[]? Image,
+    string? ImageUrl,
     string? Description,
     string SellStatus,
     string MealStatus,

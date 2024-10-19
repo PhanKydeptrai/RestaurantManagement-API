@@ -30,7 +30,7 @@ public class ResgisterCommandHandlerTest
         _context.Setup(c => c.EmailVerificationTokens).Returns(new Mock<DbSet<EmailVerificationToken>>().Object);
     }
 
-    [Fact]  
+    [Fact]
     public async Task Hanlde_Should_Return_Failure_When_RegisterCommand_Is_Invalid()
     {
         //Arrange
@@ -38,11 +38,11 @@ public class ResgisterCommandHandlerTest
         var handler = new RegisterCommandHandler(
             _customerRepository.Object,
             _unitOfWork.Object,
-            _userRepository.Object, 
+            _userRepository.Object,
             _context.Object,
-            _fluentEmail.Object, 
+            _fluentEmail.Object,
             _emailVerify.Object);
-        
+
         //Act
         var result = await handler.Handle(command, default);
         //Assert
@@ -59,7 +59,8 @@ public class ResgisterCommandHandlerTest
             _customerRepository.Object,
             _unitOfWork.Object,
             _userRepository.Object,
-            _context.Object, _fluentEmail.Object,
+            _context.Object,
+            _fluentEmail.Object,
             _emailVerify.Object);
 
         //Act

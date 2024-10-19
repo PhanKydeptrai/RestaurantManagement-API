@@ -7,7 +7,7 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.Cate
 public record CategoryFilterQuery(
     string? searchTerm,
     string? sortColumn,
-    string? sortOrder, 
-    int page, 
-    int pageSize) : IQuery<PagedList<CategoryResponse>>;
+    string? sortOrder,
+    int? page,
+    int? pageSize) : IQuery<PagedList<CategoryResponse>>;
 

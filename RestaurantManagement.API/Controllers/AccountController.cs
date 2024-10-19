@@ -12,21 +12,20 @@ using RestaurantManagement.Application.Features.AccountFeature.Commands.VerifyCh
 using RestaurantManagement.Application.Features.AccountFeature.Queries.EmployeeLogin;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
 using RestaurantManagement.Domain.IRepos;
-using RestaurantManagement.Infrastructure.Authentication;
 
 namespace RestaurantManagement.API.Controllers
 {
 
     public class AccountController : IEndpoint
     {
-        
+
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             var endpoints = app.MapGroup("api/account").WithTags("Account").DisableAntiforgery();
-            
+
             //Register for customer
-            endpoints.MapPost("register", async(
-                [FromBody]RegisterCommand command, ISender sender) =>
+            endpoints.MapPost("register", async (
+                [FromBody] RegisterCommand command, ISender sender) =>
             {
                 var result = await sender.Send(command);
                 if (result.IsSuccess)
@@ -38,8 +37,8 @@ namespace RestaurantManagement.API.Controllers
             });
 
             //Login for customer
-            endpoints.MapPost("login", async(
-                [FromBody]LoginQuery query, 
+            endpoints.MapPost("login", async (
+                [FromBody] LoginQuery query,
                 ISender sender) =>
             {
                 var result = await sender.Send(query);
@@ -52,7 +51,7 @@ namespace RestaurantManagement.API.Controllers
 
             //login for employee
             endpoints.MapPost("employee-login", async (
-                [FromBody]EmployeeLoginQuery query, 
+                [FromBody] EmployeeLoginQuery query,
                 ISender sender) =>
             {
                 var result = await sender.Send(query);
@@ -66,7 +65,7 @@ namespace RestaurantManagement.API.Controllers
 
             //reset customer password 
             endpoints.MapPost("customer-password", async (
-                ForgotCustomerPasswordCommand command, 
+                ForgotCustomerPasswordCommand command,
                 ISender sender) =>
             {
                 var result = await sender.Send(command);
@@ -87,13 +86,13 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok("Check your email!");
                 }
-                return Results.BadRequest(result.ToProblemDetails());   
+                return Results.BadRequest(result.ToProblemDetails());
             });
 
             //verify email (Active account for customer)
             endpoints.MapGet("verify-email", async (Ulid token, ISender sender) =>
             {
-                
+
                 var result = await sender.Send(new ActivateAccountCommand(token));
                 if (result.IsSuccess)
                 {
@@ -131,7 +130,7 @@ namespace RestaurantManagement.API.Controllers
 
             //Change password Customer
             endpoints.MapPost("change-password", async (
-                [FromBody]ChangeCustomerPasswordRequest request,
+                [FromBody] ChangeCustomerPasswordRequest request,
                 HttpContext httpContext,
                 ISender sender,
                 IJwtProvider jwtProvider) =>

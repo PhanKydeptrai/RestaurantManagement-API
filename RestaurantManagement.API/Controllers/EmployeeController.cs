@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using dotenv.net;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Extentions;
@@ -15,40 +18,48 @@ public class EmployeeController : IEndpoint
         var endpoints = app.MapGroup("api/employee").WithTags("Employee").DisableAntiforgery();
 
         //Update information for employee
-        endpoints.MapPut("{id}", 
+        endpoints.MapPut("{id}",
         async (
-            Ulid id, 
-            [FromForm]string FirstName,
-            [FromForm]string LastName,
-            [FromForm]string PhoneNumber,
-            [FromForm]IFormFile? UserImage,
+            Ulid id,
+            [FromForm] string FirstName,
+            [FromForm] string LastName,
+            [FromForm] string PhoneNumber,
+            [FromForm] IFormFile? UserImage,
             HttpContext httpContext,
             ISender sender,
-            IJwtProvider jwtProvider) => 
+            IJwtProvider jwtProvider) =>
         {
-            byte[] imageData = null!;
-            if (UserImage != null)
+            //Xử lý ảnh
+            DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
+            Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+            cloudinary.Api.Secure = true;
+
+            var memoryStream = new MemoryStream();
+            await UserImage.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            var uploadParams = new ImageUploadParams
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await UserImage.CopyToAsync(memoryStream);
-                    imageData = memoryStream.ToArray();
-                }
-            }
+                File = new FileDescription(UserImage.FileName, memoryStream),
+                UploadPreset = "iiwd8tcu"
+            };
+
+            var resultUpload = await cloudinary.UploadAsync(uploadParams);
+            Console.WriteLine(resultUpload.JsonObj);
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
 
             var result = await sender.Send(
                 new UpdateEmployeeInformationCommand(
-                    id, 
-                    FirstName, 
-                    LastName, 
-                    PhoneNumber, 
-                    imageData,
+                    id,
+                    FirstName,
+                    LastName,
+                    PhoneNumber,
+                    resultUpload.SecureUrl.ToString(),
                     token));
 
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 return Results.Ok(result);
             }
@@ -56,8 +67,8 @@ public class EmployeeController : IEndpoint
         }).RequireAuthorization();
 
         //Create employee
-        endpoints.MapPost("", 
-        async(
+        endpoints.MapPost("",
+        async (
             [FromForm] string FirstName,
             [FromForm] string LastName,
             [FromForm] string Password,
@@ -66,25 +77,38 @@ public class EmployeeController : IEndpoint
             [FromForm] string Role,
             [FromForm] string Gender,
             [FromForm] IFormFile? UserImage,
-            ISender sender) => 
+            ISender sender) =>
         {
-            byte[] imageData = null!;
+            //Xử lý ảnh
+            string imageUrl = string.Empty;
             if (UserImage != null)
             {
-                using (var memoryStream = new MemoryStream())
+                DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
+                Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+                cloudinary.Api.Secure = true;
+
+                var memoryStream = new MemoryStream();
+                await UserImage.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                var uploadParams = new ImageUploadParams
                 {
-                    await UserImage.CopyToAsync(memoryStream);
-                    imageData = memoryStream.ToArray();
-                }
+                    File = new FileDescription(UserImage.FileName, memoryStream),
+                    UploadPreset = "iiwd8tcu"
+                };
+
+                var resultUpload = await cloudinary.UploadAsync(uploadParams);
+                imageUrl = resultUpload.SecureUrl.ToString();
+                Console.WriteLine(resultUpload.JsonObj);
             }
 
             var result = await sender.Send(
                 new CreateEmployeeCommand(
-                    FirstName, 
+                    FirstName,
                     LastName,
-                    PhoneNumber, 
-                    Email, 
-                    imageData, 
+                    PhoneNumber,
+                    Email,
+                    imageUrl,
                     Role,
                     Gender));
 
@@ -95,6 +119,6 @@ public class EmployeeController : IEndpoint
             return Results.Ok(result);
 
         });
-    
+
     }
 }
