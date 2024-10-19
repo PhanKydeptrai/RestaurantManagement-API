@@ -4,6 +4,7 @@ using dotenv.net;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Application.Services;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -41,39 +42,32 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
             return Result.Failure(errors);
         }
 
-
+        //Lấy category theo id  
         var category = await _context.Categories.FindAsync(request.CategoryId);
-        string imageId = string.Empty;
-        if (category.ImageUrl != "")
+        string oldimageUrl = category.ImageUrl; //Lưu lại ảnh cũ
+
+        //Xử lý lưu ảnh mới
+        string newImageUrl = string.Empty;
+        if (request.Image != null)
         {
-            imageId = ExtractPartFromUrl(category.ImageUrl!);
+            //tạo memory stream từ file ảnh
+            var memoryStream = new MemoryStream();
+            await request.Image.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            //Upload ảnh lên cloudinary
+            var cloudinary = new CloudinaryService();
+            var resultUpload = await cloudinary.UploadAsync(memoryStream, request.Image.FileName);
+            newImageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
+
+            //Log                                              
+            Console.WriteLine(resultUpload.JsonObj);
         }
-            
-        Console.WriteLine(imageId);
-        if (category != null)
-        {
-            category.CategoryId = request.CategoryId;
-            category.CategoryName = request.CategoryName;
-            category.CategoryStatus = request.CategoryStatus;
-            category.ImageUrl = request.ImageUrl;
-        }
-        
 
-        //Xử lý xóa ảnh
-        DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-        Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
-        cloudinary.Api.Secure = true;
-
-        var deleteParams = new DelResParams()
-        {
-            PublicIds = new List<string> { imageId },
-            Type = "upload",
-            ResourceType = ResourceType.Image
-        };
-
-        var result = cloudinary.DeleteResources(deleteParams);
-        Console.WriteLine(result.JsonObj);
-
+        category.CategoryId = request.CategoryId;
+        category.CategoryName = request.CategoryName;
+        category.CategoryStatus = request.CategoryStatus;
+        category.ImageUrl = newImageUrl;
 
         var claims = JwtHelper.DecodeJwt(request.Token);
         claims.TryGetValue("sub", out var userId);
@@ -86,17 +80,20 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
         //    LogDetail = $"Tạo danh mục {request.CategoryName}",
         //    UserId = Ulid.Parse(userId)
         //});
+
         await _unitOfWork.SaveChangesAsync();
+
+        //Xóa ảnh cũ
+        if(oldimageUrl != "")
+        {
+            //Upload ảnh lên cloudinary
+            var cloudinary = new CloudinaryService();
+            var resultDelete = await cloudinary.DeleteAsync(oldimageUrl);
+            //Log
+            Console.WriteLine(resultDelete.JsonObj);
+        }
 
         return Result.Success();
     }
 
-    public static string ExtractPartFromUrl(string url)
-    {
-        Uri uri = new Uri(url);
-        string path = uri.AbsolutePath;
-        string[] segments = path.Split('/');
-        string desiredPart = segments[segments.Length - 1].Split('.')[0];
-        return desiredPart;
-    }
 }

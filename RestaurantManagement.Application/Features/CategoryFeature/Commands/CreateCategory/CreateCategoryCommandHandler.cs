@@ -1,5 +1,6 @@
 ﻿using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Application.Services;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -34,13 +35,32 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
             return Result.Failure(errors);
         }
 
+        //Xử lý ảnh
+        string imageUrl = string.Empty;
+        if (request.Image != null)
+        {
+            
+            //tạo memory stream từ file ảnh
+            var memoryStream = new MemoryStream();
+            await request.Image.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            //Upload ảnh lên cloudinary
+            var cloudinary = new CloudinaryService();
+            var resultUpload = await cloudinary.UploadAsync(memoryStream, request.Image.FileName);
+            imageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
+            //Log
+            Console.WriteLine(resultUpload.JsonObj);
+        }
+
+
         //Create Category
         await _categoryRepository.AddCatgory(new Category
         {
             CategoryId = Ulid.NewUlid(),
             CategoryName = request.Name,
             CategoryStatus = "kd",
-            ImageUrl = request.Image
+            ImageUrl = imageUrl
         });
 
         var claims = JwtHelper.DecodeJwt(request.Token);
