@@ -1,0 +1,66 @@
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using dotenv.net;
+using static System.Net.Mime.MediaTypeNames;
+
+namespace RestaurantManagement.Application.Services;
+
+public class CloudinaryService
+{
+    private readonly Cloudinary _cloudinary;
+    public CloudinaryService()
+    {
+        DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
+        _cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+        _cloudinary.Api.Secure = true;
+    }
+
+    //Upload image to cloudinary
+    public async Task<ImageUploadResult> UploadAsync(MemoryStream memoryStream, string fileName)
+    {
+        var uploadParams = new ImageUploadParams
+        {
+            File = new FileDescription(fileName, memoryStream),
+            UploadPreset = "iiwd8tcu"
+        };
+        return await _cloudinary.UploadAsync(uploadParams);
+    }
+
+    //Upload image to cloudinary
+    public async Task<ImageUploadResult> UploadAsyncCustomePreset(MemoryStream memoryStream, string fileName, string uploadPreset)
+    {
+        var uploadParams = new ImageUploadParams
+        {
+            File = new FileDescription(fileName, memoryStream),
+            UploadPreset = uploadPreset
+        };
+        return await _cloudinary.UploadAsync(uploadParams);
+    }
+
+    //Delete image from cloudinary
+    public async Task<DeletionResult> DeleteAsync(string imageUrl)
+    {
+
+        var deleteParams = new DeletionParams(ExtractPartFromUrl(imageUrl));
+        return await _cloudinary.DestroyAsync(deleteParams);
+        //Xử lý xóa 
+        //var deleteParams = new DelResParams()
+        //{
+        //    PublicIds = new List<string> { imageId },
+        //    Type = "upload",
+        //    ResourceType = ResourceType.Image
+        //};
+
+        //var result = _cloudinary.DeleteResources(deleteParams);
+        //Console.WriteLine(result.JsonObj);
+    }
+
+    public string ExtractPartFromUrl(string imageUrl) //Lấy id ảnh từ url
+    {
+        Uri uri = new Uri(imageUrl);
+        string path = uri.AbsolutePath;
+        string[] segments = path.Split('/');
+        string desiredPart = segments[segments.Length - 1].Split('.')[0];
+        return desiredPart;
+    }
+}

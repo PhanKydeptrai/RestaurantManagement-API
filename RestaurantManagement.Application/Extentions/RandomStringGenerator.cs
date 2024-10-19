@@ -10,4 +10,5 @@ public class RandomStringGenerator
         return new string(Enumerable.Repeat(_chars, length)
             .Select(s => s[_random.Next(s.Length)]).ToArray());
     }
+
 }

@@ -62,37 +62,11 @@ public class CategoryController : IEndpoint
             IUnitOfWork unitOfWork,
             IJwtProvider jwtProvider) =>
         {
-
-
-            //Xử lý ảnh
-            string imageUrl = string.Empty;
-            if (Image != null)
-            {
-                DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-                Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
-                cloudinary.Api.Secure = true;
-
-                var memoryStream = new MemoryStream();
-                await Image.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-
-                var uploadParams = new ImageUploadParams
-                {
-                    File = new FileDescription(Image.FileName, memoryStream),
-                    UploadPreset = "iiwd8tcu"
-                };
-
-                var resultUpload = await cloudinary.UploadAsync(uploadParams);
-                imageUrl = resultUpload.SecureUrl.ToString();
-                Console.WriteLine(resultUpload.JsonObj);
-            }
-            
-
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
             //Gửi command
-            var command = new CreateCategoryCommand(name, imageUrl, token);
+            var command = new CreateCategoryCommand(name, Image, token);
             var result = await sender.Send(command);
             if (result.IsSuccess)
             {
@@ -104,7 +78,7 @@ public class CategoryController : IEndpoint
         });
 
         //Cập nhật category
-        endpoints.MapPut("{id}", //TODO: Xử lý ảnh bị thêm khi không cập nhật
+        endpoints.MapPut("{id}",
         async (
             Ulid id,
             [FromForm] string categoryName,
@@ -114,38 +88,15 @@ public class CategoryController : IEndpoint
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
         {
-            //Xử lý ảnh
-            string imageUrl = string.Empty;
-            if (categoryImage != null)
-            {
-                DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-                Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
-                cloudinary.Api.Secure = true;
-
-                var memoryStream = new MemoryStream();
-                await categoryImage.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-
-                var uploadParams = new ImageUploadParams
-                {
-                    File = new FileDescription(categoryImage.FileName, memoryStream),
-                    UploadPreset = "iiwd8tcu"
-                };
-
-                var resultUpload = await cloudinary.UploadAsync(uploadParams);
-                imageUrl = resultUpload.SecureUrl.ToString();
-                Console.WriteLine(resultUpload.JsonObj);
-            }
-
-
-            //1lấy token
+            
+            //lấy token
 
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var command = new UpdateCategoryCommand(
                 id, categoryName,
                 categoryStatus,
-                imageUrl ?? null,
+                categoryImage,
                 token);
 
             var result = await sender.Send(command);
