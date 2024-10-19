@@ -6,9 +6,9 @@ using RestaurantManagement.API.Middleware;
 using RestaurantManagement.Application;
 using RestaurantManagement.Infrastructure;
 using RestaurantManagement.Infrastructure.Extentions;
+using Serilog;
 using System.Reflection;
 using System.Security.Claims;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -24,6 +24,8 @@ builder.Services.AddInfrastructureExtentions(builder.Configuration)
                 .AddApplication(builder.Configuration);
 //Add endpoints
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
+
+builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddCors(options =>
 {
@@ -118,6 +120,8 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<RequestLogContextMiddleware>();
+app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 // Map endpoints
 app.MapEndpoints();
