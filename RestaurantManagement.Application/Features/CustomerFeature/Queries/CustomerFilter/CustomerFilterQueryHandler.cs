@@ -29,6 +29,11 @@ public class CustomerFilterQueryHandler : IQueryHandler<CustomerFilterQuery, Pag
                                                     x.User.Phone.Contains(request.searchTerm));
         }
 
+        if (!string.IsNullOrEmpty(request.filter))
+        {
+            customerQuery = customerQuery.Where(x => x.CustomerStatus == request.filter);
+        }
+
         var customers = customerQuery.Select(a => new CustomerResponse(
             a.UserId,
             a.User.FirstName,
@@ -60,7 +65,7 @@ public class CustomerFilterQueryHandler : IQueryHandler<CustomerFilterQuery, Pag
 
 
         var customerList = await PagedList<CustomerResponse>
-            .CreateAsync(customers, request.page, request.pageSize);
+            .CreateAsync(customers, request.page ?? 1, request.pageSize ?? 10);
 
         return Result<PagedList<CustomerResponse>>.Success(customerList);
     }

@@ -2,6 +2,7 @@
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Application.Services;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -43,8 +44,28 @@ public class UpdateCustomerInformationCommandHandler : ICommandHandler<UpdateCus
 
         var user = await _context.Customers
             .Include(a => a.User)
-            .Where(a => a.CustomerId == request.CustomerId)
+            .Where(a => a.UserId == request.CustomerId)
             .Select(a => a.User).FirstAsync();
+        string oldImageUrl = user.ImageUrl; //Lưu lại ảnh cũ
+
+
+        //Xử lý lưu ảnh mới
+        string newImageUrl = string.Empty;
+        if (request.UserImage != null)
+        {
+            //tạo memory stream từ file ảnh
+            var memoryStream = new MemoryStream();
+            await request.UserImage.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            //Upload ảnh lên cloudinary
+            var cloudinary = new CloudinaryService();
+            var resultUpload = await cloudinary.UploadAsync(memoryStream, request.UserImage.FileName);
+            newImageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
+
+            //Log                                              
+            Console.WriteLine(resultUpload.JsonObj);
+        }
 
         if (user == null)
         {
@@ -56,8 +77,8 @@ public class UpdateCustomerInformationCommandHandler : ICommandHandler<UpdateCus
         user.LastName = request.LastName;
         user.Phone = request.PhoneNumber;
         user.Gender = request.Gender;
-        user.ImageUrl = request.UserImage ?? user.ImageUrl;
-        //? Should we add a email field to the UpdateCustomerCommand class?
+        user.ImageUrl = newImageUrl;
+
         //Ghi log
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
@@ -71,6 +92,16 @@ public class UpdateCustomerInformationCommandHandler : ICommandHandler<UpdateCus
         });
 
         await _unitOfWork.SaveChangesAsync();
+
+        //Xóa ảnh cũ
+        if (oldImageUrl != "")
+        {
+            //Upload ảnh lên cloudinary
+            var cloudinary = new CloudinaryService();
+            var resultDelete = await cloudinary.DeleteAsync(oldImageUrl);
+            //Log
+            Console.WriteLine(resultDelete.JsonObj);
+        }
         return Result.Success();
     }
 }

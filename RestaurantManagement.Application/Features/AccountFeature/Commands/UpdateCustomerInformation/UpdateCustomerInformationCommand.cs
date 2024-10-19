@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Application.Abtractions;
+﻿using Microsoft.AspNetCore.Http;
+using RestaurantManagement.Application.Abtractions;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateCustomerInformation;
 
@@ -7,6 +8,6 @@ public record UpdateCustomerInformationCommand(
     string? FirstName,
     string? LastName,
     string? PhoneNumber,
-    string? UserImage,
+    IFormFile? UserImage,
     string? Gender,
     string token) : ICommand;

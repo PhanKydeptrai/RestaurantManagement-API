@@ -24,8 +24,17 @@ public class GetAllMealQueryHandler : IQueryHandler<GetAllMealQuery, PagedList<M
 
         if (!string.IsNullOrEmpty(request.searchTerm))
         {
-            mealQuery = mealQuery.Where(x => x.MealName.Contains(request.searchTerm)
-            || x.MealStatus.Contains(request.searchTerm));
+            mealQuery = mealQuery.Where(x => x.MealName.Contains(request.searchTerm));
+        }
+
+        if (!string.IsNullOrEmpty(request.filterMealStatus))
+        {
+            mealQuery = mealQuery.Where(x => x.MealStatus == request.filterMealStatus);
+        }
+
+        if (!string.IsNullOrEmpty(request.filterSellStatus))
+        {
+            mealQuery = mealQuery.Where(x => x.SellStatus == request.filterSellStatus);
         }
 
         //sort
@@ -58,7 +67,7 @@ public class GetAllMealQueryHandler : IQueryHandler<GetAllMealQuery, PagedList<M
                 a.MealStatus,
                 a.Category.CategoryName));
 
-        var mealList = await PagedList<MealResponse>.CreateAsync(meal, request.page, request.pageSize);
+        var mealList = await PagedList<MealResponse>.CreateAsync(meal, request.page ?? 1, request.pageSize ?? 10);
 
         return Result<PagedList<MealResponse>>.Success(mealList);
     }
