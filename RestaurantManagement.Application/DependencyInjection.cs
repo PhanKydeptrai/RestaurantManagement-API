@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RestaurantManagement.API.Behavior;
 using System.Net.Mail;
 
 
@@ -14,6 +15,7 @@ public static class DependencyInjection
         services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+            configuration.AddOpenBehavior(typeof(RequestLoggingPipelineBehavior<,>));
         });
         // Đăng ký FluentValidation
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
