@@ -1,5 +1,6 @@
 ﻿using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -33,13 +34,14 @@ public class RestoreManyCategoryCommandHandler : ICommandHandler<RestoreManyCate
                 return Result.Failure(new[] { new Error("Category", $"Category {Id} still sell") });
             }
 
-            //await _systemLogRepository.CreateSystemLog(new SystemLog
-            //{
-            //    UserId = Ulid.Parse(userId),
-            //    SystemLogId = Ulid.NewUlid(),
-            //    LogDate = DateTime.Now,
-            //    LogDetail = $"Khôi phục danh mục {Id}",
-            //});
+            //Create System Log
+            await _systemLogRepository.CreateSystemLog(new SystemLog
+            {
+                UserId = Ulid.Parse(userId),
+                SystemLogId = Ulid.NewUlid(),
+                LogDate = DateTime.Now,
+                LogDetail = $"Khôi phục danh mục {Id}",
+            });
 
             var category = await _categoryRepository.GetCategoryById(Id);
             category.CategoryStatus = "kd";

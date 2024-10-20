@@ -82,7 +82,7 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result.ToProblemDetails());
 
-            }).RequireAuthorization();
+            }).RequireAuthorization("customer");
         }
     }
 

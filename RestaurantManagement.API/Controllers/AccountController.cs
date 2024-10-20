@@ -74,7 +74,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok("Check your email!");
                 }
                 return Results.BadRequest(result.ToProblemDetails());
-            });
+            }).RequireRateLimiting("ResetPass");
 
             //reset employee password 
             endpoints.MapPost("employee-password", async (
@@ -128,22 +128,22 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result.Errors[0].Message);
             });
 
-            //Change password Customer
+            //Change password 
             endpoints.MapPost("change-password", async (
-                [FromBody] ChangeCustomerPasswordRequest request,
+                [FromBody] ChangePasswordRequest request,
                 HttpContext httpContext,
                 ISender sender,
                 IJwtProvider jwtProvider) =>
             {
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-                var result = await sender.Send(new ChangeCustomerPasswordCommand(request.oldPass, request.newPass, token));
+                var result = await sender.Send(new ChangePasswordCommand(request.oldPass, request.newPass, token));
                 if (result.IsSuccess)
                 {
                     return Results.Ok("Please check your email!");
                 }
                 return Results.BadRequest(result.ToProblemDetails());
-            }).RequireAuthorization();
+            }).RequireAuthorization().RequireRateLimiting("ResetPass");
         }
     }
 }

@@ -17,6 +17,5 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
             .Must(a => _categoryRepository.IsCategoryNameExists(a).Result == false)
             .WithMessage("Category name already exists");
 
-
     }
 }

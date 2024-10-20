@@ -5,6 +5,7 @@ using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.MealFeature.Commands.CreateMeal;
 using RestaurantManagement.Application.Features.MealFeature.Commands.UpdateMeal;
 using RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
+using RestaurantManagement.Application.Features.MealFeature.Queries.GetMealById;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
@@ -27,7 +28,7 @@ public class MealController : IEndpoint
             ISender sender,
             IJwtProvider jwtProvider) =>
         {
-            
+
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
             var result = await sender.Send(
@@ -63,6 +64,20 @@ public class MealController : IEndpoint
             return Results.Ok(response);
         });
 
+        //get meal by id
+        endpoints.MapGet("{id}",
+        async (
+            Ulid id,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new GetMealByIdQuery(id));
+            if (result.IsSuccess && result.Value != null)
+            {
+                return Results.Ok(result);
+            }
+            return Results.NoContent();
+        });
+
         //Update meal
         endpoints.MapPut("{id}",
         async (
@@ -88,5 +103,16 @@ public class MealController : IEndpoint
             }
             return Results.BadRequest(result.ToProblemDetails);
         }).RequireAuthorization("boss");
+
+
+        //Xóa món
+        endpoints.MapDelete("{id}",
+        async (
+            ISender sender) =>
+        {
+
+        });
+
+
     }
 }

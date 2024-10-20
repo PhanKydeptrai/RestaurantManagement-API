@@ -66,14 +66,14 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
         var claims = JwtHelper.DecodeJwt(request.Token);
         claims.TryGetValue("sub", out var userId);
 
-        ////Create System Log
-        //await _systemLogRepository.CreateSystemLog(new SystemLog
-        //{
-        //    SystemLogId = Ulid.NewUlid(),
-        //    LogDate = DateTime.Now,
-        //    LogDetail = $"Tạo danh mục {request.Name}",
-        //    UserId = Ulid.Parse(userId)
-        //});
+        //Create System Log
+        await _systemLogRepository.CreateSystemLog(new SystemLog
+        {
+            SystemLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetail = $"Tạo danh mục {request.Name}",
+            UserId = Ulid.Parse(userId)
+        });
 
 
         await _unitOfWork.SaveChangesAsync();
