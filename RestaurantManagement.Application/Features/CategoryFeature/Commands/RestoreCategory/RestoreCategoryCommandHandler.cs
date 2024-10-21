@@ -1,5 +1,6 @@
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -33,20 +34,21 @@ public class RestoreCategoryCommandHandler : ICommandHandler<RestoreCategoryComm
         {
             return Result.Failure(new[] { new Error("Category", "Catgory status is kd") });
         }
+
         category.CategoryStatus = "kd";
         //Decode token
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        //await _systemLogRepository.CreateSystemLog(new SystemLog
-        //{
-        //    UserId = Ulid.Parse(userId),
-        //    SystemLogId = Ulid.NewUlid(),
-        //    LogDate = DateTime.Now,
-        //    LogDetail = $"khôi phục danh mục {request.id}",
+        await _systemLogRepository.CreateSystemLog(new SystemLog
+        {
+            UserId = Ulid.Parse(userId),
+            SystemLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetail = $"khôi phục danh mục {request.id}",
 
-        //});
+        });
         await _unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

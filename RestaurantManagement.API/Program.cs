@@ -9,6 +9,7 @@ using RestaurantManagement.Infrastructure.Extentions;
 using Serilog;
 using System.Reflection;
 using System.Security.Claims;
+using System.Threading.RateLimiting;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -25,8 +26,10 @@ builder.Services.AddInfrastructureExtentions(builder.Configuration)
 //Add endpoints
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
+//Add serilog
 builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
 
+//Add cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -41,12 +44,26 @@ builder.Services.AddLogging(loggingBuilder =>
     loggingBuilder.AddSeq();
 });
 
+//Add rate limiter  
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
+    options.AddPolicy("ResetPass", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 3,
+            Window = TimeSpan.FromHours(1)
+        }));
+
+});
+
+//Add authorization
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("boss", policy => policy.RequireClaim(ClaimTypes.Role, "Boss"));
     options.AddPolicy("customer", policy => policy.RequireClaim(ClaimTypes.Role, "Subscriber"));
-
 });
 
 //JWT
@@ -121,6 +138,8 @@ app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
 app.UseMiddleware<RequestLogContextMiddleware>();
+
+app.UseRateLimiter();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 // Map endpoints

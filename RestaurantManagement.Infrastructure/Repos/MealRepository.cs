@@ -18,10 +18,20 @@ public class MealRepository : IMealRepository
         await _context.Meals.AddAsync(meal);
     }
 
-    public void DeleteMeal(Meal meal)
+    public async Task DeleteMeal(Ulid mealId)
     {
-        _context.Meals.Remove(meal);
+        await _context.Meals.Where(a => a.MealId == mealId)
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.MealStatus, "nkd"));
+    
     }
+
+    public async Task RestoreMeal(Ulid mealId)
+    {
+        await _context.Meals.Where(a => a.MealId == mealId)
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.MealStatus, "kd"));
+    }
+
+    
 
     public async Task<IEnumerable<Meal>> GetAllMeals()
     {
@@ -53,7 +63,7 @@ public class MealRepository : IMealRepository
 
     public async Task<string?> GetSellStatus(Ulid id)
     {
-        return await _context.Meals.Where(m => m.MealId == id)
+        return await _context.Meals.AsNoTracking().Where(m => m.MealId == id)
                                     .Select(m => m.SellStatus)
                                     .FirstOrDefaultAsync();
     }

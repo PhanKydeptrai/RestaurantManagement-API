@@ -29,22 +29,23 @@ public class CustomerFilterQueryHandler : IQueryHandler<CustomerFilterQuery, Pag
                                                     x.User.Phone.Contains(request.searchTerm));
         }
 
-        if (!string.IsNullOrEmpty(request.filter))
+        //filter bằng customer status
+        if (!string.IsNullOrEmpty(request.filterStatus))
         {
-            customerQuery = customerQuery.Where(x => x.CustomerStatus == request.filter);
+            customerQuery = customerQuery.Where(x => x.CustomerStatus == request.filterStatus);
         }
 
-        var customers = customerQuery.Select(a => new CustomerResponse(
-            a.UserId,
-            a.User.FirstName,
-            a.User.LastName,
-            a.User.Email,
-            a.User.Phone,
-            a.User.Gender,
-            a.User.Status,
-            a.CustomerStatus,
-            a.CustomerType,
-            a.User.ImageUrl)).AsQueryable();
+        //filter bằng customer type
+        if (!string.IsNullOrEmpty(request.filterUserType))
+        {
+            customerQuery = customerQuery.Where(x => x.CustomerType == request.filterUserType);
+        }
+
+        //filter bằng customer gender
+        if (!string.IsNullOrEmpty(request.filterGender))
+        {
+            customerQuery = customerQuery.Where(x => x.User.Gender == request.filterGender);
+        }
 
         //sort
         Expression<Func<Customer, object>> keySelector = request.sortColumn?.ToLower() switch
@@ -62,6 +63,21 @@ public class CustomerFilterQueryHandler : IQueryHandler<CustomerFilterQuery, Pag
         {
             customerQuery = customerQuery.OrderBy(keySelector);
         }
+
+
+        var customers = customerQuery.Select(a => new CustomerResponse(
+            a.UserId,
+            a.User.FirstName,
+            a.User.LastName,
+            a.User.Email,
+            a.User.Phone,
+            a.User.Gender,
+            a.User.Status,
+            a.CustomerStatus,
+            a.CustomerType,
+            a.User.ImageUrl)).AsQueryable();
+
+        
 
 
         var customerList = await PagedList<CustomerResponse>

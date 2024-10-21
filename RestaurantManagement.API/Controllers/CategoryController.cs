@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
-using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveManyCategory;
@@ -44,7 +43,7 @@ public class CategoryController : IEndpoint
             {
                 return Results.Ok(response);
             }
-            return Results.BadRequest(response.ToProblemDetails());
+            return Results.BadRequest(response);
         });
 
 
@@ -72,8 +71,8 @@ public class CategoryController : IEndpoint
                 return Results.Ok(result);
             }
 
-            return Results.BadRequest(result.ToProblemDetails());
-        });
+            return Results.BadRequest(result);
+        }).RequireAuthorization("boss");
 
         //Cập nhật category
         endpoints.MapPut("{id}",
@@ -102,8 +101,8 @@ public class CategoryController : IEndpoint
             {
                 return Results.Ok(result);
             }
-            return Results.BadRequest(result.ToProblemDetails());
-        });
+            return Results.BadRequest(result);
+        }).RequireAuthorization("boss");
 
         //Xóa category
         endpoints.MapDelete("{id}",
@@ -122,9 +121,9 @@ public class CategoryController : IEndpoint
             {
                 return Results.Ok(result);
             }
-            return Results.BadRequest(result.ToProblemDetails());
+            return Results.BadRequest(result);
 
-        });
+        }).RequireAuthorization("boss");
 
 
         //Xóa nhiều category
@@ -145,9 +144,9 @@ public class CategoryController : IEndpoint
             {
                 return Results.Ok(result);
             }
-            return Results.BadRequest(result.ToProblemDetails());
+            return Results.BadRequest(result);
 
-        });
+        }).RequireAuthorization("boss");
 
         //Khôi phục category
         endpoints.MapPut("restore/{id}",
@@ -167,8 +166,8 @@ public class CategoryController : IEndpoint
             {
                 return Results.Ok(result);
             }
-            return Results.BadRequest(result.ToProblemDetails());
-        });
+            return Results.BadRequest(result);
+        }).RequireAuthorization("boss");
 
         //Khôi phục nhiều category
         endpoints.MapPut("restore",
@@ -187,9 +186,9 @@ public class CategoryController : IEndpoint
             {
                 return Results.Ok(result);
             }
-            return Results.BadRequest(result.ToProblemDetails());
+            return Results.BadRequest(result);
 
-        });
+        }).RequireAuthorization("boss");
 
     }
 

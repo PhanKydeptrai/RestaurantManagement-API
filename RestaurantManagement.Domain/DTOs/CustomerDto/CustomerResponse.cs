@@ -5,7 +5,7 @@ public record CustomerResponse(
     string LastName,
     string Email,
     string? PhoneNumber,
-    string Gender,
+    string? Gender,
     string UserStatus,
     string CustomerStatus,
     string CustomerType,

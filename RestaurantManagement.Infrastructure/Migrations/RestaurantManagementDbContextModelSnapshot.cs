@@ -510,6 +510,10 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<decimal>("TablePrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("TableTypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
                     b.HasKey("TableTypeId");
 
                     b.ToTable("TableTypes");

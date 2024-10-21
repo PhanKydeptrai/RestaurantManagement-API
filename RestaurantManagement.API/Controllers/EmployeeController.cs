@@ -4,9 +4,9 @@ using dotenv.net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
-using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateEmployeeInformation;
 using RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee;
+using RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetAllEmployee;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
@@ -63,7 +63,7 @@ public class EmployeeController : IEndpoint
             {
                 return Results.Ok(result);
             }
-            return Results.BadRequest(result.ToProblemDetails);
+            return Results.BadRequest(result);
         }).RequireAuthorization();
 
         //Create employee
@@ -114,11 +114,33 @@ public class EmployeeController : IEndpoint
 
             if (!result.IsSuccess)
             {
-                return Results.BadRequest(result.ToProblemDetails());
+                return Results.BadRequest(result);
             }
             return Results.Ok(result);
 
         });
 
+
+
+        //Get all
+        endpoints.MapGet("",
+        async (
+            [FromQuery] string? filterGender,
+            [FromQuery] string? filterRole,
+            [FromQuery] string? filterStatus,
+            [FromQuery] string? searchTerm,
+            [FromQuery] string? sortColumn,
+            [FromQuery] string? sortOrder,
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new GetAllEmployeeQuery(filterGender, filterRole ,filterStatus, searchTerm, sortColumn, sortOrder, page, pageSize));
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        });
     }
 }

@@ -2,7 +2,7 @@
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ChangeCustomerPassword;
 
-public class ChangeCustomerPasswordCommandValidator : AbstractValidator<ChangeCustomerPasswordCommand>
+public class ChangeCustomerPasswordCommandValidator : AbstractValidator<ChangePasswordCommand>
 {
     public ChangeCustomerPasswordCommandValidator()
     {

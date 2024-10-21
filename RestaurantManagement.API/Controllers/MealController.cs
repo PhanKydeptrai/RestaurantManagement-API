@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
-using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.MealFeature.Commands.CreateMeal;
+using RestaurantManagement.Application.Features.MealFeature.Commands.RemoveMeal;
+using RestaurantManagement.Application.Features.MealFeature.Commands.RestoreMeal;
 using RestaurantManagement.Application.Features.MealFeature.Commands.UpdateMeal;
 using RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
+using RestaurantManagement.Application.Features.MealFeature.Queries.GetMealById;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
@@ -27,7 +29,7 @@ public class MealController : IEndpoint
             ISender sender,
             IJwtProvider jwtProvider) =>
         {
-            
+
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
             var result = await sender.Send(
@@ -41,7 +43,7 @@ public class MealController : IEndpoint
 
             if (!result.IsSuccess)
             {
-                return Results.BadRequest(result.ToProblemDetails());
+                return Results.BadRequest(result);
             }
             return Results.Ok(result);
 
@@ -61,6 +63,20 @@ public class MealController : IEndpoint
             var query = new GetAllMealQuery(filterSellStatus, filterMealStatus, seachTerm, sortColumn, sortOrder, page, pageSize);
             var response = await sender.Send(query);
             return Results.Ok(response);
+        });
+
+        //get meal by id
+        endpoints.MapGet("{id}",
+        async (
+            Ulid id,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new GetMealByIdQuery(id));
+            if (result.IsSuccess && result.Value != null)
+            {
+                return Results.Ok(result);
+            }
+            return Results.NoContent();
         });
 
         //Update meal
@@ -86,7 +102,45 @@ public class MealController : IEndpoint
             {
                 return Results.Ok(result);
             }
-            return Results.BadRequest(result.ToProblemDetails);
+            return Results.BadRequest(result);
         }).RequireAuthorization("boss");
+
+
+        //Xóa món
+        endpoints.MapDelete("{id}",
+        async (
+            Ulid id,
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
+        {
+            //lấy token
+            string token = jwtProvider.GetTokenFromHeader(httpContext);
+
+            //gửi lệnh xóa
+            var result = await sender.Send(new RemoveMealCommand(id, token));
+            
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);  
+
+        }).RequireAuthorization("boss");
+
+        //khôi phục món
+        endpoints.MapPut("restore/{id}", 
+        async (
+            Ulid id,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new RestoreMealCommand(id));
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        }).RequireAuthorization("boss");
+
     }
 }

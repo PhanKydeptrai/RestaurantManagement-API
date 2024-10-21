@@ -8,7 +8,7 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ChangeCustomerPassword;
 
-public class ChangeCustomerPasswordCommandHandler : ICommandHandler<ChangeCustomerPasswordCommand>
+public class ChangeCustomerPasswordCommandHandler : ICommandHandler<ChangePasswordCommand>
 {
     private readonly IUserRepository _userRepository;
 
@@ -33,7 +33,7 @@ public class ChangeCustomerPasswordCommandHandler : ICommandHandler<ChangeCustom
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result> Handle(ChangeCustomerPasswordCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
         var validator = new ChangeCustomerPasswordCommandValidator();
         var validationResult = await validator.ValidateAsync(request);

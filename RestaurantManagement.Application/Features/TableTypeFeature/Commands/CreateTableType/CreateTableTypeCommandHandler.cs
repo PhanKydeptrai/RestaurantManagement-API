@@ -1,37 +1,43 @@
 ﻿using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Services;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
+namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.CreateTableType;
 
-public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryCommand>
+public class CreateTableTypeCommandHandler : ICommandHandler<CreateTableTypeCommand>
 {
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly ISystemLogRepository _systemLogRepository;
     private readonly IUnitOfWork _unitOfWork;
-    public CreateCategoryCommandHandler(
-        ICategoryRepository categoryRepository,
+    private readonly IApplicationDbContext _context;
+    private readonly ISystemLogRepository _systemLogRepository;
+    private readonly ITableTypeRepository _tableTypeRepository;
+    public CreateTableTypeCommandHandler(
         IUnitOfWork unitOfWork,
+        ITableTypeRepository tableTypeRepository,
+        IApplicationDbContext context,
         ISystemLogRepository systemLogRepository)
     {
-        _categoryRepository = categoryRepository;
         _unitOfWork = unitOfWork;
+        _tableTypeRepository = tableTypeRepository;
+        _context = context;
         _systemLogRepository = systemLogRepository;
     }
-    public async Task<Result> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
-    {
 
-        //Validator
-        var validator = new CreateCategoryCommandValidator(_categoryRepository);
-        var validationResult = validator.Validate(request);
+    public async Task<Result> Handle(CreateTableTypeCommand request, CancellationToken cancellationToken)
+    {
+        //validate
+        var validator = new CreateTableTypeCommandValidator(_tableTypeRepository);
+        var validationResult = await validator.ValidateAsync(request);
+
         if (!validationResult.IsValid)
         {
-            Error[] errors = validationResult.Errors
-                .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
+            var errors = validationResult.Errors
+                .Select(a => new Error(a.ErrorCode, a.ErrorMessage))
                 .ToArray();
+
             return Result.Failure(errors);
         }
 
@@ -39,7 +45,7 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
         string imageUrl = string.Empty;
         if (request.Image != null)
         {
-            
+
             //tạo memory stream từ file ảnh
             var memoryStream = new MemoryStream();
             await request.Image.CopyToAsync(memoryStream);
@@ -53,17 +59,19 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
             Console.WriteLine(resultUpload.JsonObj);
         }
 
+        //create table type
+        await _context.TableTypes.AddAsync(
+            new TableType
+            {
+                TableTypeId = Ulid.NewUlid(),
+                TableTypeName = request.TableTypeName,
+                ImageUrl = imageUrl,
+                TablePrice = request.TablePrice,
+                Description = request.Description
+            });
 
-        //Create Category
-        await _categoryRepository.AddCatgory(new Category
-        {
-            CategoryId = Ulid.NewUlid(),
-            CategoryName = request.Name,
-            CategoryStatus = "kd",
-            ImageUrl = imageUrl
-        });
-
-        var claims = JwtHelper.DecodeJwt(request.Token);
+        //decode token
+        var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
@@ -71,12 +79,10 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetail = $"Tạo danh mục {request.Name}",
+            LogDetail = $"Tạo danh mục {request.TableTypeName}",
             UserId = Ulid.Parse(userId)
         });
-
-
         await _unitOfWork.SaveChangesAsync();
-        return Result.Success();
+        return Result.Success();    
     }
 }

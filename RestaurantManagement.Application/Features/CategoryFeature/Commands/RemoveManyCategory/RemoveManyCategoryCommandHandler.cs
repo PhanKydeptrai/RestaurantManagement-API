@@ -1,5 +1,6 @@
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -33,13 +34,13 @@ public class RemoveManyCategoryCommandHandler : ICommandHandler<RemoveManyCatego
             }
 
             //Create System Log
-            //await _systemLogRepository.CreateSystemLog(new SystemLog
-            //{
-            //    UserId = Ulid.Parse(userId),
-            //    SystemLogId = Ulid.NewUlid(),
-            //    LogDate = DateTime.Now,
-            //    LogDetail = $"Xóa danh mục {id}",
-            //});
+            await _systemLogRepository.CreateSystemLog(new SystemLog
+            {
+                UserId = Ulid.Parse(userId),
+                SystemLogId = Ulid.NewUlid(),
+                LogDate = DateTime.Now,
+                LogDetail = $"Xóa danh mục {id}",
+            });
             _categoryRepository.SoftDeleteCategory(id);
         }
         await _unitOfWork.SaveChangesAsync();

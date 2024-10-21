@@ -9,7 +9,8 @@ public interface IMealRepository
     Task<Meal?> GetMealById(Ulid id);
     Task AddMeal(Meal meal);
     void UpdateMeal(Meal meal);
-    void DeleteMeal(Meal meal);
+    Task DeleteMeal(Ulid mealId);
+    Task RestoreMeal(Ulid mealId);
 
     //Queries
     IQueryable<Meal> GetQueryableOfMeal(); //lấy ra IQueryable của Meal
