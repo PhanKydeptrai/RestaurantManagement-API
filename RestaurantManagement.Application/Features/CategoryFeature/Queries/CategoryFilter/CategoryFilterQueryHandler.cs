@@ -59,26 +59,4 @@ public class CategoryFilterQueryHandler : IQueryHandler<CategoryFilterQuery, Pag
 
         return Result<PagedList<CategoryResponse>>.Success(categoriesList);
     }
-
-    // public async Task<PagedList<CategoryResponse>> Handle(CategoryFilterQuery request, CancellationToken cancellationToken)
-    // {
-    //     var categoriesQuery = _context.Categories.AsQueryable();
-
-    //     if (!string.IsNullOrEmpty(request.searchTerm))
-    //     {
-    //         categoriesQuery = categoriesQuery.Where(x => x.CategoryName.Contains(request.searchTerm));
-    //     }
-
-    //     var categories = categoriesQuery
-    //         .Select(a => new CategoryResponse(
-    //             a.CategoryId, 
-    //             a.CategoryName, 
-    //             a.CategoryStatus,
-    //             a.CategoryId.ToString() + ".jpg"));
-    //     var categoriesList = await PagedList<CategoryResponse>.CreateAsync(categories, request.page, request.pageSize);
-
-    //     return categoriesList;
-    // }
-
-
 }

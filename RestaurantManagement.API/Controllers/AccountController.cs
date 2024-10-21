@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
-using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ActivateAccount;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ChangeCustomerPassword;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotCustomerPassword;
@@ -24,7 +23,8 @@ namespace RestaurantManagement.API.Controllers
             var endpoints = app.MapGroup("api/account").WithTags("Account").DisableAntiforgery();
 
             //Register for customer
-            endpoints.MapPost("register", async (
+            endpoints.MapPost("register", 
+            async (
                 [FromBody] RegisterCommand command, ISender sender) =>
             {
                 var result = await sender.Send(command);
@@ -33,11 +33,12 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
 
-                return Results.BadRequest(result.ToProblemDetails());
+                return Results.BadRequest(result);
             });
 
             //Login for customer
-            endpoints.MapPost("login", async (
+            endpoints.MapPost("login", 
+            async (
                 [FromBody] LoginQuery query,
                 ISender sender) =>
             {
@@ -46,11 +47,12 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok(result);
                 }
-                return Results.BadRequest(result.ToProblemDetails());
+                return Results.BadRequest(result);
             });
 
             //login for employee
-            endpoints.MapPost("employee-login", async (
+            endpoints.MapPost("employee-login", 
+            async (
                 [FromBody] EmployeeLoginQuery query,
                 ISender sender) =>
             {
@@ -59,12 +61,13 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok(result);
                 }
-                return Results.BadRequest(result.ToProblemDetails());
+                return Results.BadRequest(result);
             });
 
 
             //reset customer password 
-            endpoints.MapPost("customer-password", async (
+            endpoints.MapPost("customer-password", 
+            async (
                 ForgotCustomerPasswordCommand command,
                 ISender sender) =>
             {
@@ -73,11 +76,12 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok("Check your email!");
                 }
-                return Results.BadRequest(result.ToProblemDetails());
+                return Results.BadRequest(result);
             }).RequireRateLimiting("ResetPass");
 
             //reset employee password 
-            endpoints.MapPost("employee-password", async (
+            endpoints.MapPost("employee-password", 
+            async (
                 ForgotEmployeePasswordCommand command,
                 ISender sender) =>
             {
@@ -86,7 +90,7 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok("Check your email!");
                 }
-                return Results.BadRequest(result.ToProblemDetails());
+                return Results.BadRequest(result);
             });
 
             //verify email (Active account for customer)
@@ -142,7 +146,7 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok("Please check your email!");
                 }
-                return Results.BadRequest(result.ToProblemDetails());
+                return Results.BadRequest(result);
             }).RequireAuthorization().RequireRateLimiting("ResetPass");
         }
     }

@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
-using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.MealFeature.Commands.CreateMeal;
+using RestaurantManagement.Application.Features.MealFeature.Commands.RemoveMeal;
+using RestaurantManagement.Application.Features.MealFeature.Commands.RestoreMeal;
 using RestaurantManagement.Application.Features.MealFeature.Commands.UpdateMeal;
 using RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
 using RestaurantManagement.Application.Features.MealFeature.Queries.GetMealById;
@@ -42,7 +43,7 @@ public class MealController : IEndpoint
 
             if (!result.IsSuccess)
             {
-                return Results.BadRequest(result.ToProblemDetails());
+                return Results.BadRequest(result);
             }
             return Results.Ok(result);
 
@@ -101,18 +102,45 @@ public class MealController : IEndpoint
             {
                 return Results.Ok(result);
             }
-            return Results.BadRequest(result.ToProblemDetails);
+            return Results.BadRequest(result);
         }).RequireAuthorization("boss");
 
 
         //Xóa món
         endpoints.MapDelete("{id}",
         async (
+            Ulid id,
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
+        {
+            //lấy token
+            string token = jwtProvider.GetTokenFromHeader(httpContext);
+
+            //gửi lệnh xóa
+            var result = await sender.Send(new RemoveMealCommand(id, token));
+            
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);  
+
+        }).RequireAuthorization("boss");
+
+        //khôi phục món
+        endpoints.MapPut("restore/{id}", 
+        async (
+            Ulid id,
             ISender sender) =>
         {
-
-        });
-
+            var result = await sender.Send(new RestoreMealCommand(id));
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        }).RequireAuthorization("boss");
 
     }
 }

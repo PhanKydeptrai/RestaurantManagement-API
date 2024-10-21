@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -41,6 +42,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     TableTypeId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    TableTypeName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     ImageUrl = table.Column<string>(type: "varchar(250)", nullable: true),
                     TablePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(255)", nullable: true)

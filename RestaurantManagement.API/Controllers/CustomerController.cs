@@ -1,10 +1,6 @@
-﻿using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using dotenv.net;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
-using RestaurantManagement.API.Extentions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateCustomerInformation;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
@@ -23,20 +19,22 @@ namespace RestaurantManagement.API.Controllers
             endpoints.MapGet("",
             async (
                 ISender sender,
-                [FromQuery] string ? filter,
+                [FromQuery] string? filterUserType,
+                [FromQuery] string? filterGender,
+                [FromQuery] string? filterStatus,
                 [FromQuery] string? seachTerm,
                 [FromQuery] int? page,
                 [FromQuery] int? pageSize,
                 [FromQuery] string? sortColumn,
                 [FromQuery] string? sortOrder) =>
             {
-                CustomerFilterQuery request = new CustomerFilterQuery(filter, seachTerm, sortColumn, sortOrder, page, pageSize);
+                CustomerFilterQuery request = new CustomerFilterQuery(filterGender,filterUserType,filterStatus, seachTerm, sortColumn, sortOrder, page, pageSize);
                 var result = await sender.Send(request);
                 if (result != null)
                 {
                     return Results.Ok(result);
                 }
-                return Results.BadRequest(result.ToProblemDetails());
+                return Results.BadRequest(result);
             });
 
             //Get by id
@@ -80,7 +78,7 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok(result);
                 }
-                return Results.BadRequest(result.ToProblemDetails());
+                return Results.BadRequest(result);
 
             }).RequireAuthorization("customer");
         }
