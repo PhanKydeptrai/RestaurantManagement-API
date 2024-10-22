@@ -6,31 +6,30 @@ using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
+namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.UpdateTableType;
 
-public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryCommand>
+public class UpdateTableTypeCommandHandler : ICommandHandler<UpdateTableTypeCommand>
 {
-
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IApplicationDbContext _context;
-    private readonly ICategoryRepository _categoryRepository;
     private readonly ISystemLogRepository _systemLogRepository;
-    public UpdateCategoryCommandHandler(
-        ICategoryRepository categoryRepository,
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ITableTypeRepository _tableTypeRepository;
+    public UpdateTableTypeCommandHandler(
+        IApplicationDbContext context,
+        ITableTypeRepository tableTypeRepository,
         IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository,
-        IApplicationDbContext context)
+        ISystemLogRepository systemLogRepository)
     {
-        _categoryRepository = categoryRepository;
+        _context = context;
+        _tableTypeRepository = tableTypeRepository;
         _unitOfWork = unitOfWork;
         _systemLogRepository = systemLogRepository;
-        _context = context;
     }
-    public async Task<Result> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
-    {
 
+    public async Task<Result> Handle(UpdateTableTypeCommand request, CancellationToken cancellationToken)
+    {
         //validation
-        var validator = new UpdateCategoryValidator(_categoryRepository);
+        var validator = new UpdateTableTypeCommandValidator(_tableTypeRepository);
         var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
@@ -40,9 +39,9 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
             return Result.Failure(errors);
         }
 
-        //Lấy category theo id  
-        var category = await _context.Categories.FindAsync(request.CategoryId);
-        string oldimageUrl = category.ImageUrl; //Lưu lại ảnh cũ
+        //Lấy TableType theo id  
+        var tableType = await _context.TableTypes.FindAsync(request.TableTypeId);
+        string oldimageUrl = tableType.ImageUrl; //Lưu lại ảnh cũ
 
         //Xử lý lưu ảnh mới
         string newImageUrl = string.Empty;
@@ -62,23 +61,24 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
             Console.WriteLine(resultUpload.JsonObj);
         }
 
-        category.CategoryId = request.CategoryId;
-        category.CategoryName = request.CategoryName;
-        category.CategoryStatus = request.CategoryStatus;
-        category.ImageUrl = newImageUrl;
-
-        var claims = JwtHelper.DecodeJwt(request.Token);
+        //Update TableType
+        tableType.TableTypeName = request.TableTypeName;    
+        tableType.ImageUrl = newImageUrl;
+        tableType.TablePrice = request.TablePrice;
+        tableType.Description = request.Description;
+        
+        var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
+
 
         //Create System Log
         await _systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetail = $"Tạo danh mục {request.CategoryName}",
+            LogDetail = $"Tạo danh mục {request.TableTypeId}",
             UserId = Ulid.Parse(userId)
         });
-
         await _unitOfWork.SaveChangesAsync();
 
         //Xóa ảnh cũ
@@ -90,8 +90,9 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
             //Log
             Console.WriteLine(resultDelete.JsonObj);
         }
-
+        
         return Result.Success();
-    }
 
+        
+    }
 }

@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241021170242_RestaurantManagementDb")]
+    [Migration("20241022105553_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -509,6 +509,10 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("varchar(250)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
 
                     b.Property<decimal>("TablePrice")
                         .HasColumnType("decimal(18,2)");

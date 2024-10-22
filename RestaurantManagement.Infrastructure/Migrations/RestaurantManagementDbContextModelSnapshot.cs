@@ -507,6 +507,10 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("varchar(250)");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
                     b.Property<decimal>("TablePrice")
                         .HasColumnType("decimal(18,2)");
 

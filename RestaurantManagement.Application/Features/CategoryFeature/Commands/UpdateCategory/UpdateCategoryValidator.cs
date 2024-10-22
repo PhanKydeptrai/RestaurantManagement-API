@@ -8,13 +8,13 @@ public class UpdateCategoryValidator : AbstractValidator<UpdateCategoryCommand>
 
     public UpdateCategoryValidator(ICategoryRepository _categoryRepository)
     {
-        RuleFor(p => p.CategoryId)
-            .NotEmpty()
-            .WithMessage("Category id is required.")
-            .NotNull()
-            .WithMessage("Category id is required.")
-            .Must(a => _categoryRepository.IsCategoryExist(a).Result == true)
-            .WithMessage("Category id is not exist");
+        // RuleFor(p => p.CategoryId)
+        //     .NotEmpty()
+        //     .WithMessage("Category id is required.")
+        //     .NotNull()
+        //     .WithMessage("Category id is required.")
+        //     .Must(a => _categoryRepository.IsCategoryExist(a).Result == true)
+        //     .WithMessage("Category id is not exist");
 
         RuleFor(p => p.CategoryName)
             .NotEmpty()
