@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.Application.Features.MealFeature.Commands.ChangeSellStatus;
 using RestaurantManagement.Application.Features.MealFeature.Commands.CreateMeal;
 using RestaurantManagement.Application.Features.MealFeature.Commands.RemoveMeal;
 using RestaurantManagement.Application.Features.MealFeature.Commands.RestoreMeal;
+using RestaurantManagement.Application.Features.MealFeature.Commands.RestoreSellStatus;
 using RestaurantManagement.Application.Features.MealFeature.Commands.UpdateMeal;
 using RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
 using RestaurantManagement.Application.Features.MealFeature.Queries.GetMealById;
@@ -132,9 +134,52 @@ public class MealController : IEndpoint
         endpoints.MapPut("restore/{id}", 
         async (
             Ulid id,
-            ISender sender) =>
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
         {
-            var result = await sender.Send(new RestoreMealCommand(id));
+            //lấy token
+            string token = jwtProvider.GetTokenFromHeader(httpContext);
+
+            var result = await sender.Send(new RestoreMealCommand(id, token));
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        }).RequireAuthorization("boss");
+
+        //Chuyển sell status kd => nkd
+        endpoints.MapPut("change-sellstatus/{id}", 
+        async (
+            Ulid id,
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) => 
+        {
+            //lấy token
+            string token = jwtProvider.GetTokenFromHeader(httpContext);
+
+            var result = await sender.Send(new ChangeSellStatusCommand(id, token));
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        }).RequireAuthorization("boss");
+
+        //Chuyển sell status nkd => kd
+        endpoints.MapPut("restore-sellstatus/{id}", 
+        async (
+            Ulid id,
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) => 
+        {
+            //lấy token
+            string token = jwtProvider.GetTokenFromHeader(httpContext);
+
+            var result = await sender.Send(new RestoreSellStatusCommand(id, token));
             if(result.IsSuccess)
             {
                 return Results.Ok(result);

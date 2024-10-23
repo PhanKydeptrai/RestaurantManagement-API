@@ -27,8 +27,6 @@ public class RestoreManyCategoryCommandHandler : ICommandHandler<RestoreManyCate
         claims.TryGetValue("sub", out var userId);
         foreach (var Id in request.id)
         {
-
-
             if (await _categoryRepository.CheckStatusOfCategory(Id) == true)
             {
                 return Result.Failure(new[] { new Error("Category", $"Category {Id} still sell") });
@@ -43,8 +41,7 @@ public class RestoreManyCategoryCommandHandler : ICommandHandler<RestoreManyCate
                 LogDetail = $"Khôi phục danh mục {Id}",
             });
 
-            var category = await _categoryRepository.GetCategoryById(Id);
-            category.CategoryStatus = "kd";
+            await _categoryRepository.SoftDeleteCategory(Id);
         }
 
         await _unitOfWork.SaveChangesAsync();

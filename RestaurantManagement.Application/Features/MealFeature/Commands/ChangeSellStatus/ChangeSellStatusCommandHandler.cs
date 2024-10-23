@@ -1,17 +1,17 @@
-﻿using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.MealFeature.Commands.RemoveMeal;
+namespace RestaurantManagement.Application.Features.MealFeature.Commands.ChangeSellStatus;
 
-public class RemoveMealCommandHandler : ICommandHandler<RemoveMealCommand>
+public class ChangeSellStatusCommandHandler : ICommandHandler<ChangeSellStatusCommand>
 {
     private readonly IMealRepository _mealRepository;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ISystemLogRepository _systemLogRepository;
-    public RemoveMealCommandHandler(
+    private readonly IUnitOfWork _unitOfWork;
+    public ChangeSellStatusCommandHandler(
         IMealRepository mealRepository,
         IUnitOfWork unitOfWork,
         ISystemLogRepository systemLogRepository)
@@ -21,20 +21,20 @@ public class RemoveMealCommandHandler : ICommandHandler<RemoveMealCommand>
         _systemLogRepository = systemLogRepository;
     }
 
-    public async Task<Result> Handle(RemoveMealCommand request, CancellationToken cancellationToken)
+
+    public async Task<Result> Handle(ChangeSellStatusCommand request, CancellationToken cancellationToken)
     {
-        var validator = new RemoveMealCommandValidator(_mealRepository);
+        var validator = new ChangeSellStatusCommandValidator(_mealRepository);
         var validationResult = await validator.ValidateAsync(request);
+
         if(!validationResult.IsValid)
         {
-            Error[] errors = validationResult.Errors
-                .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
-                .ToArray();
-
+            var errors = validationResult.Errors.Select(a => new Error(a.ErrorCode, a.ErrorMessage)).ToArray();
             return Result.Failure(errors);
         }
-        await _mealRepository.DeleteMeal(request.id);
-
+        
+        await _mealRepository.ChangeSellStatus(request.id);
+        
         //Deocde jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
@@ -44,11 +44,14 @@ public class RemoveMealCommandHandler : ICommandHandler<RemoveMealCommand>
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetail = $"Cập nhật meal status món {request.id} thành ngừng kinh doanh",
+            LogDetail = $"Cập nhật thông tin trạng thái bán của {request.id} thành ngừng bán",
             UserId = Ulid.Parse(userId)
         });
 
+
+        
         await _unitOfWork.SaveChangesAsync();
         return Result.Success();
+        
     }
 }
