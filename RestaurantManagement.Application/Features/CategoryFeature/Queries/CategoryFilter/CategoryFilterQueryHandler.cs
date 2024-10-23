@@ -30,7 +30,7 @@ public class CategoryFilterQueryHandler : IQueryHandler<CategoryFilterQuery, Pag
         //Filter
         if(!string.IsNullOrEmpty(request.filter))
         {
-            categoriesQuery = categoriesQuery.Where(x => x.CategoryStatus == "filter");
+            categoriesQuery = categoriesQuery.Where(x => x.CategoryStatus == request.filter);
         }
 
 

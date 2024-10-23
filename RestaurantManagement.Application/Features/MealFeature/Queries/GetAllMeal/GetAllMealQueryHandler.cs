@@ -37,6 +37,11 @@ public class GetAllMealQueryHandler : IQueryHandler<GetAllMealQuery, PagedList<M
             mealQuery = mealQuery.Where(x => x.SellStatus == request.filterSellStatus);
         }
 
+        if (!string.IsNullOrEmpty(request.filterCategory)) //Lọc theo category
+        {
+            mealQuery = mealQuery.Where(x => x.CategoryId == Ulid.Parse(request.filterCategory));
+        }
+
         //sort
         Expression<Func<Meal, object>> keySelector = request.sortColumn?.ToLower() switch
         {

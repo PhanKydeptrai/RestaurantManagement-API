@@ -54,6 +54,7 @@ public class MealController : IEndpoint
         //Get all meal
         endpoints.MapGet("",
         async (
+            [FromQuery] string? filterCategory,
             [FromQuery] string? filterSellStatus,
             [FromQuery] string? filterMealStatus,
             [FromQuery] string? seachTerm,
@@ -62,7 +63,7 @@ public class MealController : IEndpoint
             [FromQuery] int? page,
             [FromQuery] int? pageSize, ISender sender) =>
         {
-            var query = new GetAllMealQuery(filterSellStatus, filterMealStatus, seachTerm, sortColumn, sortOrder, page, pageSize);
+            var query = new GetAllMealQuery(filterCategory, filterSellStatus, filterMealStatus, seachTerm, sortColumn, sortOrder, page, pageSize);
             var response = await sender.Send(query);
             return Results.Ok(response);
         });
