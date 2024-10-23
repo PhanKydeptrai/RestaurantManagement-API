@@ -10,6 +10,7 @@ internal sealed class TableTypeConfiguration : IEntityTypeConfiguration<TableTyp
     public void Configure(EntityTypeBuilder<TableType> builder)
     {
         builder.HasKey(a => a.TableTypeId);
+        builder.Property(a => a.Status).IsRequired().HasColumnType("varchar(20)");
         builder.Property(a => a.TableTypeId).IsRequired().HasConversion<UlidToStringConverter>();
         builder.Property(a => a.TableTypeName).IsRequired().HasColumnType("nvarchar(50)");
         builder.Property(a => a.ImageUrl).IsRequired(false).HasColumnType("varchar(250)");

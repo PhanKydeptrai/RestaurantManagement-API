@@ -44,7 +44,7 @@ public class RemoveMealCommandHandler : ICommandHandler<RemoveMealCommand>
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetail = $"Cập nhật thông tin món {request.id}",
+            LogDetail = $"Cập nhật meal status món {request.id} thành ngừng kinh doanh",
             UserId = Ulid.Parse(userId)
         });
 

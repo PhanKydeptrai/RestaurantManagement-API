@@ -34,8 +34,8 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
         var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
-            Domain.Shared.Error[] errors = validationResult.Errors
-                .Select(e => new Domain.Shared.Error(e.ErrorCode, e.ErrorMessage))
+            Error[] errors = validationResult.Errors
+                .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
                 .ToArray();
             return Result.Failure(errors);
         }

@@ -2,4 +2,4 @@
 
 namespace RestaurantManagement.Application.Features.MealFeature.Commands.RestoreMeal;
 
-public record RestoreMealCommand(Ulid id) : ICommand;
+public record RestoreMealCommand(Ulid id, string token) : ICommand;

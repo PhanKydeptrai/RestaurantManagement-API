@@ -41,7 +41,7 @@ public class RemoveManyCategoryCommandHandler : ICommandHandler<RemoveManyCatego
                 LogDate = DateTime.Now,
                 LogDetail = $"Xóa danh mục {id}",
             });
-            _categoryRepository.SoftDeleteCategory(id);
+            await _categoryRepository.SoftDeleteCategory(id);
         }
         await _unitOfWork.SaveChangesAsync();
         return Result.Success();

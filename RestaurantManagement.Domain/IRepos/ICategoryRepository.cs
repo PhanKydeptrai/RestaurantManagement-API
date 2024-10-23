@@ -9,7 +9,9 @@ public interface ICategoryRepository
     Task<Category?> GetCategoryById(Ulid id);
     Task AddCatgory(Category category);
     void UpdateCategory(Category category);
-    void SoftDeleteCategory(Ulid id);
+    Task SoftDeleteCategory(Ulid id);
+    Task RestoreCategory(Ulid id);
+    
     void DeleteCategory(Category category);
     //Queries
     IQueryable<Category> GetCategoriesQueryable();

@@ -21,17 +21,39 @@ public class MealRepository : IMealRepository
     public async Task DeleteMeal(Ulid mealId)
     {
         await _context.Meals.Where(a => a.MealId == mealId)
-            .ExecuteUpdateAsync(a => a.SetProperty(a => a.MealStatus, "nkd"));
-    
+            .ExecuteUpdateAsync(
+                a => a.SetProperty(a => a.MealStatus, "nkd")
+                .SetProperty(a => a.SellStatus, "nkd"));
     }
 
     public async Task RestoreMeal(Ulid mealId)
     {
-        await _context.Meals.Where(a => a.MealId == mealId)
-            .ExecuteUpdateAsync(a => a.SetProperty(a => a.MealStatus, "kd"));
+        bool isCategoryIsNkd = await _context.Meals.Include(a => a.Category).AsNoTracking()
+            .AnyAsync(a => a.Category.CategoryId == a.CategoryId && a.Category.CategoryStatus == "nkd");
+
+        if (isCategoryIsNkd)
+        {
+            await _context.Meals.Where(a => a.MealId == mealId)
+                .Include(a => a.Category)
+                .ExecuteUpdateAsync(
+                    a => a.SetProperty(a => a.MealStatus, "kd")
+                    .SetProperty(a => a.SellStatus, "kd")
+                    .SetProperty(a => a.Category.CategoryStatus, "kd"));
+        }
+        else
+        {
+            await _context.Meals
+            .Where(a => a.MealId == mealId)
+                .ExecuteUpdateAsync(
+                a => a.SetProperty(a => a.MealStatus, "kd")
+                .SetProperty(a => a.SellStatus, "kd"));
+        }
+
+
+
     }
 
-    
+
 
     public async Task<IEnumerable<Meal>> GetAllMeals()
     {
@@ -86,5 +108,23 @@ public class MealRepository : IMealRepository
     public void UpdateMeal(Meal meal)
     {
         _context.Meals.Update(meal);
+    }
+
+    public async Task ChangeSellStatus(Ulid id)
+    {
+        await _context.Meals.Where(a => a.MealId == id)
+             .ExecuteUpdateAsync(a => a.SetProperty(a => a.SellStatus, "nkd"));
+    }
+
+    public async Task ChangeMealStatus(Ulid id)
+    {
+        await _context.Meals.Where(a => a.MealId == id)
+             .ExecuteUpdateAsync(a => a.SetProperty(a => a.MealStatus, "nkd"));
+    }
+
+    public async Task RestoreSellStatus(Ulid id)
+    {
+        await _context.Meals.Where(a => a.MealId == id)
+             .ExecuteUpdateAsync(a => a.SetProperty(a => a.SellStatus, "kd"));
     }
 }

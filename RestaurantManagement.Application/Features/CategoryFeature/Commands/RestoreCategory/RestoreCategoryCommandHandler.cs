@@ -23,19 +23,17 @@ public class RestoreCategoryCommandHandler : ICommandHandler<RestoreCategoryComm
 
     public async Task<Result> Handle(RestoreCategoryCommand request, CancellationToken cancellationToken)
     {
-        //Refactor
-        var category = await _categoryRepository.GetCategoryById(request.id);
-        if (category == null)
+        var validator = new RestoreCategoryCommandValidator(_categoryRepository);
+        var validatorResult = await validator.ValidateAsync(request);
+        if (!validatorResult.IsValid)
         {
-            return Result.Failure(new[] { new Error("Category", "Category not found") });
+            var errors = validatorResult.Errors
+                .Select(a => new Error(a.ErrorCode, a.ErrorMessage))
+                .ToArray();
+            return Result.Failure(errors);
         }
 
-        if (await _categoryRepository.CheckStatusOfCategory(request.id))
-        {
-            return Result.Failure(new[] { new Error("Category", "Catgory status is kd") });
-        }
-
-        category.CategoryStatus = "kd";
+        await _categoryRepository.RestoreCategory(request.id);
         //Decode token
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);

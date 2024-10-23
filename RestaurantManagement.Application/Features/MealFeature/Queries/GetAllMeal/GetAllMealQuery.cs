@@ -5,6 +5,7 @@ using RestaurantManagement.Domain.DTOs.MealDto;
 namespace RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
 
 public record GetAllMealQuery(
+    string? filterCategory,
     string? filterSellStatus,
     string? filterMealStatus,
     string? searchTerm,

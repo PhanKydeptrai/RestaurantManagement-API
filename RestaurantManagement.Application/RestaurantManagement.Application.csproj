@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\TableTypeFeature\Queries\" />
+    <Folder Include="Features\TableFeature\Commands\UpdateTable\" />
   </ItemGroup>
 
 </Project>

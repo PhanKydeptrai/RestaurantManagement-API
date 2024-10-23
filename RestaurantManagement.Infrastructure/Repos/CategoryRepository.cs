@@ -56,11 +56,19 @@ public class CategoryRepository : ICategoryRepository
     }
 
 
-    public void SoftDeleteCategory(Ulid id)
+    public async Task SoftDeleteCategory(Ulid id)
     {
-        var category = _context.Categories.Find(id);
-        category.CategoryStatus = "nkd";
+        // Cập nhật trạng thái của Category
+        await _context.Categories
+            .Where(a => a.CategoryId == id)
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.CategoryStatus, "nkd"));
 
+
+        await _context.Meals
+            .Where(a => a.CategoryId == id)
+            .ExecuteUpdateAsync(
+                a => a.SetProperty(a => a.MealStatus, "nkd")
+                .SetProperty(a => a.SellStatus, "nkd"));
     }
 
     public async Task<bool> IsCategoryNameExistsWhenUpdate(Ulid id, string name)
@@ -71,6 +79,20 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task<bool> IsCategoryExist(Ulid id)
     {
-        return await _context.Categories.AnyAsync(a => a.CategoryId == id); 
+        return await _context.Categories.AnyAsync(a => a.CategoryId == id);
+    }
+
+    public async Task RestoreCategory(Ulid id)
+    {
+        // Cập nhật trạng thái của Category
+        await _context.Categories
+            .Where(a => a.CategoryId == id)
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.CategoryStatus, "kd"));
+
+        await _context.Meals
+            .Where(a => a.CategoryId == id)
+            .ExecuteUpdateAsync(a 
+            => a.SetProperty(a => a.MealStatus, "kd")
+            .SetProperty(a => a.SellStatus, "kd"));
     }
 }

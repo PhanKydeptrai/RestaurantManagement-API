@@ -20,14 +20,17 @@ public class CategoryFilterQueryHandler : IQueryHandler<CategoryFilterQuery, Pag
     public async Task<Result<PagedList<CategoryResponse>>> Handle(CategoryFilterQuery request, CancellationToken cancellationToken)
     {
         var categoriesQuery = _context.Categories.AsQueryable();
+
+        //Search
         if (!string.IsNullOrEmpty(request.searchTerm))
         {
             categoriesQuery = categoriesQuery.Where(x => x.CategoryName.Contains(request.searchTerm));
         }
 
+        //Filter
         if(!string.IsNullOrEmpty(request.filter))
         {
-            categoriesQuery = categoriesQuery.Where(x => x.CategoryStatus == "filter");
+            categoriesQuery = categoriesQuery.Where(x => x.CategoryStatus == request.filter);
         }
 
 
