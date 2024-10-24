@@ -22,13 +22,13 @@ namespace RestaurantManagement.API.Controllers
                 [FromQuery] string? filterUserType,
                 [FromQuery] string? filterGender,
                 [FromQuery] string? filterStatus,
-                [FromQuery] string? seachTerm,
+                [FromQuery] string? searchTerm,
                 [FromQuery] int? page,
                 [FromQuery] int? pageSize,
                 [FromQuery] string? sortColumn,
                 [FromQuery] string? sortOrder) =>
             {
-                CustomerFilterQuery request = new CustomerFilterQuery(filterGender,filterUserType,filterStatus, seachTerm, sortColumn, sortOrder, page, pageSize);
+                CustomerFilterQuery request = new CustomerFilterQuery(filterGender,filterUserType,filterStatus, searchTerm, sortColumn, sortOrder, page, pageSize);
                 var result = await sender.Send(request);
                 if (result != null)
                 {

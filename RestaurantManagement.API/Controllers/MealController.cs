@@ -57,13 +57,13 @@ public class MealController : IEndpoint
             [FromQuery] string? filterCategory,
             [FromQuery] string? filterSellStatus,
             [FromQuery] string? filterMealStatus,
-            [FromQuery] string? seachTerm,
+            [FromQuery] string? searchTerm,
             [FromQuery] string? sortColumn,
             [FromQuery] string? sortOrder,
             [FromQuery] int? page,
             [FromQuery] int? pageSize, ISender sender) =>
         {
-            var query = new GetAllMealQuery(filterCategory, filterSellStatus, filterMealStatus, seachTerm, sortColumn, sortOrder, page, pageSize);
+            var query = new GetAllMealQuery(filterCategory, filterSellStatus, filterMealStatus, searchTerm, sortColumn, sortOrder, page, pageSize);
             var response = await sender.Send(query);
             return Results.Ok(response);
         });
