@@ -64,7 +64,7 @@ namespace RestaurantManagement.API.Controllers
             }).RequireAuthorization("boss");
 
             //Update table
-            endpoints.MapPost("",
+            endpoints.MapPut("",
             async () =>
             {
                 
