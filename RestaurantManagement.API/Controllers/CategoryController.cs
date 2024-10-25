@@ -107,7 +107,7 @@ public class CategoryController : IEndpoint
         //Xóa category
         endpoints.MapDelete("{id}",
         async (
-            Ulid id,
+            string id,
             ISender sender,
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
@@ -115,7 +115,7 @@ public class CategoryController : IEndpoint
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-            var request = new RemoveCategoryCommand(id, token);
+            var request = new RemoveCategoryCommand(Ulid.Parse(id), token);
             var result = await sender.Send(request);
             if (result.IsSuccess)
             {

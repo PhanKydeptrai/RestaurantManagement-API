@@ -1,31 +1,30 @@
 using RestaurantManagement.Application.Abtractions;
-using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.TableFeature.Commands.CreateTable;
+namespace RestaurantManagement.Application.Features.TableFeature.Commands.UpdateStatusToBooked;
 
-public class CreateTableCommandHandler : ICommandHandler<CreateTableCommand>
+public class UpdateStatusToBookedCommandHandler : ICommandHandler<UpdateStatusToBookedCommand>
 {
-    private readonly ISystemLogRepository _systemLogRepository;
+    private readonly ITableRepository _tableRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IApplicationDbContext _context;
-    public CreateTableCommandHandler(
+    private readonly ISystemLogRepository _systemLogRepository;
+    public UpdateStatusToBookedCommandHandler(
+        ITableRepository tableRepository,
         ISystemLogRepository systemLogRepository,
-        IApplicationDbContext context,
         IUnitOfWork unitOfWork)
     {
+        _tableRepository = tableRepository;
         _systemLogRepository = systemLogRepository;
-        _context = context;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result> Handle(CreateTableCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateStatusToBookedCommand request, CancellationToken cancellationToken)
     {
         //validate
-        var validator = new CreateTableCommandValidator();
+        var validator = new UpdateStatusToBookedCommandValidator(_tableRepository);
         var validationResult = await validator.ValidateAsync(request);
 
         if (!validationResult.IsValid)
@@ -34,22 +33,8 @@ public class CreateTableCommandHandler : ICommandHandler<CreateTableCommand>
             return Result.Failure(errors);
         }
 
-        //create table
-        var tableArray = new Table[request.quantity];
-
-
-        for(int i = 0; i < request.quantity; i++)
-        {
-            tableArray[i] = new Table
-            {
-                TableId = Ulid.NewUlid(),
-                TableTypeId = request.tableTypeId,
-                TableStatus = "empty",
-                ActiveStatus = "active"
-            };
-        }
-
-        await _context.Tables.AddRangeAsync(tableArray);
+        //Update table status
+        await _tableRepository.UpdateTableStatus(request.id, "booked");
 
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
@@ -60,9 +45,10 @@ public class CreateTableCommandHandler : ICommandHandler<CreateTableCommand>
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetail = $"Tạo {request.quantity} loại {request.tableTypeId} thành bán",
+            LogDetail = $"Cập nhật thông tin trạng thái bàn {request.id} thành booked",
             UserId = Ulid.Parse(userId)
         });
+
         await _unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

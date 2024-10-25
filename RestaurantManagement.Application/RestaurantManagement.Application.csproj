@@ -23,8 +23,4 @@
     <ProjectReference Include="..\RestaurantManagement.Domain\RestaurantManagement.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\TableFeature\Commands\UpdateTable\" />
-  </ItemGroup>
-
 </Project>

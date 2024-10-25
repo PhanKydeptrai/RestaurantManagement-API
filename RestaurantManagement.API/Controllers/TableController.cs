@@ -1,7 +1,10 @@
+
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Features.TableFeature.Commands.CreateTable;
+using RestaurantManagement.Application.Features.TableFeature.Commands.DeleteTable;
+using RestaurantManagement.Application.Features.TableFeature.Commands.RestoreTable;
 using RestaurantManagement.Application.Features.TableFeature.Queries.GetAllTable;
 using RestaurantManagement.Domain.IRepos;
 
@@ -27,11 +30,11 @@ namespace RestaurantManagement.API.Controllers
 
                 var result = await sender.Send(
                     new GetAllTableQuery(
-                        filterStatus, 
-                        searchTerm, 
-                        sortColumn, 
-                        sortOrder, 
-                        page, 
+                        filterStatus,
+                        searchTerm,
+                        sortColumn,
+                        sortOrder,
+                        page,
                         pageSize));
 
                 if (!result.IsSuccess)
@@ -53,9 +56,9 @@ namespace RestaurantManagement.API.Controllers
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
                 var result = await sender.Send(new CreateTableCommand(
                     request.quantity,
-                    Ulid.Parse(request.tableTypeId), 
+                    Ulid.Parse(request.tableTypeId),
                     token));
-                
+
                 if (!result.IsSuccess)
                 {
                     return Results.BadRequest(result);
@@ -63,18 +66,52 @@ namespace RestaurantManagement.API.Controllers
                 return Results.Ok(result);
             }).RequireAuthorization("boss");
 
-            //Update table
-            endpoints.MapPut("",
-            async () =>
+            // #region Chuyển trạng thái bàn
+            // // Cập nhật trạng thái booked
+            // endpoints.MapPut("",
+            // async () =>
+            // {
+
+            // }).RequireAuthorization("boss");
+
+            // #endregion
+
+            //Remove table
+            endpoints.MapDelete("{id}",
+            async (
+                string id,
+                ISender sender,
+                HttpContext httpContext,
+                IJwtProvider jwtProvider) =>
             {
-                
+                //lấy token
+                var token = jwtProvider.GetTokenFromHeader(httpContext);
+                var result = await sender.Send(new DeleteTableCommand(Ulid.Parse(id), token));
+                if(result.IsSuccess)
+                {
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result);
+
             }).RequireAuthorization("boss");
 
             //Remove table
-            endpoints.MapDelete("",
-            async () =>
+            endpoints.MapPut("{id}",
+            async (
+                string id,
+                ISender sender,
+                HttpContext httpContext,
+                IJwtProvider jwtProvider) =>
             {
-                
+                //lấy token
+                var token = jwtProvider.GetTokenFromHeader(httpContext);
+                var result = await sender.Send(new RestoreTableCommand(Ulid.Parse(id), token));
+                if(result.IsSuccess)
+                {
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result);
+
             }).RequireAuthorization("boss");
         }
     }
