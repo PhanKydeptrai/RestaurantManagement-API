@@ -77,9 +77,9 @@ public class CategoryController : IEndpoint
         //Cập nhật category
         endpoints.MapPut("{id}",
         async (
-            Ulid id,
+            string id,
             [FromForm] string categoryName,
-            [FromForm] string categoryStatus,
+            // [FromForm] string categoryStatus,
             [FromForm] IFormFile? categoryImage,
             ISender sender,
             HttpContext httpContext,
@@ -91,8 +91,8 @@ public class CategoryController : IEndpoint
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var command = new UpdateCategoryCommand(
-                id, categoryName,
-                categoryStatus,
+                Ulid.Parse(id), categoryName,
+                // categoryStatus,
                 categoryImage,
                 token);
 

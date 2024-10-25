@@ -64,7 +64,7 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
 
         category.CategoryId = request.CategoryId;
         category.CategoryName = request.CategoryName;
-        category.CategoryStatus = request.CategoryStatus;
+        //category.CategoryStatus = request.CategoryStatus;
         category.ImageUrl = newImageUrl;
 
         var claims = JwtHelper.DecodeJwt(request.Token);
