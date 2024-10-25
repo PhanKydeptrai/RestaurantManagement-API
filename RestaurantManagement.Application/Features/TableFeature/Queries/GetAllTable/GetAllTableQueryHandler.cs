@@ -29,6 +29,11 @@ public class GetAllTableQueryHandler : IQueryHandler<GetAllTableQuery, PagedList
             tableQuery = tableQuery.Where(x => x.TableStatus == request.filterStatus);
         }
 
+        if(!string.IsNullOrEmpty(request.filterTableType))
+        {
+            tableQuery = tableQuery.Where(x => x.TableTypeId == Ulid.Parse(request.filterTableType));
+        }
+
         //sort
         Expression<Func<Table, object>> keySelector = request.sortColumn?.ToLower() switch
         {

@@ -65,6 +65,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("boss", policy => policy.RequireClaim(ClaimTypes.Role, "Boss"));
     options.AddPolicy("customer", policy => policy.RequireClaim(ClaimTypes.Role, "Subscriber"));
+    options.AddPolicy("manager", policy => policy.RequireClaim(ClaimTypes.Role, "Manager"));
 });
 
 //JWT
