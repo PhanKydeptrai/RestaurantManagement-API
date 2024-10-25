@@ -21,6 +21,7 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
         RuleFor(a => a.Email)
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
+            .EmailAddress().WithMessage("Invalid email format.")
             .Must(a => customerRepository.IsCustomerEmailExist(a).Result == false)
             .WithMessage("Email is exist")
             .When(a => string.IsNullOrEmpty(a.Phone) && string.IsNullOrWhiteSpace(a.Phone))
