@@ -117,7 +117,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 {
                     TableId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     TableTypeId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    TableStatus = table.Column<string>(type: "varchar(20)", nullable: false)
+                    TableStatus = table.Column<string>(type: "varchar(20)", nullable: false),
+                    ActiveStatus = table.Column<string>(type: "varchar(20)", nullable: false)
                 },
                 constraints: table =>
                 {

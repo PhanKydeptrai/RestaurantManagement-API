@@ -30,7 +30,7 @@ public class RemoveCategoryCommandHandler : ICommandHandler<RemoveCategoryComman
             return Result.Failure(new[] { new Error("Category", "Category not found") });
         }
         //delete
-        _categoryRepository.SoftDeleteCategory(request.Id);
+        await _categoryRepository.SoftDeleteCategory(request.Id);
 
         var claims = JwtHelper.DecodeJwt(request.Token);
 

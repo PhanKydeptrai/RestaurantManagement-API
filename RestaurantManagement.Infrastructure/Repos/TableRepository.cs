@@ -23,6 +23,13 @@ public class TableRepository : ITableRepository
         _context.Tables.Remove(table);
     }
 
+    public async Task<string?> GetActiveStatus(Ulid id)
+    {
+        return await _context.Tables.Where(t => t.TableId == id)
+            .Select(t => t.ActiveStatus)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<IEnumerable<Table>> GetAllTables()
     {
         return await _context.Tables.ToListAsync();
@@ -45,9 +52,24 @@ public class TableRepository : ITableRepository
 
     public async Task<string?> GetTableStatus(Ulid id)
     {
-        return await _context.Tables.Where(t => t.TableId == id)
+        return await _context.Tables.AsNoTracking()
+                                    .Where(t => t.TableId == id)
                                     .Select(t => t.TableStatus)
                                     .FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> IsTableExist(Ulid id)
+    {
+        return await _context.Tables.AsNoTracking()
+            .AnyAsync(t => t.TableId == id);
+    }
+
+    public async Task UpdateActiveStatus(Ulid id, string status)
+    {
+        await _context.Tables
+            .Where(a => a.TableId == id)
+            .ExecuteUpdateAsync(
+                a => a.SetProperty(a => a.ActiveStatus, status));
     }
 
     public void UpdateTable(Table table)
@@ -55,5 +77,11 @@ public class TableRepository : ITableRepository
         _context.Tables.Update(table);
     }
 
-
+    public async Task UpdateTableStatus(Ulid id, string status)
+    {
+        await _context.Tables
+            .Where(t => t.TableId == id)
+            .ExecuteUpdateAsync(
+                a => a.SetProperty(a => a.TableStatus, status));
+    }
 }

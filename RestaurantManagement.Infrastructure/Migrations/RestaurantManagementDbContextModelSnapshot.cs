@@ -481,6 +481,10 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("TableId")
                         .HasColumnType("nvarchar(26)");
 
+                    b.Property<string>("ActiveStatus")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
                     b.Property<string>("TableStatus")
                         .IsRequired()
                         .HasColumnType("varchar(20)");

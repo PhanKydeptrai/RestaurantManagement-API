@@ -71,7 +71,6 @@ public class EmployeeController : IEndpoint
         async (
             [FromForm] string FirstName,
             [FromForm] string LastName,
-            [FromForm] string Password,
             [FromForm] string PhoneNumber,
             [FromForm] string Email,
             [FromForm] string Role,
