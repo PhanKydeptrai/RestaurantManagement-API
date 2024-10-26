@@ -60,7 +60,11 @@ public class EmailVerify : IEmailVerify
     }
 
 
-
+    public string CreateLinkForDeleteCustomerAccount(EmailVerificationToken emailVerificationToken)
+    {
+        string? link = "https://localhost:7057/api/account/customer/confirm-delete-account?token=" + emailVerificationToken.EmailVerificationTokenId.ToString();
+        return link;
+    }
 
 }
 

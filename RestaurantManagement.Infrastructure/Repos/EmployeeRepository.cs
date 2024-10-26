@@ -17,9 +17,17 @@ namespace RestaurantManagement.Infrastructure.Repos
             await _context.Employees.AddAsync(employee);
         }
 
-        public void DeleteEmployee(Employee employee)
+        public async Task DeleteEmployee(Ulid userId)
         {
-            _context.Employees.Remove(employee);
+            await _context.Employees
+                .Where(a => a.UserId == userId)
+                .ExecuteUpdateAsync(a =>
+                a.SetProperty(a => a.EmployeeStatus, "Deleted"));
+
+            await _context.Users
+                .Where(a => a.UserId == userId)
+                .ExecuteUpdateAsync(a =>
+                a.SetProperty(a => a.Status, "Deleted"));
         }
 
         public async Task<bool> IsEmployyeEmailExist(string email)
@@ -75,6 +83,19 @@ namespace RestaurantManagement.Infrastructure.Repos
         public IQueryable<Employee> GetEmployeeQueryable(string firstname)
         {
             return _context.Employees.AsQueryable();
+        }
+
+        public async Task<string?> GetEmployeeRole(Ulid id)
+        {
+            return await _context.Employees
+                .Where(e => e.UserId == id)
+                .Select(e => e.Role)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> IsEmployeeExist(Ulid id)
+        {
+            return await _context.Employees.AnyAsync(e => e.UserId == id && e.EmployeeStatus == "Active");
         }
     }
 }

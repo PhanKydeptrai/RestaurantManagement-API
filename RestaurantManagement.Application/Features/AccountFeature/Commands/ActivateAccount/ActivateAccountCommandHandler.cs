@@ -32,6 +32,7 @@ public class ActivateAccountCommandHandler : ICommandHandler<ActivateAccountComm
     public async Task<Result> Handle(ActivateAccountCommand request, CancellationToken cancellationToken)
     {
         EmailVerificationToken token = await _emailVerificationTokenRepository.GetVerificationTokenById(request.tokenId);
+        //check trạng thái tài khoản
         if (token is null || token.User.Status == "Activated")
         {
             Error[] errors = new[]
@@ -41,6 +42,7 @@ public class ActivateAccountCommandHandler : ICommandHandler<ActivateAccountComm
             return Result.Failure(errors);
         }
 
+        //check hạn token
         if (token.ExpiredDate < DateTime.UtcNow)
         {
             Error[] errors = new[]

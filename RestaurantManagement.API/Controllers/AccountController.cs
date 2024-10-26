@@ -1,8 +1,12 @@
-﻿using MediatR;
+﻿using Azure.Core;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ActivateAccount;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ChangeCustomerPassword;
+using RestaurantManagement.Application.Features.AccountFeature.Commands.ConfirmDeleteCustomerAccount;
+using RestaurantManagement.Application.Features.AccountFeature.Commands.DeleteCustomerAccount;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotCustomerPassword;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotEmployeePassword;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.Register;
@@ -11,6 +15,7 @@ using RestaurantManagement.Application.Features.AccountFeature.Commands.VerifyCh
 using RestaurantManagement.Application.Features.AccountFeature.Queries.EmployeeLogin;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
 using RestaurantManagement.Domain.IRepos;
+using RestaurantManagement.Infrastructure.Authentication;
 
 namespace RestaurantManagement.API.Controllers
 {
@@ -23,7 +28,7 @@ namespace RestaurantManagement.API.Controllers
             var endpoints = app.MapGroup("api/account").WithTags("Account").DisableAntiforgery();
 
             //Register for customer
-            endpoints.MapPost("register", 
+            endpoints.MapPost("register",
             async (
                 [FromBody] RegisterCommand command, ISender sender) =>
             {
@@ -37,7 +42,7 @@ namespace RestaurantManagement.API.Controllers
             });
 
             //Login for customer
-            endpoints.MapPost("login", 
+            endpoints.MapPost("login",
             async (
                 [FromBody] LoginQuery query,
                 ISender sender) =>
@@ -51,7 +56,7 @@ namespace RestaurantManagement.API.Controllers
             });
 
             //login for employee
-            endpoints.MapPost("employee-login", 
+            endpoints.MapPost("employee-login",
             async (
                 [FromBody] EmployeeLoginQuery query,
                 ISender sender) =>
@@ -66,7 +71,7 @@ namespace RestaurantManagement.API.Controllers
 
 
             //reset customer password 
-            endpoints.MapPost("customer-password", 
+            endpoints.MapPost("customer-password",
             async (
                 ForgotCustomerPasswordCommand command,
                 ISender sender) =>
@@ -80,7 +85,7 @@ namespace RestaurantManagement.API.Controllers
             }).RequireRateLimiting("ResetPass");
 
             //reset employee password 
-            endpoints.MapPost("employee-password", 
+            endpoints.MapPost("employee-password",
             async (
                 ForgotEmployeePasswordCommand command,
                 ISender sender) =>
@@ -144,10 +149,41 @@ namespace RestaurantManagement.API.Controllers
                 var result = await sender.Send(new ChangePasswordCommand(request.oldPass, request.newPass, token));
                 if (result.IsSuccess)
                 {
-                    return Results.Ok("Please check your email!");
+                    return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
             }).RequireAuthorization().RequireRateLimiting("ResetPass");
+
+            //Delete customer account
+            endpoints.MapDelete("customer", async (
+                HttpContext httpContext,
+                ISender sender,
+                IJwtProvider jwtProvider) =>
+            {
+                //lấy token
+                var token = jwtProvider.GetTokenFromHeader(httpContext);
+                var result = await sender.Send(new DeleteCustomerAccountCommand(token));
+                if(result.IsSuccess)
+                {
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result.Errors[0].Message);
+
+            }).RequireAuthorization("customer");
+
+            //verify delete customer account
+            endpoints.MapGet("customer/confirm-delete-account", async (
+                Ulid token,
+                ISender sender) =>
+            {
+                var result = await sender.Send(new ConfirmDeleteCustomerAccountCommand(token));
+                if(result.IsSuccess)
+                {
+                    return Results.Ok("Account deleted successfully!");
+                }
+                
+                return Results.BadRequest(result);
+            });
         }
     }
 }

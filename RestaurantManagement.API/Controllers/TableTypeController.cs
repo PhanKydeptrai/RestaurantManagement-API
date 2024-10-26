@@ -1,12 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
-using RestaurantManagement.Application.Features.CategoryFeature.Commands.RestoreCategory;
 using RestaurantManagement.Application.Features.TableTypeFeature.Commands.CreateTableType;
 using RestaurantManagement.Application.Features.TableTypeFeature.Commands.DeleteTableType;
 using RestaurantManagement.Application.Features.TableTypeFeature.Commands.RestoreTableType;
 using RestaurantManagement.Application.Features.TableTypeFeature.Commands.UpdateTableType;
 using RestaurantManagement.Application.Features.TableTypeFeature.Queries.GetAllTableType;
+using RestaurantManagement.Application.Features.TableTypeFeature.Queries.GetAllTableTypeInfo;
 using RestaurantManagement.Application.Features.TableTypeFeature.Queries.GetTableTypeById;
 using RestaurantManagement.Domain.IRepos;
 
@@ -18,7 +18,7 @@ public class TableTypeController : IEndpoint
     {
         var endpoints = builder.MapGroup("api/tabletype").WithTags("TableType").DisableAntiforgery();
 
-        endpoints.MapGet("", 
+        endpoints.MapGet("",
         async (
             [FromQuery] string? searchTerm,
             [FromQuery] string? filterStatus,
@@ -26,10 +26,10 @@ public class TableTypeController : IEndpoint
             [FromQuery] string? sortOrder,
             [FromQuery] int? page,
             [FromQuery] int? pageSize,
-            ISender sender) => 
-        { 
+            ISender sender) =>
+        {
             var result = await sender.Send(new GetAllTableTypeQuery(searchTerm, filterStatus, sortColumn, sortOrder, page, pageSize));
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 return Results.Ok(result);
             }
@@ -37,7 +37,7 @@ public class TableTypeController : IEndpoint
         });
 
         //Create table type
-        endpoints.MapPost("", 
+        endpoints.MapPost("",
         async (
             [FromForm] string TableTypeName,
             [FromForm] decimal TablePrice,
@@ -60,7 +60,7 @@ public class TableTypeController : IEndpoint
         }).RequireAuthorization("boss");
 
         //Update table type
-        endpoints.MapPut("{id}", 
+        endpoints.MapPut("{id}",
         async (
             Ulid id,
             [FromForm] string TableTypeName,
@@ -76,10 +76,10 @@ public class TableTypeController : IEndpoint
 
             var result = await sender.Send(new UpdateTableTypeCommand(
                 id,
-                TableTypeName, 
+                TableTypeName,
                 Image,
-                TablePrice, 
-                Description, 
+                TablePrice,
+                Description,
                 token));
             if (result.IsSuccess)
             {
@@ -91,7 +91,7 @@ public class TableTypeController : IEndpoint
 
 
         //Get table type by id
-        endpoints.MapGet("{id}", 
+        endpoints.MapGet("{id}",
         async (
             Ulid id,
             ISender sender) =>
@@ -106,7 +106,7 @@ public class TableTypeController : IEndpoint
         });
 
         //Delete table type by id
-        endpoints.MapDelete("{id}", 
+        endpoints.MapDelete("{id}",
         async (
             Ulid id,
             ISender sender) =>
@@ -121,7 +121,7 @@ public class TableTypeController : IEndpoint
         }).RequireAuthorization("boss");
 
         //Restore table type by id
-        endpoints.MapPut("restore/{id}", 
+        endpoints.MapPut("restore/{id}",
         async (
             Ulid id,
             ISender sender) =>
@@ -134,5 +134,15 @@ public class TableTypeController : IEndpoint
             return Results.BadRequest(result);
 
         }).RequireAuthorization("boss");
+
+        endpoints.MapGet("tabletype-info", async (ISender sender) =>
+        {
+            var result = await sender.Send(new GetAllTableInfoQuery());
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result.Errors);
+        });
     }
 }
