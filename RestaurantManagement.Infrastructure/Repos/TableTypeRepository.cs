@@ -58,4 +58,14 @@ public class TableTypeRepository : ITableTypeRepository
     {
         return await _context.TableTypes.AnyAsync(x => x.TableTypeName == tableTypeName && x.TableTypeId != tableTypeId);
     }
+
+    public async Task<List<TableTypeInfo>> GetAllTableTypeInfo()
+    {
+        return await _context.TableTypes.Where(a => a.Status == "hd")
+            .Select(a => new TableTypeInfo(
+                a.TableTypeId, 
+                a.TableTypeName))
+                .ToListAsync();
+    }
+
 }

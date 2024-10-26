@@ -11,4 +11,5 @@ public interface ITableTypeRepository
     Task DeleteTableType(Ulid tableTypeId);
     Task RestoreTableType(Ulid tableTypeId);
     Task<string> GetTableTypeStatus(Ulid tableTypeId);
+    Task<List<TableTypeInfo>> GetAllTableTypeInfo();
 }

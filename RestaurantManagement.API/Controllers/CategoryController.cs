@@ -8,7 +8,7 @@ using RestaurantManagement.Application.Features.CategoryFeature.Commands.Restore
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.RestoreManyCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
-using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetAllCategoryId;
+using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetAllCategoryInfo;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 using RestaurantManagement.Domain.IRepos;
 
@@ -197,7 +197,7 @@ public class CategoryController : IEndpoint
         async (ISender sender) =>
         {
             //Gửi command
-            var result = await sender.Send(new GetAllCategoryIdQuery());
+            var result = await sender.Send(new GetAllCategoryInfoQuery());
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
