@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateEmployeeInformation;
 using RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee;
+using RestaurantManagement.Application.Features.EmployeeFeature.Commands.DeleteEmployee;
 using RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetAllEmployee;
 using RestaurantManagement.Domain.IRepos;
 
@@ -134,12 +135,30 @@ public class EmployeeController : IEndpoint
             [FromQuery] int? pageSize,
             ISender sender) =>
         {
-            var result = await sender.Send(new GetAllEmployeeQuery(filterGender, filterRole ,filterStatus, searchTerm, sortColumn, sortOrder, page, pageSize));
+            var result = await sender.Send(new GetAllEmployeeQuery(filterGender, filterRole, filterStatus, searchTerm, sortColumn, sortOrder, page, pageSize));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
         });
+
+
+        endpoints.MapDelete("{id}", async (
+            string id,
+            ISender sender,
+            IJwtProvider jwtProvider,
+            HttpContext httpContext) =>
+        {
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+            var result = await sender.Send(new DeleteEmployeeCommand(Ulid.Parse(id), token));
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        }).RequireAuthorization("boss");
+
     }
 }

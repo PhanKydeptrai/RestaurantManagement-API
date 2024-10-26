@@ -8,6 +8,7 @@ using RestaurantManagement.Application.Features.CategoryFeature.Commands.Restore
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.RestoreManyCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
+using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetAllCategoryId;
 using RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 using RestaurantManagement.Domain.IRepos;
 
@@ -190,8 +191,25 @@ public class CategoryController : IEndpoint
 
         }).RequireAuthorization("boss");
 
-    }
 
+        //Lấy tên và id của category
+        endpoints.MapGet("category-info",
+        async (ISender sender) =>
+        {
+            //Gửi command
+            var result = await sender.Send(new GetAllCategoryIdQuery());
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+
+        });
+
+    }   
+
+
+    
 
 
 }

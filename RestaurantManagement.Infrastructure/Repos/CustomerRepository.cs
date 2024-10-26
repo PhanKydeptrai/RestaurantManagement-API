@@ -101,11 +101,6 @@ public class CustomerRepository : ICustomerRepository
 
     public async Task DeleteCustomer(Ulid id)
     {
-        // await _context.Customers.Include(c => c.User)
-        //     .Where(c => c.UserId == id)
-        //     .ExecuteUpdateAsync(a => a
-        //     .SetProperty(a => a.CustomerStatus, "Deleted")
-        //     .SetProperty(a => a.User.Status, "Deleted"));
         
         // Cập nhật trạng thái của Customer
         await _context.Customers
