@@ -46,6 +46,13 @@ public class CustomerRepository : ICustomerRepository
             )).FirstOrDefaultAsync();
     }
 
+    public async Task<bool> IsCustomerExist(Ulid id)
+    {
+        return await _context.Customers
+            .AsNoTracking()
+            .AnyAsync(a => a.UserId == id);
+    }
+
     public IQueryable<Customer> GetCustomersQueryable()
     {
         return _context.Customers.AsQueryable();
@@ -89,5 +96,25 @@ public class CustomerRepository : ICustomerRepository
     public void UpdateCustomer(Customer customer)
     {
         _context.Customers.Update(customer);
+    }
+
+
+    public async Task DeleteCustomer(Ulid id)
+    {
+        // await _context.Customers.Include(c => c.User)
+        //     .Where(c => c.UserId == id)
+        //     .ExecuteUpdateAsync(a => a
+        //     .SetProperty(a => a.CustomerStatus, "Deleted")
+        //     .SetProperty(a => a.User.Status, "Deleted"));
+        
+        // Cập nhật trạng thái của Customer
+        await _context.Customers
+            .Where(c => c.UserId == id)
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.CustomerStatus, "Deleted"));
+
+        // Cập nhật trạng thái của User
+        await _context.Users
+            .Where(u => u.UserId == id)
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.Status, "Deleted"));
     }
 }

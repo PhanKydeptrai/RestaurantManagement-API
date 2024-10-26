@@ -42,6 +42,8 @@ namespace RestaurantManagement.Infrastructure.Repos
             return await _context.Users.AnyAsync(e => e.Email == email);
         }
 
+        
+
         public void UpdateUser(User user)
         {
             _context.Users.Update(user);

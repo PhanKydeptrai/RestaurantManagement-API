@@ -6,7 +6,6 @@ using RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateC
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
 using RestaurantManagement.Domain.IRepos;
-using RestaurantManagement.Infrastructure.Authentication;
 
 
 namespace RestaurantManagement.API.Controllers
@@ -108,6 +107,7 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result);
 
             }).RequireAuthorization("customer");
+
         }
     }
 
