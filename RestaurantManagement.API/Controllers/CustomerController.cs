@@ -48,7 +48,7 @@ namespace RestaurantManagement.API.Controllers
                 [FromForm] string Gender,
                 ISender sender,
                 HttpContext httpContext,
-                JwtProvider jwtProvider) =>
+                IJwtProvider jwtProvider) =>
             {
                 //lấy token
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
@@ -59,8 +59,8 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-
-            }).RequireAuthorization("boss", "manager");
+                
+            }).RequireAuthorization("boss");
 
 
 
