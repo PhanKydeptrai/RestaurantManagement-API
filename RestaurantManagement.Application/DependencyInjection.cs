@@ -23,10 +23,6 @@ public static class DependencyInjection
                 .AddSmtpSender(new SmtpClient(configuration["Email:Host"], int.Parse(configuration["Email:Port"])));
 
 
-        //// Đăng ký pipeline behaviors cho log
-        //services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
-        ////Đăng ký pipeline behaviors cho validation
-        //services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
         return services;
 
 

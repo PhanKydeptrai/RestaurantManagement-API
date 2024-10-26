@@ -5,6 +5,7 @@ using RestaurantManagement.Domain.DTOs.TableDto;
 namespace RestaurantManagement.Application.Features.TableFeature.Queries.GetAllTable;
 
 public record GetAllTableQuery(
+    string? filterTableType,
     string? filterStatus,
     string? searchTerm,
     string? sortColumn,

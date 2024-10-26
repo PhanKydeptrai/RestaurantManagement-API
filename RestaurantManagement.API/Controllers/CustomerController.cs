@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateCustomerInformation;
+using RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateCustomer;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
 using RestaurantManagement.Domain.IRepos;
+using RestaurantManagement.Infrastructure.Authentication;
 
 
 namespace RestaurantManagement.API.Controllers
@@ -28,7 +30,7 @@ namespace RestaurantManagement.API.Controllers
                 [FromQuery] string? sortColumn,
                 [FromQuery] string? sortOrder) =>
             {
-                CustomerFilterQuery request = new CustomerFilterQuery(filterGender,filterUserType,filterStatus, searchTerm, sortColumn, sortOrder, page, pageSize);
+                CustomerFilterQuery request = new CustomerFilterQuery(filterGender, filterUserType, filterStatus, searchTerm, sortColumn, sortOrder, page, pageSize);
                 var result = await sender.Send(request);
                 if (result != null)
                 {
@@ -36,6 +38,31 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result);
             });
+
+            endpoints.MapPost("",
+            async (
+                [FromForm] string FirstName,
+                [FromForm] string LastName,
+                [FromForm] string? Email,
+                [FromForm] string? Phone,
+                [FromForm] string Gender,
+                ISender sender,
+                HttpContext httpContext,
+                JwtProvider jwtProvider) =>
+            {
+                //lấy token
+                var token = jwtProvider.GetTokenFromHeader(httpContext);
+                
+                var result = await sender.Send(new CreateCustomerCommand(FirstName, LastName, Email, Phone, Gender, token));
+                if (result != null)
+                {
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result);
+
+            }).RequireAuthorization("boss", "manager");
+
+
 
             //Get by id
             endpoints.MapGet("{id}", async (Ulid id, ISender sender) =>

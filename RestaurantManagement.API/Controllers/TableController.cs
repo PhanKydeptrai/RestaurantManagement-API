@@ -19,6 +19,7 @@ namespace RestaurantManagement.API.Controllers
             //Get all tables
             endpoints.MapGet("",
             async (
+                [FromBody] string? filterTableType,
                 [FromQuery] string? filterStatus,
                 [FromQuery] string? searchTerm,
                 [FromQuery] string? sortColumn,
@@ -30,6 +31,7 @@ namespace RestaurantManagement.API.Controllers
 
                 var result = await sender.Send(
                     new GetAllTableQuery(
+                        filterTableType,
                         filterStatus,
                         searchTerm,
                         sortColumn,
