@@ -66,7 +66,7 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetA
             }
 
             var employees = employeeQuery.Select(a => new EmployeeResponse(
-                    a.EmployeeId,
+                    a.UserId,
                     a.User.FirstName,
                     a.User.LastName,
                     a.User.Email,

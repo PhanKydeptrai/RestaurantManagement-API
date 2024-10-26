@@ -30,6 +30,19 @@ namespace RestaurantManagement.Infrastructure.Repos
                 a.SetProperty(a => a.Status, "Deleted"));
         }
 
+        public async Task RestoreEmployee(Ulid userId)
+        {
+            await _context.Employees
+                .Where(a => a.UserId == userId)
+                .ExecuteUpdateAsync(a =>
+                a.SetProperty(a => a.EmployeeStatus, "Active"));
+
+            await _context.Users
+                .Where(a => a.UserId == userId)
+                .ExecuteUpdateAsync(a =>
+                a.SetProperty(a => a.Status, "Activated"));
+        }
+
         public async Task<bool> IsEmployyeEmailExist(string email)
         {
             return await _context.Employees

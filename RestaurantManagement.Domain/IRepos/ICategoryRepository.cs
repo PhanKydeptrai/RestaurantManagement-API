@@ -1,3 +1,4 @@
+using RestaurantManagement.Domain.DTOs.CategoryDto;
 using RestaurantManagement.Domain.Entities;
 
 namespace RestaurantManagement.Domain.IRepos;
@@ -11,7 +12,7 @@ public interface ICategoryRepository
     void UpdateCategory(Category category);
     Task SoftDeleteCategory(Ulid id);
     Task RestoreCategory(Ulid id);
-    
+    Task<List<CategoryInfo>> GetAllCategoryInfo();
     void DeleteCategory(Category category);
     //Queries
     IQueryable<Category> GetCategoriesQueryable();

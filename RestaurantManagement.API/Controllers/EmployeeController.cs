@@ -7,6 +7,7 @@ using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateEmployeeInformation;
 using RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee;
 using RestaurantManagement.Application.Features.EmployeeFeature.Commands.DeleteEmployee;
+using RestaurantManagement.Application.Features.EmployeeFeature.Commands.RestoreEmloyee;
 using RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetAllEmployee;
 using RestaurantManagement.Domain.IRepos;
 
@@ -143,7 +144,7 @@ public class EmployeeController : IEndpoint
             return Results.BadRequest(result);
         });
 
-
+        //Delete employee
         endpoints.MapDelete("{id}", async (
             string id,
             ISender sender,
@@ -158,7 +159,24 @@ public class EmployeeController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("management");
 
+        //restore employee
+        endpoints.MapPut("restore-employee/{id}", async (
+            string id,
+            ISender sender,
+            IJwtProvider jwtProvider,
+            HttpContext httpContext) =>
+        {
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+            var result = await sender.Send(new RestoreEmployeeCommand(Ulid.Parse(id), token));
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+            
+        }).RequireAuthorization("management");
     }
 }

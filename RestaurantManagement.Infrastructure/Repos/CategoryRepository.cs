@@ -1,4 +1,6 @@
+using System.Drawing;
 using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.Domain.DTOs.CategoryDto;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Infrastructure.Persistence;
@@ -91,8 +93,17 @@ public class CategoryRepository : ICategoryRepository
 
         await _context.Meals
             .Where(a => a.CategoryId == id)
-            .ExecuteUpdateAsync(a 
+            .ExecuteUpdateAsync(a
             => a.SetProperty(a => a.MealStatus, "kd")
             .SetProperty(a => a.SellStatus, "kd"));
+    }
+
+    public async Task<List<CategoryInfo>> GetAllCategoryInfo()
+    {
+        return await _context.Categories
+            .AsNoTracking()
+            .Where(a => a.CategoryStatus == "kd")
+            .Select(a => new CategoryInfo(a.CategoryId, a.CategoryName))
+            .ToListAsync();
     }
 }

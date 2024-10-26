@@ -13,6 +13,7 @@ public interface IEmployeeRepository
     Task<bool> IsEmployeePhoneExist(string phone);
     Task CreateEmployee(Employee employee);
     void UpdateEmployee(Employee employee);
+    Task RestoreEmployee(Ulid userId);
     Task DeleteEmployee(Ulid userId);
     Task<bool> IsEmployeeAccountActive(string email);
     Task<bool> IsEmployeePhoneExist_update(Ulid id, string phone);

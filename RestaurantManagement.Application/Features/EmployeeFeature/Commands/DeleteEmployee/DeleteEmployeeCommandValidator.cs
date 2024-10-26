@@ -28,8 +28,7 @@ public class DeleteEmployeeCommandValidator : AbstractValidator<DeleteEmployeeCo
                 {
                     context.AddFailure("You cant delete yourself");
                 }
-
-                if (role == "Manager" && employeeRole == "Manager" || employeeRole == "Boss")
+                else if (role == "Manager" && employeeRole == "Manager" || employeeRole == "Boss")
                 {
                     context.AddFailure("You dont have permission to delete this employee");
                 }
