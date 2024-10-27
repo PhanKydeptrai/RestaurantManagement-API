@@ -4,6 +4,7 @@ namespace RestaurantManagement.Domain.IRepos;
 
 public interface IEmployeeRepository
 {
+    Task UpdateEmployeeRole(Ulid id, string role);
     Task<string?> GetEmployeeRole(Ulid id);
     Task<IEnumerable<Employee>> GetEmployees();
     Task<Employee?> GetEmployeeById(Ulid id);

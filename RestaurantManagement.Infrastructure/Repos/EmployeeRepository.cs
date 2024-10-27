@@ -43,6 +43,13 @@ namespace RestaurantManagement.Infrastructure.Repos
                 a.SetProperty(a => a.Status, "Activated"));
         }
 
+        public async Task UpdateEmployeeRole(Ulid id, string role)
+        {
+            await _context.Employees
+                .Where(a => a.EmployeeId == id)
+                .ExecuteUpdateAsync(a =>
+                a.SetProperty(a => a.Role, role));
+        }
         public async Task<bool> IsEmployyeEmailExist(string email)
         {
             return await _context.Employees

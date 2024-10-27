@@ -1,7 +1,5 @@
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Domain.DTOs.TableTypeDto;
-using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Infrastructure.Persistence;
 
@@ -20,6 +18,9 @@ public class TableTypeRepository : ITableTypeRepository
     {
         await _context.TableTypes.Where(a => a.TableTypeId == tableTypeId)
             .ExecuteUpdateAsync(a => a.SetProperty(x => x.Status, "nhd"));
+
+        await _context.Tables.Where(a => a.TableTypeId == tableTypeId)
+            .ExecuteUpdateAsync(a => a.SetProperty(x => x.TableStatus, "nhd"));
     }
     public async Task RestoreTableType(Ulid tableTypeId)
     {

@@ -23,7 +23,7 @@ public class UpdateTableTypeCommandValidator : AbstractValidator<UpdateTableType
         RuleFor(p => p.TablePrice)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull().WithMessage("{PropertyName} is required.")
-            .Must(p => p is decimal)
+            .Must(p => decimal.TryParse(p.ToString(), out _))
             .WithMessage("{PropertyName} must be a decimal.");
 
     }

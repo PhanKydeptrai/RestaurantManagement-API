@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RestaurantManagement.API.Extentions;
@@ -58,6 +59,13 @@ builder.Services.AddRateLimiter(options =>
             Window = TimeSpan.FromHours(1)
         }));
 
+    options.AddPolicy("AntiSpam", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
 });
 
 //Add authorization

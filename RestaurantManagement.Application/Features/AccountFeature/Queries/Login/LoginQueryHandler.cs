@@ -3,12 +3,13 @@ using NETCore.Encrypt;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Domain.DTOs.CustomerDto;
+using RestaurantManagement.Domain.DTOs.LoginDto;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
 
-public class LoginQueryHandler : ICommandHandler<LoginQuery, string>
+public class LoginQueryHandler : ICommandHandler<LoginQuery, LoginResponse>
 {
     private readonly IApplicationDbContext _context;
     private readonly IJwtProvider _jwtProvider;
@@ -18,7 +19,7 @@ public class LoginQueryHandler : ICommandHandler<LoginQuery, string>
         _jwtProvider = jwtProvider;
     }
 
-    public async Task<Result<string>> Handle(LoginQuery request, CancellationToken cancellationToken)
+    public async Task<Result<LoginResponse>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         //validate
         var loginQueryValidator = new LoginQueryValidator();
@@ -28,7 +29,7 @@ public class LoginQueryHandler : ICommandHandler<LoginQuery, string>
             var errors = validationResult.Errors
                 .Select(x => new Error(x.ErrorCode, x.ErrorMessage))
                 .ToArray();
-            return Result<string>.Failure(errors);
+            return Result<LoginResponse>.Failure(errors);
         }
 
         var encryptedPassword = EncryptProvider.Sha256(request.passWord);
@@ -50,13 +51,13 @@ public class LoginQueryHandler : ICommandHandler<LoginQuery, string>
         if (loginResponse == null)
         {
             Error[] a = { new Error("Login Fail", "Invalid login") };
-            return Result<string>.Failure(a);
+            return Result<LoginResponse>.Failure(a);
         }
 
         if (loginResponse.UserStatus != "Activated") //Chỉ khách hàng đã kích hoạt mới được đăng nhập
         {
             Error[] a = { new Error("Login Fail", "Account is not activated") };
-            return Result<string>.Failure(a);
+            return Result<LoginResponse>.Failure(a);
         }
 
         var token = _jwtProvider.GenerateJwtToken(
@@ -64,6 +65,6 @@ public class LoginQueryHandler : ICommandHandler<LoginQuery, string>
                 loginResponse.Email,
                 loginResponse.CustomerType);
 
-        return Result<string>.Success(token);
+        return Result<LoginResponse>.Success(new LoginResponse(token, loginResponse.CustomerType));
     }
 }
