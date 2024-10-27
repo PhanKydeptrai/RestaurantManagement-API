@@ -15,17 +15,10 @@ public class CreateTableTypeCommandValidator : AbstractValidator<CreateTableType
             .Must(a => tableTypeRepository.IsTableTypeNameUnique(a).Result == false)
             .WithMessage("{PropertyName} name is not unique");
 
-        // RuleFor(p => p.TablePrice)
-        //     .Must(p => p is decimal)
-        //     .WithMessage("{PropertyName} must be a decimal.")
-        //     .When(p => p != null).WithMessage("{PropertyName} must be a decimal.")
-        //     .NotEmpty().WithMessage("{PropertyName} is required.")
-        //     .NotNull().WithMessage("{PropertyName} is required.");
-
         RuleFor(p => p.TablePrice)
+            .NotNull().WithMessage("{PropertyName} is required.")   
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull().WithMessage("{PropertyName} is required.")
-            .Must(p => p is decimal)
+            .Must(p => decimal.TryParse(p.ToString(), out _))
             .WithMessage("{PropertyName} must be a decimal.");
     }
 }

@@ -49,7 +49,8 @@ public class MealController : IEndpoint
             }
             return Results.Ok(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
         //Get all meal
         endpoints.MapGet("",

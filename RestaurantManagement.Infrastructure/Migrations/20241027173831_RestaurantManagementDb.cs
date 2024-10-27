@@ -80,7 +80,10 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     VoucherName = table.Column<string>(type: "varchar(50)", nullable: false),
                     MaxDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     VoucherCondition = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(255)", nullable: true)
+                    StartDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ExpiredDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    Status = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {

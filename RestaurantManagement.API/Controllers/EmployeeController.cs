@@ -8,6 +8,7 @@ using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateEm
 using RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee;
 using RestaurantManagement.Application.Features.EmployeeFeature.Commands.DeleteEmployee;
 using RestaurantManagement.Application.Features.EmployeeFeature.Commands.RestoreEmloyee;
+using RestaurantManagement.Application.Features.EmployeeFeature.Commands.UpdateEmployeeRole;
 using RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetAllEmployee;
 using RestaurantManagement.Domain.IRepos;
 
@@ -171,6 +172,26 @@ public class EmployeeController : IEndpoint
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
             var result = await sender.Send(new RestoreEmployeeCommand(Ulid.Parse(id), token));
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+            
+        }).RequireAuthorization("management");
+
+        //restore employee
+        endpoints.MapPut("employee-role/{id}", async (
+            string id,
+            [FromForm] string role,
+            ISender sender,
+            IJwtProvider jwtProvider,
+            HttpContext httpContext) =>
+        {
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+
+            var result = await sender.Send(new UpdateEmployeeRoleCommand(Ulid.Parse(id), role, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);

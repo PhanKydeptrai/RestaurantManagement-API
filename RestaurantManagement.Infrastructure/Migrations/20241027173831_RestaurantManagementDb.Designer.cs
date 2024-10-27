@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241024170138_RestaurantManagementDb")]
+    [Migration("20241027173831_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -575,8 +575,18 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<DateTime>("ExpiredDate")
+                        .HasColumnType("datetime");
+
                     b.Property<decimal>("MaxDiscount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<decimal>("VoucherCondition")
                         .HasColumnType("decimal(18,2)");

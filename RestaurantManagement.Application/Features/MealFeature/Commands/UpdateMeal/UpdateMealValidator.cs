@@ -24,11 +24,11 @@ public class UpdateMealValidator : AbstractValidator<UpdateMealCommand>
             .WithMessage("Meal is not found");
 
         RuleFor(p => p.Price)
-            .Must(p => p is decimal)
-            .WithMessage("{PropertyName} must be a decimal.")
-            .When(p => p != null).WithMessage("{PropertyName} must be a decimal.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull().WithMessage("{PropertyName} is required.");
+            .NotNull().WithMessage("{PropertyName} is required.")
+            .Must(p => decimal.TryParse(p.ToString(), out _))
+            .WithMessage("{PropertyName} must be a decimal.");
+            
 
         RuleFor(p => p.CategoryId)
             .NotEmpty().WithMessage("{PropertyName} is required.")
