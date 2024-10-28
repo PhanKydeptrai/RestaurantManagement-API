@@ -6,6 +6,7 @@ namespace RestaurantManagement.Application.Features.TableFeature.Queries.GetAllT
 
 public record GetAllTableQuery(
     string? filterTableType,
+    string? filterActiveStatus,
     string? filterStatus,
     string? searchTerm,
     string? sortColumn,

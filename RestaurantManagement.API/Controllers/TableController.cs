@@ -20,6 +20,7 @@ namespace RestaurantManagement.API.Controllers
             endpoints.MapGet("",
             async (
                 [FromQuery] string? filterTableType,
+                [FromQuery] string? filterActiveStatus,
                 [FromQuery] string? filterStatus,
                 [FromQuery] string? searchTerm,
                 [FromQuery] string? sortColumn,
@@ -32,6 +33,7 @@ namespace RestaurantManagement.API.Controllers
                 var result = await sender.Send(
                     new GetAllTableQuery(
                         filterTableType,
+                        filterActiveStatus,
                         filterStatus,
                         searchTerm,
                         sortColumn,
@@ -44,6 +46,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.BadRequest(result);
                 }
                 return Results.Ok(result);
+
             });
 
             //Create table
@@ -68,15 +71,6 @@ namespace RestaurantManagement.API.Controllers
                 return Results.Ok(result);
             }).RequireAuthorization("boss");
 
-            // #region Chuyển trạng thái bàn
-            // // Cập nhật trạng thái booked
-            // endpoints.MapPut("",
-            // async () =>
-            // {
-
-            // }).RequireAuthorization("boss");
-
-            // #endregion
 
             //Remove table
             endpoints.MapDelete("{id}",
