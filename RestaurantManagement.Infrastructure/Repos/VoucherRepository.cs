@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Infrastructure.Persistence;
 
@@ -18,6 +19,10 @@ public class VoucherRepository : IVoucherRepository
         return await _context.Vouchers.AsNoTracking().AnyAsync(a => a.VoucherName == voucherName);
     }
 
+    public async Task<Voucher?> GetVoucherById(Ulid id)
+    {
+        return await _context.Vouchers.FindAsync(id);
+    }
     public async Task<bool> IsVoucherIdExists(Ulid voucherId)
     {
         return await _context.Vouchers.AsNoTracking().AnyAsync(a => a.VoucherId == voucherId && a.Status == "Active");
