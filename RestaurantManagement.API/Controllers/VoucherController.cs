@@ -5,6 +5,7 @@ using RestaurantManagement.Application.Features.VoucherFeature.Commands.CreateVo
 using RestaurantManagement.Application.Features.VoucherFeature.Commands.DeleteVoucher;
 using RestaurantManagement.Application.Features.VoucherFeature.Commands.UpdateVoucher;
 using RestaurantManagement.Application.Features.VoucherFeature.Queries.GetAllVoucher;
+using RestaurantManagement.Application.Features.VoucherFeature.Queries.GetVoucherById;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers
@@ -106,13 +107,25 @@ namespace RestaurantManagement.API.Controllers
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
 
                 var result = await sender.Send(new DeleteVoucherCommand(Ulid.Parse(id), token));
-                if(result.IsSuccess)
+                if (result.IsSuccess)
                 {
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
 
             }).RequireAuthorization("boss");
+
+            endpoints.MapGet("{id}", async (
+                string id,
+                ISender sender) =>
+            {
+                var result = await sender.Send(new GetVoucherByIdQuery(Ulid.Parse(id)));
+                if (result.IsSuccess)
+                {
+                    return Results.Ok(result);
+                }
+                return Results.NoContent();
+            });
         }
 
 
