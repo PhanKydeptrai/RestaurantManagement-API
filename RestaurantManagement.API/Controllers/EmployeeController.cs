@@ -10,7 +10,9 @@ using RestaurantManagement.Application.Features.EmployeeFeature.Commands.DeleteE
 using RestaurantManagement.Application.Features.EmployeeFeature.Commands.RestoreEmloyee;
 using RestaurantManagement.Application.Features.EmployeeFeature.Commands.UpdateEmployeeRole;
 using RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetAllEmployee;
+using RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetEmployeeById;
 using RestaurantManagement.Domain.IRepos;
+using Serilog.Sinks.Seq;
 
 namespace RestaurantManagement.API.Controllers;
 
@@ -177,7 +179,7 @@ public class EmployeeController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-            
+
         }).RequireAuthorization("management");
 
         //Thay đổi role cho nhân viên
@@ -197,7 +199,21 @@ public class EmployeeController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-            
+
         }).RequireAuthorization("management");
+
+        //get employee by id 
+        endpoints.MapGet("{id}", async (
+            string id,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new GetEmployeeByIdQuery(Ulid.Parse(id)));
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.NoContent();
+        });
+
     }
 }
