@@ -180,7 +180,7 @@ public class EmployeeController : IEndpoint
             
         }).RequireAuthorization("management");
 
-        //restore employee
+        //Thay đổi role cho nhân viên
         endpoints.MapPut("employee-role/{id}", async (
             string id,
             [FromForm] string role,

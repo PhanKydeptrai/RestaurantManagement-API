@@ -19,7 +19,7 @@ namespace RestaurantManagement.API.Controllers
             //Get all tables
             endpoints.MapGet("",
             async (
-                [FromBody] string? filterTableType,
+                [FromQuery] string? filterTableType,
                 [FromQuery] string? filterStatus,
                 [FromQuery] string? searchTerm,
                 [FromQuery] string? sortColumn,
@@ -97,7 +97,7 @@ namespace RestaurantManagement.API.Controllers
 
             }).RequireAuthorization("boss");
 
-            //Remove table
+            //Restore table
             endpoints.MapPut("{id}",
             async (
                 string id,
