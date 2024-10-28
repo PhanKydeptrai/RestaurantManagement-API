@@ -21,17 +21,24 @@ public class GetAllTableQueryHandler : IQueryHandler<GetAllTableQuery, PagedList
     public async Task<Result<PagedList<TableResponse>>> Handle(GetAllTableQuery request, CancellationToken cancellationToken)
     {
         var tableQuery = _context.Tables.Include(a => a.TableType).AsQueryable();
-        //Search
         
         //Filter
+        
+
+        if(!string.IsNullOrEmpty(request.filterTableType))
+        {
+            tableQuery = tableQuery.Where(x => x.TableTypeId == Ulid.Parse(request.filterTableType));
+        }
+        //trạng thái hoạt động
         if(!string.IsNullOrEmpty(request.filterStatus))
         {
             tableQuery = tableQuery.Where(x => x.TableStatus == request.filterStatus);
         }
 
-        if(!string.IsNullOrEmpty(request.filterTableType))
+        //trạng thái booking
+        if(!string.IsNullOrEmpty(request.filterActiveStatus))
         {
-            tableQuery = tableQuery.Where(x => x.TableTypeId == Ulid.Parse(request.filterTableType));
+            tableQuery = tableQuery.Where(x => x.TableTypeId == Ulid.Parse(request.filterActiveStatus));
         }
 
         //sort
@@ -55,7 +62,8 @@ public class GetAllTableQueryHandler : IQueryHandler<GetAllTableQuery, PagedList
             .Select(a => new TableResponse(
                 a.TableId,
                 a.TableType.TableTypeName,
-                a.TableStatus))
+                a.TableStatus,
+                a.ActiveStatus))
                 .AsQueryable();
         var tableList = await PagedList<TableResponse>.CreateAsync(tables, request.page ?? 1, request.pageSize ?? 10);
 
