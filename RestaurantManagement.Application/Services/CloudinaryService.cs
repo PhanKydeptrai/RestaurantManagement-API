@@ -21,18 +21,19 @@ public class CloudinaryService
         var uploadParams = new ImageUploadParams
         {
             File = new FileDescription(fileName, memoryStream),
-            UploadPreset = "iiwd8tcu"
+            UploadPreset = "iiwd8tcu",
+            Transformation = new Transformation().Width(300).Height(300).Crop("fill").Chain().Quality("auto").Chain().FetchFormat("auto")
         };
         return await _cloudinary.UploadAsync(uploadParams);
     }
 
-    //Upload image to cloudinary
     public async Task<ImageUploadResult> UploadAsyncCustomePreset(MemoryStream memoryStream, string fileName, string uploadPreset)
     {
         var uploadParams = new ImageUploadParams
         {
             File = new FileDescription(fileName, memoryStream),
             UploadPreset = uploadPreset
+            
         };
         return await _cloudinary.UploadAsync(uploadParams);
     }
