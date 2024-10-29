@@ -14,7 +14,7 @@ public class DeleteTableTypeCommandValidator : AbstractValidator<DeleteTableType
             .WithMessage("Id is required.")
             .Must(a => tableTypeRepository.IsTableTypeExist(a).Result == true)
             .WithMessage("Table type does not exist.")
-            .Must(a => tableTypeRepository.GetTableTypeStatus(a).Result == "hd")
-            .WithMessage("Table type is nhd.");
+            .Must(a => tableTypeRepository.GetTableTypeStatus(a).Result == "active")
+            .WithMessage("Table type is inactive.");
     }
 }

@@ -14,7 +14,7 @@ public class RestoreTableTyeCommandValidator : AbstractValidator<RestoreTableTye
             .WithMessage("Id is required.")
             .Must(a => tableTypeRepository.IsTableTypeExist(a).Result == true)
             .WithMessage("Table type does not exist.")
-            .Must(a => tableTypeRepository.GetTableTypeStatus(a).Result == "nhd")
-            .WithMessage("Table type is hd.");
+            .Must(a => tableTypeRepository.GetTableTypeStatus(a).Result == "inactive")
+            .WithMessage("Table type is active.");
     }
 }
