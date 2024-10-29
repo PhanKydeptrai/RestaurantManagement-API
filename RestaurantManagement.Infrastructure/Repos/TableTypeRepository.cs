@@ -17,15 +17,18 @@ public class TableTypeRepository : ITableTypeRepository
     public async Task DeleteTableType(Ulid tableTypeId)
     {
         await _context.TableTypes.Where(a => a.TableTypeId == tableTypeId)
-            .ExecuteUpdateAsync(a => a.SetProperty(x => x.Status, "nhd"));
+            .ExecuteUpdateAsync(a => a.SetProperty(x => x.Status, "inactive"));
 
         await _context.Tables.Where(a => a.TableTypeId == tableTypeId)
-            .ExecuteUpdateAsync(a => a.SetProperty(x => x.TableStatus, "nhd"));
+            .ExecuteUpdateAsync(a => a.SetProperty(x => x.ActiveStatus, "inactive"));
     }
     public async Task RestoreTableType(Ulid tableTypeId)
     {
         await _context.TableTypes.Where(a => a.TableTypeId == tableTypeId)
-            .ExecuteUpdateAsync(a => a.SetProperty(x => x.Status, "hd"));
+            .ExecuteUpdateAsync(a => a.SetProperty(x => x.Status, "active"));
+
+        await _context.Tables.Where(a => a.TableTypeId == tableTypeId)
+            .ExecuteUpdateAsync(a => a.SetProperty(x => x.ActiveStatus, "active"));
     }
     public async Task<TableTypeResponse?> GetTableTypeById(Ulid tableTypeId)
     {

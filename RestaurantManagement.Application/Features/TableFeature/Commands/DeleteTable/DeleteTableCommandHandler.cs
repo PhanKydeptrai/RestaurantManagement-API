@@ -35,8 +35,8 @@ public class DeleteTableCommandHandler : ICommandHandler<DeleteTableCommand>
         }
 
         //Delete table
-        await _tableRepository.UpdateActiveStatus(request.id, "inactive");
-
+        await _tableRepository.DeleteTable(request.id);
+        
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);

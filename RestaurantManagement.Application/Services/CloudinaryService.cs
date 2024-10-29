@@ -1,7 +1,6 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using dotenv.net;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace RestaurantManagement.Application.Services;
 

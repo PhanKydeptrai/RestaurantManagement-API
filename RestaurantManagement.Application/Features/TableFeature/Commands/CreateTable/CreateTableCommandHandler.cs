@@ -44,8 +44,8 @@ public class CreateTableCommandHandler : ICommandHandler<CreateTableCommand>
             {
                 TableId = Ulid.NewUlid(),
                 TableTypeId = request.tableTypeId,
-                TableStatus = "empty",
-                ActiveStatus = "active"
+                TableStatus = "active",
+                ActiveStatus = "empty"
             };
         }
 

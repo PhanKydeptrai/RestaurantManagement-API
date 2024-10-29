@@ -34,7 +34,7 @@ public class UpdateStatusToBookedCommandHandler : ICommandHandler<UpdateStatusTo
         }
 
         //Update table status
-        await _tableRepository.UpdateTableStatus(request.id, "booked");
+        await _tableRepository.UpdateActiveStatus(request.id, "booked");
 
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);

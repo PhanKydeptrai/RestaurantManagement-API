@@ -109,9 +109,14 @@ public class TableTypeController : IEndpoint
         endpoints.MapDelete("{id}",
         async (
             Ulid id,
-            ISender sender) =>
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
         {
-            var result = await sender.Send(new DeleteTableTypeCommand(id));
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+
+            var result = await sender.Send(new DeleteTableTypeCommand(id,token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
