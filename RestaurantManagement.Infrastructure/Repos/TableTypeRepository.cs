@@ -17,18 +17,18 @@ public class TableTypeRepository : ITableTypeRepository
     public async Task DeleteTableType(Ulid tableTypeId)
     {
         await _context.TableTypes.Where(a => a.TableTypeId == tableTypeId)
-            .ExecuteUpdateAsync(a => a.SetProperty(x => x.Status, "inactive"));
+            .ExecuteUpdateAsync(a => a.SetProperty(x => x.Status, "InActive"));
 
         await _context.Tables.Where(a => a.TableTypeId == tableTypeId)
-            .ExecuteUpdateAsync(a => a.SetProperty(x => x.ActiveStatus, "inactive"));
+            .ExecuteUpdateAsync(a => a.SetProperty(x => x.ActiveStatus, "InActive"));
     }
     public async Task RestoreTableType(Ulid tableTypeId)
     {
         await _context.TableTypes.Where(a => a.TableTypeId == tableTypeId)
-            .ExecuteUpdateAsync(a => a.SetProperty(x => x.Status, "active"));
+            .ExecuteUpdateAsync(a => a.SetProperty(x => x.Status, "Active"));
 
         await _context.Tables.Where(a => a.TableTypeId == tableTypeId)
-            .ExecuteUpdateAsync(a => a.SetProperty(x => x.ActiveStatus, "active"));
+            .ExecuteUpdateAsync(a => a.SetProperty(x => x.ActiveStatus, "Active"));
     }
     public async Task<TableTypeResponse?> GetTableTypeById(Ulid tableTypeId)
     {
@@ -65,7 +65,7 @@ public class TableTypeRepository : ITableTypeRepository
 
     public async Task<List<TableTypeInfo>> GetAllTableTypeInfo()
     {
-        return await _context.TableTypes.Where(a => a.Status == "hd")
+        return await _context.TableTypes.Where(a => a.Status == "Active")
             .Select(a => new TableTypeInfo(
                 a.TableTypeId, 
                 a.TableTypeName))

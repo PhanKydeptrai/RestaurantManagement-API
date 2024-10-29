@@ -35,6 +35,6 @@ public class VoucherRepository : IVoucherRepository
     public async Task DeleteVoucher(Ulid voucherId)
     {
         await _context.Vouchers.Where(a => a.VoucherId == voucherId)
-            .ExecuteUpdateAsync(a => a.SetProperty(a => a.Status, "Deleted"));
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.Status, "InActive"));
     }
 }

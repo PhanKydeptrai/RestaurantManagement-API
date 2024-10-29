@@ -59,7 +59,7 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
         {
             CategoryId = Ulid.NewUlid(),
             CategoryName = request.Name,
-            CategoryStatus = "kd",
+            CategoryStatus = "Active",
             ImageUrl = imageUrl
         });
 

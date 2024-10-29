@@ -14,9 +14,9 @@ public class DeleteTableCommandValidator : AbstractValidator<DeleteTableCommand>
             .WithMessage("Table id is required")
             .Must(a => tableRepository.IsTableExist(a).Result == true)
             .WithMessage("Table is not exist") //Kiểm tra bàn có tồn tại hay không?
-            .Must(a => tableRepository.GetTableStatus(a).Result == "empty")
+            .Must(a => tableRepository.GetTableStatus(a).Result == "Empty")
             .WithMessage("Table is not empty")
-            .Must(a => tableRepository.GetActiveStatus(a).Result == "active")
-            .WithMessage("Table is still inactive");//Kiểm tra bàn có trạng thái là empty hay không?
+            .Must(a => tableRepository.GetActiveStatus(a).Result == "Active")
+            .WithMessage("Table is still InActive");//Kiểm tra bàn có trạng thái là empty hay không?
     }
 }

@@ -76,14 +76,14 @@ public class TableRepository : ITableRepository
     public async Task RestoreTable(Ulid id) //table status
     {
         await _context.Tables.Where(a => a.TableId == id)
-            .ExecuteUpdateAsync(a => a.SetProperty(a => a.TableStatus, "active"));
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.TableStatus, "Active"));
         //
     }
 
     public async Task DeleteTable(Ulid id) //table status
     {
         await _context.Tables.Where(a => a.TableId == id)
-            .ExecuteUpdateAsync(a => a.SetProperty(a => a.TableStatus, "inactive"));
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.TableStatus, "InActive"));
         //
     }
 

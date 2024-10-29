@@ -16,7 +16,7 @@ public class RestoreCategoryCommandValidator : AbstractValidator<RestoreCategory
             .Must(a => categoryRepository.IsCategoryExist(a).Result == true)
             .WithMessage("Category not found")
             .Must(a => categoryRepository.CheckStatusOfCategory(a).Result == false)
-            .WithMessage("Category status is kd");
+            .WithMessage("Category status is Active");
             
     }
 }

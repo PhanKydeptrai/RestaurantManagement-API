@@ -14,8 +14,8 @@ public class RestoreTableCommandValidator : AbstractValidator<RestoreTableComman
             .WithMessage("{PropertyName} is required.")
             .Must(a => tableRepository.IsTableExist(a).Result == true)
             .WithMessage("Table does not exist.")
-            .Must(a => tableRepository.GetActiveStatus(a).Result == "inactive")
-            .WithMessage("Table is still active.");
+            .Must(a => tableRepository.GetActiveStatus(a).Result == "InActive")
+            .WithMessage("Table is still Active.");
             
     }
 }

@@ -12,7 +12,7 @@ public class RestoreSellStatusCommandValidator : AbstractValidator<RestoreSellSt
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
-            .Must(a => mealRepository.GetSellStatus(a).Result == "nkd")
-            .WithMessage("Meal is kd.");
+            .Must(a => mealRepository.GetSellStatus(a).Result == "InActive")
+            .WithMessage("Meal is Active.");
     }
 }

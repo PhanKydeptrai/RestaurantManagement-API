@@ -66,7 +66,7 @@ public class CreateTableTypeCommandHandler : ICommandHandler<CreateTableTypeComm
                 TableTypeId = Ulid.NewUlid(),
                 TableTypeName = request.TableTypeName,
                 ImageUrl = imageUrl,
-                Status = "active",
+                Status = "Active",
                 TablePrice = request.TablePrice,
                 Description = request.Description
             });
