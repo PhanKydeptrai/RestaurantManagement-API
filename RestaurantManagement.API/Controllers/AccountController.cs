@@ -1,7 +1,5 @@
-﻿using Azure.Core;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ActivateAccount;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ChangeCustomerPassword;
@@ -15,7 +13,6 @@ using RestaurantManagement.Application.Features.AccountFeature.Commands.VerifyCh
 using RestaurantManagement.Application.Features.AccountFeature.Queries.EmployeeLogin;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
 using RestaurantManagement.Domain.IRepos;
-using RestaurantManagement.Infrastructure.Authentication;
 
 namespace RestaurantManagement.API.Controllers
 {
