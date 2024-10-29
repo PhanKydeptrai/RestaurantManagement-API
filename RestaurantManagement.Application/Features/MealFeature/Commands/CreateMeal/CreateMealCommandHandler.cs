@@ -54,8 +54,8 @@ public class CreateMealCommandHandler(
             Price = request.Price,
             ImageUrl = imageUrl,
             Description = request.Description,
-            MealStatus = "kd",
-            SellStatus = "kd",
+            MealStatus = "Active",
+            SellStatus = "Active",
             CategoryId = request.CategoryId
         });
 

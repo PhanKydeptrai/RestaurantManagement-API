@@ -64,6 +64,7 @@ public class TableRepository : ITableRepository
             .AnyAsync(t => t.TableId == id);
     }
 
+    //Cập nhật trạng thái bàn khi booking
     public async Task UpdateActiveStatus(Ulid id, string status)
     {
         await _context.Tables
@@ -72,16 +73,19 @@ public class TableRepository : ITableRepository
                 a => a.SetProperty(a => a.ActiveStatus, status));
     }
 
-    public void UpdateTable(Table table)
+    public async Task RestoreTable(Ulid id) //table status
     {
-        _context.Tables.Update(table);
+        await _context.Tables.Where(a => a.TableId == id)
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.TableStatus, "Active"));
+        //
     }
 
-    public async Task UpdateTableStatus(Ulid id, string status)
+    public async Task DeleteTable(Ulid id) //table status
     {
-        await _context.Tables
-            .Where(t => t.TableId == id)
-            .ExecuteUpdateAsync(
-                a => a.SetProperty(a => a.TableStatus, status));
+        await _context.Tables.Where(a => a.TableId == id)
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.TableStatus, "InActive"));
+        //
     }
+
+
 }

@@ -35,7 +35,7 @@ public class RestoreTableCommandHandler : ICommandHandler<RestoreTableCommand>
         }
 
         //restore table
-
+        await _tableRepository.RestoreTable(request.id);
 
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
@@ -45,7 +45,7 @@ public class RestoreTableCommandHandler : ICommandHandler<RestoreTableCommand>
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetail = $"Cập nhật thông tin trạng thái bán của {request.id} thành bán",
+            LogDetail = $"Khôi phục trạng thái bàn {request.id} ",
             UserId = Ulid.Parse(userId)
         });
 

@@ -41,32 +41,44 @@ public class UpdateTableTypeCommandHandler : ICommandHandler<UpdateTableTypeComm
 
         //Lấy TableType theo id  
         var tableType = await _context.TableTypes.FindAsync(request.TableTypeId);
-        string oldimageUrl = tableType.ImageUrl; //Lưu lại ảnh cũ
-
-        //Xử lý lưu ảnh mới
-        string newImageUrl = string.Empty;
-        if (request.Image != null)
-        {
-            //tạo memory stream từ file ảnh
-            var memoryStream = new MemoryStream();
-            await request.Image.CopyToAsync(memoryStream);
-            memoryStream.Position = 0;
-
-            //Upload ảnh lên cloudinary
-            var cloudinary = new CloudinaryService();
-            var resultUpload = await cloudinary.UploadAsync(memoryStream, request.Image.FileName);
-            newImageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
-
-            //Log                                              
-            Console.WriteLine(resultUpload.JsonObj);
-        }
-
         //Update TableType
-        tableType.TableTypeName = request.TableTypeName;    
-        tableType.ImageUrl = newImageUrl;
+        tableType.TableTypeName = request.TableTypeName;
         tableType.TablePrice = request.TablePrice;
         tableType.Description = request.Description;
-        
+
+        if (request.Image != null)
+        {
+            string oldimageUrl = tableType.ImageUrl; //Lưu lại ảnh cũ
+
+            //Xử lý lưu ảnh mới
+            string newImageUrl = string.Empty;
+            if (request.Image != null)
+            {
+                //tạo memory stream từ file ảnh
+                var memoryStream = new MemoryStream();
+                await request.Image.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                //Upload ảnh lên cloudinary
+                var cloudinary = new CloudinaryService();
+                var resultUpload = await cloudinary.UploadAsync(memoryStream, request.Image.FileName);
+                newImageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
+                tableType.ImageUrl = newImageUrl;
+                //Log                                              
+                Console.WriteLine(resultUpload.JsonObj);
+            }
+
+            //Xóa ảnh cũ
+            if (oldimageUrl != "")
+            {
+                //Upload ảnh lên cloudinary
+                var cloudinary = new CloudinaryService();
+                var resultDelete = await cloudinary.DeleteAsync(oldimageUrl);
+                //Log
+                Console.WriteLine(resultDelete.JsonObj);
+            }
+        }
+
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
 
@@ -81,18 +93,8 @@ public class UpdateTableTypeCommandHandler : ICommandHandler<UpdateTableTypeComm
         });
         await _unitOfWork.SaveChangesAsync();
 
-        //Xóa ảnh cũ
-        if(oldimageUrl != "")
-        {
-            //Upload ảnh lên cloudinary
-            var cloudinary = new CloudinaryService();
-            var resultDelete = await cloudinary.DeleteAsync(oldimageUrl);
-            //Log
-            Console.WriteLine(resultDelete.JsonObj);
-        }
-        
         return Result.Success();
 
-        
+
     }
 }

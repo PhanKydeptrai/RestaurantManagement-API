@@ -24,11 +24,6 @@ public class UpdateCategoryValidator : AbstractValidator<UpdateCategoryCommand>
             .Must((id, name) => _categoryRepository.IsCategoryNameExistsWhenUpdate(id.CategoryId, name).Result == false)
             .WithMessage("Category name already exists.");
 
-        // RuleFor(p => p.CategoryStatus)
-        //     .NotEmpty()
-        //     .WithMessage("Category status is required.")
-        //     .Must(p => p == "kd" || p == "nkd")
-        //     .WithMessage("Category status must be 'kd' or 'nkd'.");
     }
 
 }

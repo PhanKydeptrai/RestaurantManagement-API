@@ -22,31 +22,31 @@ public class MealRepository : IMealRepository
     {
         await _context.Meals.Where(a => a.MealId == mealId)
             .ExecuteUpdateAsync(
-                a => a.SetProperty(a => a.MealStatus, "nkd")
-                .SetProperty(a => a.SellStatus, "nkd"));
+                a => a.SetProperty(a => a.MealStatus, "InActive")
+                .SetProperty(a => a.SellStatus, "InActive"));
     }
 
     public async Task RestoreMeal(Ulid mealId)
     {
         bool isCategoryIsNkd = await _context.Meals.Include(a => a.Category).AsNoTracking()
-            .AnyAsync(a => a.Category.CategoryId == a.CategoryId && a.Category.CategoryStatus == "nkd");
+            .AnyAsync(a => a.Category.CategoryId == a.CategoryId && a.Category.CategoryStatus == "InActive");
 
         if (isCategoryIsNkd)
         {
             await _context.Meals.Where(a => a.MealId == mealId)
                 .Include(a => a.Category)
                 .ExecuteUpdateAsync(
-                    a => a.SetProperty(a => a.MealStatus, "kd")
-                    .SetProperty(a => a.SellStatus, "kd")
-                    .SetProperty(a => a.Category.CategoryStatus, "kd"));
+                    a => a.SetProperty(a => a.MealStatus, "Active")
+                    .SetProperty(a => a.SellStatus, "Active")
+                    .SetProperty(a => a.Category.CategoryStatus, "Active"));
         }
         else
         {
             await _context.Meals
             .Where(a => a.MealId == mealId)
                 .ExecuteUpdateAsync(
-                a => a.SetProperty(a => a.MealStatus, "kd")
-                .SetProperty(a => a.SellStatus, "kd"));
+                a => a.SetProperty(a => a.MealStatus, "Active")
+                .SetProperty(a => a.SellStatus, "Active"));
         }
 
 
@@ -113,18 +113,18 @@ public class MealRepository : IMealRepository
     public async Task ChangeSellStatus(Ulid id)
     {
         await _context.Meals.Where(a => a.MealId == id)
-             .ExecuteUpdateAsync(a => a.SetProperty(a => a.SellStatus, "nkd"));
+             .ExecuteUpdateAsync(a => a.SetProperty(a => a.SellStatus, "InActive"));
     }
 
     public async Task ChangeMealStatus(Ulid id)
     {
         await _context.Meals.Where(a => a.MealId == id)
-             .ExecuteUpdateAsync(a => a.SetProperty(a => a.MealStatus, "nkd"));
+             .ExecuteUpdateAsync(a => a.SetProperty(a => a.MealStatus, "InActive"));
     }
 
     public async Task RestoreSellStatus(Ulid id)
     {
         await _context.Meals.Where(a => a.MealId == id)
-             .ExecuteUpdateAsync(a => a.SetProperty(a => a.SellStatus, "kd"));
+             .ExecuteUpdateAsync(a => a.SetProperty(a => a.SellStatus, "Active"));
     }
 }

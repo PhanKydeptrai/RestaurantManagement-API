@@ -14,8 +14,8 @@ public class RestoreMealCommandValidator : AbstractValidator<RestoreMealCommand>
             .WithMessage("MealId is required")
             .Must(a => mealRepository.IsMealExist(a).Result == true)
             .WithMessage("Meal is not found")
-            .Must(a => mealRepository.GetMealStatus(a).Result == "nkd")
-            .WithMessage("Meal status is kd");
+            .Must(a => mealRepository.GetMealStatus(a).Result == "InActive")
+            .WithMessage("Meal status is Active");
 
     }
 }

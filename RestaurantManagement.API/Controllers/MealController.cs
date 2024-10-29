@@ -151,7 +151,7 @@ public class MealController : IEndpoint
             return Results.BadRequest(result);
         }).RequireAuthorization("boss");
 
-        //Chuyển sell status kd => nkd
+        //Chuyển sell status Active => InActive
         endpoints.MapPut("change-sellstatus/{id}", 
         async (
             Ulid id,
@@ -170,7 +170,7 @@ public class MealController : IEndpoint
             return Results.BadRequest(result);
         }).RequireAuthorization("boss");
 
-        //Chuyển sell status nkd => kd
+        //Chuyển sell status InActive => Active
         endpoints.MapPut("restore-sellstatus/{id}", 
         async (
             Ulid id,

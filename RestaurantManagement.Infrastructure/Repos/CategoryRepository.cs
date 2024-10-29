@@ -53,8 +53,8 @@ public class CategoryRepository : ICategoryRepository
     {
         //Check status of category
 
-        return await _context.Categories.AnyAsync(a => a.CategoryStatus == "kd" && a.CategoryId == id);
-        // return true if category status is "kd"
+        return await _context.Categories.AnyAsync(a => a.CategoryStatus == "Active" && a.CategoryId == id);
+        // return true if category status is "Active"
     }
 
 
@@ -63,14 +63,14 @@ public class CategoryRepository : ICategoryRepository
         // Cập nhật trạng thái của Category
         await _context.Categories
             .Where(a => a.CategoryId == id)
-            .ExecuteUpdateAsync(a => a.SetProperty(a => a.CategoryStatus, "nkd"));
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.CategoryStatus, "InActive"));
 
 
         await _context.Meals
             .Where(a => a.CategoryId == id)
             .ExecuteUpdateAsync(
-                a => a.SetProperty(a => a.MealStatus, "nkd")
-                .SetProperty(a => a.SellStatus, "nkd"));
+                a => a.SetProperty(a => a.MealStatus, "InActive")
+                .SetProperty(a => a.SellStatus, "InActive"));
     }
 
     public async Task<bool> IsCategoryNameExistsWhenUpdate(Ulid id, string name)
@@ -89,20 +89,20 @@ public class CategoryRepository : ICategoryRepository
         // Cập nhật trạng thái của Category
         await _context.Categories
             .Where(a => a.CategoryId == id)
-            .ExecuteUpdateAsync(a => a.SetProperty(a => a.CategoryStatus, "kd"));
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.CategoryStatus, "Active"));
 
         await _context.Meals
             .Where(a => a.CategoryId == id)
             .ExecuteUpdateAsync(a
-            => a.SetProperty(a => a.MealStatus, "kd")
-            .SetProperty(a => a.SellStatus, "kd"));
+            => a.SetProperty(a => a.MealStatus, "Active")
+            .SetProperty(a => a.SellStatus, "Active"));
     }
 
     public async Task<List<CategoryInfo>> GetAllCategoryInfo()
     {
         return await _context.Categories
             .AsNoTracking()
-            .Where(a => a.CategoryStatus == "kd")
+            .Where(a => a.CategoryStatus == "Active")
             .Select(a => new CategoryInfo(a.CategoryId, a.CategoryName))
             .ToListAsync();
     }
