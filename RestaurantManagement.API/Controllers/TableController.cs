@@ -5,6 +5,7 @@ using RestaurantManagement.Application.Features.TableFeature.Commands.CreateTabl
 using RestaurantManagement.Application.Features.TableFeature.Commands.DeleteTable;
 using RestaurantManagement.Application.Features.TableFeature.Commands.RestoreTable;
 using RestaurantManagement.Application.Features.TableFeature.Queries.GetAllTable;
+using RestaurantManagement.Application.Features.TableFeature.Queries.GetTableById;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers
@@ -21,7 +22,7 @@ namespace RestaurantManagement.API.Controllers
                 [FromQuery] string? filterTableType,
                 [FromQuery] string? filterActiveStatus,
                 [FromQuery] string? filterStatus,
-                [FromQuery] string? searchTerm,
+                //[FromQuery] string? searchTerm,
                 [FromQuery] string? sortColumn,
                 [FromQuery] string? sortOrder,
                 [FromQuery] int? page,
@@ -34,7 +35,7 @@ namespace RestaurantManagement.API.Controllers
                         filterTableType,
                         filterActiveStatus,
                         filterStatus,
-                        searchTerm,
+                        //searchTerm,
                         sortColumn,
                         sortOrder,
                         page,
@@ -46,6 +47,18 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.Ok(result);
 
+            });
+
+            endpoints.MapGet("{id}", async (
+                string id,
+                ISender sender) =>
+            {
+                var result = await sender.Send(new GetTableByIdQuery(Ulid.Parse(id)));
+                if (!result.IsSuccess)
+                {
+                    return Results.BadRequest(result);
+                }
+                return Results.Ok(result);
             });
 
             //Create table
@@ -82,7 +95,7 @@ namespace RestaurantManagement.API.Controllers
                 //lấy token
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
                 var result = await sender.Send(new DeleteTableCommand(Ulid.Parse(id), token));
-                if(result.IsSuccess)
+                if (result.IsSuccess)
                 {
                     return Results.Ok(result);
                 }
@@ -101,7 +114,7 @@ namespace RestaurantManagement.API.Controllers
                 //lấy token
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
                 var result = await sender.Send(new RestoreTableCommand(Ulid.Parse(id), token));
-                if(result.IsSuccess)
+                if (result.IsSuccess)
                 {
                     return Results.Ok(result);
                 }
