@@ -73,7 +73,8 @@ public class CategoryController : IEndpoint
             }
 
             return Results.BadRequest(result);
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
         //Cập nhật category
         endpoints.MapPut("{id}",
@@ -103,7 +104,8 @@ public class CategoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
         //Xóa category
         endpoints.MapDelete("{id}",
@@ -124,7 +126,8 @@ public class CategoryController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
 
         //Xóa nhiều category
@@ -147,7 +150,8 @@ public class CategoryController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
         //Khôi phục category
         endpoints.MapPut("restore/{id}",
@@ -168,7 +172,8 @@ public class CategoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
         //Khôi phục nhiều category
         endpoints.MapPut("restore",
@@ -189,7 +194,8 @@ public class CategoryController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
 
         //Lấy tên và id của category
