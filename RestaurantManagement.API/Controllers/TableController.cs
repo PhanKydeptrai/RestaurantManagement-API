@@ -81,7 +81,8 @@ namespace RestaurantManagement.API.Controllers
                     return Results.BadRequest(result);
                 }
                 return Results.Ok(result);
-            }).RequireAuthorization("boss");
+            }).RequireAuthorization("boss")
+            .RequireRateLimiting("AntiSpam");
 
 
             //Remove table
@@ -101,7 +102,8 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result);
 
-            }).RequireAuthorization("boss");
+            }).RequireAuthorization("boss")
+            .RequireRateLimiting("AntiSpam");
 
             //Restore table
             endpoints.MapPut("{id}",
@@ -120,7 +122,8 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result);
 
-            }).RequireAuthorization("boss");
+            }).RequireAuthorization("boss")
+            .RequireRateLimiting("AntiSpam");
         }
     }
 }

@@ -59,7 +59,8 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result);
                 
-            }).RequireAuthorization("boss");
+            }).RequireAuthorization("boss")
+            .RequireRateLimiting("AntiSpam");
 
 
 
@@ -106,7 +107,8 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result);
 
-            }).RequireAuthorization("customer");
+            }).RequireAuthorization("customer")
+            .RequireRateLimiting("AntiSpam");
 
         }
     }
