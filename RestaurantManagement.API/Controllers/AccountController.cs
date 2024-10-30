@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using CloudinaryDotNet;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ActivateAccount;
@@ -11,6 +12,7 @@ using RestaurantManagement.Application.Features.AccountFeature.Commands.Register
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ResetPasswordVerify;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.VerifyChangeCustomerPassword;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.EmployeeLogin;
+using RestaurantManagement.Application.Features.AccountFeature.Queries.GetEmployeeAccountInfo;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
 using RestaurantManagement.Domain.IRepos;
 
@@ -160,7 +162,7 @@ namespace RestaurantManagement.API.Controllers
                 //lấy token
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
                 var result = await sender.Send(new DeleteCustomerAccountCommand(token));
-                if(result.IsSuccess)
+                if (result.IsSuccess)
                 {
                     return Results.Ok(result);
                 }
@@ -174,13 +176,29 @@ namespace RestaurantManagement.API.Controllers
                 ISender sender) =>
             {
                 var result = await sender.Send(new ConfirmDeleteCustomerAccountCommand(token));
-                if(result.IsSuccess)
+                if (result.IsSuccess)
                 {
                     return Results.Ok("Account deleted successfully!");
                 }
-                
+
                 return Results.BadRequest(result);
             });
+
+
+            endpoints.MapGet("account-info", async (
+                ISender sender,
+                HttpContext httpContext,
+                IJwtProvider jwtProvider) =>
+            {
+                //lấy token
+                var token = jwtProvider.GetTokenFromHeader(httpContext);
+                var result = await sender.Send(new GetEmployeeAccountInfoQuery(token));
+                if (result.IsSuccess)
+                {
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result);
+            }).RequireAuthorization();
         }
     }
 }
