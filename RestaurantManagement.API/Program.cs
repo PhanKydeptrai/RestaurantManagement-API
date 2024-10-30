@@ -129,6 +129,11 @@ builder.Services.AddSwaggerGen(option =>
             new string[]{}
         }
     });
+    //Xác định tên dựa theo 
+    var fileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    //Tạo địa chỉ file
+    var filePath = Path.Combine(AppContext.BaseDirectory, fileName); //AppContext.BaseDirectory Lấy địa chỉ thư mục gốc
+    option.IncludeXmlComments(filePath);
 
 });
 #endregion

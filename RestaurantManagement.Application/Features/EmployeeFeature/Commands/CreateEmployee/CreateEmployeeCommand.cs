@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Application.Abtractions;
+﻿using Microsoft.AspNetCore.Http;
+using RestaurantManagement.Application.Abtractions;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee
 {
@@ -7,7 +8,8 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
         string LastName,
         string PhoneNumber,
         string Email,
-        string? UserImage,
+        IFormFile? Image,
         string Role,
-        string Gender) : ICommand;
+        string Gender,
+        string token) : ICommand;
 }

@@ -48,7 +48,7 @@ namespace RestaurantManagement.API.Controllers
                 return Results.Ok(result);
 
             });
-
+            
             endpoints.MapGet("{id}", async (
                 string id,
                 ISender sender) =>
