@@ -12,7 +12,7 @@ public class RemoveMealCommandValidator : AbstractValidator<RemoveMealCommand>
             .WithMessage("Id is required")
             .NotNull()
             .WithMessage("Id is required")
-            .Must(a => mealRepository.GetMealStatus(a).Result == "InActive")
+            .Must(a => mealRepository.GetMealStatus(a).Result == "Active")
             .WithMessage("Meal is InActive");
     }
 }
