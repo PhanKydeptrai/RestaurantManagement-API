@@ -46,7 +46,7 @@ namespace RestaurantManagement.Infrastructure.Repos
         public async Task UpdateEmployeeRole(Ulid id, string role)
         {
             await _context.Employees
-                .Where(a => a.EmployeeId == id)
+                .Where(a => a.UserId == id)
                 .ExecuteUpdateAsync(a =>
                 a.SetProperty(a => a.Role, role));
         }
@@ -75,19 +75,19 @@ namespace RestaurantManagement.Infrastructure.Repos
         {
             return await _context.Employees
                 .Select(a => a.User)
-                .AnyAsync(a => a.Phone == phone && a.Employee.EmployeeId != id);
+                .AnyAsync(a => a.Phone == phone && a.Employee.UserId != id);
         }
 
         public async Task<bool> IsEmployeeEmailExist_update(Ulid id, string email)
         {
             return await _context.Employees
                 .Select(a => a.User)
-                .AnyAsync(a => a.Email == email && a.Employee.EmployeeId != id);
+                .AnyAsync(a => a.Email == email && a.Employee.UserId != id);
         }
 
         public async Task<Employee?> GetEmployeeById(Ulid id)
         {
-            return await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id);
+            return await _context.Employees.FirstOrDefaultAsync(e => e.UserId == id);
         }
         public async Task<IEnumerable<Employee>> GetEmployees()
         {

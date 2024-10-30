@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile>obj\Debug\net8.0\RestaurantManagement.API.xml</DocumentationFile>
+    <DocumentationFile>obj\Debug\net8.0\RestaurantManagement.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,14 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\RestaurantManagement.Infrastructure\RestaurantManagement.Infrastructure.csproj" />
   </ItemGroup>
-
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-  </PropertyGroup>
-
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-  </PropertyGroup>
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>

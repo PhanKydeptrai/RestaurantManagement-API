@@ -2,6 +2,7 @@
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Application.Services;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -28,6 +29,7 @@ public class UpdateEmployeeInformationCommandHandler : ICommandHandler<UpdateEmp
 
     public async Task<Result> Handle(UpdateEmployeeInformationCommand request, CancellationToken cancellationToken)
     {
+        //validator
         var validator = new UpdateEmployeeInformationCommandValidator(_employeeRepository);
         var validationResult = await validator.ValidateAsync(request);
         if (!validationResult.IsValid)
@@ -35,25 +37,53 @@ public class UpdateEmployeeInformationCommandHandler : ICommandHandler<UpdateEmp
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
                 .ToArray();
+
             return Result.Failure(errors);
-
         }
 
+        //Lấy user theo id
         var user = await _context.Employees
-            .Where(a => a.EmployeeId == request.EmployeeId)
+            .Where(a => a.UserId == request.EmployeeId)
             .Select(a => a.User)
-            .FirstAsync();
-
-        if (user == null)
-        {
-            Error[] error = { new Error("Employee", "Employee not found") };
-            return Result.Failure(error);
-        }
+            .FirstOrDefaultAsync();
 
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.Phone = request.PhoneNumber;
-        user.ImageUrl = request.ImageUrl ?? user.ImageUrl;
+
+        if (request.Image != null)
+        {
+            string oldimageUrl = user.ImageUrl; //Lưu lại ảnh cũ
+
+            //Xử lý lưu ảnh mới
+            string newImageUrl = string.Empty;
+            if (request.Image != null)
+            {
+                //tạo memory stream từ file ảnh
+                var memoryStream = new MemoryStream();
+                await request.Image.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                //Upload ảnh lên cloudinary
+                var cloudinary = new CloudinaryService();
+                var resultUpload = await cloudinary.UploadAsync(memoryStream, request.Image.FileName);
+                newImageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
+                user.ImageUrl = newImageUrl;
+                //Log                                              
+                Console.WriteLine(resultUpload.JsonObj);
+            }
+
+            //Xóa ảnh cũ
+            if (oldimageUrl != "")
+            {
+                //Upload ảnh lên cloudinary
+                var cloudinary = new CloudinaryService();
+                var resultDelete = await cloudinary.DeleteAsync(oldimageUrl);
+                //Log
+                Console.WriteLine(resultDelete.JsonObj);
+            }
+        }
+
         //Decode token to get userId
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
@@ -70,4 +100,49 @@ public class UpdateEmployeeInformationCommandHandler : ICommandHandler<UpdateEmp
         await _unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
+
+    // public async Task<Result> Handle(UpdateEmployeeInformationCommand request, CancellationToken cancellationToken)
+    // {
+    //     var validator = new UpdateEmployeeInformationCommandValidator(_employeeRepository);
+    //     var validationResult = await validator.ValidateAsync(request);
+    //     if (!validationResult.IsValid)
+    //     {
+    //         var errors = validationResult.Errors
+    //             .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
+    //             .ToArray();
+    //         return Result.Failure(errors);
+
+    //     }
+
+    //     var user = await _context.Employees
+    //         .Where(a => a.EmployeeId == request.EmployeeId)
+    //         .Select(a => a.User)
+    //         .FirstAsync();
+
+    //     if (user == null)
+    //     {
+    //         Error[] error = { new Error("Employee", "Employee not found") };
+    //         return Result.Failure(error);
+    //     }
+
+    //     user.FirstName = request.FirstName;
+    //     user.LastName = request.LastName;
+    //     user.Phone = request.PhoneNumber;
+    //     user.ImageUrl = request.ImageUrl ?? user.ImageUrl;
+    //     //Decode token to get userId
+    //     var claims = JwtHelper.DecodeJwt(request.token);
+    //     claims.TryGetValue("sub", out var userId);
+    //     //Create System Log
+    //     await _systemLogRepository.CreateSystemLog(new SystemLog
+    //     {
+    //         SystemLogId = Ulid.NewUlid(),
+    //         LogDate = DateTime.Now,
+    //         LogDetail = $"{userId} cập nhật thông tin tài khoản",
+    //         UserId = Ulid.Parse(userId)
+    //     });
+
+
+    //     await _unitOfWork.SaveChangesAsync();
+    //     return Result.Success();
+    // }
 }

@@ -8,6 +8,12 @@ public class UpdateEmployeeInformationCommandValidator : AbstractValidator<Updat
     public UpdateEmployeeInformationCommandValidator(IEmployeeRepository employeeRepository)
     {
         //* Rule for last name
+        RuleFor(p => p.EmployeeId)
+            .NotNull().WithMessage("EmployeeId is required")
+            .NotEmpty().WithMessage("EmployeeId is required")
+            .Must(a => employeeRepository.IsEmployeeExist(a).Result == true)
+            .WithMessage("Employee not found");
+
         RuleFor(p => p.LastName)
             .NotNull().WithMessage("Last name is required")
             .NotEmpty().WithMessage("Last name is required")

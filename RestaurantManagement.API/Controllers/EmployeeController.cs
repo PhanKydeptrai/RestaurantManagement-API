@@ -12,7 +12,6 @@ using RestaurantManagement.Application.Features.EmployeeFeature.Commands.UpdateE
 using RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetAllEmployee;
 using RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetEmployeeById;
 using RestaurantManagement.Domain.IRepos;
-using Serilog.Sinks.Seq;
 
 namespace RestaurantManagement.API.Controllers;
 
@@ -25,7 +24,7 @@ public class EmployeeController : IEndpoint
         //Update information for employee
         endpoints.MapPut("{id}",
         async (
-            Ulid id,
+            string id,
             [FromForm] string FirstName,
             [FromForm] string LastName,
             [FromForm] string PhoneNumber,
@@ -33,35 +32,16 @@ public class EmployeeController : IEndpoint
             HttpContext httpContext,
             ISender sender,
             IJwtProvider jwtProvider) =>
-        {
-            //Xử lý ảnh
-            DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-            Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
-            cloudinary.Api.Secure = true;
-
-            var memoryStream = new MemoryStream();
-            await UserImage.CopyToAsync(memoryStream);
-            memoryStream.Position = 0;
-
-            var uploadParams = new ImageUploadParams
-            {
-                File = new FileDescription(UserImage.FileName, memoryStream),
-                UploadPreset = "iiwd8tcu"
-            };
-
-            var resultUpload = await cloudinary.UploadAsync(uploadParams);
-            Console.WriteLine(resultUpload.JsonObj);
+        {  
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
-
-
             var result = await sender.Send(
                 new UpdateEmployeeInformationCommand(
-                    id,
+                    Ulid.Parse(id),
                     FirstName,
                     LastName,
                     PhoneNumber,
-                    resultUpload.SecureUrl.ToString(),
+                    UserImage,
                     token));
 
             if (result.IsSuccess)
@@ -81,30 +61,13 @@ public class EmployeeController : IEndpoint
             [FromForm] string Role,
             [FromForm] string Gender,
             [FromForm] IFormFile? UserImage,
-            ISender sender) =>
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
         {
-            //Xử lý ảnh
-            string imageUrl = string.Empty;
-            if (UserImage != null)
-            {
-                DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-                Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
-                cloudinary.Api.Secure = true;
-
-                var memoryStream = new MemoryStream();
-                await UserImage.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-
-                var uploadParams = new ImageUploadParams
-                {
-                    File = new FileDescription(UserImage.FileName, memoryStream),
-                    UploadPreset = "iiwd8tcu"
-                };
-
-                var resultUpload = await cloudinary.UploadAsync(uploadParams);
-                imageUrl = resultUpload.SecureUrl.ToString();
-                Console.WriteLine(resultUpload.JsonObj);
-            }
+            
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var result = await sender.Send(
                 new CreateEmployeeCommand(
@@ -112,9 +75,10 @@ public class EmployeeController : IEndpoint
                     LastName,
                     PhoneNumber,
                     Email,
-                    imageUrl,
+                    UserImage,
                     Role,
-                    Gender));
+                    Gender,
+                    token));
 
             if (!result.IsSuccess)
             {
