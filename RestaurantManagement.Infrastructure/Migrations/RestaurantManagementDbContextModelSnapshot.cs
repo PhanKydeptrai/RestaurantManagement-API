@@ -164,7 +164,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("CategoryStatus")
                         .IsRequired()
