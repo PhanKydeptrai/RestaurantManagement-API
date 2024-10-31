@@ -88,14 +88,14 @@ public class CreateEmployeeHandler : ICommandHandler<CreateEmployeeCommand>
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            LogDate = DateTime.Now,
-            LogDetail = $"Thêm nhân viên {request.FirstName} {request.LastName}",
-            SystemLogId = Ulid.NewUlid(),
-            UserId = Ulid.Parse(userId)
-        });
+        // //Create System Log
+        // await _systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Thêm nhân viên {request.FirstName} {request.LastName}",
+        //     SystemLogId = Ulid.NewUlid(),
+        //     UserId = Ulid.Parse(userId)
+        // });
 
         await _fluentEmail.To(user.Email).Subject("Thông báo thông tin tài khoản")
         .Body($"Thông tin tài khoản nhân viên của bạn: {request.Email} " +

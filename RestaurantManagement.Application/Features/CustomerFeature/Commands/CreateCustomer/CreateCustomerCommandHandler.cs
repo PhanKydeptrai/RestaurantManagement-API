@@ -106,7 +106,7 @@ public class CreateCustomerCommandHandler : ICommandHandler<CreateCustomerComman
         //gửi mail kích hoạt tài khoản
         var verificationLink = _emailVerify.Create(emailVerificationToken);
         await _fluentEmail.To(user.Email).Subject("Kích hoạt tài khoản")
-            .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
+            .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> \n Đây là mật khẩu của bạn: {randomPassword}", isHtml: true)
             .SendAsync();
 
 

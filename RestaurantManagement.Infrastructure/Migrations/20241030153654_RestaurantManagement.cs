@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RestaurantManagementDb : Migration
+    public partial class RestaurantManagement : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     CategoryId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    CategoryName = table.Column<string>(type: "varchar(100)", nullable: false),
+                    CategoryName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     ImageUrl = table.Column<string>(type: "varchar(200)", nullable: true),
                     CategoryStatus = table.Column<string>(type: "varchar(50)", nullable: false)
                 },

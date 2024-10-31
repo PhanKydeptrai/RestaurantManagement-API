@@ -12,8 +12,8 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241027173831_RestaurantManagementDb")]
-    partial class RestaurantManagementDb
+    [Migration("20241030153654_RestaurantManagement")]
+    partial class RestaurantManagement
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -167,7 +167,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("CategoryStatus")
                         .IsRequired()
