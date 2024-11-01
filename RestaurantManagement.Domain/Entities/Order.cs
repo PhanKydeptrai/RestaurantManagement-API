@@ -6,7 +6,8 @@ public class Order
     public string PaymentStatus { get; set; }
     public decimal Total { get; set; }
     public Ulid? CustomerId { get; set; }
-    public Ulid TableId { get; set; }
+    // public Ulid TableId { get; set; }
+    public int TableId { get; set; }
     public DateTime OrderTime { get; set; }
     public string? Note { get; set; }
     public Customer? Customer { get; set; }

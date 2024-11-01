@@ -12,7 +12,8 @@ internal sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
         builder.HasKey(a => a.BookId);
         builder.Property(a => a.BookId).IsRequired().HasConversion<UlidToStringConverter>();
 
-        builder.Property(a => a.Time).IsRequired().HasColumnType("datetime");
+        builder.Property(a => a.BookingTime).IsRequired().HasColumnType("time");
+        builder.Property(a => a.BookingDate).IsRequired().HasColumnType("date");
         builder.Property(a => a.BookingPrice).IsRequired().HasColumnType("decimal(18,2)");
         builder.Property(a => a.PaymentStatus).IsRequired().HasColumnType("varchar(20)");
         builder.Property(a => a.CustomerId).IsRequired().HasConversion<UlidToStringConverter>();

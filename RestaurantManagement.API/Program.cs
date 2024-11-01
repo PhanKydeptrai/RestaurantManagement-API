@@ -74,6 +74,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("boss", policy => policy.RequireClaim(ClaimTypes.Role, "Boss"));
     options.AddPolicy("customer", policy => policy.RequireClaim(ClaimTypes.Role, "Subscriber"));
     options.AddPolicy("management", policy => policy.RequireClaim(ClaimTypes.Role, "Manager", "Boss"));
+
 });
 
 //JWT
@@ -101,6 +102,11 @@ builder.Services.AddAuthentication(options =>
     };
 
 });
+// .AddGoogle(googleOptions =>
+//     {
+//         googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+//         googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+//     });
 
 // Cấu hình cho swaggergen
 builder.Services.AddSwaggerGen(option =>

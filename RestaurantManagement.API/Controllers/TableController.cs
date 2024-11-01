@@ -53,7 +53,7 @@ namespace RestaurantManagement.API.Controllers
                 string id,
                 ISender sender) =>
             {
-                var result = await sender.Send(new GetTableByIdQuery(Ulid.Parse(id)));
+                var result = await sender.Send(new GetTableByIdQuery(int.Parse(id)));
                 if (!result.IsSuccess)
                 {
                     return Results.BadRequest(result);
@@ -95,7 +95,7 @@ namespace RestaurantManagement.API.Controllers
             {
                 //lấy token
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
-                var result = await sender.Send(new DeleteTableCommand(Ulid.Parse(id), token));
+                var result = await sender.Send(new DeleteTableCommand(int.Parse(id), token));
                 if (result.IsSuccess)
                 {
                     return Results.Ok(result);
@@ -115,7 +115,7 @@ namespace RestaurantManagement.API.Controllers
             {
                 //lấy token
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
-                var result = await sender.Send(new RestoreTableCommand(Ulid.Parse(id), token));
+                var result = await sender.Send(new RestoreTableCommand(int.Parse(id), token));
                 if (result.IsSuccess)
                 {
                     return Results.Ok(result);

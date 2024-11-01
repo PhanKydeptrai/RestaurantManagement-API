@@ -9,16 +9,16 @@ public interface ITableRepository
     Task<Table?> GetTableById(Ulid id);
     Task AddTable(Table table);
 
-    Task RestoreTable(Ulid id);
-    Task DeleteTable(Ulid id);
+    Task RestoreTable(int id);
+    Task DeleteTable(int id);
 
 
-    Task UpdateActiveStatus(Ulid id, string status);
+    Task UpdateActiveStatus(int id, string status);
     void DeleteTable(Table table);
-    Task<bool> IsTableExist(Ulid id);
+    Task<bool> IsTableExist(int id);
     //Queries
-    Task<string?> GetTableStatus(Ulid id); //Get table status 
+    Task<string?> GetTableStatus(int id); //Get table status 
     IQueryable<Table> GetQueryableOfTable(); //Get IQueryable of Table
-    Task<string?> GetActiveStatus(Ulid id);
+    Task<string?> GetActiveStatus(int id);
     
 }
