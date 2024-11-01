@@ -3,7 +3,8 @@ namespace RestaurantManagement.Domain.Entities;
 public class Booking
 {
     public Ulid BookId { get; set; }
-    public DateTime Time { get; set; }
+    public DateOnly BookingDate { get; set; }
+    public TimeOnly BookingTime { get; set; }
     public decimal BookingPrice { get; set; }
     public string PaymentStatus { get; set; }
     public Ulid CustomerId { get; set; }

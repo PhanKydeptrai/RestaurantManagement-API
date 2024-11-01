@@ -1,6 +1,6 @@
 namespace RestaurantManagement.Domain.DTOs.TableDto;
 public record TableResponse(
-    Ulid TableId,
+    int TableId,
     string TableTypeName,
     string TableStatus,
     string ActiveStatus

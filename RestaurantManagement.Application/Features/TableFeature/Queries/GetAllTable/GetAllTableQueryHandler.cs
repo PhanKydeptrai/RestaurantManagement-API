@@ -23,7 +23,6 @@ public class GetAllTableQueryHandler : IQueryHandler<GetAllTableQuery, PagedList
         var tableQuery = _context.Tables.Include(a => a.TableType).AsQueryable();
         
         //Filter
-        
 
         if(!string.IsNullOrEmpty(request.filterTableType))
         {

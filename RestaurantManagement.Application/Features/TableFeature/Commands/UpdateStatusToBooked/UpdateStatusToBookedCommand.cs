@@ -2,4 +2,4 @@ using RestaurantManagement.Application.Abtractions;
 
 namespace RestaurantManagement.Application.Features.TableFeature.Commands.UpdateStatusToBooked;
 
-public record UpdateStatusToBookedCommand(Ulid id, string token) : ICommand;
+public record UpdateStatusToBookedCommand(int id, string token) : ICommand;

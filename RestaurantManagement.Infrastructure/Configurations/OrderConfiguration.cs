@@ -14,8 +14,11 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(a => a.PaymentStatus).IsRequired().HasColumnType("varchar(20)");
         builder.Property(a => a.Total).IsRequired().HasColumnType("decimal(18,2)");
         builder.Property(a => a.CustomerId).IsRequired(false).HasConversion<UlidToStringConverter>();
-        builder.Property(a => a.TableId).IsRequired().HasConversion<UlidToStringConverter>();
+        // builder.Property(a => a.TableId).IsRequired().HasConversion<UlidToStringConverter>();
+        builder.Property(a => a.TableId).IsRequired().HasColumnType("int");
+
         builder.Property(a => a.OrderTime).IsRequired().HasColumnType("datetime");
+        
         builder.Property(a => a.Note).IsRequired(false).HasColumnType("nvarchar(255)");
 
         //ForeignKey

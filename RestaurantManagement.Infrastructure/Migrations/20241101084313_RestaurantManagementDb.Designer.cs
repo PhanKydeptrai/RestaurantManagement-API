@@ -12,8 +12,8 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241030153654_RestaurantManagement")]
-    partial class RestaurantManagement
+    [Migration("20241101084313_RestaurantManagementDb")]
+    partial class RestaurantManagementDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,8 +72,14 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("BookId")
                         .HasColumnType("nvarchar(26)");
 
+                    b.Property<DateOnly>("BookingDate")
+                        .HasColumnType("date");
+
                     b.Property<decimal>("BookingPrice")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<TimeOnly>("BookingTime")
+                        .HasColumnType("time");
 
                     b.Property<string>("CustomerId")
                         .IsRequired()
@@ -85,9 +91,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("PaymentStatus")
                         .IsRequired()
                         .HasColumnType("varchar(20)");
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime");
 
                     b.HasKey("BookId");
 
@@ -137,16 +140,12 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(26)");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("TableId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
+                    b.Property<int>("TableId")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
@@ -363,9 +362,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("TableId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
+                    b.Property<int>("TableId")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
@@ -481,8 +479,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>
                 {
-                    b.Property<string>("TableId")
-                        .HasColumnType("nvarchar(26)");
+                    b.Property<int>("TableId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ActiveStatus")
                         .IsRequired()

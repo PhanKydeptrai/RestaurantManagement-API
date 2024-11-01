@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RestaurantManagement : Migration
+    public partial class RestaurantManagementDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -118,7 +118,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "Tables",
                 columns: table => new
                 {
-                    TableId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    TableId = table.Column<int>(type: "int", nullable: false),
                     TableTypeId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     TableStatus = table.Column<string>(type: "varchar(20)", nullable: false),
                     ActiveStatus = table.Column<string>(type: "varchar(20)", nullable: false)
@@ -241,7 +241,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     BookId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    Time = table.Column<DateTime>(type: "datetime", nullable: false),
+                    BookingDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    BookingTime = table.Column<TimeOnly>(type: "time", nullable: false),
                     BookingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PaymentStatus = table.Column<string>(type: "varchar(20)", nullable: false),
                     CustomerId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -292,7 +293,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     PaymentStatus = table.Column<string>(type: "varchar(20)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CustomerId = table.Column<string>(type: "nvarchar(26)", nullable: true),
-                    TableId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    TableId = table.Column<int>(type: "int", nullable: false),
                     OrderTime = table.Column<DateTime>(type: "datetime", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(255)", nullable: true)
                 },
@@ -344,9 +345,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     BookingDetailId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    TableId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    TableId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "varchar(20)", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     BookId = table.Column<string>(type: "nvarchar(26)", nullable: false)
                 },

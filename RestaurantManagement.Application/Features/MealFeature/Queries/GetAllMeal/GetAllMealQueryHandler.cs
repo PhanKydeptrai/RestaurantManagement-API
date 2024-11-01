@@ -26,13 +26,13 @@ public class GetAllMealQueryHandler : IQueryHandler<GetAllMealQuery, PagedList<M
         {
             mealQuery = mealQuery.Where(x => x.MealName.Contains(request.searchTerm));
         }
-
-        if (!string.IsNullOrEmpty(request.filterMealStatus))
+ 
+        if (!string.IsNullOrEmpty(request.filterMealStatus)) //lọc theo trạng thái kinh doanh
         {
             mealQuery = mealQuery.Where(x => x.MealStatus == request.filterMealStatus);
         }
 
-        if (!string.IsNullOrEmpty(request.filterSellStatus))
+        if (!string.IsNullOrEmpty(request.filterSellStatus)) //lọc theo trạng thái bán
         {
             mealQuery = mealQuery.Where(x => x.SellStatus == request.filterSellStatus);
         }

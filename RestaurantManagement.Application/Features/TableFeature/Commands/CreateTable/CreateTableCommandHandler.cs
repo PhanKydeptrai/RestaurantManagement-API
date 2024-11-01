@@ -42,7 +42,7 @@ public class CreateTableCommandHandler : ICommandHandler<CreateTableCommand>
         {
             tableArray[i] = new Table
             {
-                TableId = Ulid.NewUlid(),
+                TableId = PrimaryKeyGenerator.GeneratePrimaryKey(),
                 TableTypeId = request.tableTypeId,
                 TableStatus = "Active",
                 ActiveStatus = "Empty"
