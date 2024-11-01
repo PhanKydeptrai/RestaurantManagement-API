@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>obj\Debug\net8.0\RestaurantManagement.API.xml</DocumentationFile>
+    <UserSecretsId>dedbbef2-c542-476c-b5e6-9ecab4507d00</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
