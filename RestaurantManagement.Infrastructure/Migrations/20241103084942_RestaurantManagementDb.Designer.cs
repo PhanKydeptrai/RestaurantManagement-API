@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241101084313_RestaurantManagementDb")]
+    [Migration("20241103084942_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -78,6 +78,10 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<decimal>("BookingPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("BookingStatus")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
                     b.Property<TimeOnly>("BookingTime")
                         .HasColumnType("time");
 
@@ -87,6 +91,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("NumberOfCustomers")
+                        .HasColumnType("int");
 
                     b.Property<string>("PaymentStatus")
                         .IsRequired()
@@ -140,15 +147,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(26)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
-
                     b.Property<int>("TableId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("BookingDetailId");
 
@@ -515,6 +515,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("varchar(20)");
+
+                    b.Property<int>("TableCapacity")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TablePrice")
                         .HasColumnType("decimal(18,2)");

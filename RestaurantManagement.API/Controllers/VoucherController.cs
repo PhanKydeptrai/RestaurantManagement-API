@@ -8,127 +8,126 @@ using RestaurantManagement.Application.Features.VoucherFeature.Queries.GetAllVou
 using RestaurantManagement.Application.Features.VoucherFeature.Queries.GetVoucherById;
 using RestaurantManagement.Domain.IRepos;
 
-namespace RestaurantManagement.API.Controllers
+namespace RestaurantManagement.API.Controllers;
+
+public class VoucherController : IEndpoint
 {
-    public class VoucherController : IEndpoint
+    public void MapEndpoint(IEndpointRouteBuilder builder)
     {
-        public void MapEndpoint(IEndpointRouteBuilder builder)
+        var endpoints = builder.MapGroup("api/voucher").WithTags("Voucher").DisableAntiforgery();
+
+        endpoints.MapGet("", async (
+            [FromQuery] string? filterStatus,
+            [FromQuery] string? searchTerm,
+            [FromQuery] string? sortColumn,
+            [FromQuery] string? sortOrder,
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize,
+
+            ISender sender) =>
         {
-            var endpoints = builder.MapGroup("api/voucher").WithTags("Voucher").DisableAntiforgery();
+            //lấy token
+            var result = await sender.Send(new GetAllVoucherQuery(
+                filterStatus,
+                searchTerm,
+                sortColumn,
+                sortOrder,
+                page,
+                pageSize));
 
-            endpoints.MapGet("", async (
-                [FromQuery] string? filterStatus,
-                [FromQuery] string? searchTerm,
-                [FromQuery] string? sortColumn,
-                [FromQuery] string? sortOrder,
-                [FromQuery] int? page,
-                [FromQuery] int? pageSize,
-
-                ISender sender) =>
+            if (result.IsSuccess)
             {
-                //lấy token
-                var result = await sender.Send(new GetAllVoucherQuery(
-                    filterStatus,
-                    searchTerm,
-                    sortColumn,
-                    sortOrder,
-                    page,
-                    pageSize));
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
 
-                if (result.IsSuccess)
-                {
-                    return Results.Ok(result);
-                }
-                return Results.BadRequest(result);
+        });
 
-            });
+        endpoints.MapPost("", async (
+            [FromBody] CreateVoucherRequest request,
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
+        {
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-            endpoints.MapPost("", async (
-                [FromBody] CreateVoucherRequest request,
-                ISender sender,
-                HttpContext httpContext,
-                IJwtProvider jwtProvider) =>
+            var result = await sender.Send(new CreateVoucherCommand(
+                request.VoucherName,
+                request.MaxDiscount,
+                request.VoucherCondition,
+                request.StartDate,
+                request.ExpiredDate,
+                request.Description,
+                token));
+
+            if (result.IsSuccess)
             {
-                //lấy token
-                var token = jwtProvider.GetTokenFromHeader(httpContext);
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
 
-                var result = await sender.Send(new CreateVoucherCommand(
-                    request.VoucherName,
-                    request.MaxDiscount,
-                    request.VoucherCondition,
-                    request.StartDate,
-                    request.ExpiredDate,
-                    request.Description,
-                    token));
+        }).RequireAuthorization("boss");
 
-                if (result.IsSuccess)
-                {
-                    return Results.Ok(result);
-                }
-                return Results.BadRequest(result);
+        endpoints.MapPut("{id}", async (
+            string id,
+            [FromBody] UpdateVoucherRequest request,
+            ISender sender,
+            IJwtProvider jwtProvider,
+            HttpContext httpContext) =>
+        {
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-            }).RequireAuthorization("boss");
+            var result = await sender.Send(new UpdateVoucherCommand(
+                Ulid.Parse(id),
+                request.VoucherName,
+                request.MaxDiscount,
+                request.VoucherCondition,
+                request.StartDate,
+                request.ExpiredDate,
+                request.Description,
+                token));
 
-            endpoints.MapPut("{id}", async (
-                string id,
-                [FromBody] UpdateVoucherRequest request,
-                ISender sender,
-                IJwtProvider jwtProvider,
-                HttpContext httpContext) =>
+            if (result.IsSuccess)
             {
-                //lấy token
-                var token = jwtProvider.GetTokenFromHeader(httpContext);
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
 
-                var result = await sender.Send(new UpdateVoucherCommand(
-                    Ulid.Parse(id),
-                    request.VoucherName,
-                    request.MaxDiscount,
-                    request.VoucherCondition,
-                    request.StartDate,
-                    request.ExpiredDate,
-                    request.Description,
-                    token));
+        }).RequireAuthorization("boss");
 
-                if (result.IsSuccess)
-                {
-                    return Results.Ok(result);
-                }
-                return Results.BadRequest(result);
+        endpoints.MapDelete("{id}", async (
+            string id,
+            ISender sender,
+            IJwtProvider jwtProvider,
+            HttpContext httpContext) =>
+        {
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-            }).RequireAuthorization("boss");
-
-            endpoints.MapDelete("{id}", async (
-                string id,
-                ISender sender,
-                IJwtProvider jwtProvider,
-                HttpContext httpContext) =>
+            var result = await sender.Send(new DeleteVoucherCommand(Ulid.Parse(id), token));
+            if (result.IsSuccess)
             {
-                //lấy token
-                var token = jwtProvider.GetTokenFromHeader(httpContext);
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
 
-                var result = await sender.Send(new DeleteVoucherCommand(Ulid.Parse(id), token));
-                if (result.IsSuccess)
-                {
-                    return Results.Ok(result);
-                }
-                return Results.BadRequest(result);
+        }).RequireAuthorization("boss");
 
-            }).RequireAuthorization("boss");
-
-            endpoints.MapGet("{id}", async (
-                string id,
-                ISender sender) =>
+        endpoints.MapGet("{id}", async (
+            string id,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new GetVoucherByIdQuery(Ulid.Parse(id)));
+            if (result.IsSuccess)
             {
-                var result = await sender.Send(new GetVoucherByIdQuery(Ulid.Parse(id)));
-                if (result.IsSuccess)
-                {
-                    return Results.Ok(result);
-                }
-                return Results.NoContent();
-            });
-        }
-
-
-
+                return Results.Ok(result);
+            }
+            return Results.NoContent();
+        });
     }
+
+
+
 }

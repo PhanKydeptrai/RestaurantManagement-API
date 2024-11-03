@@ -61,7 +61,7 @@ public class TableRepository : ITableRepository
     public async Task<bool> IsTableExist(int id)
     {
         return await _context.Tables.AsNoTracking()
-            .AnyAsync(t => t.TableId == id);
+            .AnyAsync(t => t.TableId == id && t.TableStatus == "Active");
     }
 
     //Cập nhật trạng thái bàn khi booking
@@ -87,5 +87,19 @@ public class TableRepository : ITableRepository
         //
     }
 
+    public async Task<bool> IsTableAvailable(int id)
+    {
+        return await _context.Tables.AsNoTracking()
+            .AnyAsync(a => a.ActiveStatus == "Empty");
+    }
 
+    public async Task<int> GetTableCapacity(int id)
+    {
+        return await _context.Tables
+                    .Where(a => a.TableId == id)
+                    .AsNoTracking()
+                    .Include(a => a.TableType)
+                    .Select(a => a.TableType.TableCapacity)
+                    .FirstOrDefaultAsync();
+    }
 }

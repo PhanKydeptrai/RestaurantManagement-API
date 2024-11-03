@@ -62,7 +62,22 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand>
             normalCustomer.User.LastName = request.LastName;
             normalCustomer.User.Gender = request.Gender;
             normalCustomer.User.Password = EncryptProvider.Sha256(request.Password);
+            //Create email verification token
+            var emailverificationToken = new EmailVerificationToken
+            {
+                EmailVerificationTokenId = Ulid.NewUlid(),
+                ExpiredDate = DateTime.UtcNow.AddDays(1),
+                UserId = normalCustomer.UserId,
+                CreatedDate = DateTime.UtcNow
+            };
+
             await _unitOfWork.SaveChangesAsync();
+
+            //gửi mail kích hoạt tài khoản
+            var verifiCationLink = _emailVerify.Create(emailverificationToken);
+            await _fluentEmail.To(normalCustomer.User.Email).Subject("Kích hoạt tài khoản")
+                .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verifiCationLink}'>Click me</a>", isHtml: true)
+                .SendAsync();
             return Result.Success();
         }
 

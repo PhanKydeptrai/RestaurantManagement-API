@@ -11,10 +11,10 @@ public interface ITableRepository
 
     Task RestoreTable(int id);
     Task DeleteTable(int id);
-
-
+    Task<bool> IsTableAvailable(int id);
     Task UpdateActiveStatus(int id, string status);
     void DeleteTable(Table table);
+    Task<int> GetTableCapacity(int id);
     Task<bool> IsTableExist(int id);
     //Queries
     Task<string?> GetTableStatus(int id); //Get table status 
