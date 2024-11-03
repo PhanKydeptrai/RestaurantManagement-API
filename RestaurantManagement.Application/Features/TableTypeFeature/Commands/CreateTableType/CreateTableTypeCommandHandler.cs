@@ -67,6 +67,7 @@ public class CreateTableTypeCommandHandler : ICommandHandler<CreateTableTypeComm
                 TableTypeName = request.TableTypeName,
                 ImageUrl = imageUrl,
                 Status = "Active",
+                TableCapacity = request.TableCapacity,
                 TablePrice = request.TablePrice,
                 Description = request.Description
             });

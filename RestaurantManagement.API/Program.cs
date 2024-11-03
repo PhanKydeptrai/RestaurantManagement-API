@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using RestaurantManagement.API.Extentions;
 using RestaurantManagement.API.Middleware;
@@ -27,6 +28,12 @@ builder.Services.AddInfrastructureExtentions(builder.Configuration)
                 .AddApplication(builder.Configuration);
 //Add endpoints
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
+
+// Add services to the container.
+// builder.Services.AddControllers().AddJsonOptions(options =>
+// {
+//     options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+// });
 
 //Add serilog
 builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
@@ -101,12 +108,12 @@ builder.Services.AddAuthentication(options =>
         RoleClaimType = ClaimTypes.Role
     };
 
+})
+.AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 });
-// .AddGoogle(googleOptions =>
-//     {
-//         googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-//         googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-//     });
 
 // Cấu hình cho swaggergen
 builder.Services.AddSwaggerGen(option =>
@@ -140,7 +147,19 @@ builder.Services.AddSwaggerGen(option =>
     //Tạo địa chỉ file
     var filePath = Path.Combine(AppContext.BaseDirectory, fileName); //AppContext.BaseDirectory Lấy địa chỉ thư mục gốc
     option.IncludeXmlComments(filePath);
+    option.MapType<DateOnly>(() => new OpenApiSchema
+    {
+        Type = "string",
+        Format = "date",
+        Example = new OpenApiString(DateTime.Today.ToString("yyyy-MM-dd"))
+    });
 
+    option.MapType<TimeOnly>(() => new OpenApiSchema
+    {
+        Type = "string",
+        Format = "time",
+        Example = new OpenApiString(DateTime.Now.ToString("HH:mm:ss"))
+    });
 });
 #endregion
 

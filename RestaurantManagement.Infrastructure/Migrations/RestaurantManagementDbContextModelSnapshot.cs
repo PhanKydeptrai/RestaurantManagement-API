@@ -85,6 +85,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("NumberOfCustomers")
+                        .HasColumnType("int");
+
                     b.Property<string>("PaymentStatus")
                         .IsRequired()
                         .HasColumnType("varchar(20)");
@@ -512,6 +515,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("varchar(20)");
+
+                    b.Property<int>("TableCapacity")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TablePrice")
                         .HasColumnType("decimal(18,2)");

@@ -7,6 +7,7 @@ public class Booking
     public TimeOnly BookingTime { get; set; }
     public decimal BookingPrice { get; set; }
     public string PaymentStatus { get; set; }
+    public int NumberOfCustomers { get; set; }
     public Ulid CustomerId { get; set; }
     public string? Note { get; set; }
     public Customer? Customer { get; set; }

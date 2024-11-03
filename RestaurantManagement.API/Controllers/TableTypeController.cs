@@ -40,6 +40,7 @@ public class TableTypeController : IEndpoint
         endpoints.MapPost("",
         async (
             [FromForm] string TableTypeName,
+            [FromForm] int TableCapacity,
             [FromForm] decimal TablePrice,
             [FromForm] string? Description,
             [FromForm] IFormFile? Image,
@@ -50,7 +51,7 @@ public class TableTypeController : IEndpoint
             //lấy token
             string token = jwtProvider.GetTokenFromHeader(httpContext);
 
-            var result = await sender.Send(new CreateTableTypeCommand(TableTypeName, Image, TablePrice, Description, token));
+            var result = await sender.Send(new CreateTableTypeCommand(TableTypeName, Image, TablePrice, TableCapacity, Description, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);

@@ -23,7 +23,9 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .WithMessage("Email is exist");
 
         RuleFor(a => a.Phone)
-            .NotEmpty().NotNull()
+            .NotNull()
+            .WithMessage("Phonenumber is required.")
+            .NotEmpty()
             .WithMessage("Phonenumber is required.")
             .Matches(@"^0\d{9}$").WithMessage("PhoneNumber must start with 0 and be 10 digits long.")
             .Must(a => customerRepository.IsCustomerPhoneExist(a).Result == false)

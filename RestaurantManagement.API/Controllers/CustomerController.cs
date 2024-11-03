@@ -8,109 +8,107 @@ using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCusto
 using RestaurantManagement.Domain.IRepos;
 
 
-namespace RestaurantManagement.API.Controllers
+namespace RestaurantManagement.API.Controllers;
+
+public class CustomerController : IEndpoint
 {
-    public class CustomerController : IEndpoint
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        public void MapEndpoint(IEndpointRouteBuilder app)
+        var endpoints = app.MapGroup("api/customer").WithTags("Customer").DisableAntiforgery();
+
+        // Get all with pagination
+        endpoints.MapGet("",
+        async (
+            ISender sender,
+            [FromQuery] string? filterUserType,
+            [FromQuery] string? filterGender,
+            [FromQuery] string? filterStatus,
+            [FromQuery] string? searchTerm,
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize,
+            [FromQuery] string? sortColumn,
+            [FromQuery] string? sortOrder) =>
         {
-            var endpoints = app.MapGroup("api/customer").WithTags("Customer").DisableAntiforgery();
-
-            // Get all with pagination
-            endpoints.MapGet("",
-            async (
-                ISender sender,
-                [FromQuery] string? filterUserType,
-                [FromQuery] string? filterGender,
-                [FromQuery] string? filterStatus,
-                [FromQuery] string? searchTerm,
-                [FromQuery] int? page,
-                [FromQuery] int? pageSize,
-                [FromQuery] string? sortColumn,
-                [FromQuery] string? sortOrder) =>
+            CustomerFilterQuery request = new CustomerFilterQuery(filterGender, filterUserType, filterStatus, searchTerm, sortColumn, sortOrder, page, pageSize);
+            var result = await sender.Send(request);
+            if (result != null)
             {
-                CustomerFilterQuery request = new CustomerFilterQuery(filterGender, filterUserType, filterStatus, searchTerm, sortColumn, sortOrder, page, pageSize);
-                var result = await sender.Send(request);
-                if (result != null)
-                {
-                    return Results.Ok(result);
-                }
-                return Results.BadRequest(result);
-            });
-
-            endpoints.MapPost("",
-            async (
-                [FromForm] string FirstName,
-                [FromForm] string LastName,
-                [FromForm] string? Email,
-                [FromForm] string? Phone,
-                [FromForm] string Gender,
-                ISender sender,
-                HttpContext httpContext,
-                IJwtProvider jwtProvider) =>
-            {
-                //lấy token
-                var token = jwtProvider.GetTokenFromHeader(httpContext);
-                
-                var result = await sender.Send(new CreateCustomerCommand(FirstName, LastName, Email, Phone, Gender, token));
-                if (result != null)
-                {
-                    return Results.Ok(result);
-                }
-                return Results.BadRequest(result);
-                
-            }).RequireAuthorization("boss")
-            .RequireRateLimiting("AntiSpam");
-
-
-
-            //Get by id
-            endpoints.MapGet("{id}", async (Ulid id, ISender sender) =>
-            {
-                GetCustomerByIdQuery request = new GetCustomerByIdQuery(id);
-                var result = await sender.Send(request);
                 return Results.Ok(result);
-            });
+            }
+            return Results.BadRequest(result);
+        });
 
-            //Update information for a customer
-            endpoints.MapPut("{id}",
-            async (
-                Ulid id,
-                [FromForm] IFormFile? image,
-                [FromForm] string? FirstName,
-                [FromForm] string? LastName,
-                [FromForm] string? PhoneNumber,
-                [FromForm] string? Gender,
-                ISender sender,
-                HttpContext httpContext,
-                IJwtProvider jwtProvider) =>
+        endpoints.MapPost("",
+        async (
+            [FromForm] string FirstName,
+            [FromForm] string LastName,
+            [FromForm] string? Email,
+            [FromForm] string? Phone,
+            [FromForm] string Gender,
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
+        {
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+            
+            var result = await sender.Send(new CreateCustomerCommand(FirstName, LastName, Email, Phone, Gender, token));
+            if (result != null)
             {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+            
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
-                //lấy token
-                var token = jwtProvider.GetTokenFromHeader(httpContext);
 
 
-                var updateCustomerCommand = new UpdateCustomerInformationCommand(
-                    id,
-                    FirstName,
-                    LastName,
-                    PhoneNumber,
-                    image,
-                    Gender,
-                    token
-                );
+        //Get by id
+        endpoints.MapGet("{id}", async (Ulid id, ISender sender) =>
+        {
+            GetCustomerByIdQuery request = new GetCustomerByIdQuery(id);
+            var result = await sender.Send(request);
+            return Results.Ok(result);
+        });
 
-                var result = await sender.Send(updateCustomerCommand);
-                if (result.IsSuccess)
-                {
-                    return Results.Ok(result);
-                }
-                return Results.BadRequest(result);
+        //Update information for a customer
+        endpoints.MapPut("{id}",
+        async (
+            Ulid id,
+            [FromForm] IFormFile? image,
+            [FromForm] string? FirstName,
+            [FromForm] string? LastName,
+            [FromForm] string? PhoneNumber,
+            [FromForm] string? Gender,
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
+        {
 
-            }).RequireAuthorization("customer")
-            .RequireRateLimiting("AntiSpam");
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-        }
+
+            var updateCustomerCommand = new UpdateCustomerInformationCommand(
+                id,
+                FirstName,
+                LastName,
+                PhoneNumber,
+                image,
+                Gender,
+                token
+            );
+
+            var result = await sender.Send(updateCustomerCommand);
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+
+        }).RequireAuthorization("customer")
+        .RequireRateLimiting("AntiSpam");
+
     }
-
 }

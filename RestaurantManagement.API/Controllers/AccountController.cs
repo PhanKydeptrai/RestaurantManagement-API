@@ -1,4 +1,4 @@
-﻿using CloudinaryDotNet;
+﻿using Google.Apis.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
@@ -199,6 +199,19 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result);
             }).RequireAuthorization();
+
+
+            //Google authen
+            endpoints.MapPost("test/{token}", async (
+                string token,
+                ISender sender) =>
+            {
+                var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings()
+                {
+                    Audience = new[] {"512717206233-ul0hu3t49c9o30rf4lqueiqrliddrk7q.apps.googleusercontent.com"}
+                });
+                return Results.Ok();
+            });
         }
     }
 }

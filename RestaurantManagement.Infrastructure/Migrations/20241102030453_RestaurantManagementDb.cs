@@ -43,6 +43,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 {
                     TableTypeId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     TableTypeName = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    TableCapacity = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "varchar(20)", nullable: false),
                     ImageUrl = table.Column<string>(type: "varchar(250)", nullable: true),
                     TablePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -245,6 +246,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     BookingTime = table.Column<TimeOnly>(type: "time", nullable: false),
                     BookingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PaymentStatus = table.Column<string>(type: "varchar(20)", nullable: false),
+                    NumberOfCustomers = table.Column<int>(type: "int", nullable: false),
                     CustomerId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(255)", nullable: true)
                 },
