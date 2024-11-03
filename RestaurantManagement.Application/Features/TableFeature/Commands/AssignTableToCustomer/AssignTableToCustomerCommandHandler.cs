@@ -2,7 +2,7 @@ using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.TableFeature.Commands.GetTableForCustomer;
+namespace RestaurantManagement.Application.Features.TableFeature.Commands.AssignTableToCustomer;
 
 public class GetTableForCustomerCommandHandler : ICommandHandler<AssignTableToCustomerCommand>
 {
