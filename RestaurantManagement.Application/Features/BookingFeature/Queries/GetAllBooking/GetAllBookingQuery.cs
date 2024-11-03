@@ -5,6 +5,7 @@ using RestaurantManagement.Domain.DTOs.BookingDtos;
 namespace RestaurantManagement.Application.Features.BookingFeature.Queries.GetAllBooking;
 
 public record GetAllBookingQuery(
+    string? filterBookingStatus,
     string? filterPaymentStatus,
     string? searchTerm,
     string? sortColumn,

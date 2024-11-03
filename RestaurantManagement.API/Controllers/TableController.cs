@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Features.TableFeature.Commands.CreateTable;
 using RestaurantManagement.Application.Features.TableFeature.Commands.DeleteTable;
+using RestaurantManagement.Application.Features.TableFeature.Commands.GetTableForCustomer;
 using RestaurantManagement.Application.Features.TableFeature.Commands.RestoreTable;
 using RestaurantManagement.Application.Features.TableFeature.Queries.GetAllTable;
 using RestaurantManagement.Application.Features.TableFeature.Queries.GetTableById;
@@ -48,7 +49,7 @@ public class TableController : IEndpoint
             return Results.Ok(result);
 
         });
-        
+
         endpoints.MapGet("{id}", async (
             string id,
             ISender sender) =>
@@ -124,5 +125,16 @@ public class TableController : IEndpoint
 
         }).RequireAuthorization("boss")
         .RequireRateLimiting("AntiSpam");
+
+
+        endpoints.MapPut("table-assign/{id}", async (string id,ISender sender) =>
+        {
+            var result = await sender.Send(new AssignTableToCustomerCommand(int.Parse(id)));
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        });
     }
 }

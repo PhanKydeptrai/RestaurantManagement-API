@@ -31,10 +31,16 @@ public class GetAllBookingQueryHandler : IQueryHandler<GetAllBookingQuery, Paged
         }
 
         //Filter
-        if (!string.IsNullOrEmpty(request.filterPaymentStatus))
+        if (!string.IsNullOrEmpty(request.filterPaymentStatus)) //filter theo payment status
         {
             bookingQuery = bookingQuery.Where(x => x.PaymentStatus == request.filterPaymentStatus);
         }
+
+        if (!string.IsNullOrEmpty(request.filterBookingStatus)) //filter theo booking status
+        {
+            bookingQuery = bookingQuery.Where(x => x.BookingStatus == request.filterBookingStatus);
+        }
+
 
         //Sort
         Expression<Func<Booking, object>> keySelector = request.sortColumn?.ToLower() switch
@@ -65,6 +71,7 @@ public class GetAllBookingQueryHandler : IQueryHandler<GetAllBookingQuery, Paged
                 a.BookingTime,
                 a.BookingPrice,
                 a.PaymentStatus,
+                a.BookingStatus,
                 a.NumberOfCustomers,
                 a.Note)).AsQueryable();
         var bookingsList = await PagedList<BookingResponse>.CreateAsync(categories, request.page ?? 1, request.pageSize ?? 10);

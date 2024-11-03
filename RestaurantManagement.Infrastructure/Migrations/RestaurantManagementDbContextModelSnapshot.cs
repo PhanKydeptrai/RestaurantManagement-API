@@ -75,6 +75,10 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<decimal>("BookingPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("BookingStatus")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
                     b.Property<TimeOnly>("BookingTime")
                         .HasColumnType("time");
 
@@ -140,15 +144,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(26)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
-
                     b.Property<int>("TableId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("BookingDetailId");
 

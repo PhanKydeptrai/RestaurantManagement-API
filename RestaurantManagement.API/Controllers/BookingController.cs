@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Features.BookingFeature.Commands.CustomerCreateBooking;
 using RestaurantManagement.Application.Features.BookingFeature.Commands.SubscriberCreateBooking;
+using RestaurantManagement.Application.Features.BookingFeature.Commands.TableArrangement;
 using RestaurantManagement.Application.Features.BookingFeature.Queries.GetAllBooking;
 using RestaurantManagement.Application.Features.BookingFeature.Queries.GetBookingByBookingId;
 using RestaurantManagement.Application.Features.BookingFeature.Queries.GetBookingByUserId;
@@ -17,6 +18,7 @@ public class BookingController : IEndpoint
         var endpoints = app.MapGroup("api/booking").WithTags("Booking").DisableAntiforgery();
 
         endpoints.MapGet("", async (
+            [FromQuery] string? filterBookingStatus,    
             [FromQuery] string? filterPaymentStatus,
             [FromQuery] string? searchTerm,
             [FromQuery] string? sortColumn,
@@ -25,7 +27,15 @@ public class BookingController : IEndpoint
             [FromQuery] int? pageSize,
             ISender sender) =>
         {
-            var result = await sender.Send(new GetAllBookingQuery(filterPaymentStatus, searchTerm, sortColumn, sortOrder, page, pageSize));
+            var result = await sender.Send(new GetAllBookingQuery(
+                filterBookingStatus,
+                filterPaymentStatus, 
+                searchTerm, 
+                sortColumn, 
+                sortOrder, 
+                page, 
+                pageSize));
+
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -98,6 +108,22 @@ public class BookingController : IEndpoint
             }
             return Results.BadRequest(result);
         }).RequireAuthorization("customer");
+
+        //Xếp bàn cho khách 
+        endpoints.MapPost("table-arrange", async (
+            [FromBody] TableArrangementRequest command,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new TableArrangementCommand(Ulid.Parse(command.BookingId), command.TableId));
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        }).RequireAuthorization();
+
+
+        
     }
 }
 

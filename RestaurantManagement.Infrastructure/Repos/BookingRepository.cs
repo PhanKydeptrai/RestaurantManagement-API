@@ -36,6 +36,7 @@ public class BookingRepository : IBookingRepository
     public async Task<BookingResponse?> GetBookingResponseById(Ulid id)
     {
         return await _context.Bookings
+            .AsNoTracking()
             .Include(a => a.Customer)
             .ThenInclude(a => a.User)
             .Where(a => a.BookId == id)
@@ -50,6 +51,7 @@ public class BookingRepository : IBookingRepository
                 a.BookingTime,
                 a.BookingPrice,
                 a.PaymentStatus,
+                a.BookingStatus,
                 a.NumberOfCustomers,
                 a.Note
             )).FirstOrDefaultAsync();
@@ -58,6 +60,7 @@ public class BookingRepository : IBookingRepository
     public async Task<BookingResponse[]> GetBookingResponseByUserId(Ulid id)
     {
         return await _context.Bookings
+            .AsNoTracking()
             .Include(a => a.Customer)
             .ThenInclude(a => a.User)
             .Where(a => a.Customer.UserId == id)
@@ -72,6 +75,7 @@ public class BookingRepository : IBookingRepository
                 a.BookingTime,
                 a.BookingPrice,
                 a.PaymentStatus,
+                a.BookingStatus,
                 a.NumberOfCustomers,
                 a.Note
             )).ToArrayAsync();
@@ -80,6 +84,15 @@ public class BookingRepository : IBookingRepository
     public async Task<IEnumerable<Booking>> GetBookingsByCustomerId(Ulid id)
     {
         return await _context.Bookings.Where(i => i.CustomerId == id).ToListAsync();
+    }
+
+    public async Task<int> GetNumberOfCustomers(Ulid id)
+    {
+        return await _context.Bookings
+                    .AsNoTracking()
+                    .Where(a => a.BookId == id)
+                    .Select(a => a.NumberOfCustomers)
+                    .FirstOrDefaultAsync();
     }
 
     public IQueryable<Booking> GetQueryableBookings()
@@ -94,6 +107,11 @@ public class BookingRepository : IBookingRepository
             return false;
         }
         return true;
+    }
+
+    public async Task<bool> IsBookingStatusValid(Ulid id)
+    {
+        return await _context.Bookings.AnyAsync(a => a.BookingStatus == "Waiting" && a.BookId == id && a.PaymentStatus == "Paid");
     }
 
     public async Task<bool> IsBookingTimeValid(TimeOnly bookingTime)
@@ -163,5 +181,11 @@ public class BookingRepository : IBookingRepository
     public void UpdateBooking(Booking booking)
     {
         _context.Bookings.Update(booking);
+    }
+
+    public async Task UpdateBookingStatus(Ulid id)
+    {
+        await _context.Bookings.Where(a => a.BookId == id)
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.BookingStatus, "Completed"));
     }
 }

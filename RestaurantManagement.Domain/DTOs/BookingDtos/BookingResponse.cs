@@ -11,6 +11,7 @@ public record BookingResponse(
     TimeOnly BookingTime,
     decimal BookingPrice,
     string PaymentStatus,
+    string BookingStatus,
     int NumberOfCustomers,
     string? Note
 );

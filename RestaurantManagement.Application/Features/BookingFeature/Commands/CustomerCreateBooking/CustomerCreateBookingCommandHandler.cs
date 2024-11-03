@@ -115,6 +115,7 @@ public class CustomerCreateBookingCommandHandler : ICommandHandler<CustomerCreat
             BookingTime = request.BookingTime,
             BookingPrice = bookingPrice,
             PaymentStatus = "Waiting",
+            BookingStatus = "Waiting",
             NumberOfCustomers = request.NumberOfCustomers,
             CustomerId = isCustomerExist?.CustomerId ?? customerId,
             Note = request.Note
@@ -150,7 +151,7 @@ public class CustomerCreateBookingCommandHandler : ICommandHandler<CustomerCreat
         string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
         //  Gửi mail thông báo cho khách hàng
         await _fluentEmail.To(userEmail).Subject("Xác nhận đặt bàn")
-            .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a>", isHtml: true)
+            .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> \n Mã booking của bạn là: {booking.BookId}", isHtml: true)
             .SendAsync();
         return Result.Success();
         
