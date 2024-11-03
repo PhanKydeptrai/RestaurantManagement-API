@@ -1,7 +1,7 @@
 using FluentValidation;
 using RestaurantManagement.Domain.IRepos;
 
-namespace RestaurantManagement.Application.Features.TableFeature.Commands.GetTableForCustomer;
+namespace RestaurantManagement.Application.Features.TableFeature.Commands.AssignTableToCustomer;
 
 public class AssignTableToCustomerCommandValidator : AbstractValidator<AssignTableToCustomerCommand>
 {

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using RestaurantManagement.Domain.DTOs.BookingDtos;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -31,6 +32,11 @@ public class BookingRepository : IBookingRepository
     public async Task<Booking?> GetBookingById(Ulid id)
     {
         return await _context.Bookings.FindAsync(id);
+    }
+
+    public async Task<bool> IsBookingCanceled(Ulid id)
+    {
+        return await _context.Bookings.AnyAsync(a => a.BookingStatus == "Canceled" && a.BookId == id);
     }
 
     public async Task<BookingResponse?> GetBookingResponseById(Ulid id)
@@ -187,5 +193,21 @@ public class BookingRepository : IBookingRepository
     {
         await _context.Bookings.Where(a => a.BookId == id)
             .ExecuteUpdateAsync(a => a.SetProperty(a => a.BookingStatus, "Completed"));
+    }
+
+    public async Task CancelBooking(Ulid id)
+    {
+        await _context.Bookings.Where(a => a.BookId == id)
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.BookingStatus, "Canceled"));
+    }
+
+    public async Task<bool> IsBookingExist(Ulid id)
+    {
+        return await _context.Bookings.AsNoTracking().AnyAsync(a => a.BookId == id);
+    }
+
+    public async Task<bool> IsBookingCompleted(Ulid id)
+    {
+        return await _context.Bookings.AsNoTracking().AnyAsync(a => a.BookingStatus == "Completed" && a.BookId == id);
     }
 }

@@ -125,7 +125,7 @@ public class CustomerCreateBookingCommandHandler : ICommandHandler<CustomerCreat
         await _unitOfWork.SaveChangesAsync();
 
         //Get Config Info
-        string vnp_Returnurl = "https://localhost:7057/api/Payment/ReturnUrl"; //URL nhan ket qua tra ve 
+        string vnp_Returnurl = "https://localhost:7057/api/booking/ReturnUrl"; //URL nhan ket qua tra ve 
         string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
         string vnp_TmnCode = "XFROYZ8A"; //Ma định danh merchant kết nối (Terminal Id)
         string vnp_HashSecret = "VJJDQOWMKEA13EFEMV1VGY2A17KDM5Z0"; //Secret Key
@@ -151,7 +151,7 @@ public class CustomerCreateBookingCommandHandler : ICommandHandler<CustomerCreat
         string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
         //  Gửi mail thông báo cho khách hàng
         await _fluentEmail.To(userEmail).Subject("Xác nhận đặt bàn")
-            .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> \n Mã booking của bạn là: {booking.BookId}", isHtml: true)
+            .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> <br> Mã booking của bạn là: {booking.BookId}", isHtml: true)
             .SendAsync();
         return Result.Success();
         

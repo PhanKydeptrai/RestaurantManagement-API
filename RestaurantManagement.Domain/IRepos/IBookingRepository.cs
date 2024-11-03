@@ -9,12 +9,16 @@ public interface IBookingRepository
     Task<IEnumerable<Booking>> GetAllBookings();
     Task<Booking?> GetBookingById(Ulid id);
     Task AddBooking(Booking booking);
+    Task CancelBooking(Ulid id);
+    Task<bool> IsBookingCompleted(Ulid id);
     void UpdateBooking(Booking booking);
     void DeleteBooking(Booking booking);
     Task<bool> IsBookingDateValid(DateOnly bookingDate);
     Task<bool> IsBookingTimeValid(TimeOnly bookingTime);
     Task<bool> IsCapacityAvailable(int numberOfCustomers);
     Task<bool> IsBookingStatusValid(Ulid id);
+    Task<bool> IsBookingCanceled(Ulid id);
+    Task<bool> IsBookingExist(Ulid id);
     Task<BookingResponse?> GetBookingResponseById(Ulid id);
     Task<BookingResponse[]> GetBookingResponseByUserId(Ulid id);
     Task UpdateBookingStatus(Ulid id);
