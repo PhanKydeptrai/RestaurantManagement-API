@@ -42,7 +42,7 @@ public class TableArrangementCommandHandler : ICommandHandler<TableArrangementCo
             return Result.Failure(errors);
         }
 
-        //Cập nhật trạng thái cho booking
+        //Cập nhật trạng thái đã xếp bàn cho booking
         await _bookingRepository.UpdateBookingStatus(request.BookingId);
         var userEmail = await _context.Bookings
             .Include(a => a.Customer)

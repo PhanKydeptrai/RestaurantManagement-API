@@ -9,25 +9,23 @@ namespace RestaurantManagement.Application.Features.OrderFeature.Commands.Create
 
 public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
 {
-    private readonly IOrderRepository _orderRepository;
     private readonly ITableRepository _tableRepository;
     private readonly IMealRepository _mealRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IApplicationDbContext _context;
 
     public CreateOrderCommandHandler(
-        IOrderRepository orderRepository,
         IUnitOfWork unitOfWork,
         ITableRepository tableRepository,
         IMealRepository mealRepository,
         IApplicationDbContext context)
     {
-        _orderRepository = orderRepository;
         _unitOfWork = unitOfWork;
         _tableRepository = tableRepository;
         _mealRepository = mealRepository;
         _context = context;
     }
+
 
     public async Task<Result> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
@@ -54,12 +52,12 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
             .Select(a => a.Orders.FirstOrDefault(a => a.PaymentStatus == "Unpaid"))
             .FirstOrDefaultAsync();
 
-        var mealPrice = await _context.Meals.AsNoTracking()
+        var mealPrice = await _context.Meals.AsNoTracking() //Lấy giá món ăn
             .Where(a => a.MealId == request.MealId)
             .Select(a => a.Price)
             .FirstOrDefaultAsync();
-        // var 
-        
+
+
 
         if (order != null) //Kiểm tra order đã tồn tại hay chưa 
         {
@@ -93,16 +91,24 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
         }
         else
         {
+            //Kiểm tra bàn có được đặt hay không
+            var customerId = await _tableRepository.GetCustomerIdByTableId(request.TableId);
+
             order = new Order
             {
                 OrderId = Ulid.NewUlid(),
                 Note = string.Empty,
                 Total = 0,
                 OrderTime = DateTime.Now,
-
+                CustomerId = null,
                 TableId = request.TableId,
                 PaymentStatus = "Unpaid"
             };
+
+            if (customerId != null) //Nếu có đặt sẽ lấy id khách hàng
+            {
+                order.CustomerId = customerId;
+            }
 
             await _context.Orders.AddAsync(order);
         }

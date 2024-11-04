@@ -8,6 +8,7 @@ public interface ITableRepository
     Task<IEnumerable<Table>> GetAllTables();
     Task<Table?> GetTableById(Ulid id);
     Task AddTable(Table table);
+    Task<Ulid?> GetCustomerIdByTableId(int tableId); //booked
 
     Task RestoreTable(int id);
     Task DeleteTable(int id);

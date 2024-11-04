@@ -35,12 +35,13 @@ public class AssignTableToBookedCustomerCommandHandler : ICommandHandler<AssignT
             return Result.Failure(errors);
         }
 
-        //lấy 
+        //lấy thông tin booking
 
-        // var booking = _context.Bookings.Include(a => a.BookingDetails)
-        //     .Where(a => a.BookingDetails.FirstOrDefault(a => a.))
-        //     .Select(a => a.BookingDetails.FirstOrDefault(a => a.TableId == request.tableId) && a.BookingStatus == "Seated")
-        //     .FirstOrDefaultAsync();
+        var booking = await _context.Bookings.Include(a => a.BookingDetails)
+            .Where(a =>  a.BookingDetails.Any(b => b.TableId == request.tableId && a.BookingStatus == "Seated"))
+            .FirstOrDefaultAsync();
+            
+            booking.BookingStatus = "Occupied";
 
         await _tableRepository.UpdateActiveStatus(request.tableId, "Occupied");
         await _unitOfWork.SaveChangesAsync  ();
