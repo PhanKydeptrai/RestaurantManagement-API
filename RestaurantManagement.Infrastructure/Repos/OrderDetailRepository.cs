@@ -42,8 +42,21 @@ public class OrderDetailRepository : IOrderDetailRepository
         return _context.OrderDetails.AsQueryable();
     }
 
+    public async Task<bool> IsOrderDetailCanDelete(Ulid id)
+    {
+        return await _context.OrderDetails.Include(a => a.Order).AsNoTracking().AnyAsync(a => a.OrderDetailId == id && a.Order.PaymentStatus == "Unpaid");
+    }
+
+    public async Task<bool> IsOrderDetailCanUpdate(Ulid id)
+    {
+        return await _context.OrderDetails.Include(a => a.Order).AsNoTracking()
+            .AnyAsync(a => a.OrderDetailId == id && a.Order.PaymentStatus == "Unpaid");
+    }
+
     public void UpdateOrderDetail(OrderDetail orderDetail)
     {
         _context.OrderDetails.Update(orderDetail);
     }
+
+    
 }

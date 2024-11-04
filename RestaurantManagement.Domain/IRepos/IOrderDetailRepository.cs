@@ -12,6 +12,8 @@ public interface IOrderDetailRepository
     void DeleteOrderDetail(OrderDetail orderDetail);
     //Queries
     IQueryable<OrderDetail> GetQueryableOrderDetails();
+    Task<bool> IsOrderDetailCanUpdate(Ulid id);
+    Task<bool> IsOrderDetailCanDelete(Ulid id);
     Task<ICollection<OrderDetail>> GetOrderDetailsByOrderId(Ulid id);
 
 }
