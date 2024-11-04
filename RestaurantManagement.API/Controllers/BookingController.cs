@@ -10,7 +10,6 @@ using RestaurantManagement.Application.Features.BookingFeature.Commands.TableArr
 using RestaurantManagement.Application.Features.BookingFeature.Queries.GetAllBooking;
 using RestaurantManagement.Application.Features.BookingFeature.Queries.GetBookingByBookingId;
 using RestaurantManagement.Application.Features.BookingFeature.Queries.GetBookingByUserId;
-using RestaurantManagement.Application.Services;
 using RestaurantManagement.Domain.DTOs.PaymentDtos;
 using RestaurantManagement.Domain.IRepos;
 
@@ -192,21 +191,24 @@ public class BookingController : IEndpoint
         });
 
     }
-
-    private bool ValidateVnPayReturn(VnPayReturnModel model)
-    {
-        VnPayLibrary vnpay = new VnPayLibrary();
-        vnpay.AddResponseData("vnp_Amount", model.vnp_Amount);
-        vnpay.AddResponseData("vnp_BankCode", model.vnp_BankCode);
-        vnpay.AddResponseData("vnp_OrderInfo", model.vnp_OrderInfo);
-        vnpay.AddResponseData("vnp_ResponseCode", model.vnp_ResponseCode);
-        vnpay.AddResponseData("vnp_TmnCode", model.vnp_TmnCode);
-        vnpay.AddResponseData("vnp_TransactionNo", model.vnp_TransactionNo);
-        vnpay.AddResponseData("vnp_TxnRef", model.vnp_TxnRef);
-        vnpay.AddResponseData("vnp_SecureHash", model.vnp_SecureHash);
-        string vnp_HashSecret = "VJJDQOWMKEA13EFEMV1VGY2A17KDM5Z0"; // Secret Key
-        return vnpay.ValidateSignature(model.vnp_SecureHash, vnp_HashSecret);
-    }
+    
+    #region Validate VnPay Return
+    // private bool ValidateVnPayReturn(VnPayReturnModel model)
+    // {
+    //     VnPayLibrary vnpay = new VnPayLibrary();
+    //     vnpay.AddResponseData("vnp_Amount", model.vnp_Amount);
+    //     vnpay.AddResponseData("vnp_BankCode", model.vnp_BankCode);
+    //     vnpay.AddResponseData("vnp_OrderInfo", model.vnp_OrderInfo);
+    //     vnpay.AddResponseData("vnp_ResponseCode", model.vnp_ResponseCode);
+    //     vnpay.AddResponseData("vnp_TmnCode", model.vnp_TmnCode);
+    //     vnpay.AddResponseData("vnp_TransactionNo", model.vnp_TransactionNo);
+    //     vnpay.AddResponseData("vnp_TxnRef", model.vnp_TxnRef);
+    //     vnpay.AddResponseData("vnp_SecureHash", model.vnp_SecureHash);
+    //     string vnp_HashSecret = "VJJDQOWMKEA13EFEMV1VGY2A17KDM5Z0"; // Secret Key
+    //     return vnpay.ValidateSignature(model.vnp_SecureHash, vnp_HashSecret);
+    // }
+    #endregion
+    
 }
 
 
