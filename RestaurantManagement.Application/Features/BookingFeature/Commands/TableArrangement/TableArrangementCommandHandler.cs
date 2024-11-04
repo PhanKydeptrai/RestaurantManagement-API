@@ -50,8 +50,8 @@ public class TableArrangementCommandHandler : ICommandHandler<TableArrangementCo
             .Where(a => a.BookId == request.BookingId)
             .Select(a => a.Customer.User.Email)
             .FirstOrDefaultAsync();
+            
         //Tạo một booking detail
-        
         var bookingDetail = new BookingDetail
         {
             BookId = request.BookingId,
@@ -62,7 +62,6 @@ public class TableArrangementCommandHandler : ICommandHandler<TableArrangementCo
         await _context.BookingDetails.AddAsync(bookingDetail);
         //Cập nhật active status của bàn
         await _tableRepository.UpdateActiveStatus(request.TableId, "Booked");
-
         await _unitOfWork.SaveChangesAsync();
         
         //thông báo cho người dùng

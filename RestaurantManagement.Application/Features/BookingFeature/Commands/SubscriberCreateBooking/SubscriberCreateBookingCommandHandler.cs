@@ -92,6 +92,7 @@ public class SubscriberCreateBookingCommandHandler : ICommandHandler<SubscriberC
             NumberOfCustomers = request.NumberOfCustomers,
             Note = request.Note,
             CustomerId = info.CustomerId,
+            BookingStatus = "Waiting",
             PaymentStatus = "Waiting"
 
         };

@@ -192,7 +192,7 @@ public class BookingRepository : IBookingRepository
     public async Task UpdateBookingStatus(Ulid id)
     {
         await _context.Bookings.Where(a => a.BookId == id)
-            .ExecuteUpdateAsync(a => a.SetProperty(a => a.BookingStatus, "Completed"));
+            .ExecuteUpdateAsync(a => a.SetProperty(a => a.BookingStatus, "Seated"));
     }
 
     public async Task CancelBooking(Ulid id)

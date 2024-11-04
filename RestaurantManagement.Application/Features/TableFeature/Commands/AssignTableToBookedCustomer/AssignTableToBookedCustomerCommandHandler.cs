@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -8,13 +10,16 @@ public class AssignTableToBookedCustomerCommandHandler : ICommandHandler<AssignT
 {
     private readonly ITableRepository _tableRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IApplicationDbContext _context;
 
     public AssignTableToBookedCustomerCommandHandler(
-        ITableRepository tableRepository, 
-        IUnitOfWork unitOfWork)
+        ITableRepository tableRepository,
+        IUnitOfWork unitOfWork,
+        IApplicationDbContext context)
     {
         _tableRepository = tableRepository;
         _unitOfWork = unitOfWork;
+        _context = context;
     }
 
     public async Task<Result> Handle(AssignTableToBookedCustomerCommand request, CancellationToken cancellationToken)
@@ -29,6 +34,13 @@ public class AssignTableToBookedCustomerCommandHandler : ICommandHandler<AssignT
             var errors = validationResult.Errors.Select(a => new Error(a.ErrorCode, a.ErrorMessage)).ToArray();
             return Result.Failure(errors);
         }
+
+        //lấy 
+
+        // var booking = _context.Bookings.Include(a => a.BookingDetails)
+        //     .Where(a => a.BookingDetails.FirstOrDefault(a => a.))
+        //     .Select(a => a.BookingDetails.FirstOrDefault(a => a.TableId == request.tableId) && a.BookingStatus == "Seated")
+        //     .FirstOrDefaultAsync();
 
         await _tableRepository.UpdateActiveStatus(request.tableId, "Occupied");
         await _unitOfWork.SaveChangesAsync  ();
