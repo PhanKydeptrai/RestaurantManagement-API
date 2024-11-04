@@ -106,16 +106,21 @@ public class TableRepository : ITableRepository
     public async Task<Ulid?> GetCustomerIdByTableId(int tableId)
     {
         //
-        var bookingDetail = await _context.Tables
+        BookingDetail? bookingDetail = await _context.Tables
             .Include(a => a.BookingDetails)
             .ThenInclude(a => a.Booking)
             .Where(a => a.TableId == tableId)
             .Select(a => a.BookingDetails.FirstOrDefault(a => a.Booking.BookingStatus == "Occupied"))
             .FirstOrDefaultAsync();
-
-        var customerId = await _context.Bookings.Where(a => a.BookId == bookingDetail.BookId)
+            
+        if (bookingDetail == null)
+        {
+            return null;
+        }
+        Ulid? customerId = await _context.Bookings.Where(a => a.BookId == bookingDetail.BookId)
             .Select(a => a.CustomerId)
             .FirstOrDefaultAsync();
+
         return customerId;
     }
 }

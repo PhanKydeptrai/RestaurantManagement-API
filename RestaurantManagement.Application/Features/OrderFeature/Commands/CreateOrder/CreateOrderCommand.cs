@@ -8,3 +8,8 @@ public record CreateOrderCommand(
     int Quantity
 ) : ICommand;
 
+public record CreateOrderRequest(
+    int TableId,
+    string MealId,
+    int Quantity
+);

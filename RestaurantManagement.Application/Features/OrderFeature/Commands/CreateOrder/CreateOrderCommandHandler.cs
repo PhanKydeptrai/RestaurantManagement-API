@@ -46,7 +46,6 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
 
         //Lấy order chưa thanh toán => đang ăn
         var order = await _context.Tables
-            .AsNoTracking()
             .Include(a => a.Orders)
             .Where(a => a.TableId == request.TableId)
             .Select(a => a.Orders.FirstOrDefault(a => a.PaymentStatus == "Unpaid"))
@@ -64,6 +63,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
             //kiểm tra món đã có trong order chưa
             var orderDetail = await _context.Orders
                 .Include(a => a.OrderDetails)
+                .ThenInclude(a => a.Order)
                 .Where(a => a.TableId == request.TableId)
                 .Select(a => a.OrderDetails.FirstOrDefault(a => a.MealId == request.MealId))
                 .FirstOrDefaultAsync();
@@ -72,10 +72,11 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
             {
                 orderDetail.Quantity += request.Quantity; //Cập nhật số lượng
                 orderDetail.UnitPrice = orderDetail.Quantity * mealPrice; //Cập nhật tổng tiền
+                orderDetail.Order.Total = orderDetail.UnitPrice;
             }
             else
             {
-                orderDetail = new OrderDetail
+                var neworderDetail = new OrderDetail
                 {
                     OrderDetailId = Ulid.NewUlid(),
                     OrderId = order.OrderId,
@@ -85,25 +86,38 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
                     Note = string.Empty
                 };
 
-                await _context.OrderDetails.AddAsync(orderDetail);
+                order.Total += neworderDetail.UnitPrice;
+                await _context.OrderDetails.AddAsync(neworderDetail);
             }
 
         }
         else
         {
             //Kiểm tra bàn có được đặt hay không
-            var customerId = await _tableRepository.GetCustomerIdByTableId(request.TableId);
+            Ulid? customerId = await _tableRepository.GetCustomerIdByTableId(request.TableId);
 
             order = new Order
             {
                 OrderId = Ulid.NewUlid(),
                 Note = string.Empty,
-                Total = 0,
+                Total = mealPrice * request.Quantity,
                 OrderTime = DateTime.Now,
                 CustomerId = null,
                 TableId = request.TableId,
                 PaymentStatus = "Unpaid"
             };
+
+            var orderDetail = new OrderDetail
+            {
+                OrderDetailId = Ulid.NewUlid(),
+                OrderId = order.OrderId,
+                MealId = request.MealId,
+                Quantity = request.Quantity,
+                UnitPrice = request.Quantity * mealPrice,
+                Note = string.Empty
+            };
+
+
 
             if (customerId != null) //Nếu có đặt sẽ lấy id khách hàng
             {
@@ -111,6 +125,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
             }
 
             await _context.Orders.AddAsync(order);
+            await _context.OrderDetails.AddAsync(orderDetail);
         }
 
         await _unitOfWork.SaveChangesAsync();
