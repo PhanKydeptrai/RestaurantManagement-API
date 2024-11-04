@@ -59,10 +59,6 @@ public class OrderController : IEndpoint
             return Results.Ok(result);
         });
 
-
-        //Get all orders
-        //Get order by id
-        //Get orders by table id
         
         //Get by id
         endpoints.MapGet("{id}", async (

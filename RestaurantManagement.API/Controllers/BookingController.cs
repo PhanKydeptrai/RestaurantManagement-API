@@ -116,11 +116,12 @@ public class BookingController : IEndpoint
         }).RequireAuthorization("customer");
 
         //Xếp bàn cho khách 
-        endpoints.MapPost("table-arrange", async (
+        endpoints.MapPost("table-arrange/{BookingId}", async (
+            string BookingId,
             [FromBody] TableArrangementRequest command,
             ISender sender) =>
         {
-            var result = await sender.Send(new TableArrangementCommand(Ulid.Parse(command.BookingId), command.TableId));
+            var result = await sender.Send(new TableArrangementCommand(Ulid.Parse(BookingId), command.TableId));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);

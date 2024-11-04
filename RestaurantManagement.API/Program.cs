@@ -146,6 +146,7 @@ builder.Services.AddSwaggerGen(option =>
     var fileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     //Tạo địa chỉ file
     var filePath = Path.Combine(AppContext.BaseDirectory, fileName); //AppContext.BaseDirectory Lấy địa chỉ thư mục gốc
+    Console.WriteLine(filePath);
     option.IncludeXmlComments(filePath);
     option.MapType<DateOnly>(() => new OpenApiSchema
     {

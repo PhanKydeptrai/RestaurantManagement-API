@@ -7,5 +7,4 @@ public record TableArrangementCommand(
     int TableId) : ICommand;
 
 public record TableArrangementRequest(
-    string BookingId,
     int TableId);
