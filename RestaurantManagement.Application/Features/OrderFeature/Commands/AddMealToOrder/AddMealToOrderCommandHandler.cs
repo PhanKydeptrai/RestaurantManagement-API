@@ -5,16 +5,16 @@ using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.OrderFeature.Commands.CreateOrder;
+namespace RestaurantManagement.Application.Features.OrderFeature.Commands.AddMealToOrder;
 
-public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
+public class AddMealToOrderCommandHandler : ICommandHandler<AddMealToOrderCommand>
 {
     private readonly ITableRepository _tableRepository;
     private readonly IMealRepository _mealRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IApplicationDbContext _context;
 
-    public CreateOrderCommandHandler(
+    public AddMealToOrderCommandHandler(
         IUnitOfWork unitOfWork,
         ITableRepository tableRepository,
         IMealRepository mealRepository,
@@ -27,7 +27,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
     }
 
 
-    public async Task<Result> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(AddMealToOrderCommand request, CancellationToken cancellationToken)
     {
         // Kiểm tra bàn đã có order hay chưa
         // Nếu chưa => tạo mới order và tạo orderdetail
@@ -35,7 +35,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand>
         // order chưa, nếu có thì cập nhật số lượng, nếu chưa thì tạo mới orderdetail
 
         //validate
-        var validator = new CreateOrderCommandValidator(_tableRepository, _mealRepository);
+        var validator = new AddMealToOrderCommandValidator(_tableRepository, _mealRepository);
         var validationResult = await validator.ValidateAsync(request);
 
         if (!validationResult.IsValid)

@@ -8,6 +8,7 @@ using RestaurantManagement.Application.Features.TableFeature.Commands.DeleteTabl
 using RestaurantManagement.Application.Features.TableFeature.Commands.RestoreTable;
 using RestaurantManagement.Application.Features.TableFeature.Queries.GetAllTable;
 using RestaurantManagement.Application.Features.TableFeature.Queries.GetTableById;
+using RestaurantManagement.Application.Features.TableFeature.Queries.GetTableInfo;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
@@ -147,5 +148,16 @@ public class TableController : IEndpoint
             }
             return Results.BadRequest(result);
         });
+
+
+        endpoints.MapGet("table-info", async (ISender sender) =>
+        {
+            var result = await sender.Send(new GetTableInfoQuery());
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        }); 
     }
 }

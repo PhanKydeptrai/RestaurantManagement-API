@@ -2,11 +2,11 @@ using System.Data;
 using FluentValidation;
 using RestaurantManagement.Domain.IRepos;
 
-namespace RestaurantManagement.Application.Features.OrderFeature.Commands.CreateOrder;
+namespace RestaurantManagement.Application.Features.OrderFeature.Commands.AddMealToOrder;
 
-public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
+public class AddMealToOrderCommandValidator : AbstractValidator<AddMealToOrderCommand>
 {
-    public CreateOrderCommandValidator(
+    public AddMealToOrderCommandValidator(
         ITableRepository tableRepository,
         IMealRepository mealRepository)
     {
