@@ -9,6 +9,7 @@ using RestaurantManagement.Application.Features.MealFeature.Commands.RestoreSell
 using RestaurantManagement.Application.Features.MealFeature.Commands.UpdateMeal;
 using RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
 using RestaurantManagement.Application.Features.MealFeature.Queries.GetMealById;
+using RestaurantManagement.Application.Features.MealFeature.Queries.GetMealInfo;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
@@ -124,18 +125,18 @@ public class MealController : IEndpoint
 
             //gửi lệnh xóa
             var result = await sender.Send(new RemoveMealCommand(id, token));
-            
+
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
             }
-            return Results.BadRequest(result);  
+            return Results.BadRequest(result);
 
         }).RequireAuthorization("boss")
         .RequireRateLimiting("AntiSpam");
 
         //khôi phục món
-        endpoints.MapPut("restore/{id}", 
+        endpoints.MapPut("restore/{id}",
         async (
             Ulid id,
             ISender sender,
@@ -146,7 +147,7 @@ public class MealController : IEndpoint
             string token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var result = await sender.Send(new RestoreMealCommand(id, token));
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 return Results.Ok(result);
             }
@@ -155,18 +156,18 @@ public class MealController : IEndpoint
         .RequireRateLimiting("AntiSpam");
 
         //Chuyển sell status Active => InActive
-        endpoints.MapPut("change-sellstatus/{id}", 
+        endpoints.MapPut("change-sellstatus/{id}",
         async (
             Ulid id,
             ISender sender,
             HttpContext httpContext,
-            IJwtProvider jwtProvider) => 
+            IJwtProvider jwtProvider) =>
         {
             //lấy token
             string token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var result = await sender.Send(new ChangeSellStatusCommand(id, token));
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 return Results.Ok(result);
             }
@@ -175,18 +176,18 @@ public class MealController : IEndpoint
         .RequireRateLimiting("AntiSpam");
 
         //Chuyển sell status InActive => Active
-        endpoints.MapPut("restore-sellstatus/{id}", 
+        endpoints.MapPut("restore-sellstatus/{id}",
         async (
             Ulid id,
             ISender sender,
             HttpContext httpContext,
-            IJwtProvider jwtProvider) => 
+            IJwtProvider jwtProvider) =>
         {
             //lấy token
             string token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var result = await sender.Send(new RestoreSellStatusCommand(id, token));
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 return Results.Ok(result);
             }
@@ -194,5 +195,16 @@ public class MealController : IEndpoint
         }).RequireAuthorization("boss")
         .RequireRateLimiting("AntiSpam");
 
+        endpoints.MapGet("meal-info", async (
+            ISender sender) =>
+        {
+
+            var result = await sender.Send(new GetMealInfoQuery());
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        });
     }
 }
