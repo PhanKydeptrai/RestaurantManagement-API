@@ -108,12 +108,12 @@ builder.Services.AddAuthentication(options =>
         RoleClaimType = ClaimTypes.Role
     };
 
-})
-.AddGoogle(googleOptions =>
-{
-    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 });
+// .AddGoogle(googleOptions =>
+// {
+//     googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+//     googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+// });
 
 // Cấu hình cho swaggergen
 builder.Services.AddSwaggerGen(option =>

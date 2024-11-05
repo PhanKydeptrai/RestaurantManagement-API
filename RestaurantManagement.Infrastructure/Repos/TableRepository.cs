@@ -117,6 +117,7 @@ public class TableRepository : ITableRepository
         {
             return null;
         }
+        
         Ulid? customerId = await _context.Bookings.Where(a => a.BookId == bookingDetail.BookId)
             .Select(a => a.CustomerId)
             .FirstOrDefaultAsync();

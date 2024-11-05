@@ -1,9 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.Application.Features.BookingFeature.Queries.GetAllBooking;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.AddMealToOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.DeleteMealFromOrder;
+using RestaurantManagement.Application.Features.OrderFeature.Commands.PayOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.UpdateMealInOrder;
+using RestaurantManagement.Application.Features.OrderFeature.Queries.GetAllOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Queries.GetOrderById;
 
 namespace RestaurantManagement.API.Controllers;
@@ -59,13 +62,44 @@ public class OrderController : IEndpoint
             return Results.Ok(result);
         });
 
-        
+
         //Get by id
         endpoints.MapGet("{id}", async (
             int id,
             ISender sender) =>
         {
             var result = await sender.Send(new GetOrderByIdQuery(id));
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+            return Results.Ok(result);
+        });
+
+
+        //Pay order
+        endpoints.MapPut("pay/{id}", async (
+            int id,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new PayOrderCommand(id));
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+            return Results.Ok(result);
+        });
+
+        endpoints.MapGet("", async (
+            [FromQuery] string? filterPaymentStatus,
+            [FromQuery] string? searchTerm,
+            [FromQuery] string? sortColumn,
+            [FromQuery] string? sortOrder,
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new GetAllOrderQuery(filterPaymentStatus, searchTerm, sortColumn, sortOrder, page, pageSize));
             if (!result.IsSuccess)
             {
                 return Results.BadRequest(result);
