@@ -31,13 +31,10 @@ public class SubscriberCreateBookingCommandHandler : ICommandHandler<SubscriberC
 
     public async Task<Result> Handle(SubscriberCreateBookingCommand request, CancellationToken cancellationToken)
     {
-        //validate
+        
         var validator = new SubscriberCreateBookingCommandValidator(_bookingRepository);
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
+        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors.Select(a => new Error(a.ErrorCode, a.ErrorMessage)).ToArray();
             return Result.Failure(errors);
         }
 

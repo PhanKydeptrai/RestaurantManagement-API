@@ -23,13 +23,10 @@ public class RestoreCategoryCommandHandler : ICommandHandler<RestoreCategoryComm
 
     public async Task<Result> Handle(RestoreCategoryCommand request, CancellationToken cancellationToken)
     {
+        //validate
         var validator = new RestoreCategoryCommandValidator(_categoryRepository);
-        var validatorResult = await validator.ValidateAsync(request);
-        if (!validatorResult.IsValid)
+        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validatorResult.Errors
-                .Select(a => new Error(a.ErrorCode, a.ErrorMessage))
-                .ToArray();
             return Result.Failure(errors);
         }
 

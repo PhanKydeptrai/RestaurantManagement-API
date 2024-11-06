@@ -2,6 +2,7 @@
 using NETCore.Encrypt;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.DTOs.CustomerDto;
 using RestaurantManagement.Domain.DTOs.LoginDto;
 using RestaurantManagement.Domain.IRepos;
@@ -22,13 +23,9 @@ public class LoginQueryHandler : ICommandHandler<LoginQuery, LoginResponse>
     public async Task<Result<LoginResponse>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         //validate
-        var loginQueryValidator = new LoginQueryValidator();
-        var validationResult = loginQueryValidator.Validate(request);
-        if (!validationResult.IsValid)
+        var validator = new LoginQueryValidator();
+        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors
-                .Select(x => new Error(x.ErrorCode, x.ErrorMessage))
-                .ToArray();
             return Result<LoginResponse>.Failure(errors);
         }
 

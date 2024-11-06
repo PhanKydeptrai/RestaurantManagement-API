@@ -23,17 +23,14 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
     }
     public async Task<Result> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-
-        //Validator
+        //validate
         var validator = new CreateCategoryCommandValidator(_categoryRepository);
-        var validationResult = validator.Validate(request);
-        if (!validationResult.IsValid)
+
+        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            Error[] errors = validationResult.Errors
-                .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
-                .ToArray();
             return Result.Failure(errors);
         }
+        
 
         //Xử lý ảnh
         string imageUrl = string.Empty;

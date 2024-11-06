@@ -1,4 +1,5 @@
 using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -21,16 +22,13 @@ public class GetTableForCustomerCommandHandler : ICommandHandler<AssignTableToCu
     {
         //validate
         var validator = new AssignTableToCustomerCommandValidator(_tableRepository);
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
+        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors.Select(a => new Error(a.ErrorCode, a.ErrorMessage)).ToArray();
             return Result.Failure(errors);
         }
 
         await _tableRepository.UpdateActiveStatus(request.id, "Occupied");
-        await _unitOfWork.SaveChangesAsync  ();
+        await _unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }
