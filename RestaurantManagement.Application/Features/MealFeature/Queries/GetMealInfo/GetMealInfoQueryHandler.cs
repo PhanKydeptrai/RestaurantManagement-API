@@ -17,15 +17,21 @@ public class GetMealInfoQueryHandler : IQueryHandler<GetMealInfoQuery, List<Meal
 
     public async Task<Result<List<MealInfo>>> Handle(GetMealInfoQuery request, CancellationToken cancellationToken)
     {
-        var meals = await _context.Meals
+        var meals = _context.Meals
             .Where(a => a.MealStatus == "Active")
-            .Select(meal => new MealInfo(
+            .AsQueryable();
+        
+        if (!string.IsNullOrEmpty(request.searchTerm))
+        {
+            meals = meals.Where(x => x.MealName.Contains(request.searchTerm));
+        }
+        
+        var mealList = meals.Select(meal => new MealInfo(
                 meal.MealId, 
                 meal.MealName, 
                 meal.Price, 
-                meal.ImageUrl))
-            .ToListAsync();
-        
-        return Result<List<MealInfo>>.Success(meals);
+                meal.ImageUrl)).AsQueryable();
+        var mealInfoList = await mealList.ToListAsync();
+        return Result<List<MealInfo>>.Success(mealInfoList);
     }
 }
