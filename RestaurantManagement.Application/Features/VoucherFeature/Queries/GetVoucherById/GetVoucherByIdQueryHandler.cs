@@ -1,4 +1,5 @@
 using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -18,11 +19,8 @@ public class GetVoucherByIdQueryHandler : IQueryHandler<GetVoucherByIdQuery, Vou
     {
         //validate
         var validator = new GetVoucherByIdQueryValidator(_voucherRepository);
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
+        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors.Select(a => new Error(a.ErrorCode, a.ErrorMessage)).ToArray();
             return Result<Voucher>.Failure(errors);
         }
         Voucher? voucher = await _voucherRepository.GetVoucherById(request.id);

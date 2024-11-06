@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -36,11 +37,8 @@ public class AddMealToOrderCommandHandler : ICommandHandler<AddMealToOrderComman
 
         //validate
         var validator = new AddMealToOrderCommandValidator(_tableRepository, _mealRepository);
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
+        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors.Select(a => new Error(a.ErrorCode, a.ErrorMessage)).ToArray();
             return Result.Failure(errors);
         }
 

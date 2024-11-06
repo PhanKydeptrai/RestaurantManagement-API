@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -27,11 +28,8 @@ public class AssignTableToBookedCustomerCommandHandler : ICommandHandler<AssignT
         
          //validate
         var validator = new AssignTableToBookedCustomerCommandValidator(_tableRepository);
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
+        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors.Select(a => new Error(a.ErrorCode, a.ErrorMessage)).ToArray();
             return Result.Failure(errors);
         }
 

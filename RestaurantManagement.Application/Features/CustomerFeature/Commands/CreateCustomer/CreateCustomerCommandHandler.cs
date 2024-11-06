@@ -39,13 +39,10 @@ public class CreateCustomerCommandHandler : ICommandHandler<CreateCustomerComman
 
     public async Task<Result> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
-        //validate
+        //Validate 
         var validator = new CreateCustomerCommandValidator(_customerRepository);
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
+        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors.Select(a => new Error(a.ErrorCode, a.ErrorMessage)).ToArray();
             return Result.Failure(errors);
         }
 

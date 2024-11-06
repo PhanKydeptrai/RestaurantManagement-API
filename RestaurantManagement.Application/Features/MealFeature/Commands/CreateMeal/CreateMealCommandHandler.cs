@@ -46,6 +46,7 @@ public class CreateMealCommandHandler(
             //Log
             Console.WriteLine(resultUpload.JsonObj);
         }
+        
         //Create Meal
         await mealRepository.AddMeal(new Meal
         {

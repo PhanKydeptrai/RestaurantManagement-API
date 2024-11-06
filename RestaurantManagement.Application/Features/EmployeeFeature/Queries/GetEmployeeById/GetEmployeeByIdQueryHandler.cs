@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.DTOs.EmployeeDto;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -22,10 +23,9 @@ public class GetEmployeeByIdQueryHandler : IQueryHandler<GetEmployeeByIdQuery, E
     {
 
         var validator = new GetEmployeeByIdQueryValidator(_employeeRepository);
-        var validationResult = await validator.ValidateAsync(request);
-        if(!validationResult.IsValid)
+        //validate
+        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors.Select(a => new Error(a.ErrorCode, a.ErrorMessage)).ToArray();
             return Result<EmployeeResponse>.Failure(errors);
         }
 
@@ -43,8 +43,6 @@ public class GetEmployeeByIdQueryHandler : IQueryHandler<GetEmployeeByIdQuery, E
                 a.Role,
                 a.User.ImageUrl
             )).FirstOrDefaultAsync();
-
-            
 
         return Result<EmployeeResponse>.Success(employee);
     }

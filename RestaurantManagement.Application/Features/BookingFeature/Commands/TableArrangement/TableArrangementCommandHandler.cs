@@ -2,6 +2,7 @@ using FluentEmail.Core;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -32,13 +33,10 @@ public class TableArrangementCommandHandler : ICommandHandler<TableArrangementCo
 
     public async Task<Result> Handle(TableArrangementCommand request, CancellationToken cancellationToken)
     {
-        //validate
+        
         var validator = new TableArrangementCommandValidator(_bookingRepository, _tableRepository, _context);
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
+        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors.Select(a => new Error(a.ErrorCode, a.ErrorMessage)).ToArray();
             return Result.Failure(errors);
         }
 

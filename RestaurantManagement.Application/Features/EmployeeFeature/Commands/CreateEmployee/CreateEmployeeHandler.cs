@@ -31,13 +31,8 @@ public class CreateEmployeeHandler : ICommandHandler<CreateEmployeeCommand>
 
         // validate
         var validator = new CreateEmployeeCommandValidator(_employeeRepository);
-        var validationResult = await validator.ValidateAsync(request); // Phải dùng thư viện using FluentValidation.Results;
-        if (!validationResult.IsValid)
+        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            Error[] errors = validationResult.Errors
-                .Select(a => new Error(a.ErrorCode, a.ErrorMessage))
-                .ToArray();
-
             return Result.Failure(errors);
         }
 

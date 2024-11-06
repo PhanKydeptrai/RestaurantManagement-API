@@ -30,15 +30,10 @@ public class RestoreEmployeeCommandHandler : ICommandHandler<RestoreEmployeeComm
     {
         //validate
         var validator = new RestoreEmployeeCommandValidator(_employeeRepository);
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
+        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors.Select(a => new Error(a.ErrorCode, a.ErrorMessage)).ToArray();
             return Result.Failure(errors);
         }
-
-
         //Restore employee
         await _employeeRepository.RestoreEmployee(request.id);
 

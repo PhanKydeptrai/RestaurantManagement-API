@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -32,11 +33,8 @@ internal class ForgotCustomerPasswordCommandHandler : ICommandHandler<ForgotCust
     public async Task<Result> Handle(ForgotCustomerPasswordCommand request, CancellationToken cancellationToken)
     {
         var validator = new ForgotCustomerPasswordCommandValidator(_customerRepository);
-        var validationResult = await validator.ValidateAsync(request);
-        //Validate the request
-        if (!validationResult.IsValid)
+        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors.Select(x => new Error(x.ErrorCode, x.ErrorMessage)).ToArray();
             return Result.Failure(errors);
         }
 
