@@ -5,18 +5,12 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.BookingFeature.Queries.GetBookingByBookingId;
 
-public class GetBookingByBookingIdQueryHandler : IQueryHandler<GetBookingByBookingIdQuery, BookingResponse>
+public class GetBookingByBookingIdQueryHandler(IBookingRepository bookingRepository) : IQueryHandler<GetBookingByBookingIdQuery, BookingResponse>
 {
-    private readonly IBookingRepository _bookingRepository;
-    public GetBookingByBookingIdQueryHandler(IBookingRepository bookingRepository)
-    {
-        _bookingRepository = bookingRepository;
-    }
-
     public async Task<Result<BookingResponse>> Handle(GetBookingByBookingIdQuery request, CancellationToken cancellationToken)
     {
         
-        var booking = await _bookingRepository.GetBookingResponseById(request.id);
+        var booking = await bookingRepository.GetBookingResponseById(request.id);
         if (booking == null)
         {
             var error = new[] { new Error("Booking", "Booking not found") };

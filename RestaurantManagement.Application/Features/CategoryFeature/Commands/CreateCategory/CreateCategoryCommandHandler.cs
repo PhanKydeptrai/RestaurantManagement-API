@@ -7,24 +7,15 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.CreateCategory;
 
-public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryCommand>
+public class CreateCategoryCommandHandler(
+    ICategoryRepository categoryRepository,
+    IUnitOfWork unitOfWork,
+    ISystemLogRepository systemLogRepository) : ICommandHandler<CreateCategoryCommand>
 {
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    public CreateCategoryCommandHandler(
-        ICategoryRepository categoryRepository,
-        IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository)
-    {
-        _categoryRepository = categoryRepository;
-        _unitOfWork = unitOfWork;
-        _systemLogRepository = systemLogRepository;
-    }
     public async Task<Result> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
         //validate
-        var validator = new CreateCategoryCommandValidator(_categoryRepository);
+        var validator = new CreateCategoryCommandValidator(categoryRepository);
 
         if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
@@ -52,7 +43,7 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
 
 
         //Create Category
-        await _categoryRepository.AddCatgory(new Category
+        await categoryRepository.AddCatgory(new Category
         {
             CategoryId = Ulid.NewUlid(),
             CategoryName = request.Name,
@@ -64,7 +55,7 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
@@ -73,7 +64,7 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
         });
 
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

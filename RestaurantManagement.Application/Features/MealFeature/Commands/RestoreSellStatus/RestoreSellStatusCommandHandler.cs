@@ -6,25 +6,14 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.MealFeature.Commands.RestoreSellStatus;
 
-public class RestoreSellStatusCommandHandler : ICommandHandler<RestoreSellStatusCommand>
+public class RestoreSellStatusCommandHandler(
+    IMealRepository mealRepository,
+    ISystemLogRepository systemLogRepository,
+    IUnitOfWork unitOfWork) : ICommandHandler<RestoreSellStatusCommand>
 {
-    private readonly IMealRepository _mealRepository;
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public RestoreSellStatusCommandHandler(
-        IMealRepository mealRepository, 
-        ISystemLogRepository systemLogRepository, 
-        IUnitOfWork unitOfWork)
-    {
-        _mealRepository = mealRepository;
-        _systemLogRepository = systemLogRepository;
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<Result> Handle(RestoreSellStatusCommand request, CancellationToken cancellationToken)
     {
-        var validator = new RestoreSellStatusCommandValidator(_mealRepository);
+        var validator = new RestoreSellStatusCommandValidator(mealRepository);
         var validationResult = await validator.ValidateAsync(request);
 
         if(!validationResult.IsValid)
@@ -34,14 +23,14 @@ public class RestoreSellStatusCommandHandler : ICommandHandler<RestoreSellStatus
         }
         
 
-        await _mealRepository.RestoreSellStatus(request.id);
+        await mealRepository.RestoreSellStatus(request.id);
 
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
@@ -49,7 +38,7 @@ public class RestoreSellStatusCommandHandler : ICommandHandler<RestoreSellStatus
             UserId = Ulid.Parse(userId)
         });
         
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

@@ -6,39 +6,28 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.MealFeature.Commands.ChangeSellStatus;
 
-public class ChangeSellStatusCommandHandler : ICommandHandler<ChangeSellStatusCommand>
+public class ChangeSellStatusCommandHandler(
+    IMealRepository mealRepository,
+    IUnitOfWork unitOfWork,
+    ISystemLogRepository systemLogRepository) : ICommandHandler<ChangeSellStatusCommand>
 {
-    private readonly IMealRepository _mealRepository;
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    public ChangeSellStatusCommandHandler(
-        IMealRepository mealRepository,
-        IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository)
-    {
-        _mealRepository = mealRepository;
-        _unitOfWork = unitOfWork;
-        _systemLogRepository = systemLogRepository;
-    }
-
-
     public async Task<Result> Handle(ChangeSellStatusCommand request, CancellationToken cancellationToken)
     {
         //validate
-        var validator = new ChangeSellStatusCommandValidator(_mealRepository);
+        var validator = new ChangeSellStatusCommandValidator(mealRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
         
-        await _mealRepository.ChangeSellStatus(request.id);
+        await mealRepository.ChangeSellStatus(request.id);
         
         //Deocde jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
@@ -48,7 +37,7 @@ public class ChangeSellStatusCommandHandler : ICommandHandler<ChangeSellStatusCo
 
 
         
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
         
     }

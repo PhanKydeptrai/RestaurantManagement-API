@@ -8,31 +8,14 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ChangeCustomerPassword;
 
-public class ChangeCustomerPasswordCommandHandler : ICommandHandler<ChangePasswordCommand>
+public class ChangeCustomerPasswordCommandHandler(
+
+    IUserRepository userRepository,
+    IFluentEmail fluentEmail,
+    IEmailVerificationTokenRepository emailVerificationTokenRepository,
+    IEmailVerify emailVerify,
+    IUnitOfWork unitOfWork) : ICommandHandler<ChangePasswordCommand>
 {
-    private readonly IUserRepository _userRepository;
-
-    private readonly IFluentEmail _fluentEmail;
-    private readonly IEmailVerificationTokenRepository _emailVerificationTokenRepository;
-    private readonly IEmailVerify _emailVerify;
-    private readonly IUnitOfWork _unitOfWork;
-    public ChangeCustomerPasswordCommandHandler(
-
-        IUserRepository userRepository,
-        IFluentEmail fluentEmail,
-        IEmailVerificationTokenRepository emailVerificationTokenRepository,
-        IEmailVerify emailVerify,
-        IUnitOfWork unitOfWork)
-    {
-
-
-        _userRepository = userRepository;
-        _fluentEmail = fluentEmail;
-        _emailVerificationTokenRepository = emailVerificationTokenRepository;
-        _emailVerify = emailVerify;
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<Result> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
         var validator = new ChangeCustomerPasswordCommandValidator();
@@ -51,7 +34,7 @@ public class ChangeCustomerPasswordCommandHandler : ICommandHandler<ChangePasswo
         claims.TryGetValue("sub", out var userId);
 
         //Kiểm tra mật khẩu cũ
-        var user = await _userRepository.GetUserById(Ulid.Parse(userId));
+        var user = await userRepository.GetUserById(Ulid.Parse(userId));
         string encryptPass = EncryptProvider.Sha256(request.oldPass);
         if (encryptPass != user.Password)
         {
@@ -67,15 +50,15 @@ public class ChangeCustomerPasswordCommandHandler : ICommandHandler<ChangePasswo
             UserId = Ulid.Parse(userId),
             Temporary = EncryptProvider.Sha256(request.newPass)
         };
-        await _emailVerificationTokenRepository.CreateVerificationToken(token);
+        await emailVerificationTokenRepository.CreateVerificationToken(token);
 
-        string verificationLink = _emailVerify.CreateLinkForChangePass(token);
+        string verificationLink = emailVerify.CreateLinkForChangePass(token);
         //Gửi mail xác thực 
-        await _fluentEmail.To(user.Email).Subject("Xác nhận đổi mật khẩu")
+        await fluentEmail.To(user.Email).Subject("Xác nhận đổi mật khẩu")
             .Body($"Vui lòng xác nhận để thay đôi mật khẩu bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
             .SendAsync();
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

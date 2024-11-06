@@ -9,40 +9,25 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.BookingFeature.Commands.TableArrangement;
 
-public class TableArrangementCommandHandler : ICommandHandler<TableArrangementCommand>
+public class TableArrangementCommandHandler(
+    IBookingRepository bookingRepository,
+    IUnitOfWork unitOfWork,
+    ITableRepository tableRepository,
+    IApplicationDbContext context,
+    IFluentEmail fluentEmail) : ICommandHandler<TableArrangementCommand>
 {
-    private readonly IBookingRepository _bookingRepository;
-    private readonly IFluentEmail  _fluentEmail;
-    private readonly ITableRepository _tableRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IApplicationDbContext _context;
-
-    public TableArrangementCommandHandler(
-        IBookingRepository bookingRepository,
-        IUnitOfWork unitOfWork,
-        ITableRepository tableRepository,
-        IApplicationDbContext context,
-        IFluentEmail fluentEmail)
-    {
-        _bookingRepository = bookingRepository;
-        _unitOfWork = unitOfWork;
-        _tableRepository = tableRepository;
-        _context = context;
-        _fluentEmail = fluentEmail;
-    }
-
     public async Task<Result> Handle(TableArrangementCommand request, CancellationToken cancellationToken)
     {
         
-        var validator = new TableArrangementCommandValidator(_bookingRepository, _tableRepository, _context);
+        var validator = new TableArrangementCommandValidator(bookingRepository, tableRepository, context);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
 
         //Cập nhật trạng thái đã xếp bàn cho booking
-        await _bookingRepository.UpdateBookingStatus(request.BookingId);
-        var userEmail = await _context.Bookings
+        await bookingRepository.UpdateBookingStatus(request.BookingId);
+        var userEmail = await context.Bookings
             .Include(a => a.Customer)
             .ThenInclude(a => a.User)
             .Where(a => a.BookId == request.BookingId)
@@ -57,14 +42,14 @@ public class TableArrangementCommandHandler : ICommandHandler<TableArrangementCo
             TableId = request.TableId
         };
         
-        await _context.BookingDetails.AddAsync(bookingDetail);
+        await context.BookingDetails.AddAsync(bookingDetail);
         //Cập nhật active status của bàn
-        await _tableRepository.UpdateActiveStatus(request.TableId, "Booked");
-        await _unitOfWork.SaveChangesAsync();
+        await tableRepository.UpdateActiveStatus(request.TableId, "Booked");
+        await unitOfWork.SaveChangesAsync();
         
         //thông báo cho người dùng
-        var bookingInfo = await _bookingRepository.GetBookingResponseById(request.BookingId);
-        await _fluentEmail.To(userEmail)
+        var bookingInfo = await bookingRepository.GetBookingResponseById(request.BookingId);
+        await fluentEmail.To(userEmail)
             .Subject("Thông báo")
             .Body($"Nhà hàng đã xác nhận được thông tin đặt bàn của bạn.<br> Đây là thông tin đặt bàn của bạn: <br> Mã Booking của bạn là: {bookingInfo.BookId} <br>Tên: {bookingInfo.LastName + " " + bookingInfo.FirstName} <br> Ngày:{bookingInfo.BookingDate}<br> Thời gian: {bookingInfo.BookingTime} <br> Email: {bookingInfo.Email} <br> Số điện thoại:{bookingInfo.Phone} <br> Số bàn của bạn là: {bookingDetail.TableId} " , isHtml: true)
             .SendAsync();

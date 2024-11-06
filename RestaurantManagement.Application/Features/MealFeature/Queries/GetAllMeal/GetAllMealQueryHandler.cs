@@ -9,18 +9,11 @@ using System.Linq.Expressions;
 
 namespace RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
 
-public class GetAllMealQueryHandler : IQueryHandler<GetAllMealQuery, PagedList<MealResponse>>
+public class GetAllMealQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllMealQuery, PagedList<MealResponse>>
 {
-    private readonly IApplicationDbContext _context;
-
-    public GetAllMealQueryHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Result<PagedList<MealResponse>>> Handle(GetAllMealQuery request, CancellationToken cancellationToken)
     {
-        var mealQuery = _context.Meals.Include(x => x.Category).AsQueryable();
+        var mealQuery = context.Meals.Include(x => x.Category).AsQueryable();
 
         if (!string.IsNullOrEmpty(request.searchTerm))
         {

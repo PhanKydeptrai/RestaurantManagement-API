@@ -10,16 +10,8 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
 
-public class LoginQueryHandler : ICommandHandler<LoginQuery, LoginResponse>
+public class LoginQueryHandler(IApplicationDbContext context, IJwtProvider jwtProvider) : ICommandHandler<LoginQuery, LoginResponse>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly IJwtProvider _jwtProvider;
-    public LoginQueryHandler(IApplicationDbContext context, IJwtProvider jwtProvider)
-    {
-        _context = context;
-        _jwtProvider = jwtProvider;
-    }
-
     public async Task<Result<LoginResponse>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         //validate
@@ -31,7 +23,7 @@ public class LoginQueryHandler : ICommandHandler<LoginQuery, LoginResponse>
 
         var encryptedPassword = EncryptProvider.Sha256(request.passWord);
         //REFACTOR
-        CustomerLoginResponse? loginResponse = await _context.Customers
+        CustomerLoginResponse? loginResponse = await context.Customers
             .Where(a => a.User.Password == encryptedPassword
             && (a.User.Email == request.loginString
             || a.User.Phone == request.loginString)
@@ -57,7 +49,7 @@ public class LoginQueryHandler : ICommandHandler<LoginQuery, LoginResponse>
             return Result<LoginResponse>.Failure(a);
         }
 
-        var token = _jwtProvider.GenerateJwtToken(
+        var token = jwtProvider.GenerateJwtToken(
                 loginResponse.UserId,
                 loginResponse.Email,
                 loginResponse.CustomerType);

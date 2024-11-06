@@ -11,22 +11,13 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.OrderFeature.Queries.GetAllOrder;
 
-public class GetAllOrderQueryHandler : IQueryHandler<GetAllOrderQuery, PagedList<OrderResponse>>
+public class GetAllOrderQueryHandler(
+    IApplicationDbContext context,
+    IOrderRepository orderRepository) : IQueryHandler<GetAllOrderQuery, PagedList<OrderResponse>>
 {
-    private readonly IOrderRepository _orderRepository;
-    private readonly IApplicationDbContext _context;
-
-    public GetAllOrderQueryHandler(
-        IApplicationDbContext context,
-        IOrderRepository orderRepository)
-    {
-        _context = context;
-        _orderRepository = orderRepository;
-    }
-
     public async Task<Result<PagedList<OrderResponse>>> Handle(GetAllOrderQuery request, CancellationToken cancellationToken)
     {
-        var orderQuery = _context.Orders
+        var orderQuery = context.Orders
             .AsNoTracking()
             .Include(a => a.OrderDetails)
             .ThenInclude(b => b.Meal)

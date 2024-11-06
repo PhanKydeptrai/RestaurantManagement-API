@@ -2,20 +2,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RestaurantManagement.Application.Features.Paging;
 
-public class PagedList<T>
+public class PagedList<T>(List<T> items, int page, int pageSize, int totalCount)
 {
-    public PagedList(List<T> items, int page, int pageSize, int totalCount)
-    {
-        Items = items;
-        Page = page;
-        PageSize = pageSize;
-        TotalCount = totalCount;
-    }
-
-    public List<T> Items { get; set; }
-    public int Page { get; set; }
-    public int PageSize { get; set; }
-    public int TotalCount { get; set; }
+    public List<T> Items { get; set; } = items;
+    public int Page { get; set; } = page;
+    public int PageSize { get; set; } = pageSize;
+    public int TotalCount { get; set; } = totalCount;
     public bool HasNextPage => Page * PageSize < TotalCount;
     public bool HaspreviousPage => Page > 1;
 

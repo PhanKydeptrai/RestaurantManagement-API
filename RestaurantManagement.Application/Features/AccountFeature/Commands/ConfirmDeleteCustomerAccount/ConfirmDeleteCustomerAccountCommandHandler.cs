@@ -5,25 +5,14 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ConfirmDeleteCustomerAccount;
 
-public class ConfirmDeleteCustomerAccountCommandHandler : ICommandHandler<ConfirmDeleteCustomerAccountCommand>
+public class ConfirmDeleteCustomerAccountCommandHandler(
+    IUnitOfWork unitOfWork,
+    ICustomerRepository customerAccountRepository,
+    IEmailVerificationTokenRepository emailVerificationTokenRepository) : ICommandHandler<ConfirmDeleteCustomerAccountCommand>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ICustomerRepository _customerAccountRepository;
-    private readonly IEmailVerificationTokenRepository _emailVerificationTokenRepository;
-
-    public ConfirmDeleteCustomerAccountCommandHandler(
-        IUnitOfWork unitOfWork,
-        ICustomerRepository customerAccountRepository,
-        IEmailVerificationTokenRepository emailVerificationTokenRepository)
-    {
-        _unitOfWork = unitOfWork;
-        _customerAccountRepository = customerAccountRepository;
-        _emailVerificationTokenRepository = emailVerificationTokenRepository;
-    }
-
     public async Task<Result> Handle(ConfirmDeleteCustomerAccountCommand request, CancellationToken cancellationToken)
     {
-        EmailVerificationToken token = await _emailVerificationTokenRepository.GetVerificationTokenById(request.tokenId);
+        EmailVerificationToken token = await emailVerificationTokenRepository.GetVerificationTokenById(request.tokenId);
         //check trạng thái tài khoản
         if (token is null || token.User.Status == "Deleted")
         {
@@ -45,9 +34,9 @@ public class ConfirmDeleteCustomerAccountCommandHandler : ICommandHandler<Confir
         }
 
         //Delete customer
-        await _customerAccountRepository.DeleteCustomer(token.UserId);
-        _emailVerificationTokenRepository.RemoveVerificationToken(token);
-        await _unitOfWork.SaveChangesAsync();
+        await customerAccountRepository.DeleteCustomer(token.UserId);
+        emailVerificationTokenRepository.RemoveVerificationToken(token);
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

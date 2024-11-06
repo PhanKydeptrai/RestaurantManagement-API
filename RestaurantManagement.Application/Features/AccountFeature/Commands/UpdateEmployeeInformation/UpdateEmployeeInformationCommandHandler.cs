@@ -9,28 +9,16 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateEmployeeInformation;
 
-public class UpdateEmployeeInformationCommandHandler : ICommandHandler<UpdateEmployeeInformationCommand>
+public class UpdateEmployeeInformationCommandHandler(
+    IUnitOfWork unitOfWork,
+    IEmployeeRepository employeeRepository,
+    IApplicationDbContext context,
+    ISystemLogRepository systemLogRepository) : ICommandHandler<UpdateEmployeeInformationCommand>
 {
-    private readonly IEmployeeRepository _employeeRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IApplicationDbContext _context;
-    private readonly ISystemLogRepository _systemLogRepository;
-    public UpdateEmployeeInformationCommandHandler(
-        IUnitOfWork unitOfWork,
-        IEmployeeRepository employeeRepository,
-        IApplicationDbContext context,
-        ISystemLogRepository systemLogRepository)
-    {
-        _unitOfWork = unitOfWork;
-        _employeeRepository = employeeRepository;
-        _context = context;
-        _systemLogRepository = systemLogRepository;
-    }
-
     public async Task<Result> Handle(UpdateEmployeeInformationCommand request, CancellationToken cancellationToken)
     {
         //validator
-        var validator = new UpdateEmployeeInformationCommandValidator(_employeeRepository);
+        var validator = new UpdateEmployeeInformationCommandValidator(employeeRepository);
         var validationResult = await validator.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
@@ -42,7 +30,7 @@ public class UpdateEmployeeInformationCommandHandler : ICommandHandler<UpdateEmp
         }
 
         //Lấy user theo id
-        var user = await _context.Employees
+        var user = await context.Employees
             .Where(a => a.UserId == request.EmployeeId)
             .Select(a => a.User)
             .FirstOrDefaultAsync();
@@ -88,7 +76,7 @@ public class UpdateEmployeeInformationCommandHandler : ICommandHandler<UpdateEmp
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
@@ -97,7 +85,7 @@ public class UpdateEmployeeInformationCommandHandler : ICommandHandler<UpdateEmp
         });
 
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 

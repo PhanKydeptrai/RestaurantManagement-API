@@ -9,18 +9,11 @@ using System.Linq.Expressions;
 
 namespace RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 
-public class CustomerFilterQueryHandler : IQueryHandler<CustomerFilterQuery, PagedList<CustomerResponse>>
+public class CustomerFilterQueryHandler(IApplicationDbContext context) : IQueryHandler<CustomerFilterQuery, PagedList<CustomerResponse>>
 {
-    private readonly IApplicationDbContext _context;
-
-    public CustomerFilterQueryHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Result<PagedList<CustomerResponse>>> Handle(CustomerFilterQuery request, CancellationToken cancellationToken)
     {
-        var customerQuery = _context.Customers.Include(a => a.User).AsQueryable();
+        var customerQuery = context.Customers.Include(a => a.User).AsQueryable();
         if (!string.IsNullOrEmpty(request.searchTerm))
         {
             customerQuery = customerQuery.Where(x => x.User.FirstName.Contains(request.searchTerm) ||

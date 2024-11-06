@@ -7,40 +7,29 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.VoucherFeature.Commands.DeleteVoucher;
 
-public class DeleteVoucherCommandHandler : ICommandHandler<DeleteVoucherCommand>
+public class DeleteVoucherCommandHandler(
+    IVoucherRepository voucherRepository,
+    IUnitOfWork unitOfWork,
+    ISystemLogRepository systemLogRepository) : ICommandHandler<DeleteVoucherCommand>
 {
-
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IVoucherRepository _voucherRepository;
-    public DeleteVoucherCommandHandler(
-        IVoucherRepository voucherRepository,
-        IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository)
-    {
-        _voucherRepository = voucherRepository;
-        _unitOfWork = unitOfWork;
-        _systemLogRepository = systemLogRepository;
-    }
-
     public async Task<Result> Handle(DeleteVoucherCommand request, CancellationToken cancellationToken)
     {
         //validate
-        var validator = new DeleteVoucherCommandValidator(_voucherRepository);
+        var validator = new DeleteVoucherCommandValidator(voucherRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
 
         //Delete Voucher
-        await _voucherRepository.DeleteVoucher(request.id);
+        await voucherRepository.DeleteVoucher(request.id);
 
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
@@ -48,7 +37,7 @@ public class DeleteVoucherCommandHandler : ICommandHandler<DeleteVoucherCommand>
             UserId = Ulid.Parse(userId)
         });
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

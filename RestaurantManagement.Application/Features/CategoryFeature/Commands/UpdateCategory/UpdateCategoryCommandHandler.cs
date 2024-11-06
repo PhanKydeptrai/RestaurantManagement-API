@@ -8,36 +8,24 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.UpdateCategory;
 
-public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryCommand>
+public class UpdateCategoryCommandHandler(
+    ICategoryRepository categoryRepository,
+    IUnitOfWork unitOfWork,
+    ISystemLogRepository systemLogRepository,
+    IApplicationDbContext context) : ICommandHandler<UpdateCategoryCommand>
 {
-
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IApplicationDbContext _context;
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly ISystemLogRepository _systemLogRepository;
-    public UpdateCategoryCommandHandler(
-        ICategoryRepository categoryRepository,
-        IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository,
-        IApplicationDbContext context)
-    {
-        _categoryRepository = categoryRepository;
-        _unitOfWork = unitOfWork;
-        _systemLogRepository = systemLogRepository;
-        _context = context;
-    }
     public async Task<Result> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
 
         //validate
-        var validator = new UpdateCategoryValidator(_categoryRepository);
+        var validator = new UpdateCategoryValidator(categoryRepository);
         if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
 
         //Lấy category theo id  
-        var category = await _context.Categories.FindAsync(request.CategoryId);
+        var category = await context.Categories.FindAsync(request.CategoryId);
         category.CategoryId = request.CategoryId;
         category.CategoryName = request.CategoryName;
         if (request.Image != null)
@@ -82,7 +70,7 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
@@ -90,7 +78,7 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
             UserId = Ulid.Parse(userId)
         });
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

@@ -6,26 +6,15 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.DeleteTableType;
 
-public class DeleteTableTypeCommandHandler : ICommandHandler<DeleteTableTypeCommand>
+public class DeleteTableTypeCommandHandler(
+    ITableTypeRepository tableTypeRepository,
+    IUnitOfWork unitOfWork,
+    ISystemLogRepository systemLogRepository) : ICommandHandler<DeleteTableTypeCommand>
 {
-    private readonly ITableTypeRepository _tableTypeRepository;
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public DeleteTableTypeCommandHandler(
-        ITableTypeRepository tableTypeRepository,
-        IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository)
-    {
-        _tableTypeRepository = tableTypeRepository;
-        _unitOfWork = unitOfWork;
-        _systemLogRepository = systemLogRepository;
-    }
-
     public async Task<Result> Handle(DeleteTableTypeCommand request, CancellationToken cancellationToken)
     {
         //Validator
-        var validator = new DeleteTableTypeCommandValidator(_tableTypeRepository);  
+        var validator = new DeleteTableTypeCommandValidator(tableTypeRepository);  
         var validationResult = await validator.ValidateAsync(request);
 
         if (!validationResult.IsValid)
@@ -36,13 +25,13 @@ public class DeleteTableTypeCommandHandler : ICommandHandler<DeleteTableTypeComm
             return Result.Failure(errors);
         }
 
-        await _tableTypeRepository.DeleteTableType(request.id);
+        await tableTypeRepository.DeleteTableType(request.id);
 
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
@@ -50,7 +39,7 @@ public class DeleteTableTypeCommandHandler : ICommandHandler<DeleteTableTypeComm
             UserId = Ulid.Parse(userId)
         });
         
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         
         return Result.Success();
     }

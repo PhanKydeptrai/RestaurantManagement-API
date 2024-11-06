@@ -6,21 +6,11 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.RemoveManyCategory;
 
-public class RemoveManyCategoryCommandHandler : ICommandHandler<RemoveManyCategoryCommand>
+public class RemoveManyCategoryCommandHandler(
+    ICategoryRepository categoryRepository,
+    IUnitOfWork unitOfWork,
+    ISystemLogRepository systemLogRepository) : ICommandHandler<RemoveManyCategoryCommand>
 {
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ISystemLogRepository _systemLogRepository;
-    public RemoveManyCategoryCommandHandler(
-        ICategoryRepository categoryRepository,
-        IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository)
-    {
-        _categoryRepository = categoryRepository;
-        _unitOfWork = unitOfWork;
-        _systemLogRepository = systemLogRepository;
-    }
-
     public async Task<Result> Handle(RemoveManyCategoryCommand request, CancellationToken cancellationToken)
     {
         var claims = JwtHelper.DecodeJwt(request.Token);
@@ -28,22 +18,22 @@ public class RemoveManyCategoryCommandHandler : ICommandHandler<RemoveManyCatego
 
         foreach (Ulid id in request.id)
         {
-            if (await _categoryRepository.CheckStatusOfCategory(id) == false)
+            if (await categoryRepository.CheckStatusOfCategory(id) == false)
             {
                 return Result.Failure(new[] { new Error("Category", $"Category {id} not found") });
             }
 
             //Create System Log
-            await _systemLogRepository.CreateSystemLog(new SystemLog
+            await systemLogRepository.CreateSystemLog(new SystemLog
             {
                 UserId = Ulid.Parse(userId),
                 SystemLogId = Ulid.NewUlid(),
                 LogDate = DateTime.Now,
                 LogDetail = $"Xóa danh mục {id}",
             });
-            await _categoryRepository.SoftDeleteCategory(id);
+            await categoryRepository.SoftDeleteCategory(id);
         }
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

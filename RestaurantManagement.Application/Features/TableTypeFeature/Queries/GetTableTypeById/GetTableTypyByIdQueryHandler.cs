@@ -5,18 +5,11 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.TableTypeFeature.Queries.GetTableTypeById;
 
-public class GetTableTypyByIdQueryHandler : IQueryHandler<GetTableTypyByIdQuery, TableTypeResponse>
+public class GetTableTypyByIdQueryHandler(ITableTypeRepository tableTypeRepository) : IQueryHandler<GetTableTypyByIdQuery, TableTypeResponse>
 {
-    private readonly ITableTypeRepository _tableTypeRepository;
-
-    public GetTableTypyByIdQueryHandler(ITableTypeRepository tableTypeRepository)
-    {
-        _tableTypeRepository = tableTypeRepository;
-    }
-
     public async Task<Result<TableTypeResponse>> Handle(GetTableTypyByIdQuery request, CancellationToken cancellationToken)
     {
-        var tableType = await _tableTypeRepository.GetTableTypeById(request.id);
+        var tableType = await tableTypeRepository.GetTableTypeById(request.id);
         if(tableType != null)
         {
             return Result<TableTypeResponse>.Success(tableType);

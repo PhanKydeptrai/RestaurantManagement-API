@@ -6,24 +6,17 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.VoucherFeature.Queries.GetVoucherById;
 
-public class GetVoucherByIdQueryHandler : IQueryHandler<GetVoucherByIdQuery, Voucher>
+public class GetVoucherByIdQueryHandler(IVoucherRepository voucherRepository) : IQueryHandler<GetVoucherByIdQuery, Voucher>
 {
-    private readonly IVoucherRepository _voucherRepository;
-
-    public GetVoucherByIdQueryHandler(IVoucherRepository voucherRepository)
-    {
-        _voucherRepository = voucherRepository;
-    }
-
     public async Task<Result<Voucher>> Handle(GetVoucherByIdQuery request, CancellationToken cancellationToken)
     {
         //validate
-        var validator = new GetVoucherByIdQueryValidator(_voucherRepository);
+        var validator = new GetVoucherByIdQueryValidator(voucherRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result<Voucher>.Failure(errors);
         }
-        Voucher? voucher = await _voucherRepository.GetVoucherById(request.id);
+        Voucher? voucher = await voucherRepository.GetVoucherById(request.id);
 
         return Result<Voucher>.Success(voucher);
     }

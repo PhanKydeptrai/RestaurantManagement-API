@@ -7,31 +7,16 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Commands.ActivateAccount;
 
-public class ActivateAccountCommandHandler : ICommandHandler<ActivateAccountCommand>
+public class ActivateAccountCommandHandler(
+    IEmailVerificationTokenRepository emailVerificationTokenRepository,
+    IApplicationDbContext context,
+    IEmailVerify emailVerify,
+    IFluentEmail fluentEmail,
+    IUnitOfWork unitOfWork) : ICommandHandler<ActivateAccountCommand>
 {
-    private readonly IEmailVerificationTokenRepository _emailVerificationTokenRepository;
-
-    private readonly IEmailVerify _emailVerify;
-    private readonly IFluentEmail _fluentEmail;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public ActivateAccountCommandHandler(
-        IEmailVerificationTokenRepository emailVerificationTokenRepository,
-        IApplicationDbContext context,
-        IEmailVerify emailVerify,
-        IFluentEmail fluentEmail,
-        IUnitOfWork unitOfWork)
-    {
-        _emailVerificationTokenRepository = emailVerificationTokenRepository;
-
-        _emailVerify = emailVerify;
-        _fluentEmail = fluentEmail;
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<Result> Handle(ActivateAccountCommand request, CancellationToken cancellationToken)
     {
-        EmailVerificationToken token = await _emailVerificationTokenRepository.GetVerificationTokenById(request.tokenId);
+        EmailVerificationToken token = await emailVerificationTokenRepository.GetVerificationTokenById(request.tokenId);
         //check trạng thái tài khoản
         if (token is null || token.User.Status == "Activated")
         {
@@ -59,21 +44,21 @@ public class ActivateAccountCommandHandler : ICommandHandler<ActivateAccountComm
             };
 
             //TODO: Refactor thành phương thức send mail
-            string? verificationLink = _emailVerify.Create(emailVerificationToken);
+            string? verificationLink = emailVerify.Create(emailVerificationToken);
             //gui mail
-            await _fluentEmail.To(token.User.Email).Subject("Kích hoạt tài khoản")
+            await fluentEmail.To(token.User.Email).Subject("Kích hoạt tài khoản")
             .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
             .SendAsync();
 
-            await _emailVerificationTokenRepository.CreateVerificationToken(emailVerificationToken);
-            _emailVerificationTokenRepository.RemoveVerificationToken(token);
-            await _unitOfWork.SaveChangesAsync();
+            await emailVerificationTokenRepository.CreateVerificationToken(emailVerificationToken);
+            emailVerificationTokenRepository.RemoveVerificationToken(token);
+            await unitOfWork.SaveChangesAsync();
             return Result.Failure(errors);
         }
 
         token.User.Status = "Activated";
-        _emailVerificationTokenRepository.RemoveVerificationToken(token);
-        await _unitOfWork.SaveChangesAsync();
+        emailVerificationTokenRepository.RemoveVerificationToken(token);
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

@@ -2,26 +2,17 @@
 
 namespace RestaurantManagement.API.Middleware;
 
-public class ExceptionHandlingMiddleware
+public class ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger, RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
-
-    public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger, RequestDelegate next)
-    {
-        _logger = logger;
-        _next = next;
-    }
-
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await _next(context);
+            await next(context);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Exception occured: {Message}", ex.Message);
+            logger.LogError(ex, "Exception occured: {Message}", ex.Message);
             var problemDetail = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,

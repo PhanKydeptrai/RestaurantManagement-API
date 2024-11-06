@@ -8,15 +8,8 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Queries.GetEmployeeAccountInfo;
 
-public class GetEmployeeAccountInfoQueryHandler : IQueryHandler<GetEmployeeAccountInfoQuery, EmployeeResponse>
+public class GetEmployeeAccountInfoQueryHandler(IApplicationDbContext context) : IQueryHandler<GetEmployeeAccountInfoQuery, EmployeeResponse>
 {
-    private readonly IApplicationDbContext _context;
-
-    public GetEmployeeAccountInfoQueryHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Result<EmployeeResponse>> Handle(GetEmployeeAccountInfoQuery request, CancellationToken cancellationToken)
     {
         //Decode jwt
@@ -24,7 +17,7 @@ public class GetEmployeeAccountInfoQueryHandler : IQueryHandler<GetEmployeeAccou
         claims.TryGetValue("sub", out var userId);
         
         //Get employee info
-        var employeeInfo = await _context.Employees.Include(a => a.User).Where(a => a.UserId == Ulid.Parse(userId))
+        var employeeInfo = await context.Employees.Include(a => a.User).Where(a => a.UserId == Ulid.Parse(userId))
             .Select(a => new EmployeeResponse(
                 a.UserId, 
                 a.User.FirstName, 

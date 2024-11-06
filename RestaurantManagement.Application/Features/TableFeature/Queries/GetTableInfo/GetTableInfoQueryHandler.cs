@@ -6,18 +6,11 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.TableFeature.Queries.GetTableInfo;
 
-public class GetTableInfoQueryHandler : IQueryHandler<GetTableInfoQuery, TableInfo[]>
+public class GetTableInfoQueryHandler(IApplicationDbContext context) : IQueryHandler<GetTableInfoQuery, TableInfo[]>
 {
-    private readonly IApplicationDbContext _context;
-
-    public GetTableInfoQueryHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Result<TableInfo[]>> Handle(GetTableInfoQuery request, CancellationToken cancellationToken)
     {
-        TableInfo[] tableInfos =  await _context.Tables.Include(a => a.TableType)
+        TableInfo[] tableInfos =  await context.Tables.Include(a => a.TableType)
             .Where(a => a.ActiveStatus == "Empty")
             .Select(a => new TableInfo(a.TableId, a.TableType.TableTypeName))
             .ToArrayAsync();

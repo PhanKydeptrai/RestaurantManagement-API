@@ -10,29 +10,16 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.BookingFeature.Commands.SubscriberCreateBooking;
 
-public class SubscriberCreateBookingCommandHandler : ICommandHandler<SubscriberCreateBookingCommand>
+public class SubscriberCreateBookingCommandHandler(
+    IBookingRepository bookingRepository,
+    IUnitOfWork unitOfWork,
+    IApplicationDbContext context,
+    IFluentEmail fluentEmail) : ICommandHandler<SubscriberCreateBookingCommand>
 {
-    private readonly IBookingRepository _bookingRepository;
-    private readonly IFluentEmail _fluentEmail;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IApplicationDbContext _context;
-
-    public SubscriberCreateBookingCommandHandler(
-        IBookingRepository bookingRepository,
-        IUnitOfWork unitOfWork,
-        IApplicationDbContext context,
-        IFluentEmail fluentEmail)
-    {
-        _bookingRepository = bookingRepository;
-        _unitOfWork = unitOfWork;
-        _context = context;
-        _fluentEmail = fluentEmail;
-    }
-
     public async Task<Result> Handle(SubscriberCreateBookingCommand request, CancellationToken cancellationToken)
     {
         
-        var validator = new SubscriberCreateBookingCommandValidator(_bookingRepository);
+        var validator = new SubscriberCreateBookingCommandValidator(bookingRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
@@ -43,12 +30,12 @@ public class SubscriberCreateBookingCommandHandler : ICommandHandler<SubscriberC
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
 
-        var info = await _context.Customers.Include(a => a.User).Where(a => a.UserId == Ulid.Parse(userId))
+        var info = await context.Customers.Include(a => a.User).Where(a => a.UserId == Ulid.Parse(userId))
             .Select(a => new {a.CustomerId, a.User.Email}).FirstOrDefaultAsync();
         
 
         //Tính tiền booking
-        TableType[] tableTypes = await _context.TableTypes
+        TableType[] tableTypes = await context.TableTypes
             .AsNoTracking()
             .Select(a => new TableType
             {
@@ -94,9 +81,9 @@ public class SubscriberCreateBookingCommandHandler : ICommandHandler<SubscriberC
 
         };
 
-        await _bookingRepository.AddBooking(booking);
+        await bookingRepository.AddBooking(booking);
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
 
         //Get Config Info
         string vnp_Returnurl = "https://localhost:7057/api/Payment/ReturnUrl"; //URL nhan ket qua tra ve 
@@ -124,7 +111,7 @@ public class SubscriberCreateBookingCommandHandler : ICommandHandler<SubscriberC
 
         string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
         //  Gửi mail thông báo cho khách hàng
-        await _fluentEmail.To(info.Email).Subject("Xác nhận đặt bàn")
+        await fluentEmail.To(info.Email).Subject("Xác nhận đặt bàn")
             .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> \n Mã booking của bạn là: {booking.BookId}", isHtml: true)
             .SendAsync();
 

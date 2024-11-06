@@ -8,18 +8,11 @@ using System.Linq.Expressions;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 
-public class CategoryFilterQueryHandler : IQueryHandler<CategoryFilterQuery, PagedList<CategoryResponse>>
+public class CategoryFilterQueryHandler(IApplicationDbContext context) : IQueryHandler<CategoryFilterQuery, PagedList<CategoryResponse>>
 {
-    private readonly IApplicationDbContext _context;
-
-    public CategoryFilterQueryHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Result<PagedList<CategoryResponse>>> Handle(CategoryFilterQuery request, CancellationToken cancellationToken)
     {
-        var categoriesQuery = _context.Categories.AsQueryable();
+        var categoriesQuery = context.Categories.AsQueryable();
 
         //Search
         if (!string.IsNullOrEmpty(request.searchTerm))

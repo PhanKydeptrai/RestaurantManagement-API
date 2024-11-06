@@ -10,36 +10,23 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.BookingFeature.Commands.CustomerCreateBooking;
 
-public class CustomerCreateBookingCommandHandler : ICommandHandler<CustomerCreateBookingCommand>
+public class CustomerCreateBookingCommandHandler(
+    IUnitOfWork unitOfWork,
+    IBookingRepository bookingRepository,
+    IApplicationDbContext context,
+    IFluentEmail fluentEmail) : ICommandHandler<CustomerCreateBookingCommand>
 {
-    private readonly IBookingRepository _bookingRepository;
-    private readonly IApplicationDbContext _context;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IFluentEmail _fluentEmail;
-
-    public CustomerCreateBookingCommandHandler(
-        IUnitOfWork unitOfWork,
-        IBookingRepository bookingRepository,
-        IApplicationDbContext context,
-        IFluentEmail fluentEmail)
-    {
-        _unitOfWork = unitOfWork;
-        _bookingRepository = bookingRepository;
-        _context = context;
-        _fluentEmail = fluentEmail;
-    }
-
     public async Task<Result> Handle(CustomerCreateBookingCommand request, CancellationToken cancellationToken)
     {
         
-        var validator = new CustomerCreateBookingCommandValidator(_bookingRepository);
+        var validator = new CustomerCreateBookingCommandValidator(bookingRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
 
         //Kiểm tra user đã tồn tại chưa, Nếu chưa tạo mới
-        var isCustomerExist = await _context.Customers
+        var isCustomerExist = await context.Customers
             .Include(a => a.User)
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.User.Email == request.Email || a.User.Phone == request.PhoneNumber);
@@ -49,7 +36,7 @@ public class CustomerCreateBookingCommandHandler : ICommandHandler<CustomerCreat
         if (isCustomerExist == null)
         {
             userEmail = request.Email;
-            await _context.Users.AddAsync(new User
+            await context.Users.AddAsync(new User
             {
                 UserId = userId,
                 Email = request.Email,
@@ -60,7 +47,7 @@ public class CustomerCreateBookingCommandHandler : ICommandHandler<CustomerCreat
                 LastName = request.LastName
             });
 
-            await _context.Customers.AddAsync(new Customer
+            await context.Customers.AddAsync(new Customer
             {
                 CustomerId = customerId,
                 UserId = userId,
@@ -74,7 +61,7 @@ public class CustomerCreateBookingCommandHandler : ICommandHandler<CustomerCreat
         }
         
         //Tính tiền booking
-        TableType[] tableTypes = await _context.TableTypes
+        TableType[] tableTypes = await context.TableTypes
             .AsNoTracking()
             .Select(a => new TableType
             {
@@ -118,9 +105,9 @@ public class CustomerCreateBookingCommandHandler : ICommandHandler<CustomerCreat
             CustomerId = isCustomerExist?.CustomerId ?? customerId,
             Note = request.Note
         };
-        await _context.Bookings.AddAsync(booking);
+        await context.Bookings.AddAsync(booking);
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
 
         //Get Config Info
         string vnp_Returnurl = "https://localhost:7057/api/booking/ReturnUrl"; //URL nhan ket qua tra ve 
@@ -148,7 +135,7 @@ public class CustomerCreateBookingCommandHandler : ICommandHandler<CustomerCreat
 
         string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
         //  Gửi mail thông báo cho khách hàng
-        await _fluentEmail.To(userEmail).Subject("Xác nhận đặt bàn")
+        await fluentEmail.To(userEmail).Subject("Xác nhận đặt bàn")
             .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> <br> Mã booking của bạn là: {booking.BookId}", isHtml: true)
             .SendAsync();
         return Result.Success();

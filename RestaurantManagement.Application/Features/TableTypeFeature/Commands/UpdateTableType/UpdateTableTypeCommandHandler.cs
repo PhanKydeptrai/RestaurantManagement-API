@@ -8,39 +8,23 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.UpdateTableType;
 
-public class UpdateTableTypeCommandHandler : ICommandHandler<UpdateTableTypeCommand>
+public class UpdateTableTypeCommandHandler(
+    IApplicationDbContext context,
+    ITableTypeRepository tableTypeRepository,
+    IUnitOfWork unitOfWork,
+    ISystemLogRepository systemLogRepository) : ICommandHandler<UpdateTableTypeCommand>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ITableTypeRepository _tableTypeRepository;
-    public UpdateTableTypeCommandHandler(
-        IApplicationDbContext context,
-        ITableTypeRepository tableTypeRepository,
-        IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository)
-    {
-        _context = context;
-        _tableTypeRepository = tableTypeRepository;
-        _unitOfWork = unitOfWork;
-        _systemLogRepository = systemLogRepository;
-    }
-
     public async Task<Result> Handle(UpdateTableTypeCommand request, CancellationToken cancellationToken)
     {
         //validation
-        var validator = new UpdateTableTypeCommandValidator(_tableTypeRepository);
-        var validationResult = validator.Validate(request);
-        if (!validationResult.IsValid)
+        var validator = new UpdateTableTypeCommandValidator(tableTypeRepository);
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            Error[] errors = validationResult.Errors
-                .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
-                .ToArray();
             return Result.Failure(errors);
         }
 
         //Lấy TableType theo id  
-        var tableType = await _context.TableTypes.FindAsync(request.TableTypeId);
+        var tableType = await context.TableTypes.FindAsync(request.TableTypeId);
         //Update TableType
         tableType.TableTypeName = request.TableTypeName;
         tableType.TablePrice = request.TablePrice;
@@ -84,14 +68,14 @@ public class UpdateTableTypeCommandHandler : ICommandHandler<UpdateTableTypeComm
 
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
             LogDetail = $"Tạo danh mục {request.TableTypeId}",
             UserId = Ulid.Parse(userId)
         });
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
 
         return Result.Success();
 

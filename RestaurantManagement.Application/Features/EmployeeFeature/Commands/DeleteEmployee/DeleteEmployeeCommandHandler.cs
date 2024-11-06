@@ -6,25 +6,15 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.DeleteEmployee;
 
-public class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmployeeCommand>
+public class DeleteEmployeeCommandHandler(
+    IUnitOfWork unitOfWork,
+    IEmployeeRepository employeeRepository,
+    ISystemLogRepository systemLogRepository) : ICommandHandler<DeleteEmployeeCommand>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IEmployeeRepository _employeeRepository;
-    public DeleteEmployeeCommandHandler(
-        IUnitOfWork unitOfWork,
-        IEmployeeRepository employeeRepository,
-        ISystemLogRepository systemLogRepository)
-    {
-        _unitOfWork = unitOfWork;
-        _employeeRepository = employeeRepository;
-        _systemLogRepository = systemLogRepository;
-    }
-
     public async Task<Result> Handle(DeleteEmployeeCommand request, CancellationToken cancellationToken)
     {
         //validate
-        var validator = new DeleteEmployeeCommandValidator(_employeeRepository);
+        var validator = new DeleteEmployeeCommandValidator(employeeRepository);
         if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
@@ -35,7 +25,7 @@ public class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmployeeComman
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
@@ -44,9 +34,9 @@ public class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmployeeComman
         });
 
         //Delete employee
-        await _employeeRepository.DeleteEmployee(request.id);
+        await employeeRepository.DeleteEmployee(request.id);
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

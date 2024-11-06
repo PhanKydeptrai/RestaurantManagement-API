@@ -6,33 +6,22 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.UpdateEmployeeRole;
 
-public class UpdateEmployeeRoleCommandHandler : ICommandHandler<UpdateEmployeeRoleCommand>
+public class UpdateEmployeeRoleCommandHandler(
+    IEmployeeRepository employeeRepository,
+    IUnitOfWork unitOfWork,
+    ISystemLogRepository systemLogRepository) : ICommandHandler<UpdateEmployeeRoleCommand>
 {
-    private readonly IEmployeeRepository _employeeRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ISystemLogRepository _systemLogRepository;
-
-    public UpdateEmployeeRoleCommandHandler(
-        IEmployeeRepository employeeRepository,
-        IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository)
-    {
-        _employeeRepository = employeeRepository;
-        _unitOfWork = unitOfWork;
-        _systemLogRepository = systemLogRepository;
-    }
-
     public async Task<Result> Handle(UpdateEmployeeRoleCommand request, CancellationToken cancellationToken)
     {
         //validate
-        var validator = new UpdateEmployeeRoleValidator(_employeeRepository);
+        var validator = new UpdateEmployeeRoleValidator(employeeRepository);
         if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
         
         //Update Employee Role
-        await _employeeRepository.UpdateEmployeeRole(request.id, request.role);
+        await employeeRepository.UpdateEmployeeRole(request.id, request.role);
 
 
         //Decode jwt
@@ -40,7 +29,7 @@ public class UpdateEmployeeRoleCommandHandler : ICommandHandler<UpdateEmployeeRo
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
@@ -48,7 +37,7 @@ public class UpdateEmployeeRoleCommandHandler : ICommandHandler<UpdateEmployeeRo
             UserId = Ulid.Parse(userId)
         });
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

@@ -10,43 +10,27 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateCustomer;
 
-public class CreateCustomerCommandHandler : ICommandHandler<CreateCustomerCommand>
+public class CreateCustomerCommandHandler(
+    ICustomerRepository customerRepository,
+    ISystemLogRepository systemLogRepository,
+    IUnitOfWork unitOfWork,
+    IUserRepository userRepository,
+    IApplicationDbContext context,
+    IFluentEmail fluentEmail,
+    IEmailVerify emailVerify) : ICommandHandler<CreateCustomerCommand>
 {
-    private readonly ICustomerRepository _customerRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IUserRepository _userRepository;
     private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IApplicationDbContext _context;
-    private readonly IFluentEmail _fluentEmail;
-    private readonly IEmailVerify _emailVerify;
-
-    public CreateCustomerCommandHandler(
-        ICustomerRepository customerRepository,
-        ISystemLogRepository systemLogRepository,
-        IUnitOfWork unitOfWork,
-        IUserRepository userRepository,
-        IApplicationDbContext context,
-        IFluentEmail fluentEmail,
-        IEmailVerify emailVerify)
-    {
-        _customerRepository = customerRepository;
-        _unitOfWork = unitOfWork;
-        _userRepository = userRepository;
-        _context = context;
-        _fluentEmail = fluentEmail;
-        _emailVerify = emailVerify;
-    }
 
     public async Task<Result> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
         //Validate 
-        var validator = new CreateCustomerCommandValidator(_customerRepository);
+        var validator = new CreateCustomerCommandValidator(customerRepository);
         if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
 
-        var normalCustomer = await _context.Customers.Include(a => a.User)
+        var normalCustomer = await context.Customers.Include(a => a.User)
             .FirstOrDefaultAsync(a => a.User.Email == request.Email || a.User.Phone == request.Phone);
 
         string randomPassword = RandomStringGenerator.GenerateRandomString(8);
@@ -61,7 +45,7 @@ public class CreateCustomerCommandHandler : ICommandHandler<CreateCustomerComman
             normalCustomer.User.LastName = request.LastName;
             normalCustomer.User.Gender = request.Gender;
             normalCustomer.User.Password = randomEncryptPassword;
-            await _unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
             return Result.Success();
         }
         //Create User
@@ -77,7 +61,7 @@ public class CreateCustomerCommandHandler : ICommandHandler<CreateCustomerComman
             Gender = request.Gender,
             Status = "NotActivated"
         };
-        await _userRepository.CreateUser(user);
+        await userRepository.CreateUser(user);
         // Create Customer
         var customer = new Customer
         {
@@ -86,7 +70,7 @@ public class CreateCustomerCommandHandler : ICommandHandler<CreateCustomerComman
             CustomerStatus = "Active",
             CustomerType = "Subscriber",
         };
-        await _customerRepository.CreateCustomer(customer);
+        await customerRepository.CreateCustomer(customer);
 
         //End
 
@@ -101,8 +85,8 @@ public class CreateCustomerCommandHandler : ICommandHandler<CreateCustomerComman
         //End
 
         //gửi mail kích hoạt tài khoản
-        var verificationLink = _emailVerify.Create(emailVerificationToken);
-        await _fluentEmail.To(user.Email).Subject("Kích hoạt tài khoản")
+        var verificationLink = emailVerify.Create(emailVerificationToken);
+        await fluentEmail.To(user.Email).Subject("Kích hoạt tài khoản")
             .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> \n Đây là mật khẩu của bạn: {randomPassword}", isHtml: true)
             .SendAsync();
 
@@ -122,8 +106,8 @@ public class CreateCustomerCommandHandler : ICommandHandler<CreateCustomerComman
         // });
 
 
-        await _context.EmailVerificationTokens.AddAsync(emailVerificationToken);
-        await _unitOfWork.SaveChangesAsync();
+        await context.EmailVerificationTokens.AddAsync(emailVerificationToken);
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }
