@@ -12,6 +12,20 @@ public class CustomerRepository(RestaurantManagementDbContext context) : ICustom
     {
         await context.Customers.AddAsync(customer);
     }
+    public async Task<Ulid> GetUserIdByEmail(string email)
+    {
+        return await context.Customers
+            .Where(a => a.User.Email == email)
+            .Select(a => a.UserId)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> IsCustomerExist(string email)
+    {
+        return await context.Customers
+            .Include(c => c.User)
+            .AnyAsync(a => a.User.Email == email);
+    }
 
     public void DeleteCustomer(Customer customer)
     {

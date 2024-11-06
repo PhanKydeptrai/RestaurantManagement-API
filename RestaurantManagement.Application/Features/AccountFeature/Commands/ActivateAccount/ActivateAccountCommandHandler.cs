@@ -9,7 +9,6 @@ namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Acti
 
 public class ActivateAccountCommandHandler(
     IEmailVerificationTokenRepository emailVerificationTokenRepository,
-    IApplicationDbContext context,
     IEmailVerify emailVerify,
     IFluentEmail fluentEmail,
     IUnitOfWork unitOfWork) : ICommandHandler<ActivateAccountCommand>

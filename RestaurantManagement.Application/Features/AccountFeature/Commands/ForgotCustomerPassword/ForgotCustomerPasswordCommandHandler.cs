@@ -25,11 +25,8 @@ internal class ForgotCustomerPasswordCommandHandler(
         }
 
 
-        //Get user by email
-        Ulid userId = await context.Customers
-            .Where(a => a.User.Email == request.email)
-            .Select(a => a.UserId)
-            .FirstOrDefaultAsync();
+        //Get userId by email
+        Ulid userId = await customerRepository.GetUserIdByEmail(request.email);
 
         //Create email verification token
         var emailVerificationToken = new EmailVerificationToken
