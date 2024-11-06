@@ -22,7 +22,7 @@ public class GetBookingByUserIdQueryHandler : IQueryHandler<GetBookingByUserIdQu
     {
        
         var validator = new GetBookingByUserIdQueryValidator(_bookingRepository, _customerRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result<BookingResponse[]>.Failure(errors);
         }

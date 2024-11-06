@@ -33,7 +33,7 @@ public class CustomerCreateBookingCommandHandler : ICommandHandler<CustomerCreat
     {
         
         var validator = new CustomerCreateBookingCommandValidator(_bookingRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

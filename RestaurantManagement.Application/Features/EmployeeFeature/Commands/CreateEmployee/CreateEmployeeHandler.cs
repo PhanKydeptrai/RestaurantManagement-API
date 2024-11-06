@@ -31,7 +31,7 @@ public class CreateEmployeeHandler : ICommandHandler<CreateEmployeeCommand>
 
         // validate
         var validator = new CreateEmployeeCommandValidator(_employeeRepository);
-        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

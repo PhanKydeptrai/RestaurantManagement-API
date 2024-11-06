@@ -31,7 +31,7 @@ public class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryComman
 
         //validate
         var validator = new UpdateCategoryValidator(_categoryRepository);
-        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

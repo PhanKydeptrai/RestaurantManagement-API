@@ -30,7 +30,7 @@ public class UpdateVoucherCommandHandler : ICommandHandler<UpdateVoucherCommand>
     {
         //validate
         var validator = new UpdateVoucherCommandValidator(_voucherRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

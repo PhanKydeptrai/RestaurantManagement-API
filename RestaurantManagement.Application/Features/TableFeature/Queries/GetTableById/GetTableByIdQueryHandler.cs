@@ -23,7 +23,7 @@ public class GetTableByIdQueryHandler : IQueryHandler<GetTableByIdQuery, TableRe
     {
         //validate
         var validator = new GetTableByIdQueryValidator(_tableRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result<TableResponse>.Failure(errors);
         }

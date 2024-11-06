@@ -29,7 +29,7 @@ public class CreateVoucherCommandHanler : ICommandHandler<CreateVoucherCommand>
     {
         //validate
         var validator = new CreateVoucherCommandValidator(_voucherRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

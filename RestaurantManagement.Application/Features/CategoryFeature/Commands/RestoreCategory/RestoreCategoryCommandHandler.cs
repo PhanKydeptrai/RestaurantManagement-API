@@ -25,7 +25,7 @@ public class RestoreCategoryCommandHandler : ICommandHandler<RestoreCategoryComm
     {
         //validate
         var validator = new RestoreCategoryCommandValidator(_categoryRepository);
-        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

@@ -34,7 +34,7 @@ public class ForgotEmployeePasswordCommandHandler : ICommandHandler<ForgotEmploy
     {
         
         var validator = new ForgotEmployeePasswordCommandValidator(_employeeRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

@@ -41,7 +41,7 @@ public class CreateCustomerCommandHandler : ICommandHandler<CreateCustomerComman
     {
         //Validate 
         var validator = new CreateCustomerCommandValidator(_customerRepository);
-        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

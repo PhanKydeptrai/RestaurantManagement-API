@@ -26,7 +26,7 @@ public class RestoreTableCommandHandler : ICommandHandler<RestoreTableCommand>
     {
         //validate
         var validator = new RestoreTableCommandValidator(_tableRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

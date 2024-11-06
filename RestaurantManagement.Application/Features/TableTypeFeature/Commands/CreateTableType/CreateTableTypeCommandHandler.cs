@@ -30,7 +30,7 @@ public class CreateTableTypeCommandHandler : ICommandHandler<CreateTableTypeComm
     {
         //validate
         var validator = new CreateTableTypeCommandValidator(_tableTypeRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

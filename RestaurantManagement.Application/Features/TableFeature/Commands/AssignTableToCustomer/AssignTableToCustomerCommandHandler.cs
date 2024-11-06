@@ -22,7 +22,7 @@ public class GetTableForCustomerCommandHandler : ICommandHandler<AssignTableToCu
     {
         //validate
         var validator = new AssignTableToCustomerCommandValidator(_tableRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

@@ -19,7 +19,7 @@ public class GetVoucherByIdQueryHandler : IQueryHandler<GetVoucherByIdQuery, Vou
     {
         //validate
         var validator = new GetVoucherByIdQueryValidator(_voucherRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result<Voucher>.Failure(errors);
         }

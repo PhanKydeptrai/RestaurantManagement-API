@@ -24,7 +24,7 @@ public class GetEmployeeByIdQueryHandler : IQueryHandler<GetEmployeeByIdQuery, E
 
         var validator = new GetEmployeeByIdQueryValidator(_employeeRepository);
         //validate
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result<EmployeeResponse>.Failure(errors);
         }

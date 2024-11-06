@@ -5,9 +5,9 @@ namespace RestaurantManagement.Application.Extentions;
 
 public static class ValidateRequest
 {
-    public static async Task<bool> RequestValidator<T>(IValidator<T> validator, T request, out Error[] errors)
+    public static bool RequestValidator<T>(IValidator<T> validator, T request, out Error[] errors)
     {
-        var validationResult = await validator.ValidateAsync(request);
+        var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
             errors = validationResult.Errors

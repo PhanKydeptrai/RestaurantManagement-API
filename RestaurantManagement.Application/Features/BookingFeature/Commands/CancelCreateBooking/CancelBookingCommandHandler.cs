@@ -31,7 +31,7 @@ public class CancelBookingCommandHandler : ICommandHandler<CancelBookingCommand>
     {
         //validate
         var validator = new CancelBookingCommandValidator(_bookingRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

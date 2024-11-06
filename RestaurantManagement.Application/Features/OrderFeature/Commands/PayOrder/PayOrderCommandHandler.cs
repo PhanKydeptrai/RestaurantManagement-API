@@ -27,7 +27,7 @@ public class PayOrderCommandHandler : ICommandHandler<PayOrderCommand>
     {
         //validate
         var validator = new PayOrderCommandValidator(_tableRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
