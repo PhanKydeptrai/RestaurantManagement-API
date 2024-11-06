@@ -26,7 +26,7 @@ public class ChangeSellStatusCommandHandler : ICommandHandler<ChangeSellStatusCo
     {
         //validate
         var validator = new ChangeSellStatusCommandValidator(_mealRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

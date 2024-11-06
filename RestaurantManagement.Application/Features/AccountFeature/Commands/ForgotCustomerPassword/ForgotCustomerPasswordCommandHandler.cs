@@ -33,7 +33,7 @@ internal class ForgotCustomerPasswordCommandHandler : ICommandHandler<ForgotCust
     public async Task<Result> Handle(ForgotCustomerPasswordCommand request, CancellationToken cancellationToken)
     {
         var validator = new ForgotCustomerPasswordCommandValidator(_customerRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

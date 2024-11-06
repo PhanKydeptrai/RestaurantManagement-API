@@ -25,7 +25,7 @@ public class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmployeeComman
     {
         //validate
         var validator = new DeleteEmployeeCommandValidator(_employeeRepository);
-        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

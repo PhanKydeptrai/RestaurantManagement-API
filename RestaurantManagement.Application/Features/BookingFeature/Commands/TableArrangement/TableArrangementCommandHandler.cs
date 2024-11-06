@@ -35,7 +35,7 @@ public class TableArrangementCommandHandler : ICommandHandler<TableArrangementCo
     {
         
         var validator = new TableArrangementCommandValidator(_bookingRepository, _tableRepository, _context);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

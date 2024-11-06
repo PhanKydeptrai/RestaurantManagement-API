@@ -26,7 +26,7 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
         //validate
         var validator = new CreateCategoryCommandValidator(_categoryRepository);
 
-        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

@@ -30,7 +30,7 @@ public class EmployeeLoginQueryHandler : IQueryHandler<EmployeeLoginQuery, Login
     {
        
         var validator = new EmployeeLoginQueryValidator();
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result<LoginResponse>.Failure(errors);
         }

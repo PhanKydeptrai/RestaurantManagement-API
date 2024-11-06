@@ -27,7 +27,7 @@ public class UpdateMealInOrderCommandHandler : ICommandHandler<UpdateMealInOrder
     {
         //validate
         var validator = new UpdateMealInOrderCommandValidator(_orderDetailRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

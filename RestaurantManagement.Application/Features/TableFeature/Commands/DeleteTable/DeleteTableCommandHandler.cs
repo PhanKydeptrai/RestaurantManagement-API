@@ -26,7 +26,7 @@ public class DeleteTableCommandHandler : ICommandHandler<DeleteTableCommand>
     {
         //validate
         var validator = new DeleteTableCommandValidator(_tableRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

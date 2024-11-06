@@ -28,7 +28,7 @@ public class AssignTableToBookedCustomerCommandHandler : ICommandHandler<AssignT
         
          //validate
         var validator = new AssignTableToBookedCustomerCommandValidator(_tableRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

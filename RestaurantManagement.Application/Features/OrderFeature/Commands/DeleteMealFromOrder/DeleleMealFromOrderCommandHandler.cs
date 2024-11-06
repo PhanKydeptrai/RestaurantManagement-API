@@ -27,7 +27,7 @@ public class DeleleMealFromOrderCommandHandler : ICommandHandler<DeleleMealFromO
     {
         //validate
         var validator = new DeleleMealFromOrderCommandValidator(_orderDetailRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

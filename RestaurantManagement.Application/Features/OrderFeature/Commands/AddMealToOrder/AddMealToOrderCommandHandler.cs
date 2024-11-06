@@ -37,7 +37,7 @@ public class AddMealToOrderCommandHandler : ICommandHandler<AddMealToOrderComman
 
         //validate
         var validator = new AddMealToOrderCommandValidator(_tableRepository, _mealRepository);
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

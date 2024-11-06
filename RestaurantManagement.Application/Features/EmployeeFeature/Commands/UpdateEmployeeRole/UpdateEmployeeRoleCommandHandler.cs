@@ -26,7 +26,7 @@ public class UpdateEmployeeRoleCommandHandler : ICommandHandler<UpdateEmployeeRo
     {
         //validate
         var validator = new UpdateEmployeeRoleValidator(_employeeRepository);
-        if(!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }

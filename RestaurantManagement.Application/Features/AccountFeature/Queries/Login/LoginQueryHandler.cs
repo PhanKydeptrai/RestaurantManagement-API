@@ -24,7 +24,7 @@ public class LoginQueryHandler : ICommandHandler<LoginQuery, LoginResponse>
     {
         //validate
         var validator = new LoginQueryValidator();
-        if (!await ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result<LoginResponse>.Failure(errors);
         }
