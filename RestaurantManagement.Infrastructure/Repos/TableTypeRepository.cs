@@ -5,34 +5,27 @@ using RestaurantManagement.Infrastructure.Persistence;
 
 namespace RestaurantManagement.Infrastructure.Repos;
 
-public class TableTypeRepository : ITableTypeRepository
+public class TableTypeRepository(RestaurantManagementDbContext context) : ITableTypeRepository
 {
-    private readonly RestaurantManagementDbContext _context;
-
-    public TableTypeRepository(RestaurantManagementDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task DeleteTableType(Ulid tableTypeId)
     {
-        await _context.TableTypes.Where(a => a.TableTypeId == tableTypeId)
+        await context.TableTypes.Where(a => a.TableTypeId == tableTypeId)
             .ExecuteUpdateAsync(a => a.SetProperty(x => x.Status, "InActive"));
 
-        await _context.Tables.Where(a => a.TableTypeId == tableTypeId)
+        await context.Tables.Where(a => a.TableTypeId == tableTypeId)
             .ExecuteUpdateAsync(a => a.SetProperty(x => x.ActiveStatus, "InActive"));
     }
     public async Task RestoreTableType(Ulid tableTypeId)
     {
-        await _context.TableTypes.Where(a => a.TableTypeId == tableTypeId)
+        await context.TableTypes.Where(a => a.TableTypeId == tableTypeId)
             .ExecuteUpdateAsync(a => a.SetProperty(x => x.Status, "Active"));
 
-        await _context.Tables.Where(a => a.TableTypeId == tableTypeId)
+        await context.Tables.Where(a => a.TableTypeId == tableTypeId)
             .ExecuteUpdateAsync(a => a.SetProperty(x => x.ActiveStatus, "Active"));
     }
     public async Task<TableTypeResponse?> GetTableTypeById(Ulid tableTypeId)
     {
-        return await _context.TableTypes.Select(a => new TableTypeResponse(
+        return await context.TableTypes.Select(a => new TableTypeResponse(
             a.TableTypeId,
             a.TableTypeName,
             a.Status,
@@ -43,29 +36,29 @@ public class TableTypeRepository : ITableTypeRepository
 
     public Task<string> GetTableTypeStatus(Ulid tableTypeId)
     {
-        return _context.TableTypes.Where(a => a.TableTypeId == tableTypeId)
+        return context.TableTypes.Where(a => a.TableTypeId == tableTypeId)
             .Select(a => a.Status).FirstOrDefaultAsync();
     }
 
     public Task<bool> IsTableTypeExist(Ulid tableTypeId)
     {
-        return _context.TableTypes.AnyAsync(x => x.TableTypeId == tableTypeId);
+        return context.TableTypes.AnyAsync(x => x.TableTypeId == tableTypeId);
     }
 
     public async Task<bool> IsTableTypeNameUnique(string tableTypeName)
     {
-        return await _context.TableTypes.AnyAsync(x => x.TableTypeName == tableTypeName);
+        return await context.TableTypes.AnyAsync(x => x.TableTypeName == tableTypeName);
 
     }
 
     public async Task<bool> IsTableTypeNameUnique(string tableTypeName, Ulid tableTypeId)
     {
-        return await _context.TableTypes.AnyAsync(x => x.TableTypeName == tableTypeName && x.TableTypeId != tableTypeId);
+        return await context.TableTypes.AnyAsync(x => x.TableTypeName == tableTypeName && x.TableTypeId != tableTypeId);
     }
 
     public async Task<List<TableTypeInfo>> GetAllTableTypeInfo()
     {
-        return await _context.TableTypes.Where(a => a.Status == "Active")
+        return await context.TableTypes.Where(a => a.Status == "Active")
             .Select(a => new TableTypeInfo(
                 a.TableTypeId, 
                 a.TableTypeName))

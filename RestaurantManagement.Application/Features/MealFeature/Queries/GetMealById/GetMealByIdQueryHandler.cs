@@ -7,22 +7,14 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.MealFeature.Queries.GetMealById;
 
-public class GetMealByIdQueryHandler : IQueryHandler<GetMealByIdQuery, MealResponse>
+public class GetMealByIdQueryHandler(
+    IMealRepository mealRepository,
+    IApplicationDbContext context) : IQueryHandler<GetMealByIdQuery, MealResponse>
 {
-    private readonly IMealRepository _mealRepository;
-    private readonly IApplicationDbContext _context;
-    public GetMealByIdQueryHandler(
-        IMealRepository mealRepository, 
-        IApplicationDbContext context)
-    {
-        _mealRepository = mealRepository;
-        _context = context;
-    }
-
     public async Task<Result<MealResponse>> Handle(GetMealByIdQuery request, CancellationToken cancellationToken)
     {
 
-        var meal = await _context.Meals
+        var meal = await context.Meals
             .Where(a => a.MealId == request.id)
             .Select(a => new MealResponse(
                 a.MealId,

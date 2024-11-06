@@ -7,18 +7,11 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.VoucherFeature.Queries.GetAllVoucher;
 
-public class GetAllVoucherQueryHandler : IQueryHandler<GetAllVoucherQuery, PagedList<Voucher>>
+public class GetAllVoucherQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllVoucherQuery, PagedList<Voucher>>
 {
-    private readonly IApplicationDbContext _context;
-
-    public GetAllVoucherQueryHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Result<PagedList<Voucher>>> Handle(GetAllVoucherQuery request, CancellationToken cancellationToken)
     {
-        var voucherQuery = _context.Vouchers.AsQueryable();
+        var voucherQuery = context.Vouchers.AsQueryable();
         //Search
         if (!string.IsNullOrEmpty(request.searchTerm))
         {

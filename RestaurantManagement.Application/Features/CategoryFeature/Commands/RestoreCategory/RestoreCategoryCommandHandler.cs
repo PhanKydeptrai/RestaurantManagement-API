@@ -6,37 +6,27 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.RestoreCategory;
 
-public class RestoreCategoryCommandHandler : ICommandHandler<RestoreCategoryCommand>
+public class RestoreCategoryCommandHandler(
+    IUnitOfWork unitOfWork,
+    ISystemLogRepository systemLogRepository,
+    ICategoryRepository categoryRepository) : ICommandHandler<RestoreCategoryCommand>
 {
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    public RestoreCategoryCommandHandler(
-        IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository,
-        ICategoryRepository categoryRepository)
-    {
-        _unitOfWork = unitOfWork;
-        _systemLogRepository = systemLogRepository;
-        _categoryRepository = categoryRepository;
-    }
-
     public async Task<Result> Handle(RestoreCategoryCommand request, CancellationToken cancellationToken)
     {
         //validate
-        var validator = new RestoreCategoryCommandValidator(_categoryRepository);
+        var validator = new RestoreCategoryCommandValidator(categoryRepository);
         if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
 
-        await _categoryRepository.RestoreCategory(request.id);
+        await categoryRepository.RestoreCategory(request.id);
         //Decode token
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             UserId = Ulid.Parse(userId),
             SystemLogId = Ulid.NewUlid(),
@@ -44,7 +34,7 @@ public class RestoreCategoryCommandHandler : ICommandHandler<RestoreCategoryComm
             LogDetail = $"khôi phục danh mục {request.id}",
 
         });
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

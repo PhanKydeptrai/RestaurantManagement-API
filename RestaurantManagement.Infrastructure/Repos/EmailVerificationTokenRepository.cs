@@ -5,29 +5,23 @@ using RestaurantManagement.Infrastructure.Persistence;
 
 namespace RestaurantManagement.Infrastructure.Repos
 {
-    public class EmailVerificationTokenRepository : IEmailVerificationTokenRepository
+    public class EmailVerificationTokenRepository(RestaurantManagementDbContext context) : IEmailVerificationTokenRepository
     {
-        private readonly RestaurantManagementDbContext _context;
-
-        public EmailVerificationTokenRepository(RestaurantManagementDbContext context)
-        {
-            _context = context;
-        }
         public async Task CreateVerificationToken(EmailVerificationToken token)
         {
-            await _context.EmailVerificationTokens.AddAsync(token);
+            await context.EmailVerificationTokens.AddAsync(token);
         }
 
         public async Task<EmailVerificationToken> GetVerificationTokenById(Ulid tokenId)
         {
-            return await _context.EmailVerificationTokens
+            return await context.EmailVerificationTokens
                 .Include(a => a.User)
                 .FirstOrDefaultAsync(a => a.EmailVerificationTokenId == tokenId);
         }
 
         public void RemoveVerificationToken(EmailVerificationToken token)
         {
-            _context.EmailVerificationTokens.Remove(token);
+            context.EmailVerificationTokens.Remove(token);
         }
     }
 }

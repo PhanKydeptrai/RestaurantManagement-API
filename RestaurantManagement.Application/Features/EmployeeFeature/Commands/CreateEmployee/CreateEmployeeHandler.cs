@@ -10,27 +10,13 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee;
 
-public class CreateEmployeeHandler : ICommandHandler<CreateEmployeeCommand>
+public class CreateEmployeeHandler(IEmployeeRepository employeeRepository, IUserRepository userRepository, IUnitOfWork unitOfWork, IFluentEmail fluentEmail, ISystemLogRepository systemLogRepository) : ICommandHandler<CreateEmployeeCommand>
 {
-    private readonly IEmployeeRepository _employeeRepository;
-    private readonly IUserRepository _userRepository;
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IFluentEmail _fluentEmail;
-
-    public CreateEmployeeHandler(IEmployeeRepository employeeRepository, IUserRepository userRepository, IUnitOfWork unitOfWork, IFluentEmail fluentEmail, ISystemLogRepository systemLogRepository)
-    {
-        _employeeRepository = employeeRepository;
-        _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
-        _fluentEmail = fluentEmail;
-        _systemLogRepository = systemLogRepository;
-    }
     public async Task<Result> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {
 
         // validate
-        var validator = new CreateEmployeeCommandValidator(_employeeRepository);
+        var validator = new CreateEmployeeCommandValidator(employeeRepository);
         if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
@@ -77,8 +63,8 @@ public class CreateEmployeeHandler : ICommandHandler<CreateEmployeeCommand>
             UserId = user.UserId,
         };
 
-        await _userRepository.CreateUser(user);
-        await _employeeRepository.CreateEmployee(employee);
+        await userRepository.CreateUser(user);
+        await employeeRepository.CreateEmployee(employee);
         //Deocde jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
@@ -92,12 +78,12 @@ public class CreateEmployeeHandler : ICommandHandler<CreateEmployeeCommand>
         //     UserId = Ulid.Parse(userId)
         // });
 
-        await _fluentEmail.To(user.Email).Subject("Thông báo thông tin tài khoản")
+        await fluentEmail.To(user.Email).Subject("Thông báo thông tin tài khoản")
         .Body($"Thông tin tài khoản nhân viên của bạn: {request.Email} " +
         $"\n Mật Khẩu mặc định: {password}")
         .SendAsync();
         
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

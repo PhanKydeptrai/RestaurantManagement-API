@@ -10,18 +10,12 @@ using System.Linq.Expressions;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetAllEmployee
 {
-    public class GetAllEmployeeQueryHandler : IQueryHandler<GetAllEmployeeQuery, PagedList<EmployeeResponse>>
+    public class GetAllEmployeeQueryHandler(
+        IApplicationDbContext context, IEmployeeRepository employeeRepository) : IQueryHandler<GetAllEmployeeQuery, PagedList<EmployeeResponse>>
     {
-        private readonly IApplicationDbContext _context;
-        public GetAllEmployeeQueryHandler(
-            IApplicationDbContext context, IEmployeeRepository employeeRepository)
-        {
-            _context = context;
-        }
-
         public async Task<Result<PagedList<EmployeeResponse>>> Handle(GetAllEmployeeQuery request, CancellationToken cancellationToken)
         {
-            var employeeQuery = _context.Employees.Include(a => a.User).AsQueryable();
+            var employeeQuery = context.Employees.Include(a => a.User).AsQueryable();
             if (!string.IsNullOrEmpty(request.searchTerm))
             {
                 employeeQuery = employeeQuery.Where(x => x.User.FirstName.Contains(request.searchTerm) ||

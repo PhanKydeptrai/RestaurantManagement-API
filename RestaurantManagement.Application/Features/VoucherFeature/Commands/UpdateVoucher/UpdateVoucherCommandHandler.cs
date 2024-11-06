@@ -7,29 +7,16 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.VoucherFeature.Commands.UpdateVoucher;
 
-public class UpdateVoucherCommandHandler : ICommandHandler<UpdateVoucherCommand>
+public class UpdateVoucherCommandHandler(
+    IVoucherRepository voucherRepository,
+    IUnitOfWork unitOfWork,
+    ISystemLogRepository systemLogRepository,
+    IApplicationDbContext context) : ICommandHandler<UpdateVoucherCommand>
 {
-    private readonly IVoucherRepository _voucherRepository;
-    private readonly IApplicationDbContext _context;
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public UpdateVoucherCommandHandler(
-        IVoucherRepository voucherRepository,
-        IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository,
-        IApplicationDbContext context)
-    {
-        _voucherRepository = voucherRepository;
-        _unitOfWork = unitOfWork;
-        _systemLogRepository = systemLogRepository;
-        _context = context;
-    }
-
     public async Task<Result> Handle(UpdateVoucherCommand request, CancellationToken cancellationToken)
     {
         //validate
-        var validator = new UpdateVoucherCommandValidator(_voucherRepository);
+        var validator = new UpdateVoucherCommandValidator(voucherRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
@@ -40,7 +27,7 @@ public class UpdateVoucherCommandHandler : ICommandHandler<UpdateVoucherCommand>
         claims.TryGetValue("sub", out var userId);
 
         //Update Voucher
-        var voucher = await _context.Vouchers.FindAsync(request.VoucherId);
+        var voucher = await context.Vouchers.FindAsync(request.VoucherId);
         
         voucher.VoucherName = request.VoucherName;
         voucher.MaxDiscount = request.MaxDiscount;
@@ -50,7 +37,7 @@ public class UpdateVoucherCommandHandler : ICommandHandler<UpdateVoucherCommand>
         voucher.Description = request.Description;
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
@@ -58,7 +45,7 @@ public class UpdateVoucherCommandHandler : ICommandHandler<UpdateVoucherCommand>
             UserId = Ulid.Parse(userId)
         });
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 

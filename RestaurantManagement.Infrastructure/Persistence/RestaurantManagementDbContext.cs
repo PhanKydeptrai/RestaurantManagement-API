@@ -4,10 +4,8 @@ using RestaurantManagement.Domain.Entities;
 
 namespace RestaurantManagement.Infrastructure.Persistence;
 
-public class RestaurantManagementDbContext : DbContext, IApplicationDbContext
+public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagementDbContext> options) : DbContext(options), IApplicationDbContext
 {
-    public RestaurantManagementDbContext(DbContextOptions<RestaurantManagementDbContext> options) : base(options) { }
-
     public DbSet<Bill> Bills { get; set; }
     public DbSet<BookingChangeLog> BookingChangeLogs { get; set; }
     public DbSet<CustomerVoucher> CustomerVouchers { get; set; }

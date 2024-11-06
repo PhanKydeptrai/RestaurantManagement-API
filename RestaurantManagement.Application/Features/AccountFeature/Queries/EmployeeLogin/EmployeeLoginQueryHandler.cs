@@ -10,22 +10,11 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Queries.EmployeeLogin;
 
-public class EmployeeLoginQueryHandler : IQueryHandler<EmployeeLoginQuery, LoginResponse>
+public class EmployeeLoginQueryHandler(
+    IApplicationDbContext context,
+    IJwtProvider jwtProvider,
+    IEmployeeRepository employeeRepository) : IQueryHandler<EmployeeLoginQuery, LoginResponse>
 {
-    private readonly IEmployeeRepository _employeeRepository;
-    private readonly IJwtProvider _jwtProvider;
-    private readonly IApplicationDbContext _context;
-
-    public EmployeeLoginQueryHandler(
-        IApplicationDbContext context,
-        IJwtProvider jwtProvider,
-        IEmployeeRepository employeeRepository)
-    {
-        _context = context;
-        _jwtProvider = jwtProvider;
-        _employeeRepository = employeeRepository;
-    }
-
     public async Task<Result<LoginResponse>> Handle(EmployeeLoginQuery request, CancellationToken cancellationToken)
     {
        
@@ -37,7 +26,7 @@ public class EmployeeLoginQueryHandler : IQueryHandler<EmployeeLoginQuery, Login
         //encrypt the password
         var encryptedPassword = EncryptProvider.Sha256(request.passWord);
 
-        EmployeeLoginResponse? loginResponse = await _context.Employees
+        EmployeeLoginResponse? loginResponse = await context.Employees
             .Where(a => a.User.Password == encryptedPassword
                         && (a.User.Email == request.loginString
                             || a.User.Phone == request.loginString))
@@ -55,7 +44,7 @@ public class EmployeeLoginQueryHandler : IQueryHandler<EmployeeLoginQuery, Login
             return Result<LoginResponse>.Failure(error);
         }
 
-        string token = _jwtProvider.GenerateJwtToken(
+        string token = jwtProvider.GenerateJwtToken(
             loginResponse.UserId,
             loginResponse.Email,
             loginResponse.Role);

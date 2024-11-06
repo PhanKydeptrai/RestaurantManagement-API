@@ -7,21 +7,13 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.OrderFeature.Queries.GetOrderById;
 
-public class GetOrderByIdQueryHandler : IQueryHandler<GetOrderByIdQuery, OrderResponse>
+public class GetOrderByIdQueryHandler(
+    IOrderRepository orderRepository,
+    IApplicationDbContext context) : IQueryHandler<GetOrderByIdQuery, OrderResponse>
 {
-    private readonly IOrderRepository _orderRepository;
-    private readonly IApplicationDbContext _context;
-    public GetOrderByIdQueryHandler(
-        IOrderRepository orderRepository, 
-        IApplicationDbContext context)
-    {
-        _orderRepository = orderRepository;
-        _context = context;
-    }
-
     public async Task<Result<OrderResponse>> Handle(GetOrderByIdQuery request, CancellationToken cancellationToken)
     {
-        OrderResponse? orderResponse = await _context.Orders
+        OrderResponse? orderResponse = await context.Orders
             .AsNoTracking()
             .Include(a => a.OrderDetails)
             .ThenInclude(b => b.Meal)

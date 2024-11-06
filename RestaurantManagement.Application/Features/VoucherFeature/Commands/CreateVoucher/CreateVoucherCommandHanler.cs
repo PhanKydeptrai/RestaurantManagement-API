@@ -7,35 +7,23 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.VoucherFeature.Commands.CreateVoucher;
 
-public class CreateVoucherCommandHanler : ICommandHandler<CreateVoucherCommand>
+public class CreateVoucherCommandHanler(
+    IApplicationDbContext context,
+    IVoucherRepository voucherRepository,
+    ISystemLogRepository systemLogRepository,
+    IUnitOfWork unitOfWork) : ICommandHandler<CreateVoucherCommand>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly IVoucherRepository _voucherRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ISystemLogRepository _systemLogRepository;
-    public CreateVoucherCommandHanler(
-        IApplicationDbContext context,
-        IVoucherRepository voucherRepository,
-        ISystemLogRepository systemLogRepository,
-        IUnitOfWork unitOfWork)
-    {
-        _context = context;
-        _voucherRepository = voucherRepository;
-        _systemLogRepository = systemLogRepository;
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<Result> Handle(CreateVoucherCommand request, CancellationToken cancellationToken)
     {
         //validate
-        var validator = new CreateVoucherCommandValidator(_voucherRepository);
+        var validator = new CreateVoucherCommandValidator(voucherRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
         
         //create voucher
-        await _context.Vouchers.AddAsync(new Voucher
+        await context.Vouchers.AddAsync(new Voucher
         {
             VoucherId = Ulid.NewUlid(),
             VoucherName = request.VoucherName,
@@ -52,7 +40,7 @@ public class CreateVoucherCommandHanler : ICommandHandler<CreateVoucherCommand>
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
@@ -60,7 +48,7 @@ public class CreateVoucherCommandHanler : ICommandHandler<CreateVoucherCommand>
             UserId = Ulid.Parse(userId)
         });
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

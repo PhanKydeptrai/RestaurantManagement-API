@@ -7,24 +7,12 @@ using RestaurantManagement.Infrastructure.Persistence;
 
 namespace RestaurantManagement.Infrastructure.Repos;
 
-public class EmailVerify : IEmailVerify
+public class EmailVerify(
+    LinkGenerator linkGenerator,
+    IHttpContextAccessor httpContextAccessor,
+    RestaurantManagementDbContext context,
+    IFluentEmail fluentEmail) : IEmailVerify
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly LinkGenerator _linkGenerator;
-    private readonly RestaurantManagementDbContext _context;
-    private readonly IFluentEmail _fluentEmail;
-
-    public EmailVerify(
-        LinkGenerator linkGenerator,
-        IHttpContextAccessor httpContextAccessor,
-        RestaurantManagementDbContext context,
-        IFluentEmail fluentEmail)
-    {
-        _httpContextAccessor = httpContextAccessor;
-        _linkGenerator = linkGenerator;
-        _context = context;
-        _fluentEmail = fluentEmail;
-    }
 
     //tạo link xác thực email
     //TODO: Fix hard code link

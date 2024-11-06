@@ -7,21 +7,11 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.TableFeature.Commands.CreateTable;
 
-public class CreateTableCommandHandler : ICommandHandler<CreateTableCommand>
+public class CreateTableCommandHandler(
+    ISystemLogRepository systemLogRepository,
+    IApplicationDbContext context,
+    IUnitOfWork unitOfWork) : ICommandHandler<CreateTableCommand>
 {
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IApplicationDbContext _context;
-    public CreateTableCommandHandler(
-        ISystemLogRepository systemLogRepository,
-        IApplicationDbContext context,
-        IUnitOfWork unitOfWork)
-    {
-        _systemLogRepository = systemLogRepository;
-        _context = context;
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<Result> Handle(CreateTableCommand request, CancellationToken cancellationToken)
     {
         //validate
@@ -46,21 +36,21 @@ public class CreateTableCommandHandler : ICommandHandler<CreateTableCommand>
             };
         }
 
-        await _context.Tables.AddRangeAsync(tableArray);
+        await context.Tables.AddRangeAsync(tableArray);
 
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
             LogDetail = $"Tạo {request.quantity} loại {request.tableTypeId} thành bán",
             UserId = Ulid.Parse(userId)
         });
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

@@ -6,31 +6,26 @@ using RestaurantManagement.Infrastructure.Persistence;
 
 namespace RestaurantManagement.Infrastructure.Repos;
 
-public class CustomerRepository : ICustomerRepository
+public class CustomerRepository(RestaurantManagementDbContext context) : ICustomerRepository
 {
-    private readonly RestaurantManagementDbContext _context;
-    public CustomerRepository(RestaurantManagementDbContext context)
-    {
-        _context = context;
-    }
     public async Task CreateCustomer(Customer customer)
     {
-        await _context.Customers.AddAsync(customer);
+        await context.Customers.AddAsync(customer);
     }
 
     public void DeleteCustomer(Customer customer)
     {
-        _context.Customers.Remove(customer);
+        context.Customers.Remove(customer);
     }
 
     public async Task<IEnumerable<Customer>> GetAllCustomers()
     {
-        return await _context.Customers.ToListAsync();
+        return await context.Customers.ToListAsync();
     }
 
     public async Task<CustomerResponse?> GetCustomerById(Ulid id)
     {
-        return await _context.Customers
+        return await context.Customers
             .Where(a => a.UserId == id)
             .Select(a => new CustomerResponse(
                 a.CustomerId,
@@ -48,54 +43,54 @@ public class CustomerRepository : ICustomerRepository
 
     public async Task<bool> IsCustomerExist(Ulid id)
     {
-        return await _context.Customers
+        return await context.Customers
             .AsNoTracking()
             .AnyAsync(a => a.UserId == id);
     }
 
     public IQueryable<Customer> GetCustomersQueryable()
     {
-        return _context.Customers.AsQueryable();
+        return context.Customers.AsQueryable();
     }
 
     public async Task<bool> IsCustomerEmailExist(string email)
     {
-        return await _context.Customers
+        return await context.Customers
             .Include(c => c.User)
             .AnyAsync(a => a.User.Email == email && a.CustomerType == "Subscriber");
     }
 
     public async Task<bool> IsCustomerAccountActive(string email)
     {
-        return await _context.Customers
+        return await context.Customers
             .Include(c => c.User)
             .AnyAsync(a => a.User.Email == email && a.CustomerType == "Subscriber" && a.CustomerStatus == "Active");
     }
 
     public async Task<bool> IsCustomerPhoneExist(string phone)
     {
-        return await _context.Customers
+        return await context.Customers
             .Include(c => c.User)
             .AnyAsync(a => a.User.Phone == phone && a.CustomerType == "Subscriber");
     }
 
     public async Task<bool> IsCustomerEmailExist_update(Ulid id, string email)
     {
-        return await _context.Customers
+        return await context.Customers
             .Include(c => c.User)
             .AnyAsync(a => a.User.Email == email && a.UserId != id);
     }
 
     public async Task<bool> IsCustomerPhoneExist_update(Ulid id, string phone)
     {
-        return await _context.Customers
+        return await context.Customers
             .Include(c => c.User)
             .AnyAsync(a => a.User != null && a.User.Phone == phone && a.UserId != id);
     }
 
     public void UpdateCustomer(Customer customer)
     {
-        _context.Customers.Update(customer);
+        context.Customers.Update(customer);
     }
 
 
@@ -103,12 +98,12 @@ public class CustomerRepository : ICustomerRepository
     {
         
         // Cập nhật trạng thái của Customer
-        await _context.Customers
+        await context.Customers
             .Where(c => c.UserId == id)
             .ExecuteUpdateAsync(a => a.SetProperty(a => a.CustomerStatus, "Deleted"));
 
         // Cập nhật trạng thái của User
-        await _context.Users
+        await context.Users
             .Where(u => u.UserId == id)
             .ExecuteUpdateAsync(a => a.SetProperty(a => a.Status, "Deleted"));
     }

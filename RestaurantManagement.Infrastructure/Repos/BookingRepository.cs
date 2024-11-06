@@ -7,41 +7,36 @@ using RestaurantManagement.Infrastructure.Persistence;
 
 namespace RestaurantManagement.Infrastructure.Repos;
 
-public class BookingRepository : IBookingRepository
+public class BookingRepository(RestaurantManagementDbContext context) : IBookingRepository
 {
-    private readonly RestaurantManagementDbContext _context;
-    public BookingRepository(RestaurantManagementDbContext context)
-    {
-        _context = context;
-    }
     public async Task AddBooking(Booking booking)
     {
-        await _context.Bookings.AddAsync(booking);
+        await context.Bookings.AddAsync(booking);
     }
 
     public void DeleteBooking(Booking booking)
     {
-        _context.Bookings.Remove(booking);
+        context.Bookings.Remove(booking);
     }
 
     public async Task<IEnumerable<Booking>> GetAllBookings()
     {
-        return await _context.Bookings.ToListAsync();
+        return await context.Bookings.ToListAsync();
     }
 
     public async Task<Booking?> GetBookingById(Ulid id)
     {
-        return await _context.Bookings.FindAsync(id);
+        return await context.Bookings.FindAsync(id);
     }
 
     public async Task<bool> IsBookingCanceled(Ulid id)
     {
-        return await _context.Bookings.AnyAsync(a => a.BookingStatus == "Canceled" && a.BookId == id);
+        return await context.Bookings.AnyAsync(a => a.BookingStatus == "Canceled" && a.BookId == id);
     }
 
     public async Task<BookingResponse?> GetBookingResponseById(Ulid id)
     {
-        return await _context.Bookings
+        return await context.Bookings
             .AsNoTracking()
             .Include(a => a.Customer)
             .ThenInclude(a => a.User)
@@ -65,7 +60,7 @@ public class BookingRepository : IBookingRepository
 
     public async Task<BookingResponse[]> GetBookingResponseByUserId(Ulid id)
     {
-        return await _context.Bookings
+        return await context.Bookings
             .AsNoTracking()
             .Include(a => a.Customer)
             .ThenInclude(a => a.User)
@@ -89,12 +84,12 @@ public class BookingRepository : IBookingRepository
 
     public async Task<IEnumerable<Booking>> GetBookingsByCustomerId(Ulid id)
     {
-        return await _context.Bookings.Where(i => i.CustomerId == id).ToListAsync();
+        return await context.Bookings.Where(i => i.CustomerId == id).ToListAsync();
     }
 
     public async Task<int> GetNumberOfCustomers(Ulid id)
     {
-        return await _context.Bookings
+        return await context.Bookings
                     .AsNoTracking()
                     .Where(a => a.BookId == id)
                     .Select(a => a.NumberOfCustomers)
@@ -103,7 +98,7 @@ public class BookingRepository : IBookingRepository
 
     public IQueryable<Booking> GetQueryableBookings()
     {
-        return _context.Bookings.AsQueryable();
+        return context.Bookings.AsQueryable();
     }
 
     public async Task<bool> IsBookingDateValid(DateOnly bookingDate)
@@ -117,7 +112,7 @@ public class BookingRepository : IBookingRepository
 
     public async Task<bool> IsBookingStatusValid(Ulid id)
     {
-        return await _context.Bookings.AnyAsync(a => a.BookingStatus == "Waiting" && a.BookId == id && a.PaymentStatus == "Paid");
+        return await context.Bookings.AnyAsync(a => a.BookingStatus == "Waiting" && a.BookId == id && a.PaymentStatus == "Paid");
     }
 
     public async Task<bool> IsBookingTimeValid(TimeOnly bookingTime)
@@ -158,7 +153,7 @@ public class BookingRepository : IBookingRepository
         //     return false;
         // }
         // return true;
-        List<TableType> tableTypes = await _context.TableTypes
+        List<TableType> tableTypes = await context.TableTypes
         .Where(a => a.Status == "Active")
         .Select(a => new TableType
         {
@@ -166,7 +161,7 @@ public class BookingRepository : IBookingRepository
             TableCapacity = a.TableCapacity
         }).ToListAsync();
 
-        var tableQuery = _context.Tables.AsQueryable()
+        var tableQuery = context.Tables.AsQueryable()
             .Where(a => a.TableStatus == "Active" && a.ActiveStatus == "Empty");
 
 
@@ -186,28 +181,28 @@ public class BookingRepository : IBookingRepository
 
     public void UpdateBooking(Booking booking)
     {
-        _context.Bookings.Update(booking);
+        context.Bookings.Update(booking);
     }
 
     public async Task UpdateBookingStatus(Ulid id)
     {
-        await _context.Bookings.Where(a => a.BookId == id)
+        await context.Bookings.Where(a => a.BookId == id)
             .ExecuteUpdateAsync(a => a.SetProperty(a => a.BookingStatus, "Seated"));
     }
 
     public async Task CancelBooking(Ulid id)
     {
-        await _context.Bookings.Where(a => a.BookId == id)
+        await context.Bookings.Where(a => a.BookId == id)
             .ExecuteUpdateAsync(a => a.SetProperty(a => a.BookingStatus, "Canceled"));
     }
 
     public async Task<bool> IsBookingExist(Ulid id)
     {
-        return await _context.Bookings.AsNoTracking().AnyAsync(a => a.BookId == id);
+        return await context.Bookings.AsNoTracking().AnyAsync(a => a.BookId == id);
     }
 
     public async Task<bool> IsBookingCompleted(Ulid id)
     {
-        return await _context.Bookings.AsNoTracking().AnyAsync(a => a.BookingStatus == "Completed" && a.BookId == id);
+        return await context.Bookings.AsNoTracking().AnyAsync(a => a.BookingStatus == "Completed" && a.BookId == id);
     }
 }

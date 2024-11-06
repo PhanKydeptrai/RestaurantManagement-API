@@ -8,28 +8,16 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.CreateTableType;
 
-public class CreateTableTypeCommandHandler : ICommandHandler<CreateTableTypeCommand>
+public class CreateTableTypeCommandHandler(
+    IUnitOfWork unitOfWork,
+    ITableTypeRepository tableTypeRepository,
+    IApplicationDbContext context,
+    ISystemLogRepository systemLogRepository) : ICommandHandler<CreateTableTypeCommand>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IApplicationDbContext _context;
-    private readonly ISystemLogRepository _systemLogRepository;
-    private readonly ITableTypeRepository _tableTypeRepository;
-    public CreateTableTypeCommandHandler(
-        IUnitOfWork unitOfWork,
-        ITableTypeRepository tableTypeRepository,
-        IApplicationDbContext context,
-        ISystemLogRepository systemLogRepository)
-    {
-        _unitOfWork = unitOfWork;
-        _tableTypeRepository = tableTypeRepository;
-        _context = context;
-        _systemLogRepository = systemLogRepository;
-    }
-
     public async Task<Result> Handle(CreateTableTypeCommand request, CancellationToken cancellationToken)
     {
         //validate
-        var validator = new CreateTableTypeCommandValidator(_tableTypeRepository);
+        var validator = new CreateTableTypeCommandValidator(tableTypeRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
@@ -54,7 +42,7 @@ public class CreateTableTypeCommandHandler : ICommandHandler<CreateTableTypeComm
         }
 
         //create table type
-        await _context.TableTypes.AddAsync(
+        await context.TableTypes.AddAsync(
             new TableType
             {
                 TableTypeId = Ulid.NewUlid(),
@@ -71,14 +59,14 @@ public class CreateTableTypeCommandHandler : ICommandHandler<CreateTableTypeComm
         claims.TryGetValue("sub", out var userId);
 
         //Create System Log
-        await _systemLogRepository.CreateSystemLog(new SystemLog
+        await systemLogRepository.CreateSystemLog(new SystemLog
         {
             SystemLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
             LogDetail = $"Tạo danh mục {request.TableTypeName}",
             UserId = Ulid.Parse(userId)
         });
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();    
     }
 }

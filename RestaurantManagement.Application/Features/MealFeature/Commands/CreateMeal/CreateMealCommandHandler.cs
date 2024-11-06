@@ -19,14 +19,8 @@ public class CreateMealCommandHandler(
     {
         //validation 
         var validator = new CreateMealCommandValidator(mealRepository, categoryRepository);
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            Error[] errors = validationResult.Errors
-                .Select(p => new Error(p.ErrorCode, p.ErrorMessage))
-                .ToArray();
-
             return Result.Failure(errors);
         }
         //Xử lý lưu 

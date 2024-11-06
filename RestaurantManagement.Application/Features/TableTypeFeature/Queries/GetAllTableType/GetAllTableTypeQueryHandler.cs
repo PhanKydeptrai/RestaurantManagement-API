@@ -8,18 +8,11 @@ using System.Linq.Expressions;
 
 namespace RestaurantManagement.Application.Features.TableTypeFeature.Queries.GetAllTableType;
 
-public class GetAllTableTypeQueryHandler : IQueryHandler<GetAllTableTypeQuery, PagedList<TableTypeResponse>>
+public class GetAllTableTypeQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllTableTypeQuery, PagedList<TableTypeResponse>>
 {
-    private readonly IApplicationDbContext _context;
-
-    public GetAllTableTypeQueryHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Result<PagedList<TableTypeResponse>>> Handle(GetAllTableTypeQuery request, CancellationToken cancellationToken)
     {
-        var tableTypeQuery = _context.TableTypes.AsQueryable();
+        var tableTypeQuery = context.TableTypes.AsQueryable();
 
 
         //Search

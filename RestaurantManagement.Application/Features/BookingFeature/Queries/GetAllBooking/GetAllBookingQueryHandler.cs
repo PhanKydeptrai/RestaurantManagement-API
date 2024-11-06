@@ -9,18 +9,11 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.BookingFeature.Queries.GetAllBooking;
 
-public class GetAllBookingQueryHandler : IQueryHandler<GetAllBookingQuery, PagedList<BookingResponse>>
+public class GetAllBookingQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllBookingQuery, PagedList<BookingResponse>>
 {
-    private readonly IApplicationDbContext _context;
-
-    public GetAllBookingQueryHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Result<PagedList<BookingResponse>>> Handle(GetAllBookingQuery request, CancellationToken cancellationToken)
     {
-        var bookingQuery = _context.Bookings
+        var bookingQuery = context.Bookings
             .Include(a => a.Customer)
             .ThenInclude(a => a.User).AsQueryable();
 

@@ -9,18 +9,11 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.TableFeature.Queries.GetAllTable;
 
-public class GetAllTableQueryHandler : IQueryHandler<GetAllTableQuery, PagedList<TableResponse>>
+public class GetAllTableQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllTableQuery, PagedList<TableResponse>>
 {
-    private readonly IApplicationDbContext _context;
-
-    public GetAllTableQueryHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Result<PagedList<TableResponse>>> Handle(GetAllTableQuery request, CancellationToken cancellationToken)
     {
-        var tableQuery = _context.Tables.Include(a => a.TableType).AsQueryable();
+        var tableQuery = context.Tables.Include(a => a.TableType).AsQueryable();
         
         //Filter
 

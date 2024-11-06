@@ -6,34 +6,24 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.RestoreManyCategory;
 
-public class RestoreManyCategoryCommandHandler : ICommandHandler<RestoreManyCategoryCommand>
+public class RestoreManyCategoryCommandHandler(
+    ICategoryRepository categoryRepository,
+    IUnitOfWork unitOfWork,
+    ISystemLogRepository systemLogRepository) : ICommandHandler<RestoreManyCategoryCommand>
 {
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ISystemLogRepository _systemLogRepository;
-    public RestoreManyCategoryCommandHandler(
-        ICategoryRepository categoryRepository,
-        IUnitOfWork unitOfWork,
-        ISystemLogRepository systemLogRepository)
-    {
-        _categoryRepository = categoryRepository;
-        _unitOfWork = unitOfWork;
-        _systemLogRepository = systemLogRepository;
-    }
-
     public async Task<Result> Handle(RestoreManyCategoryCommand request, CancellationToken cancellationToken)
     {
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
         foreach (var Id in request.id)
         {
-            if (await _categoryRepository.CheckStatusOfCategory(Id) == true)
+            if (await categoryRepository.CheckStatusOfCategory(Id) == true)
             {
                 return Result.Failure(new[] { new Error("Category", $"Category {Id} still sell") });
             }
 
             //Create System Log
-            await _systemLogRepository.CreateSystemLog(new SystemLog
+            await systemLogRepository.CreateSystemLog(new SystemLog
             {
                 UserId = Ulid.Parse(userId),
                 SystemLogId = Ulid.NewUlid(),
@@ -41,10 +31,10 @@ public class RestoreManyCategoryCommandHandler : ICommandHandler<RestoreManyCate
                 LogDetail = $"Khôi phục danh mục {Id}",
             });
 
-            await _categoryRepository.SoftDeleteCategory(Id);
+            await categoryRepository.SoftDeleteCategory(Id);
         }
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }
