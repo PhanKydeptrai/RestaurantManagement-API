@@ -26,8 +26,10 @@ public class UpdateCategoryCommandHandler(
 
         //Lấy category theo id  
         var category = await context.Categories.FindAsync(request.CategoryId);
-        category.CategoryId = request.CategoryId;
+
         category.CategoryName = request.CategoryName;
+
+        //Xử lý ảnh
         if (request.Image != null)
         {
             string oldimageUrl = category.ImageUrl; //Lưu lại ảnh cũ
@@ -49,9 +51,6 @@ public class UpdateCategoryCommandHandler(
                 //Log                                              
                 Console.WriteLine(resultUpload.JsonObj);
             }
-
-
-            //category.CategoryStatus = request.CategoryStatus;
             category.ImageUrl = newImageUrl;
 
             //Xóa ảnh cũ

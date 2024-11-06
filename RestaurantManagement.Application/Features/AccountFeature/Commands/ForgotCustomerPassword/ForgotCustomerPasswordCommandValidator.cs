@@ -7,12 +7,13 @@ public class ForgotCustomerPasswordCommandValidator : AbstractValidator<ForgotCu
 {
     public ForgotCustomerPasswordCommandValidator(ICustomerRepository customerRepository)
     {
+        
         RuleFor(p => p.email)
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .EmailAddress().WithMessage("{PropertyName} is not a valid email address.")
             .Must(a => customerRepository.IsCustomerAccountActive(a).Result)
-            .WithMessage("Email is not Exist");
+            .WithMessage("Email is no longer active.");
 
     }
 }
