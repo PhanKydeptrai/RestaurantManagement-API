@@ -196,10 +196,11 @@ public class MealController : IEndpoint
         .RequireRateLimiting("AntiSpam");
 
         endpoints.MapGet("meal-info", async (
+            [FromQuery] string? searchTerm,
             ISender sender) =>
         {
 
-            var result = await sender.Send(new GetMealInfoQuery());
+            var result = await sender.Send(new GetMealInfoQuery(searchTerm));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);

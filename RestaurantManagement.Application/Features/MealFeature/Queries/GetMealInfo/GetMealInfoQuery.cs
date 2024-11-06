@@ -3,4 +3,4 @@ using RestaurantManagement.Domain.DTOs.MealDto;
 
 namespace RestaurantManagement.Application.Features.MealFeature.Queries.GetMealInfo;
 
-public record GetMealInfoQuery() : IQuery<List<MealInfo>>;
+public record GetMealInfoQuery(string? searchTerm) : IQuery<List<MealInfo>>;
