@@ -6,6 +6,5 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Upd
 public record UpdateCategoryCommand(
    Ulid CategoryId,
    string CategoryName,
-   //string CategoryStatus,
    IFormFile? Image,
    string Token) : ICommand;

@@ -18,7 +18,7 @@ public class GetAllOrderQueryHandler(
     public async Task<Result<PagedList<OrderResponse>>> Handle(GetAllOrderQuery request, CancellationToken cancellationToken)
     {
         var orderQuery = context.Orders
-            .AsNoTracking()
+            .Include(a => a.Customer)
             .Include(a => a.OrderDetails)
             .ThenInclude(b => b.Meal)
             .AsQueryable();
@@ -30,9 +30,19 @@ public class GetAllOrderQueryHandler(
         }
 
         //Filter
-        if (!string.IsNullOrEmpty(request.filterPaymentStatus))
+        if (!string.IsNullOrEmpty(request.filterPaymentStatus)) //filter by payment status
         {
             orderQuery = orderQuery.Where(x => x.PaymentStatus == request.filterPaymentStatus);
+        }
+
+        if(!string.IsNullOrEmpty(request.filterUserId)) //filter by user id
+        {
+            orderQuery = orderQuery.Where(x => x.Customer.UserId == Ulid.Parse(request.filterUserId));
+        }
+
+        if(!string.IsNullOrEmpty(request.filterTableId)) //filter by table id
+        {
+            orderQuery = orderQuery.Where(x => x.TableId.ToString() == request.filterTableId);
         }
 
         //sort
