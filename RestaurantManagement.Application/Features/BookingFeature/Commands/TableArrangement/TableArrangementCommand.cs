@@ -3,8 +3,8 @@ using RestaurantManagement.Application.Abtractions;
 namespace RestaurantManagement.Application.Features.BookingFeature.Commands.TableArrangement;
 
 public record TableArrangementCommand(
-    Ulid BookingId,
-    int TableId) : ICommand;
+    string BookingId,
+    string TableId) : ICommand;
 
 public record TableArrangementRequest(
-    int TableId);
+    string TableId);

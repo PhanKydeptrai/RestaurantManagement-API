@@ -25,7 +25,7 @@ public class UpdateCategoryCommandHandler(
         }
 
         //Lấy category theo id  
-        var category = await context.Categories.FindAsync(request.CategoryId);
+        var category = await context.Categories.FindAsync(Ulid.Parse(request.CategoryId));
 
         category.CategoryName = request.CategoryName;
 

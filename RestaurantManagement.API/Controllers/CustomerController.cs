@@ -65,7 +65,7 @@ public class CustomerController : IEndpoint
 
 
         //Get by id
-        endpoints.MapGet("{id}", async (Ulid id, ISender sender) =>
+        endpoints.MapGet("{id}", async (string id, ISender sender) =>
         {
             GetCustomerByIdQuery request = new GetCustomerByIdQuery(id);
             var result = await sender.Send(request);
@@ -75,7 +75,7 @@ public class CustomerController : IEndpoint
         //Update information for a customer
         endpoints.MapPut("{id}",
         async (
-            Ulid id,
+            string id,
             [FromForm] IFormFile? image,
             [FromForm] string? FirstName,
             [FromForm] string? LastName,

@@ -8,11 +8,14 @@ public class GetVoucherByIdQueryValidator : AbstractValidator<GetVoucherByIdQuer
     public GetVoucherByIdQueryValidator(IVoucherRepository voucherRepository)
     {
         RuleFor(a => a.id)
+            .Must(a => voucherRepository.IsVoucherIdExists(Ulid.Parse(a)).Result == true)
+            .WithMessage("Voucher not found")
+            .When(a => Ulid.TryParse(a.id, out _))
             .NotNull()
             .WithMessage("Voucher Id is required")
             .NotEmpty()
             .WithMessage("Voucher Id is required")
-            .Must(a => voucherRepository.IsVoucherIdExists(a).Result == true)
-            .WithMessage("Voucher not found");
+            .Must(a => Ulid.TryParse(a, out _))
+            .WithMessage("Voucher Id is invalid");
     }
 }

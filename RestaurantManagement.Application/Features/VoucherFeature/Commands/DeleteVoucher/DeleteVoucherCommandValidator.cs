@@ -8,11 +8,14 @@ public class DeleteVoucherCommandValidator : AbstractValidator<DeleteVoucherComm
     public DeleteVoucherCommandValidator(IVoucherRepository voucherRepository)
     {
         RuleFor(p => p.id)
+            .Must(a => voucherRepository.IsVoucherIdExists(Ulid.Parse(a)).Result == true)
+            .WithMessage("Voucher not found.")
+            .When(a => Ulid.TryParse(a.id, out _) == true)
             .NotNull()
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
-            .Must(a => voucherRepository.IsVoucherIdExists(a).Result == true)
-            .WithMessage("Voucher not found.");
+            .Must(a => Ulid.TryParse(a, out _))
+            .WithMessage("{PropertyName} is not a valid Ulid.");
     }
 }

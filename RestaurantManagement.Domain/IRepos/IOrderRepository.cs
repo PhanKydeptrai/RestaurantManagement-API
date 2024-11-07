@@ -1,3 +1,4 @@
+using RestaurantManagement.Domain.DTOs.OrderDto;
 using RestaurantManagement.Domain.Entities;
 
 namespace RestaurantManagement.Domain.IRepos;
@@ -11,7 +12,7 @@ public interface IOrderRepository
     void UpdateOrder(Order order);
     void DeleteOrder(Order order);
     //Queries
-    IQueryable<Order> GetOrdersQueryable();
+    
     Task<bool> IsStatusExist(string status); //kiểm tra xem status nào tồn tại hay không?
     Task<IEnumerable<Order>> GetOrdersByCustomerId(Ulid id);
     Task<IEnumerable<Order>> GetOrdersByOrderStatus(string status);

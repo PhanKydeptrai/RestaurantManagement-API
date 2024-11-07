@@ -24,10 +24,10 @@ public class CancelBookingCommandHandler(
         }
 
         //cancel booking
-        if(await bookingRepository.IsBookingCompleted(request.id)) //Nếu đã xếp bàn
+        if(await bookingRepository.IsBookingCompleted(Ulid.Parse(request.id))) //Nếu đã xếp bàn
         {
             var bookingDetails = await context.BookingDetails
-                .Where(a => a.BookId == request.id)
+                .Where(a => a.BookId == Ulid.Parse(request.id))
                 .Select(a => a.TableId)
                 .ToArrayAsync();
 
@@ -38,7 +38,7 @@ public class CancelBookingCommandHandler(
         }
 
 
-        await bookingRepository.CancelBooking(request.id);
+        await bookingRepository.CancelBooking(Ulid.Parse(request.id));
         await unitOfWork.SaveChangesAsync();
 
         return Result.Success();

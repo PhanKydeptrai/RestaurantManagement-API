@@ -67,7 +67,8 @@ public class VoucherController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
         endpoints.MapPut("{id}", async (
             string id,
@@ -80,7 +81,7 @@ public class VoucherController : IEndpoint
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var result = await sender.Send(new UpdateVoucherCommand(
-                Ulid.Parse(id),
+                id,
                 request.VoucherName,
                 request.MaxDiscount,
                 request.VoucherCondition,
@@ -95,7 +96,8 @@ public class VoucherController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
         endpoints.MapDelete("{id}", async (
             string id,
@@ -106,20 +108,21 @@ public class VoucherController : IEndpoint
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-            var result = await sender.Send(new DeleteVoucherCommand(Ulid.Parse(id), token));
+            var result = await sender.Send(new DeleteVoucherCommand(id, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
         endpoints.MapGet("{id}", async (
             string id,
             ISender sender) =>
         {
-            var result = await sender.Send(new GetVoucherByIdQuery(Ulid.Parse(id)));
+            var result = await sender.Send(new GetVoucherByIdQuery(id));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);

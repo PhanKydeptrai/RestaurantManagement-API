@@ -22,7 +22,7 @@ public class DeleteVoucherCommandHandler(
         }
 
         //Delete Voucher
-        await voucherRepository.DeleteVoucher(request.id);
+        await voucherRepository.DeleteVoucher(Ulid.Parse(request.id));
 
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);

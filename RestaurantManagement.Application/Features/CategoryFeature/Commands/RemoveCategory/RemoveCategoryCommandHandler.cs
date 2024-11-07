@@ -14,12 +14,12 @@ public class RemoveCategoryCommandHandler(
     public async Task<Result> Handle(RemoveCategoryCommand request, CancellationToken cancellationToken)
     {
         //Check status of category
-        if (!categoryRepository.CheckStatusOfCategory(request.Id).Result)
+        if (!categoryRepository.CheckStatusOfCategory(Ulid.Parse(request.Id)).Result)
         {
             return Result.Failure(new[] { new Error("Category", "Category not found") });
         }
         //delete
-        await categoryRepository.SoftDeleteCategory(request.Id);
+        await categoryRepository.SoftDeleteCategory(Ulid.Parse(request.Id));
 
         var claims = JwtHelper.DecodeJwt(request.Token);
 

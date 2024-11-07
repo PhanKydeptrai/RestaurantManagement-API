@@ -29,7 +29,8 @@ namespace RestaurantManagement.API.Controllers
             //Register for customer
             endpoints.MapPost("register",
             async (
-                [FromBody] RegisterCommand command, ISender sender) =>
+                [FromBody] RegisterCommand command, 
+                ISender sender) =>
             {
                 var result = await sender.Send(command);
                 if (result.IsSuccess)

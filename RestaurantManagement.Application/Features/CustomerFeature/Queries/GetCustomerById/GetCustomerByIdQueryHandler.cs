@@ -9,7 +9,7 @@ public class GetCustomerByIdQueryHandler(ICustomerRepository customerRepository)
 {
     public async Task<Result<CustomerResponse>> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
     {
-        CustomerResponse customer = await customerRepository.GetCustomerById(request.id);
+        CustomerResponse customer = await customerRepository.GetCustomerById(Ulid.Parse(request.id));
         if (customer == null)
         {
             Error[] error = { new Error("Customer", "Customer not found") };

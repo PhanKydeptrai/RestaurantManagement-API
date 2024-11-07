@@ -10,7 +10,7 @@ public interface ICustomerRepository
     Task<CustomerResponse?> GetCustomerById(Ulid id);
     Task DeleteCustomer(Ulid id);
     void UpdateCustomer(Customer customer);
-    Task<bool> IsCustomerExist(string email);    
+    // Task<bool> IsCustomerExist(string email);    
     Task<Ulid> GetUserIdByEmail(string email);
     //Queries
     IQueryable<Customer> GetCustomersQueryable();

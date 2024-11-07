@@ -8,14 +8,19 @@ public class CancelBookingCommandValidator : AbstractValidator<CancelBookingComm
     public CancelBookingCommandValidator(IBookingRepository bookingRepository)
     {
         RuleFor(a => a.id)
+            
+            .Must(a => bookingRepository.IsBookingExist(Ulid.Parse(a)).Result == true)
+            .WithMessage("Booking does not exist.")
+            .Must(a => bookingRepository.IsBookingCanceled(Ulid.Parse(a)).Result == false)
+            .WithMessage("Booking is canceled.")
+            .When(a => Ulid.TryParse(a.id, out _))
+            
             .NotNull()
             .WithMessage("Id is required.")
             .NotEmpty()
             .WithMessage("Id is required.")
-            .Must(a => bookingRepository.IsBookingExist(a).Result == true)
-            .WithMessage("Booking does not exist.")
-            .Must(a => bookingRepository.IsBookingCanceled(a).Result == false)
-            .WithMessage("Booking is canceled.");
+            .Must(a => Ulid.TryParse(a, out _))
+            .WithMessage("Id is invalid.");
 
 
     }

@@ -3,7 +3,7 @@ using RestaurantManagement.Application.Abtractions;
 namespace RestaurantManagement.Application.Features.VoucherFeature.Commands.UpdateVoucher;
 
 public record UpdateVoucherCommand(
-    Ulid VoucherId,
+    string VoucherId,
     string VoucherName, 
     decimal MaxDiscount, 
     decimal VoucherCondition,

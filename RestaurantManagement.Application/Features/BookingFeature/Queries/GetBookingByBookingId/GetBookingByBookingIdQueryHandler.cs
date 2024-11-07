@@ -1,4 +1,5 @@
 using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.DTOs.BookingDtos;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -9,8 +10,13 @@ public class GetBookingByBookingIdQueryHandler(IBookingRepository bookingReposit
 {
     public async Task<Result<BookingResponse>> Handle(GetBookingByBookingIdQuery request, CancellationToken cancellationToken)
     {
-        
-        var booking = await bookingRepository.GetBookingResponseById(request.id);
+        var validator = new GetBookingByBookingIdQueryValidator();
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        {
+            return Result<BookingResponse>.Failure(errors);
+        }
+
+        var booking = await bookingRepository.GetBookingResponseById(Ulid.Parse(request.id));
         if (booking == null)
         {
             var error = new[] { new Error("Booking", "Booking not found") };

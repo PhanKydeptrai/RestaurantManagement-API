@@ -27,7 +27,7 @@ public class UpdateCustomerInformationCommandHandler(
 
         var user = await context.Customers
             .Include(a => a.User)
-            .Where(a => a.UserId == request.CustomerId)
+            .Where(a => a.UserId == Ulid.Parse(request.CustomerId))
             .Select(a => a.User)
             .FirstAsync();
 
