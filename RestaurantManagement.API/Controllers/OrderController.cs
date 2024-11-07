@@ -91,6 +91,8 @@ public class OrderController : IEndpoint
         });
 
         endpoints.MapGet("", async (
+            [FromQuery] string? filterUserId,
+            [FromQuery] string? filterTableId,
             [FromQuery] string? filterPaymentStatus,
             [FromQuery] string? searchTerm,
             [FromQuery] string? sortColumn,
@@ -99,12 +101,22 @@ public class OrderController : IEndpoint
             [FromQuery] int? pageSize,
             ISender sender) =>
         {
-            var result = await sender.Send(new GetAllOrderQuery(filterPaymentStatus, searchTerm, sortColumn, sortOrder, page, pageSize));
+            var result = await sender.Send(new GetAllOrderQuery(
+                filterUserId,
+                filterTableId,
+                filterPaymentStatus, 
+                searchTerm, 
+                sortColumn, 
+                sortOrder, 
+                page, 
+                pageSize));
+
             if (!result.IsSuccess)
             {
                 return Results.BadRequest(result);
             }
             return Results.Ok(result);
         });
+
     }
 }

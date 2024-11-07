@@ -81,7 +81,6 @@ public class CategoryController : IEndpoint
         async (
             string id,
             [FromForm] string categoryName,
-            // [FromForm] string categoryStatus,
             [FromForm] IFormFile? categoryImage,
             ISender sender,
             HttpContext httpContext,
@@ -89,12 +88,10 @@ public class CategoryController : IEndpoint
         {
             
             //lấy token
-
             var token = jwtProvider.GetTokenFromHeader(httpContext);
-
+            
             var command = new UpdateCategoryCommand(
                 Ulid.Parse(id), categoryName,
-                // categoryStatus,
                 categoryImage,
                 token);
 
