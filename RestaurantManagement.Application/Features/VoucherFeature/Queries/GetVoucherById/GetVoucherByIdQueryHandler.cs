@@ -16,7 +16,7 @@ public class GetVoucherByIdQueryHandler(IVoucherRepository voucherRepository) : 
         {
             return Result<Voucher>.Failure(errors);
         }
-        Voucher? voucher = await voucherRepository.GetVoucherById(request.id);
+        Voucher? voucher = await voucherRepository.GetVoucherById(Ulid.Parse(request.id));
 
         return Result<Voucher>.Success(voucher);
     }

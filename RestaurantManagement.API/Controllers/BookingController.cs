@@ -53,7 +53,7 @@ public class BookingController : IEndpoint
             ISender sender) =>
         {
 
-            var result = await sender.Send(new GetBookingByBookingIdQuery(Ulid.Parse(id)));
+            var result = await sender.Send(new GetBookingByBookingIdQuery(id));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -66,7 +66,7 @@ public class BookingController : IEndpoint
             string id,
             ISender sender) =>
         {
-            var result = await sender.Send(new GetBookingByUserIdQuery(Ulid.Parse(id)));
+            var result = await sender.Send(new GetBookingByUserIdQuery(id));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -121,7 +121,7 @@ public class BookingController : IEndpoint
             [FromBody] TableArrangementRequest command,
             ISender sender) =>
         {
-            var result = await sender.Send(new TableArrangementCommand(Ulid.Parse(BookingId), command.TableId));
+            var result = await sender.Send(new TableArrangementCommand(BookingId, command.TableId));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -134,13 +134,13 @@ public class BookingController : IEndpoint
             string id,
             ISender sender) =>
         {
-            var result = await sender.Send(new CancelBookingCommand(Ulid.Parse(id)));
+            var result = await sender.Send(new CancelBookingCommand(id));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).RequireRateLimiting("AntiSpam");
 
         //Trả về url thanh toán
         endpoints.MapGet("ReturnUrl", async (

@@ -3,4 +3,4 @@ using RestaurantManagement.Domain.DTOs.BookingDtos;
 
 namespace RestaurantManagement.Application.Features.BookingFeature.Queries.GetBookingByBookingId;
 
-public record GetBookingByBookingIdQuery(Ulid id) : IQuery<BookingResponse>;
+public record GetBookingByBookingIdQuery(string id) : IQuery<BookingResponse>;

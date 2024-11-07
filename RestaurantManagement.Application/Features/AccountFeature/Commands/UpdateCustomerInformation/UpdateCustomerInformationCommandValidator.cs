@@ -7,6 +7,14 @@ public class UpdateCustomerInformationCommandValidator : AbstractValidator<Updat
 {
     public UpdateCustomerInformationCommandValidator(ICustomerRepository customerRepository)
     {
+        //* Rule for customer id
+        RuleFor(a => a.CustomerId)
+            .NotNull().WithMessage("Customer Id is required")
+            .NotEmpty().WithMessage("Customer Id is required")
+            .Must(a => Ulid.TryParse(a, out _))
+            .WithMessage("Customer Id is not valid");
+
+
         //* Rule for last name
         RuleFor(p => p.LastName)
             .NotNull().WithMessage("Last name is required")
@@ -21,13 +29,16 @@ public class UpdateCustomerInformationCommandValidator : AbstractValidator<Updat
 
         //* Rule for phone number
         RuleFor(p => p.PhoneNumber)
+            .Must((command, phoneNumber) => customerRepository
+            .IsCustomerPhoneExist_update(Ulid.Parse(command.CustomerId), phoneNumber).Result == false)
+            .WithMessage("PhoneNumber number already exists")
+            .When(a => Ulid.TryParse(a.CustomerId, out _))
+
             .NotNull().WithMessage("Phone number is required")
             .NotEmpty().WithMessage("Phone number is required")
-            .Matches(@"^0\d{9}$").WithMessage("PhoneNumber must start with 0 and be 10 digits long.")
-            .Must((command, phoneNumber) => customerRepository
-            .IsCustomerPhoneExist_update(command.CustomerId, phoneNumber).Result == false)
-            .WithMessage("PhoneNumber number already exists");
+            .Matches(@"^0\d{9}$").WithMessage("PhoneNumber must start with 0 and be 10 digits long.");
 
+        
 
         // ? should customer be able to update email?
         //* Rule for email
@@ -42,6 +53,6 @@ public class UpdateCustomerInformationCommandValidator : AbstractValidator<Updat
         RuleFor(b => b.Gender)
             .NotNull().WithMessage("Gender is required")
             .NotEmpty().WithMessage("Gender must not be empty")
-            .Must(b => b == "Male" || b == "Female");
+            .Must(b => b == "Male" || b == "Female" || b == "Other");
     }
 }

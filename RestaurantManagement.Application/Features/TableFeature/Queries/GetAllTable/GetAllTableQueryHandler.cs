@@ -30,7 +30,7 @@ public class GetAllTableQueryHandler(IApplicationDbContext context) : IQueryHand
         //trạng thái booking
         if(!string.IsNullOrEmpty(request.filterActiveStatus))
         {
-            tableQuery = tableQuery.Where(x => x.TableTypeId == Ulid.Parse(request.filterActiveStatus));
+            tableQuery = tableQuery.Where(x => x.ActiveStatus == request.filterActiveStatus);
         }
 
         //sort

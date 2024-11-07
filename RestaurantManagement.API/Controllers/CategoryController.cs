@@ -91,7 +91,7 @@ public class CategoryController : IEndpoint
             var token = jwtProvider.GetTokenFromHeader(httpContext);
             
             var command = new UpdateCategoryCommand(
-                Ulid.Parse(id), categoryName,
+                id, categoryName,
                 categoryImage,
                 token);
 
@@ -115,7 +115,7 @@ public class CategoryController : IEndpoint
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-            var request = new RemoveCategoryCommand(Ulid.Parse(id), token);
+            var request = new RemoveCategoryCommand(id, token);
             var result = await sender.Send(request);
             if (result.IsSuccess)
             {

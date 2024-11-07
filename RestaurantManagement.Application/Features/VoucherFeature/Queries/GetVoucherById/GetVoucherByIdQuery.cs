@@ -3,4 +3,4 @@ using RestaurantManagement.Domain.Entities;
 
 namespace RestaurantManagement.Application.Features.VoucherFeature.Queries.GetVoucherById;
 
-public record GetVoucherByIdQuery(Ulid id) : IQuery<Voucher>;
+public record GetVoucherByIdQuery(string id) : IQuery<Voucher>;
