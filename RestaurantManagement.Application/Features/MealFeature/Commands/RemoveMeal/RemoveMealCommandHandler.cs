@@ -23,7 +23,7 @@ public class RemoveMealCommandHandler(
 
             return Result.Failure(errors);
         }
-        await mealRepository.DeleteMeal(request.id);
+        await mealRepository.DeleteMeal(Ulid.Parse(request.id));
 
         //Deocde jwt
         var claims = JwtHelper.DecodeJwt(request.token);

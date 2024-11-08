@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
 using RestaurantManagement.Domain.DTOs.MealDto;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -14,8 +16,15 @@ public class GetMealByIdQueryHandler(
     public async Task<Result<MealResponse>> Handle(GetMealByIdQuery request, CancellationToken cancellationToken)
     {
 
+        //validate
+        var validator = new GetMealByIdQueryValidator();
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        {
+            return Result<MealResponse>.Failure(errors);
+        }
+
         var meal = await context.Meals
-            .Where(a => a.MealId == request.id)
+            .Where(a => a.MealId == Ulid.Parse(request.id))
             .Select(a => new MealResponse(
                 a.MealId,
                 a.MealName,
@@ -27,13 +36,13 @@ public class GetMealByIdQueryHandler(
                 a.Category.CategoryName))
             .FirstOrDefaultAsync();
 
-        
-        if(meal != null)
+
+        if (meal != null)
         {
             return Result<MealResponse>.Success(meal);
         }
 
-        return Result<MealResponse>.Failure( new[] { new Error("Meal", "Meal not found")});
-        
+        return Result<MealResponse>.Failure(new[] { new Error("Meal", "Meal not found") });
+
     }
 }

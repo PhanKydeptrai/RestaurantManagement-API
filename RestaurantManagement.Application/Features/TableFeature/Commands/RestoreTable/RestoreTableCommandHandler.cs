@@ -21,7 +21,7 @@ public class RestoreTableCommandHandler(
         }
 
         //restore table
-        await tableRepository.RestoreTable(request.id);
+        await tableRepository.RestoreTable(int.Parse(request.id));
 
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);

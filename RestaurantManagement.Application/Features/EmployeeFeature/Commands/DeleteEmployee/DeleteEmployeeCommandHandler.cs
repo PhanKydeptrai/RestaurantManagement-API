@@ -34,7 +34,7 @@ public class DeleteEmployeeCommandHandler(
         });
 
         //Delete employee
-        await employeeRepository.DeleteEmployee(request.id);
+        await employeeRepository.DeleteEmployee(Ulid.Parse(request.id));
 
         await unitOfWork.SaveChangesAsync();
         return Result.Success();

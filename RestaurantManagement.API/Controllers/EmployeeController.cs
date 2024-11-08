@@ -34,7 +34,7 @@ public class EmployeeController : IEndpoint
             var token = jwtProvider.GetTokenFromHeader(httpContext);
             var result = await sender.Send(
                 new UpdateEmployeeInformationCommand(
-                    Ulid.Parse(id),
+                    id,
                     FirstName,
                     LastName,
                     PhoneNumber,
@@ -117,7 +117,7 @@ public class EmployeeController : IEndpoint
         {
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
-            var result = await sender.Send(new DeleteEmployeeCommand(Ulid.Parse(id), token));
+            var result = await sender.Send(new DeleteEmployeeCommand(id, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -134,7 +134,7 @@ public class EmployeeController : IEndpoint
         {
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
-            var result = await sender.Send(new RestoreEmployeeCommand(Ulid.Parse(id), token));
+            var result = await sender.Send(new RestoreEmployeeCommand(id, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -154,7 +154,7 @@ public class EmployeeController : IEndpoint
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-            var result = await sender.Send(new UpdateEmployeeRoleCommand(Ulid.Parse(id), role, token));
+            var result = await sender.Send(new UpdateEmployeeRoleCommand(id, role, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -168,7 +168,7 @@ public class EmployeeController : IEndpoint
             string id,
             ISender sender) =>
         {
-            var result = await sender.Send(new GetEmployeeByIdQuery(Ulid.Parse(id)));
+            var result = await sender.Send(new GetEmployeeByIdQuery(id));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);

@@ -1,4 +1,5 @@
 using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.DTOs.TableTypeDto;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -9,8 +10,15 @@ public class GetTableTypyByIdQueryHandler(ITableTypeRepository tableTypeReposito
 {
     public async Task<Result<TableTypeResponse>> Handle(GetTableTypyByIdQuery request, CancellationToken cancellationToken)
     {
-        var tableType = await tableTypeRepository.GetTableTypeById(request.id);
-        if(tableType != null)
+        //validate
+        var validator = new GetTableTypyByIdQueryValidator();
+        if (!ValidateRequest.RequestValidator(validator, request, out var error))
+        {
+            return Result<TableTypeResponse>.Failure(error);
+        }
+
+        var tableType = await tableTypeRepository.GetTableTypeById(Ulid.Parse(request.id));
+        if (tableType != null)
         {
             return Result<TableTypeResponse>.Success(tableType);
         }

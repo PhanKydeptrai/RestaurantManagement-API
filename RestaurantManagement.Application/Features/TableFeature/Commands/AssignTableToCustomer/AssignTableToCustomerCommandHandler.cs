@@ -18,7 +18,7 @@ public class GetTableForCustomerCommandHandler(
             return Result.Failure(errors);
         }
 
-        await tableRepository.UpdateActiveStatus(request.id, "Occupied");
+        await tableRepository.UpdateActiveStatus(int.Parse(request.id), "Occupied");
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

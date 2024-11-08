@@ -21,7 +21,7 @@ public class GetEmployeeByIdQueryHandler(IEmployeeRepository employeeRepository,
         }
 
         var employee = await context.Employees.Include(a => a.User)
-            .Where(a => a.UserId == request.id)
+            .Where(a => a.UserId == Ulid.Parse(request.id))
             .Select(a => new EmployeeResponse(
                 a.UserId,
                 a.User.FirstName,

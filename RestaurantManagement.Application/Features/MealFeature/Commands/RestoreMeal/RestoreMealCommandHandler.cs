@@ -13,17 +13,14 @@ public class RestoreMealCommandHandler(
     public async Task<Result> Handle(RestoreMealCommand request, CancellationToken cancellationToken)
     {
         var validator = new RestoreMealCommandValidator(mealRepository);
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-        if(!validationResult.IsValid)
+        //validate
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors
-                .Select(a => new Error(a.ErrorCode, a.ErrorMessage))
-                .ToArray();
             return Result.Failure(errors);
-
         }
+        
+        await mealRepository.RestoreMeal(Ulid.Parse(request.id));
 
-        await mealRepository.RestoreMeal(request.id);
         //Deocde jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);

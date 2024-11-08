@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Features.Paging;
 using RestaurantManagement.Domain.DTOs.OrderDto;
 using RestaurantManagement.Domain.Entities;
@@ -16,6 +17,12 @@ public class GetAllOrderQueryHandler(
 {
     public async Task<Result<PagedList<OrderResponse>>> Handle(GetAllOrderQuery request, CancellationToken cancellationToken)
     {
+        var validator = new GetAllOrderQueryValidator();
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        {
+            return Result<PagedList<OrderResponse>>.Failure(errors);
+        }
+        
         var orderQuery = context.Orders
             .Include(a => a.Customer)
             .Include(a => a.OrderDetails)
@@ -34,12 +41,12 @@ public class GetAllOrderQueryHandler(
             orderQuery = orderQuery.Where(x => x.PaymentStatus == request.filterPaymentStatus);
         }
 
-        if(!string.IsNullOrEmpty(request.filterUserId)) //filter by user id
+        if (!string.IsNullOrEmpty(request.filterUserId)) //filter by user id
         {
             orderQuery = orderQuery.Where(x => x.Customer.UserId == Ulid.Parse(request.filterUserId));
         }
 
-        if(!string.IsNullOrEmpty(request.filterTableId)) //filter by table id
+        if (!string.IsNullOrEmpty(request.filterTableId)) //filter by table id
         {
             orderQuery = orderQuery.Where(x => x.TableId.ToString() == request.filterTableId);
         }
@@ -74,7 +81,7 @@ public class GetAllOrderQueryHandler(
                     b.Quantity,
                     b.UnitPrice
                 )).ToArray())).AsQueryable();
-                
+
 
         var categoriesList = await PagedList<OrderResponse>.CreateAsync(categories, request.page ?? 1, request.pageSize ?? 10);
 

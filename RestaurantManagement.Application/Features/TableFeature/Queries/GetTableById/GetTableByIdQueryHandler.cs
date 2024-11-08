@@ -22,12 +22,13 @@ public class GetTableByIdQueryHandler(
         }
         
         var table = await context.Tables
-            .Include(a => a.TableType).Where(a => a.TableId == request.id)
+            .Include(a => a.TableType).Where(a => a.TableId == int.Parse(request.id))
             .Select(a => new TableResponse(
                 a.TableId,
                 a.TableType.TableTypeName,
                 a.TableStatus,
-                a.ActiveStatus)).FirstOrDefaultAsync();
+                a.ActiveStatus))
+                .FirstOrDefaultAsync();
 
         return Result<TableResponse>.Success(table);
     }

@@ -22,7 +22,7 @@ public class TableController : IEndpoint
         //Get all tables
         endpoints.MapGet("",
         async (
-            [FromQuery] string? filterTableType,
+            [FromQuery] string? filterTableType, 
             [FromQuery] string? filterActiveStatus,
             [FromQuery] string? filterStatus,
             //[FromQuery] string? searchTerm,
@@ -56,7 +56,7 @@ public class TableController : IEndpoint
             string id,
             ISender sender) =>
         {
-            var result = await sender.Send(new GetTableByIdQuery(int.Parse(id)));
+            var result = await sender.Send(new GetTableByIdQuery(id));
             if (!result.IsSuccess)
             {
                 return Results.BadRequest(result);
@@ -76,7 +76,7 @@ public class TableController : IEndpoint
             var token = jwtProvider.GetTokenFromHeader(httpContext);
             var result = await sender.Send(new CreateTableCommand(
                 request.quantity,
-                Ulid.Parse(request.tableTypeId),
+                request.tableTypeId,
                 token));
 
             if (!result.IsSuccess)
@@ -98,7 +98,7 @@ public class TableController : IEndpoint
         {
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
-            var result = await sender.Send(new DeleteTableCommand(int.Parse(id), token));
+            var result = await sender.Send(new DeleteTableCommand(id, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -118,7 +118,7 @@ public class TableController : IEndpoint
         {
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
-            var result = await sender.Send(new RestoreTableCommand(int.Parse(id), token));
+            var result = await sender.Send(new RestoreTableCommand(id, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -131,7 +131,7 @@ public class TableController : IEndpoint
 
         endpoints.MapPut("table-assign/{id}", async (string id,ISender sender) =>
         {
-            var result = await sender.Send(new AssignTableToCustomerCommand(int.Parse(id)));
+            var result = await sender.Send(new AssignTableToCustomerCommand(id)); 
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -141,7 +141,7 @@ public class TableController : IEndpoint
 
         endpoints.MapPut("table-assign/booked/{id}", async (string id,ISender sender) =>
         {
-            var result = await sender.Send(new AssignTableToBookedCustomerCommand(int.Parse(id)));
+            var result = await sender.Send(new AssignTableToBookedCustomerCommand(id));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);

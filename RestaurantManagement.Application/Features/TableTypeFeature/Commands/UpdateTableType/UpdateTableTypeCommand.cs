@@ -5,7 +5,7 @@ namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.Up
 
 
 public record UpdateTableTypeCommand(
-    Ulid TableTypeId, 
+    string TableTypeId, 
     string TableTypeName, 
     IFormFile? Image, 
     decimal TablePrice,

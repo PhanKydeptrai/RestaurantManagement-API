@@ -21,7 +21,7 @@ public class UpdateEmployeeRoleCommandHandler(
         }
         
         //Update Employee Role
-        await employeeRepository.UpdateEmployeeRole(request.id, request.role);
+        await employeeRepository.UpdateEmployeeRole(Ulid.Parse(request.id), request.role);
 
 
         //Decode jwt

@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Features.Paging;
 using RestaurantManagement.Domain.DTOs.TableDto;
 using RestaurantManagement.Domain.Entities;
@@ -13,22 +14,27 @@ public class GetAllTableQueryHandler(IApplicationDbContext context) : IQueryHand
 {
     public async Task<Result<PagedList<TableResponse>>> Handle(GetAllTableQuery request, CancellationToken cancellationToken)
     {
+        //validate
+        var validator = new GetAllTableQueryValidator();
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        {
+            return Result<PagedList<TableResponse>>.Failure(errors);
+        }
         var tableQuery = context.Tables.Include(a => a.TableType).AsQueryable();
-        
-        //Filter
 
-        if(!string.IsNullOrEmpty(request.filterTableType))
+        //Filter
+        if (!string.IsNullOrEmpty(request.filterTableType))
         {
             tableQuery = tableQuery.Where(x => x.TableTypeId == Ulid.Parse(request.filterTableType));
         }
         //trạng thái hoạt động
-        if(!string.IsNullOrEmpty(request.filterStatus))
+        if (!string.IsNullOrEmpty(request.filterStatus))
         {
             tableQuery = tableQuery.Where(x => x.TableStatus == request.filterStatus);
         }
 
         //trạng thái booking
-        if(!string.IsNullOrEmpty(request.filterActiveStatus))
+        if (!string.IsNullOrEmpty(request.filterActiveStatus))
         {
             tableQuery = tableQuery.Where(x => x.ActiveStatus == request.filterActiveStatus);
         }

@@ -31,7 +31,7 @@ public class UpdateEmployeeInformationCommandHandler(
 
         //Lấy user theo id
         var user = await context.Employees
-            .Where(a => a.UserId == request.EmployeeId)
+            .Where(a => a.UserId == Ulid.Parse(request.EmployeeId))
             .Select(a => a.User)
             .FirstOrDefaultAsync();
 
@@ -89,48 +89,4 @@ public class UpdateEmployeeInformationCommandHandler(
         return Result.Success();
     }
 
-    // public async Task<Result> Handle(UpdateEmployeeInformationCommand request, CancellationToken cancellationToken)
-    // {
-    //     var validator = new UpdateEmployeeInformationCommandValidator(_employeeRepository);
-    //     var validationResult = await validator.ValidateAsync(request);
-    //     if (!validationResult.IsValid)
-    //     {
-    //         var errors = validationResult.Errors
-    //             .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
-    //             .ToArray();
-    //         return Result.Failure(errors);
-
-    //     }
-
-    //     var user = await _context.Employees
-    //         .Where(a => a.EmployeeId == request.EmployeeId)
-    //         .Select(a => a.User)
-    //         .FirstAsync();
-
-    //     if (user == null)
-    //     {
-    //         Error[] error = { new Error("Employee", "Employee not found") };
-    //         return Result.Failure(error);
-    //     }
-
-    //     user.FirstName = request.FirstName;
-    //     user.LastName = request.LastName;
-    //     user.Phone = request.PhoneNumber;
-    //     user.ImageUrl = request.ImageUrl ?? user.ImageUrl;
-    //     //Decode token to get userId
-    //     var claims = JwtHelper.DecodeJwt(request.token);
-    //     claims.TryGetValue("sub", out var userId);
-    //     //Create System Log
-    //     await _systemLogRepository.CreateSystemLog(new SystemLog
-    //     {
-    //         SystemLogId = Ulid.NewUlid(),
-    //         LogDate = DateTime.Now,
-    //         LogDetail = $"{userId} cập nhật thông tin tài khoản",
-    //         UserId = Ulid.Parse(userId)
-    //     });
-
-
-    //     await _unitOfWork.SaveChangesAsync();
-    //     return Result.Success();
-    // }
 }

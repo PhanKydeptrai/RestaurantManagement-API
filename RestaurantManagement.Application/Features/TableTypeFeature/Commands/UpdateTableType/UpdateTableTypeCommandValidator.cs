@@ -9,15 +9,18 @@ public class UpdateTableTypeCommandValidator : AbstractValidator<UpdateTableType
     {
 
         RuleFor(p => p.TableTypeName)
+            .Must((name, a) => tableTypeRepository.IsTableTypeNameUnique(a, Ulid.Parse(name.TableTypeId)).Result == false)
+            .WithMessage("{PropertyName} must be unique.")
+            .When(p => tableTypeRepository.IsTableTypeExist(Ulid.Parse(p.TableTypeId)).Result == true)
+            .When(p => Ulid.TryParse(p.TableTypeId, out _))
             .NotNull()
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
             .MaximumLength(50)
             .WithMessage("{PropertyName} must not exceed 50 characters.")
-            .Must((name, a) => tableTypeRepository.IsTableTypeNameUnique(a, name.TableTypeId).Result == false)
-            .WithMessage("{PropertyName} must be unique.")
-            .When(p => tableTypeRepository.IsTableTypeExist(p.TableTypeId).Result == true);
+            .Must(a => Ulid.TryParse(a, out _))
+            .WithMessage("{PropertyName} must be a valid Ulid.");
 
 
         RuleFor(p => p.TablePrice)

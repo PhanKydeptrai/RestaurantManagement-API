@@ -11,7 +11,8 @@ public class GetCustomerByIdQueryValidator : AbstractValidator<GetCustomerByIdQu
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
-            .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.")
+            .MaximumLength(50)
+            .WithMessage("{PropertyName} must not exceed 50 characters.")
             .Must(a => Ulid.TryParse(a, out _))
             .WithMessage("{PropertyName} is not a valid Ulid.");
     }

@@ -8,11 +8,14 @@ public class GetEmployeeByIdQueryValidator : AbstractValidator<GetEmployeeByIdQu
     public GetEmployeeByIdQueryValidator(IEmployeeRepository employeeRepository)
     {
         RuleFor(a => a.id)
+            .Must(a => employeeRepository.IsEmployeeExist(Ulid.Parse(a)).Result == true)
+            .WithMessage("Employee not found")
+            .When(a => Ulid.TryParse(a.id, out _))
             .NotNull()
             .WithMessage("Id is required")
             .NotEmpty()
             .WithMessage("Id is required")
-            .Must(a => employeeRepository.IsEmployeeExist(a).Result == true)
-            .WithMessage("Employee not found");
+            .Must(a => Ulid.TryParse(a, out _))
+            .WithMessage("Id is not valid");
     }
 }

@@ -3,8 +3,8 @@ using RestaurantManagement.Application.Abtractions;
 namespace RestaurantManagement.Application.Features.OrderFeature.Commands.AddMealToOrder;
 
 public record AddMealToOrderCommand(
-    int TableId,
-    Ulid MealId,
+    string TableId,
+    string MealId,
     int Quantity
 ) : ICommand;
 

@@ -3,4 +3,4 @@ using RestaurantManagement.Domain.DTOs.MealDto;
 
 namespace RestaurantManagement.Application.Features.MealFeature.Queries.GetMealById;
 
-public record GetMealByIdQuery(Ulid id) : IQuery<MealResponse>;
+public record GetMealByIdQuery(string id) : IQuery<MealResponse>;

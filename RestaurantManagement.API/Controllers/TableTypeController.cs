@@ -39,7 +39,7 @@ public class TableTypeController : IEndpoint
         //Create table type
         endpoints.MapPost("",
         async (
-            [FromForm] string TableTypeName,
+            [FromForm] string TableTypeName, 
             [FromForm] int TableCapacity,
             [FromForm] decimal TablePrice,
             [FromForm] string? Description,
@@ -64,7 +64,7 @@ public class TableTypeController : IEndpoint
         //Update table type
         endpoints.MapPut("{id}",
         async (
-            Ulid id,
+            string id, 
             [FromForm] string TableTypeName,
             [FromForm] decimal TablePrice,
             [FromForm] string? Description,
@@ -77,7 +77,7 @@ public class TableTypeController : IEndpoint
             string token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var result = await sender.Send(new UpdateTableTypeCommand(
-                id,
+                id, 
                 TableTypeName,
                 Image,
                 TablePrice,
@@ -96,7 +96,7 @@ public class TableTypeController : IEndpoint
         //Get table type by id
         endpoints.MapGet("{id}",
         async (
-            Ulid id,
+            string id,
             ISender sender) =>
         {
             var result = await sender.Send(new GetTableTypyByIdQuery(id));
@@ -111,7 +111,7 @@ public class TableTypeController : IEndpoint
         //Delete table type by id
         endpoints.MapDelete("{id}",
         async (
-            Ulid id,
+            string id,
             ISender sender,
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
@@ -132,8 +132,8 @@ public class TableTypeController : IEndpoint
         //Restore table type by id
         endpoints.MapPut("restore/{id}",
         async (
-            Ulid id,
-            ISender sender) =>
+            string id,
+            ISender sender) => 
         {
             var result = await sender.Send(new RestoreTableTyeCommand(id));
             if (result.IsSuccess)

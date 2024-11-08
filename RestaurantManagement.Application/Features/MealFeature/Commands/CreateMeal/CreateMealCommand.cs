@@ -8,6 +8,6 @@ public record CreateMealCommand(
     decimal Price,
     IFormFile? Image,
     string? Description,
-    Ulid CategoryId,
+    string CategoryId,
     string token) : ICommand;
 

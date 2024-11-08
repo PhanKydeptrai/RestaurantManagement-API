@@ -14,18 +14,14 @@ public class DeleteTableTypeCommandHandler(
     public async Task<Result> Handle(DeleteTableTypeCommand request, CancellationToken cancellationToken)
     {
         //Validator
-        var validator = new DeleteTableTypeCommandValidator(tableTypeRepository);  
-        var validationResult = await validator.ValidateAsync(request);
+        var validator = new DeleteTableTypeCommandValidator(tableTypeRepository);
 
-        if (!validationResult.IsValid)
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
-            var errors = validationResult.Errors
-                .Select(a => new Error(a.ErrorCode, a.ErrorMessage))
-                .ToArray();
             return Result.Failure(errors);
         }
 
-        await tableTypeRepository.DeleteTableType(request.id);
+        await tableTypeRepository.DeleteTableType(Ulid.Parse(request.id));
 
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
@@ -38,9 +34,9 @@ public class DeleteTableTypeCommandHandler(
             LogDetail = $"Xoá loại bàn {request.id} ",
             UserId = Ulid.Parse(userId)
         });
-        
+
         await unitOfWork.SaveChangesAsync();
-        
+
         return Result.Success();
     }
 }

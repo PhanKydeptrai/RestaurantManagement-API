@@ -8,13 +8,15 @@ public class PayOrderCommandValidator : AbstractValidator<PayOrderCommand>
     public PayOrderCommandValidator(ITableRepository tableRepository)
     {
         RuleFor(a => a.tableId)
+            .Must(a => tableRepository.IsTableExist(int.Parse(a)).Result == true)
+            .WithMessage("Table does not exist.")
+            .When(a => int.TryParse(a.tableId, out _))
+            
             .NotNull()
             .WithMessage("{PropertyName} is required.")
-            .Must(a => tableRepository.IsTableExist(a).Result == true)
-            .WithMessage("Table does not exist.");
-
-        //Kiểm tra bàn đang có order hay không
-        
-
+            .NotEmpty()
+            .WithMessage("{PropertyName} is required.")
+            .Must(a => int.TryParse(a, out _))
+            .WithMessage("{PropertyName} must be a number.");
     }
 }
