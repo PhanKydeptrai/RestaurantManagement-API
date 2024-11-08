@@ -23,9 +23,14 @@ public class CreateMealCommandValidator : AbstractValidator<CreateMealCommand>
             .WithMessage("{PropertyName} must be a decimal.");
 
         RuleFor(p => p.CategoryId)
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull().WithMessage("{PropertyName} is required.")
-            .Must(p => categoryRepository.CheckStatusOfCategory(p).Result)
+            .Must(p => categoryRepository.CheckStatusOfCategory(Ulid.Parse(p)).Result)
+            .WithMessage("{PropertyName} is not valid")
+            .When(a => Ulid.TryParse(a.CategoryId, out _))
+            .NotEmpty()
+            .WithMessage("{PropertyName} is required.")
+            .NotNull()
+            .WithMessage("{PropertyName} is required.")
+            .Must(a => Ulid.TryParse(a, out _))
             .WithMessage("{PropertyName} is not valid");
 
 

@@ -21,26 +21,34 @@ public class AddMealToOrderCommandValidator : AbstractValidator<AddMealToOrderCo
             .WithMessage("Quantity must be less than 100");
 
         RuleFor(a => a.TableId)
+            .Must(a => tableRepository.IsTableExist(int.Parse(a)).Result == true)
+            .WithMessage("Table is not exist")
+            .Must(a => tableRepository.GetActiveStatus(int.Parse(a)).Result == "Occupied")
+            .WithMessage("Table is not occupied")
+            .When(a => int.TryParse(a.TableId, out _))
+            
             .NotNull()
             .WithMessage("TableId is required")
             .NotEmpty()
             .WithMessage("TableId is required")
-            .Must(a => tableRepository.IsTableExist(a).Result == true)
-            .WithMessage("Table is not exist")
-            .Must(a => tableRepository.GetActiveStatus(a).Result == "Occupied")
-            .WithMessage("Table is not occupied");
+            .Must(a => int.TryParse(a, out _))
+            .WithMessage("TableId must be a number");
 
         RuleFor(a => a.MealId)
+            
+            .Must(a => mealRepository.IsMealExist(Ulid.Parse(a)).Result == true)
+            .WithMessage("Meal is not exist")
+            .Must(a => mealRepository.GetSellStatus(Ulid.Parse(a)).Result == "Active")
+            .WithMessage("SellStatus is not active")
+            .Must(a => mealRepository.GetMealStatus(Ulid.Parse(a)).Result == "Active")
+            .WithMessage("MealStatus is not active")
+            .When(a => Ulid.TryParse(a.MealId, out _))
             .NotNull()
             .WithMessage("MealId is required")
             .NotEmpty()
             .WithMessage("MealId is required")
-            .Must(a => mealRepository.IsMealExist(a).Result == true)
-            .WithMessage("Meal is not exist")
-            .Must(a => mealRepository.GetSellStatus(a).Result == "Active")
-            .WithMessage("SellStatus is not active")
-            .Must(a => mealRepository.GetMealStatus(a).Result == "Active")
-            .WithMessage("MealStatus is not active");
+            .Must(a => Ulid.TryParse(a, out _))
+            .WithMessage("MealId must be a valid Ulid");
 
             
     }

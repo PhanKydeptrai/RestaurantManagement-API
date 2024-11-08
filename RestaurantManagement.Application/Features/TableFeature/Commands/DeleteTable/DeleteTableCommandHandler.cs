@@ -21,7 +21,7 @@ public class DeleteTableCommandHandler(
         }
 
         //Delete table
-        await tableRepository.DeleteTable(request.id);
+        await tableRepository.DeleteTable(int.Parse(request.id));
         
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);

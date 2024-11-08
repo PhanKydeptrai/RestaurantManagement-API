@@ -22,15 +22,15 @@ public class CreateTableCommandHandler(
         }
 
         //create table
-        var tableArray = new Table[request.quantity];
-
-
-        for(int i = 0; i < request.quantity; i++)
+        var tableArray = new Table[int.Parse(request.quantity)];
+        Ulid tableTypeId = Ulid.Parse(request.tableTypeId);
+        
+        for(int i = 0; i < int.Parse(request.quantity); i++)
         {
             tableArray[i] = new Table
             {
                 TableId = PrimaryKeyGenerator.GeneratePrimaryKey(),
-                TableTypeId = request.tableTypeId,
+                TableTypeId = tableTypeId,
                 TableStatus = "Active",
                 ActiveStatus = "Empty"
             };

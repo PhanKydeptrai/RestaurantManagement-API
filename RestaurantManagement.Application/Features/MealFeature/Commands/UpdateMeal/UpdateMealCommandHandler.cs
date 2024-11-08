@@ -31,7 +31,7 @@ public class UpdateMealCommandHandler(
         meal.Price = request.Price;
 
         meal.Description = request.Description;
-        meal.CategoryId = request.CategoryId;
+        meal.CategoryId = Ulid.Parse(request.CategoryId);
 
         if (request.Image != null)
         {
@@ -65,10 +65,6 @@ public class UpdateMealCommandHandler(
                 Console.WriteLine(resultDelete.JsonObj);
             }
         }
-
-
-
-
 
         //Deocde jwt
         var claims = JwtHelper.DecodeJwt(request.token);

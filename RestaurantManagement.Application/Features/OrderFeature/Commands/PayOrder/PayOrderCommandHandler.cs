@@ -25,7 +25,7 @@ public class PayOrderCommandHandler(
        
         var order = await context.Tables
             .Include(a => a.Orders)
-            .Where(a => a.TableId == request.tableId)
+            .Where(a => a.TableId == int.Parse(request.tableId))
             .Select(a => a.Orders.FirstOrDefault(a => a.PaymentStatus == "Unpaid"))
             .FirstOrDefaultAsync();
         
@@ -37,11 +37,11 @@ public class PayOrderCommandHandler(
 
         //Thanh toán order
         order.PaymentStatus = "Paid";
-        await tableRepository.UpdateActiveStatus(request.tableId, "Empty");
+        await tableRepository.UpdateActiveStatus(int.Parse(request.tableId), "Empty");
 
         //Kiểm tra bàn có booking hay không
         var checkBooking = await context.Tables.Include(a => a.BookingDetails)
-            .Where(a => a.TableId == request.tableId)
+            .Where(a => a.TableId == int.Parse(request.tableId))
             .Select(a => a.BookingDetails.FirstOrDefault(a => a.Booking.BookingStatus == "Occupied"))
             .FirstOrDefaultAsync();
 

@@ -3,4 +3,4 @@ using RestaurantManagement.Domain.DTOs.EmployeeDto;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Queries.GetEmployeeById;
 
-public record GetEmployeeByIdQuery(Ulid id) : IQuery<EmployeeResponse>;
+public record GetEmployeeByIdQuery(string id) : IQuery<EmployeeResponse>;

@@ -31,12 +31,12 @@ public class AddMealToOrderCommandHandler(
         //Lấy order chưa thanh toán => đang ăn
         var order = await context.Tables
             .Include(a => a.Orders)
-            .Where(a => a.TableId == request.TableId)
+            .Where(a => a.TableId == int.Parse(request.TableId))
             .Select(a => a.Orders.FirstOrDefault(a => a.PaymentStatus == "Unpaid"))
             .FirstOrDefaultAsync();
 
         var mealPrice = await context.Meals.AsNoTracking() //Lấy giá món ăn
-            .Where(a => a.MealId == request.MealId)
+            .Where(a => a.MealId == Ulid.Parse(request.MealId))
             .Select(a => a.Price)
             .FirstOrDefaultAsync();
 
@@ -48,8 +48,8 @@ public class AddMealToOrderCommandHandler(
             var orderDetail = await context.Orders
                 .Include(a => a.OrderDetails)
                 .ThenInclude(a => a.Order)
-                .Where(a => a.TableId == request.TableId)
-                .Select(a => a.OrderDetails.FirstOrDefault(a => a.MealId == request.MealId))
+                .Where(a => a.TableId == int.Parse(request.TableId))
+                .Select(a => a.OrderDetails.FirstOrDefault(a => a.MealId == Ulid.Parse(request.MealId)))
                 .FirstOrDefaultAsync();
 
             if (orderDetail != null) //Nếu tồn tại
@@ -64,7 +64,7 @@ public class AddMealToOrderCommandHandler(
                 {
                     OrderDetailId = Ulid.NewUlid(),
                     OrderId = order.OrderId,
-                    MealId = request.MealId,
+                    MealId = Ulid.Parse(request.MealId),
                     Quantity = request.Quantity,
                     UnitPrice = request.Quantity * mealPrice,
                     Note = string.Empty
@@ -78,7 +78,7 @@ public class AddMealToOrderCommandHandler(
         else
         {
             //Kiểm tra bàn có được đặt hay không
-            Ulid? customerId = await tableRepository.GetCustomerIdByTableId(request.TableId);
+            Ulid? customerId = await tableRepository.GetCustomerIdByTableId(int.Parse(request.TableId));
 
             order = new Order
             {
@@ -87,7 +87,7 @@ public class AddMealToOrderCommandHandler(
                 Total = mealPrice * request.Quantity,
                 OrderTime = DateTime.Now,
                 CustomerId = null,
-                TableId = request.TableId,
+                TableId = int.Parse(request.TableId),
                 PaymentStatus = "Unpaid"
             };
 
@@ -95,7 +95,7 @@ public class AddMealToOrderCommandHandler(
             {
                 OrderDetailId = Ulid.NewUlid(),
                 OrderId = order.OrderId,
-                MealId = request.MealId,
+                MealId = Ulid.Parse(request.MealId),
                 Quantity = request.Quantity,
                 UnitPrice = request.Quantity * mealPrice,
                 Note = string.Empty

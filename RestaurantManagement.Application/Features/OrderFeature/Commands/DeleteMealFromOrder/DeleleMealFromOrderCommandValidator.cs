@@ -8,12 +8,15 @@ public class DeleleMealFromOrderCommandValidator : AbstractValidator<DeleleMealF
     public DeleleMealFromOrderCommandValidator(IOrderDetailRepository orderDetailRepository)
     {
         RuleFor(x => x.id)
+            .Must(a => orderDetailRepository.IsOrderDetailCanDelete(Ulid.Parse(a)).Result == true)
+            .WithMessage("Order detail can not found.")
+            .When(a => Ulid.TryParse(a.id, out _))
             .NotNull()
             .WithMessage("Id is required.")
             .NotEmpty()
             .WithMessage("Id is required.")
-            .Must(a => orderDetailRepository.IsOrderDetailCanDelete(a).Result == true)
-            .WithMessage("Order detail can not found.");
+            .Must(a => Ulid.TryParse(a, out _))
+            .WithMessage("Id is not valid.");
             
 
         

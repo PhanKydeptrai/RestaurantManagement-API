@@ -8,14 +8,17 @@ public class RestoreTableCommandValidator : AbstractValidator<RestoreTableComman
     public RestoreTableCommandValidator(ITableRepository tableRepository)
     {
         RuleFor(a => a.id)
+            .Must(a => tableRepository.IsTableExist(int.Parse(a)).Result == true)
+            .WithMessage("Table does not exist.")
+            .Must(a => tableRepository.GetTableStatus(int.Parse(a)).Result == "InActive")
+            .WithMessage("Table is still Active.")
+            .When(a => int.TryParse(a.id, out _))
             .NotNull()
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
-            .Must(a => tableRepository.IsTableExist(a).Result == true)
-            .WithMessage("Table does not exist.")
-            .Must(a => tableRepository.GetTableStatus(a).Result == "InActive")
-            .WithMessage("Table is still Active.");
+            .Must(a => int.TryParse(a, out _))
+            .WithMessage("{PropertyName} must be a number.");
             
     }
 }

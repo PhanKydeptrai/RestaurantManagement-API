@@ -25,13 +25,13 @@ public class UpdateMealInOrderCommandHandler(
         var orderDetail = await context.OrderDetails
             .Include(a => a.Order)
             .Include(a => a.Meal)
-            .FirstOrDefaultAsync(a => a.OrderDetailId == request.OrderDetailId);
+            .FirstOrDefaultAsync(a => a.OrderDetailId == Ulid.Parse(request.OrderDetailId));
 
-        orderDetail.Quantity = request.Quantity;
+        orderDetail.Quantity = int.Parse(request.Quantity);
 
         orderDetail.Order.Total = orderDetail.Order.Total - orderDetail.UnitPrice;  
     
-        orderDetail.UnitPrice = orderDetail.Meal.Price * request.Quantity;
+        orderDetail.UnitPrice = orderDetail.Meal.Price * int.Parse(request.Quantity);
 
         orderDetail.Order.Total += orderDetail.UnitPrice;
         

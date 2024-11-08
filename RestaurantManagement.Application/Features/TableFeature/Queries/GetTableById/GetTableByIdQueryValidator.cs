@@ -8,11 +8,15 @@ public class GetTableByIdQueryValidator : AbstractValidator<GetTableByIdQuery>
     public GetTableByIdQueryValidator(ITableRepository tableRepository)
     {
         RuleFor(p => p.id)
+            .Must(a => tableRepository.IsTableExist(int.Parse(a)).Result)
+            .WithMessage("Table does not exist.")
+            .When(a => int.TryParse(a.id, out _))
+            
             .NotNull()
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
-            .Must(a => tableRepository.IsTableExist(a).Result)
-            .WithMessage("Table does not exist.");
+            .Must(a => int.TryParse(a, out _))
+            .WithMessage("{PropertyName} must be a number.");
     }
 }

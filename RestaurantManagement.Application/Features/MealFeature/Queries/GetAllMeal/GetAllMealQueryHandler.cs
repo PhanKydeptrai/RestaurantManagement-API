@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Features.Paging;
 using RestaurantManagement.Domain.DTOs.MealDto;
 using RestaurantManagement.Domain.Entities;
@@ -13,13 +14,21 @@ public class GetAllMealQueryHandler(IApplicationDbContext context) : IQueryHandl
 {
     public async Task<Result<PagedList<MealResponse>>> Handle(GetAllMealQuery request, CancellationToken cancellationToken)
     {
+        //validate
+        var validator = new GetAllMealQueryValidator();
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        {
+            return Result<PagedList<MealResponse>>.Failure(errors);
+        }
+
         var mealQuery = context.Meals.Include(x => x.Category).AsQueryable();
+
 
         if (!string.IsNullOrEmpty(request.searchTerm))
         {
             mealQuery = mealQuery.Where(x => x.MealName.Contains(request.searchTerm));
         }
- 
+
         if (!string.IsNullOrEmpty(request.filterMealStatus)) //lọc theo trạng thái kinh doanh
         {
             mealQuery = mealQuery.Where(x => x.MealStatus == request.filterMealStatus);

@@ -20,7 +20,7 @@ public class ChangeSellStatusCommandHandler(
             return Result.Failure(errors);
         }
         
-        await mealRepository.ChangeSellStatus(request.id);
+        await mealRepository.ChangeSellStatus(Ulid.Parse(request.id));
         
         //Deocde jwt
         var claims = JwtHelper.DecodeJwt(request.token);
@@ -35,8 +35,6 @@ public class ChangeSellStatusCommandHandler(
             UserId = Ulid.Parse(userId)
         });
 
-
-        
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
         

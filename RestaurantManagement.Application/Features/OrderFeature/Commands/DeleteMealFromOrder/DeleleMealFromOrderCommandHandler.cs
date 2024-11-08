@@ -22,7 +22,7 @@ public class DeleleMealFromOrderCommandHandler(
         }
 
         //delete
-        var orderDetail = await context.OrderDetails.Include(a => a.Order).Where(a => a.OrderDetailId == request.id).FirstOrDefaultAsync();
+        var orderDetail = await context.OrderDetails.Include(a => a.Order).Where(a => a.OrderDetailId == Ulid.Parse(request.id)).FirstOrDefaultAsync();
 
         orderDetail.Order.Total = orderDetail.Order.Total - orderDetail.UnitPrice;
 

@@ -2,4 +2,4 @@
 
 namespace RestaurantManagement.Application.Features.MealFeature.Commands.RemoveMeal;
 
-public record RemoveMealCommand(Ulid id, string token) : ICommand;
+public record RemoveMealCommand(string id, string token) : ICommand;

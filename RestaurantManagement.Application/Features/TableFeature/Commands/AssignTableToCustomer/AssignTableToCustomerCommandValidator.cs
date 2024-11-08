@@ -7,13 +7,17 @@ public class AssignTableToCustomerCommandValidator : AbstractValidator<AssignTab
 {
     public AssignTableToCustomerCommandValidator(ITableRepository tableRepository)
     {
-        RuleFor(p => p.id)
+        RuleFor(p => p.id)            
+            .Must(a => tableRepository.GetActiveStatus(int.Parse(a)).Result == "Empty")
+            .WithMessage("This table is not empty.")
+            .When(a => int.TryParse(a.id, out _))
+
             .NotNull()
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
-            .Must(a => tableRepository.GetActiveStatus(a).Result == "Empty")
-            .WithMessage("This table is not empty.");
+            .Must(a => int.TryParse(a, out _))
+            .WithMessage("{PropertyName} must be a number.");
         
     }
 }

@@ -8,11 +8,14 @@ public class RemoveMealCommandValidator : AbstractValidator<RemoveMealCommand>
     public RemoveMealCommandValidator(IMealRepository mealRepository)
     {
         RuleFor(a => a.id)
+            .Must(a => mealRepository.GetMealStatus(Ulid.Parse(a)).Result == "Active")
+            .WithMessage("Meal is InActive")
+            .When(a => Ulid.TryParse(a.id, out _))
             .NotEmpty()
             .WithMessage("Id is required")
             .NotNull()
             .WithMessage("Id is required")
-            .Must(a => mealRepository.GetMealStatus(a).Result == "Active")
-            .WithMessage("Meal is InActive");
+            .Must(a => Ulid.TryParse(a, out _))
+            .WithMessage("Id is invalid");
     }
 }

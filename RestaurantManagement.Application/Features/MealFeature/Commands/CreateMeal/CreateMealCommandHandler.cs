@@ -51,7 +51,7 @@ public class CreateMealCommandHandler(
             Description = request.Description,
             MealStatus = "Active",
             SellStatus = "Active",
-            CategoryId = request.CategoryId
+            CategoryId = Ulid.Parse(request.CategoryId)
         });
 
         //Deocde jwt

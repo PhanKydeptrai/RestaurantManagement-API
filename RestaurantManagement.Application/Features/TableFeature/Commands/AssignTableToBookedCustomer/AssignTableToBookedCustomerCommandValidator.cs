@@ -8,11 +8,14 @@ public class AssignTableToBookedCustomerCommandValidator : AbstractValidator<Ass
     public AssignTableToBookedCustomerCommandValidator(ITableRepository tableRepository)
     {
         RuleFor(p => p.tableId)
+            .Must(a => tableRepository.GetActiveStatus(int.Parse(a)).Result == "Booked")
+            .WithMessage("This table is not booked.")
+            .When(a => int.TryParse(a.tableId, out _))
             .NotNull()
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
-            .Must(a => tableRepository.GetActiveStatus(a).Result == "Booked")
-            .WithMessage("This table is not booked.");
+            .Must(a => int.TryParse(a, out _))
+            .WithMessage("{PropertyName} must be a number.");
     }
 }

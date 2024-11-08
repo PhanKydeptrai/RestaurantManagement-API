@@ -25,12 +25,12 @@ public class AssignTableToBookedCustomerCommandHandler(
         //lấy thông tin booking
 
         var booking = await context.Bookings.Include(a => a.BookingDetails)
-            .Where(a =>  a.BookingDetails.Any(b => b.TableId == request.tableId && a.BookingStatus == "Seated"))
+            .Where(a =>  a.BookingDetails.Any(b => b.TableId == int.Parse(request.tableId) && a.BookingStatus == "Seated"))
             .FirstOrDefaultAsync();
             
             booking.BookingStatus = "Occupied";
 
-        await tableRepository.UpdateActiveStatus(request.tableId, "Occupied");
+        await tableRepository.UpdateActiveStatus(int.Parse(request.tableId), "Occupied");
         await unitOfWork.SaveChangesAsync  ();
         return Result.Success();
     }

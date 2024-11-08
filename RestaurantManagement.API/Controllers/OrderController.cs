@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
-using RestaurantManagement.Application.Features.BookingFeature.Queries.GetAllBooking;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.AddMealToOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.DeleteMealFromOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.PayOrder;
@@ -19,13 +18,13 @@ public class OrderController : IEndpoint
 
         //Create order
         endpoints.MapPost("{id}", async (
-            int id,
+            string id,
             [FromBody] AddMealToOrderRequest command,
             ISender sender) =>
         {
             var result = await sender.Send(new AddMealToOrderCommand(
                 id,
-                Ulid.Parse(command.MealId),
+                command.MealId,
                 command.Quantity
             ));
 
@@ -41,7 +40,7 @@ public class OrderController : IEndpoint
             [FromBody] UpdateMealInOrderRequest command,
             ISender sender) =>
         {
-            var result = await sender.Send(new UpdateMealInOrderCommand(Ulid.Parse(id), command.Quantity));
+            var result = await sender.Send(new UpdateMealInOrderCommand(id, command.Quantity));
             if (!result.IsSuccess)
             {
                 return Results.BadRequest(result);
@@ -54,7 +53,7 @@ public class OrderController : IEndpoint
             string id,
             ISender sender) =>
         {
-            var result = await sender.Send(new DeleleMealFromOrderCommand(Ulid.Parse(id)));
+            var result = await sender.Send(new DeleleMealFromOrderCommand(id));
             if (!result.IsSuccess)
             {
                 return Results.BadRequest(result);
@@ -79,7 +78,7 @@ public class OrderController : IEndpoint
 
         //Pay order
         endpoints.MapPut("pay/{id}", async (
-            int id,
+            string id, //Id bàn
             ISender sender) =>
         {
             var result = await sender.Send(new PayOrderCommand(id));

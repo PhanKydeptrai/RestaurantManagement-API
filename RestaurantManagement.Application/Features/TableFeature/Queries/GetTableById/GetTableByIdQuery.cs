@@ -3,5 +3,5 @@ using RestaurantManagement.Domain.DTOs.TableDto;
 
 namespace RestaurantManagement.Application.Features.TableFeature.Queries.GetTableById;
 
-public record GetTableByIdQuery(int id) : IQuery<TableResponse>;
+public record GetTableByIdQuery(string id) : IQuery<TableResponse>;
 

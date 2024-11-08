@@ -8,19 +8,26 @@ public class UpdateMealInOrderCommandValidator : AbstractValidator<UpdateMealInO
     public UpdateMealInOrderCommandValidator(IOrderDetailRepository orderDetailRepository)
     {
         RuleFor(x => x.OrderDetailId)
+            .Must(a => orderDetailRepository.IsOrderDetailCanUpdate(Ulid.Parse(a)).Result == true)
+            .WithMessage("OrderDetail can't be updated.")
+            .When(a => Ulid.TryParse(a.OrderDetailId, out _))
             .NotNull()
             .WithMessage("OrderDetailId is required.")
             .NotEmpty()
             .WithMessage("OrderDetailId is required.")
-            .Must(a => orderDetailRepository.IsOrderDetailCanUpdate(a).Result == true)
-            .WithMessage("OrderDetail can't be updated.");
+            .Must(a => Ulid.TryParse(a, out _))
+            .WithMessage("OrderDetailId is invalid.");
 
         RuleFor(x => x.Quantity)
+            .Must(a => int.Parse(a) > 0)
+            .WithMessage("Quantity must be greater than 0.")
+            .When(a => int.TryParse(a.Quantity, out _))
             .NotNull()
             .WithMessage("Quantity is required.")
             .NotEmpty()
             .WithMessage("Quantity is required.")
-            .GreaterThan(0)
-            .WithMessage("Quantity must be greater than 0.");
+            .Must(a => int.TryParse(a, out _))
+            .WithMessage("Quantity is invalid.");
+            
     }
 }

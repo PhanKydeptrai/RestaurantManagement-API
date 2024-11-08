@@ -9,9 +9,7 @@ public class UpdateEmployeeRoleValidator : AbstractValidator<UpdateEmployeeRoleC
     public UpdateEmployeeRoleValidator(IEmployeeRepository employeeRepository)
     {
         RuleFor(x => x.id)
-            .NotNull().WithMessage("Employee Id is required.")
-            .NotEmpty().WithMessage("Employee Id is required.")
-            .Must(a => employeeRepository.IsEmployeeExist(a).Result == true)
+            .Must(a => employeeRepository.IsEmployeeExist(Ulid.Parse(a)).Result == true)
             .WithMessage("Employee does not exist.")
             .Custom((id, context) =>
             {
@@ -21,9 +19,9 @@ public class UpdateEmployeeRoleValidator : AbstractValidator<UpdateEmployeeRoleC
                 var claims = JwtHelper.DecodeJwt(token);
                 claims.TryGetValue("role", out var role); //Lấy role của người gửi request
                 claims.TryGetValue("sub", out var userId); //Lấy userId của người gửi request
-                string employeeRole = employeeRepository.GetEmployeeRole(id).Result;
+                string employeeRole = employeeRepository.GetEmployeeRole(Ulid.Parse(id)).Result;
 
-                if (Ulid.Parse(userId) == id) //Kiểm tra xem người gửi request có phải là chính người cần cập nhật hay không  
+                if (userId == id) //Kiểm tra xem người gửi request có phải là chính người cần cập nhật hay không  
                 {
                     context.AddFailure("You cant update yourself");
                 }
@@ -38,10 +36,12 @@ public class UpdateEmployeeRoleValidator : AbstractValidator<UpdateEmployeeRoleC
                 {
                     context.AddFailure("You dont have permission to update this employee");
                 }
-                
-                
-
-            });
+            })
+            .When(a => Ulid.TryParse(a.id, out _) == true)
+            .NotNull().WithMessage("Employee Id is required.")
+            .NotEmpty().WithMessage("Employee Id is required.")
+            .Must(a => Ulid.TryParse(a, out _) == true)
+            .WithMessage("Employee Id is invalid.");
 
         RuleFor(x => x.role)
             .NotNull().WithMessage("Employee Id is required.")

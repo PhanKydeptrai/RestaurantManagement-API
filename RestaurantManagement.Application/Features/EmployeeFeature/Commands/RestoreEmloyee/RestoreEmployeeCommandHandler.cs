@@ -1,5 +1,4 @@
 using RestaurantManagement.Application.Abtractions;
-using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -10,7 +9,6 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Res
 public class RestoreEmployeeCommandHandler(
     IUnitOfWork unitOfWork,
     IEmployeeRepository employeeRepository,
-    IApplicationDbContext context,
     ISystemLogRepository systemLogRepository) : ICommandHandler<RestoreEmployeeCommand>
 {
     public async Task<Result> Handle(RestoreEmployeeCommand request, CancellationToken cancellationToken)
@@ -22,7 +20,7 @@ public class RestoreEmployeeCommandHandler(
             return Result.Failure(errors);
         }
         //Restore employee
-        await employeeRepository.RestoreEmployee(request.id);
+        await employeeRepository.RestoreEmployee(Ulid.Parse(request.id));
 
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);

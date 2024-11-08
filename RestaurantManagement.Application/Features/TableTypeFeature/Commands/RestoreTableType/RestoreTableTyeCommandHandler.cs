@@ -22,7 +22,7 @@ public class RestoreTableTyeCommandHandler(
             return Result.Failure(errors);
         }
 
-        await tableTypeRepository.RestoreTableType(request.id);
+        await tableTypeRepository.RestoreTableType(Ulid.Parse(request.id));
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

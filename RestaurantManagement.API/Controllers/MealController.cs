@@ -41,7 +41,7 @@ public class MealController : IEndpoint
                     Price,
                     image,
                     Description,
-                    Ulid.Parse(CategoryId),
+                    CategoryId,
                     token));
 
             if (!result.IsSuccess)
@@ -73,7 +73,7 @@ public class MealController : IEndpoint
         //get meal by id
         endpoints.MapGet("{id}",
         async (
-            Ulid id,
+            string id,
             ISender sender) =>
         {
             var result = await sender.Send(new GetMealByIdQuery(id));
@@ -87,7 +87,7 @@ public class MealController : IEndpoint
         //Update meal
         endpoints.MapPut("{id}",
         async (
-            Ulid id,
+            string id,
             [FromForm] string MealName,
             [FromForm] decimal Price,
             [FromForm] IFormFile? image,
@@ -101,7 +101,7 @@ public class MealController : IEndpoint
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var result = await sender.Send(new UpdateMealCommand(
-                id, MealName, Price, image, Description, Ulid.Parse(CategoryId), token));
+                id, MealName, Price, image, Description, CategoryId, token));
 
             if (result.IsSuccess)
             {
@@ -115,7 +115,7 @@ public class MealController : IEndpoint
         //Xóa món
         endpoints.MapDelete("{id}",
         async (
-            Ulid id,
+            string id,
             ISender sender,
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
@@ -138,7 +138,7 @@ public class MealController : IEndpoint
         //khôi phục món
         endpoints.MapPut("restore/{id}",
         async (
-            Ulid id,
+            string id,
             ISender sender,
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
@@ -158,7 +158,7 @@ public class MealController : IEndpoint
         //Chuyển sell status Active => InActive
         endpoints.MapPut("change-sellstatus/{id}",
         async (
-            Ulid id,
+            string id,
             ISender sender,
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
@@ -178,7 +178,7 @@ public class MealController : IEndpoint
         //Chuyển sell status InActive => Active
         endpoints.MapPut("restore-sellstatus/{id}",
         async (
-            Ulid id,
+            string id,
             ISender sender,
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
