@@ -89,6 +89,7 @@ public class OrderController : IEndpoint
             return Results.Ok(result);
         });
 
+        //Get all order
         endpoints.MapGet("", async (
             [FromQuery] string? filterUserId,
             [FromQuery] string? filterTableId,
@@ -117,5 +118,18 @@ public class OrderController : IEndpoint
             return Results.Ok(result);
         });
 
+
+        //Get order by User ID
+        endpoints.MapGet("user/{id}", async (
+            string id,
+            ISender sender) =>
+        {
+            // var result = await sender.Send();
+            // if (!result.IsSuccess)
+            // {
+            //     return Results.BadRequest(result);
+            // }
+            // return Results.Ok(result);
+        });
     }
 }
