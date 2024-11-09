@@ -7,6 +7,7 @@ public record BookingResponse(
     string LastName,
     string Email,
     string Phone,
+    int? TableId,
     DateOnly BookingDate,
     TimeOnly BookingTime,
     decimal BookingPrice,
