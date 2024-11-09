@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -22,14 +23,14 @@ public class PayOrderCommandHandler(
         }
 
         //Kiểm tra xem bàn đã có order chưa
-       
+
         var order = await context.Tables
             .Include(a => a.Orders)
             .Where(a => a.TableId == int.Parse(request.tableId))
             .Select(a => a.Orders.FirstOrDefault(a => a.PaymentStatus == "Unpaid"))
             .FirstOrDefaultAsync();
-        
-        if(order == null)
+
+        if (order == null)
         {
             var error = new[] { new Error("Order", "Table does not have any order.") };
             return Result.Failure(error);
@@ -45,7 +46,25 @@ public class PayOrderCommandHandler(
             .Select(a => a.BookingDetails.FirstOrDefault(a => a.Booking.BookingStatus == "Occupied"))
             .FirstOrDefaultAsync();
 
-        checkBooking.Booking.BookingStatus = "Completed";
+        if (checkBooking != null)
+        {
+            order.Total = order.Total + (checkBooking.Booking.BookingPrice / 2);
+            checkBooking.Booking.BookingStatus = "Completed";
+        }
+
+        // //tạo bill 
+        // var bill = new Bill
+        // {
+        //     BillId = Ulid.NewUlid(),
+        //     BookId = checkBooking?.BookId ?? null,
+        //     OrderId = order.OrderId,
+        //     Total = order.Total,
+        //     PaymentStatus = "Paid",
+        //     PaymentType = 
+        //     VoucherId = null
+        // };
+
+
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

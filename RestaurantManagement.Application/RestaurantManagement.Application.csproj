@@ -23,4 +23,8 @@
     <ProjectReference Include="..\RestaurantManagement.Domain\RestaurantManagement.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\PaymentTypeFeature\Queries\" />
+  </ItemGroup>
+
 </Project>

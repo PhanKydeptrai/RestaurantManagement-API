@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
@@ -14,6 +15,7 @@ public class GetAllBookingQueryHandler(IApplicationDbContext context) : IQueryHa
     public async Task<Result<PagedList<BookingResponse>>> Handle(GetAllBookingQuery request, CancellationToken cancellationToken)
     {
         var bookingQuery = context.Bookings
+            .Include(a => a.BookingDetails)
             .Include(a => a.Customer)
             .ThenInclude(a => a.User).AsQueryable();
 
@@ -52,7 +54,7 @@ public class GetAllBookingQueryHandler(IApplicationDbContext context) : IQueryHa
         }
 
         //paged
-        var categories = bookingQuery
+        var bookings = bookingQuery
             .Select(a => new BookingResponse(
                 a.BookId,
                 a.Customer.UserId,
@@ -60,6 +62,7 @@ public class GetAllBookingQueryHandler(IApplicationDbContext context) : IQueryHa
                 a.Customer.User.LastName,
                 a.Customer.User.Email,
                 a.Customer.User.Phone,
+                a.BookingDetails.FirstOrDefault().TableId,
                 a.BookingDate,
                 a.BookingTime,
                 a.BookingPrice,
@@ -67,7 +70,7 @@ public class GetAllBookingQueryHandler(IApplicationDbContext context) : IQueryHa
                 a.BookingStatus,
                 a.NumberOfCustomers,
                 a.Note)).AsQueryable();
-        var bookingsList = await PagedList<BookingResponse>.CreateAsync(categories, request.page ?? 1, request.pageSize ?? 10);
+        var bookingsList = await PagedList<BookingResponse>.CreateAsync(bookings, request.page ?? 1, request.pageSize ?? 10);
 
         return Result<PagedList<BookingResponse>>.Success(bookingsList);
     }
