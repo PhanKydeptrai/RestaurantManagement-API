@@ -11,6 +11,7 @@ using RestaurantManagement.Application.Features.AccountFeature.Commands.ForgotEm
 using RestaurantManagement.Application.Features.AccountFeature.Commands.Register;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ResetPasswordVerify;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.VerifyChangeCustomerPassword;
+using RestaurantManagement.Application.Features.AccountFeature.Queries.DecodeToken;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.EmployeeLogin;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.GetEmployeeAccountInfo;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
@@ -29,7 +30,7 @@ namespace RestaurantManagement.API.Controllers
             //Register for customer
             endpoints.MapPost("register",
             async (
-                [FromBody] RegisterCommand command, 
+                [FromBody] RegisterCommand command,
                 ISender sender) =>
             {
                 var result = await sender.Send(command);
@@ -201,18 +202,32 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result);
             }).RequireAuthorization();
 
-
-            //Google authen
-            endpoints.MapPost("test/{token}", async (
+            //Decode jwt token
+            endpoints.MapGet("decode", async (
                 string token,
                 ISender sender) =>
             {
-                var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings()
+                var result = await sender.Send(new DecodeTokenQuery(token));
+                if (result.IsSuccess)
                 {
-                    Audience = new[] {"512717206233-ul0hu3t49c9o30rf4lqueiqrliddrk7q.apps.googleusercontent.com"}
-                });
-                return Results.Ok();
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result);
             });
+
+            #region Google authen
+            // endpoints.MapPost("test/{token}", async (
+            //     string token,
+            //     ISender sender) =>
+            // {
+            //     var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings()
+            //     {
+            //         Audience = new[] { "512717206233-ul0hu3t49c9o30rf4lqueiqrliddrk7q.apps.googleusercontent.com" }
+            //     });
+            //     return Results.Ok();
+            // });
+            #endregion
+
         }
     }
 }
