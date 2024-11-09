@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped <ITableTypeRepository, TableTypeRepository>();
         services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();
         services.AddScoped<IVoucherRepository, VoucherRepository>();
+        services.AddScoped<IBillRepository, BillRepository>();
         services.AddHttpContextAccessor();
         return services;
     }

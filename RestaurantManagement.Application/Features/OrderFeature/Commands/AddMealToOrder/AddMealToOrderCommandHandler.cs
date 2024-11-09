@@ -55,8 +55,9 @@ public class AddMealToOrderCommandHandler(
             if (orderDetail != null) //Nếu tồn tại
             {
                 orderDetail.Quantity += request.Quantity; //Cập nhật số lượng
+                orderDetail.Order.Total = orderDetail.Order.Total - orderDetail.UnitPrice; //Trừ đi tổng tiền cũ
                 orderDetail.UnitPrice = orderDetail.Quantity * mealPrice; //Cập nhật tổng tiền
-                orderDetail.Order.Total = orderDetail.UnitPrice;
+                orderDetail.Order.Total += orderDetail.UnitPrice;
             }
             else
             {
@@ -73,7 +74,6 @@ public class AddMealToOrderCommandHandler(
                 order.Total += neworderDetail.UnitPrice;
                 await context.OrderDetails.AddAsync(neworderDetail);
             }
-
         }
         else
         {
@@ -100,8 +100,6 @@ public class AddMealToOrderCommandHandler(
                 UnitPrice = request.Quantity * mealPrice,
                 Note = string.Empty
             };
-
-
 
             if (customerId != null) //Nếu có đặt sẽ lấy id khách hàng
             {
