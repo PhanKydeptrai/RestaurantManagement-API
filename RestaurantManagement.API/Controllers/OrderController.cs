@@ -119,17 +119,6 @@ public class OrderController : IEndpoint
         });
 
 
-        //Get order by User ID
-        endpoints.MapGet("user/{id}", async (
-            string id,
-            ISender sender) =>
-        {
-            // var result = await sender.Send();
-            // if (!result.IsSuccess)
-            // {
-            //     return Results.BadRequest(result);
-            // }
-            // return Results.Ok(result);
-        });
+       
     }
 }
