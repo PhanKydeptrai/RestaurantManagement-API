@@ -42,6 +42,7 @@ public class PayOrderCommandHandler(
 
         //Kiểm tra bàn có booking hay không
         var checkBooking = await context.Tables.Include(a => a.BookingDetails)
+            .Include(a => a.BookingDetails).ThenInclude(a => a.Booking)
             .Where(a => a.TableId == int.Parse(request.tableId))
             .Select(a => a.BookingDetails.FirstOrDefault(a => a.Booking.BookingStatus == "Occupied"))
             .FirstOrDefaultAsync();
