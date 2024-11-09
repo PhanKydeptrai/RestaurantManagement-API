@@ -6,6 +6,8 @@ using RestaurantManagement.Application.Features.TableFeature.Commands.AssignTabl
 using RestaurantManagement.Application.Features.TableFeature.Commands.CreateTable;
 using RestaurantManagement.Application.Features.TableFeature.Commands.DeleteTable;
 using RestaurantManagement.Application.Features.TableFeature.Commands.RestoreTable;
+using RestaurantManagement.Application.Features.TableFeature.Commands.UnAssignTableToBookedCustomerCommand;
+using RestaurantManagement.Application.Features.TableFeature.Commands.UnAssignTableToCustomer;
 using RestaurantManagement.Application.Features.TableFeature.Queries.GetAllTable;
 using RestaurantManagement.Application.Features.TableFeature.Queries.GetTableById;
 using RestaurantManagement.Application.Features.TableFeature.Queries.GetTableInfo;
@@ -128,7 +130,7 @@ public class TableController : IEndpoint
         }).RequireAuthorization("boss")
         .RequireRateLimiting("AntiSpam");
 
-
+        // Cho khách vãng lai nhận bàn
         endpoints.MapPut("table-assign/{id}", async (string id,ISender sender) =>
         {
             var result = await sender.Send(new AssignTableToCustomerCommand(id)); 
@@ -139,7 +141,23 @@ public class TableController : IEndpoint
             return Results.BadRequest(result);
         });
 
-        endpoints.MapPut("table-assign/booked/{id}", async (string id,ISender sender) =>
+        //  thôi nhận bàn cho khách đã không book bàn (trong trường hợp nhân viên bấm nhầm)
+        endpoints.MapPut("table-unassign/{id}", async (
+                string id,
+                ISender sender) =>
+        {
+            var result = await sender.Send(new UnAssignTableToCustomerCommand(id));
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        });
+
+
+        endpoints.MapPut("table-assign/booked/{id}", async (
+            string id,
+            ISender sender) =>
         {
             var result = await sender.Send(new AssignTableToBookedCustomerCommand(id));
             if (result.IsSuccess)
@@ -149,6 +167,18 @@ public class TableController : IEndpoint
             return Results.BadRequest(result);
         });
 
+        // thôi nhận bàn cho khách đã book bàn (trong trường hợp nhân viên bấm nhầm)
+        endpoints.MapPut("table-unassign/booked/{id}", async (
+                string id,
+                ISender sender) =>
+        {
+            var result = await sender.Send(new UnAssignTableToBookedCustomerCommand(id));
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        });
 
         endpoints.MapGet("table-info", async (ISender sender) =>
         {

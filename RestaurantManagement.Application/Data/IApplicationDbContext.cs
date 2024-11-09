@@ -18,7 +18,7 @@ public interface IApplicationDbContext
     DbSet<Order> Orders { get; set; }
     DbSet<OrderChangeLog> OrderChangeLogs { get; set; }
     DbSet<OrderDetail> OrderDetails { get; set; }
-    DbSet<PaymentType> PaymentTypes { get; set; }
+    // DbSet<PaymentType> PaymentTypes { get; set; }
     DbSet<SystemLog> SystemLogs { get; set; }
     DbSet<Table> Tables { get; set; }
     DbSet<TableType> TableTypes { get; set; }

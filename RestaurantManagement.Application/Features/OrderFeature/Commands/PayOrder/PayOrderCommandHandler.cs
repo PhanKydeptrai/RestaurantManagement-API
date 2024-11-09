@@ -52,18 +52,20 @@ public class PayOrderCommandHandler(
             checkBooking.Booking.BookingStatus = "Completed";
         }
 
-        // //tạo bill 
-        // var bill = new Bill
-        // {
-        //     BillId = Ulid.NewUlid(),
-        //     BookId = checkBooking?.BookId ?? null,
-        //     OrderId = order.OrderId,
-        //     Total = order.Total,
-        //     PaymentStatus = "Paid",
-        //     PaymentType = 
-        //     VoucherId = null
-        // };
+        
+        //tạo bill 
+        var bill = new Bill
+        {
+            BillId = Ulid.NewUlid(),
+            BookId = checkBooking?.BookId ?? null,
+            OrderId = order.OrderId,
+            Total = order.Total,
+            PaymentStatus = "Paid",
+            PaymentType = "Cash"
+            
+        };
 
+        await context.Bills.AddAsync(bill);
 
         await unitOfWork.SaveChangesAsync();
         return Result.Success();

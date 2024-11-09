@@ -38,9 +38,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("PaymentTypeId")
+                    b.Property<string>("PaymentType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(26)");
+                        .HasColumnType("varchar(20)");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
@@ -56,8 +56,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("OrderId")
                         .IsUnique();
-
-                    b.HasIndex("PaymentTypeId");
 
                     b.HasIndex("VoucherId");
 
@@ -437,20 +435,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.PaymentType", b =>
-                {
-                    b.Property<string>("PaymentTypeId")
-                        .HasColumnType("nvarchar(26)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("PaymentTypeId");
-
-                    b.ToTable("PaymentTypes");
-                });
-
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.SystemLog", b =>
                 {
                     b.Property<string>("SystemLogId")
@@ -610,12 +594,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RestaurantManagement.Domain.Entities.PaymentType", "PaymentType")
-                        .WithMany("Bills")
-                        .HasForeignKey("PaymentTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("RestaurantManagement.Domain.Entities.Voucher", "Voucher")
                         .WithMany("Bills")
                         .HasForeignKey("VoucherId");
@@ -623,8 +601,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("Booking");
 
                     b.Navigation("Order");
-
-                    b.Navigation("PaymentType");
 
                     b.Navigation("Voucher");
                 });
@@ -864,11 +840,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("OrderChangeLogs");
 
                     b.Navigation("OrderDetails");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.PaymentType", b =>
-                {
-                    b.Navigation("Bills");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>

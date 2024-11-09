@@ -10,7 +10,7 @@ public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagement
     public DbSet<BookingChangeLog> BookingChangeLogs { get; set; }
     public DbSet<CustomerVoucher> CustomerVouchers { get; set; }
     public DbSet<OrderChangeLog> OrderChangeLogs { get; set; }
-    public DbSet<PaymentType> PaymentTypes { get; set; }
+    // public DbSet<PaymentType> PaymentTypes { get; set; }
     public DbSet<TableType> TableTypes { get; set; }
     public DbSet<Voucher> Vouchers { get; set; }
     public DbSet<Booking> Bookings { get; set; }

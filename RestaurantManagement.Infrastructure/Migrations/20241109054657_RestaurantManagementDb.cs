@@ -26,18 +26,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PaymentTypes",
-                columns: table => new
-                {
-                    PaymentTypeId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    Name = table.Column<string>(type: "varchar(50)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PaymentTypes", x => x.PaymentTypeId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TableTypes",
                 columns: table => new
                 {
@@ -377,7 +365,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     OrderId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     BookId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     VoucherId = table.Column<string>(type: "nvarchar(26)", nullable: true),
-                    PaymentTypeId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    PaymentType = table.Column<string>(type: "varchar(20)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
@@ -393,12 +381,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "OrderId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Bills_PaymentTypes_PaymentTypeId",
-                        column: x => x.PaymentTypeId,
-                        principalTable: "PaymentTypes",
-                        principalColumn: "PaymentTypeId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Bills_Vouchers_VoucherId",
@@ -475,11 +457,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 table: "Bills",
                 column: "OrderId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bills_PaymentTypeId",
-                table: "Bills",
-                column: "PaymentTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bills_VoucherId",
@@ -621,9 +598,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "SystemLogs");
-
-            migrationBuilder.DropTable(
-                name: "PaymentTypes");
 
             migrationBuilder.DropTable(
                 name: "Bookings");
