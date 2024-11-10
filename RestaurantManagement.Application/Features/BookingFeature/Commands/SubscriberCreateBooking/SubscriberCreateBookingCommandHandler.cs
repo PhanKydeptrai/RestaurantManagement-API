@@ -76,6 +76,7 @@ public class SubscriberCreateBookingCommandHandler(
             NumberOfCustomers = request.NumberOfCustomers,
             Note = request.Note,
             CustomerId = info.CustomerId,
+            CreatedDate = DateTime.Now,
             BookingStatus = "Waiting",
             PaymentStatus = "Waiting"
 

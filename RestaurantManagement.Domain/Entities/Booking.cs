@@ -5,6 +5,7 @@ public class Booking
     public Ulid BookId { get; set; }
     public DateOnly BookingDate { get; set; }
     public TimeOnly BookingTime { get; set; }
+    public DateTime CreatedDate { get; set; }
     public decimal BookingPrice { get; set; }
     public string PaymentStatus { get; set; }
     public string BookingStatus { get; set; }
@@ -15,5 +16,4 @@ public class Booking
     public ICollection<BookingDetail>? BookingDetails { get; set; }
     public ICollection<BookingChangeLog>? BookingChangeLogs { get; set; }
     public Bill? Bill { get; set; }
-
 }

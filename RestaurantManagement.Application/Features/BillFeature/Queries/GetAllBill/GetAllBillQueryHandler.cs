@@ -12,18 +12,10 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.BillFeature.Queries.GetAllBill;
 
-public class GetAllBillQueryHandler : IQueryHandler<GetAllBillQuery, PagedList<BillResponse>>
+public class GetAllBillQueryHandler(
+    IBillRepository billRepository,
+    IApplicationDbContext context) : IQueryHandler<GetAllBillQuery, PagedList<BillResponse>>
 {
-    private readonly IBillRepository _billRepository;
-    private readonly IApplicationDbContext _context;
-    public GetAllBillQueryHandler(
-        IBillRepository billRepository,
-        IApplicationDbContext context)
-    {
-        _billRepository = billRepository;
-        _context = context;
-    }
-
     public async Task<Result<PagedList<BillResponse>>> Handle(GetAllBillQuery request, CancellationToken cancellationToken)
     {
         var validator = new GetAllBillQueryValidator();
@@ -32,7 +24,7 @@ public class GetAllBillQueryHandler : IQueryHandler<GetAllBillQuery, PagedList<B
             return Result<PagedList<BillResponse>>.Failure(errors);
         }
         
-        var billQuery = _context.Bills
+        var billQuery = context.Bills
             .Include(a => a.Booking)
             .ThenInclude(a => a.Customer.User)
             .Include(a => a.Order)
