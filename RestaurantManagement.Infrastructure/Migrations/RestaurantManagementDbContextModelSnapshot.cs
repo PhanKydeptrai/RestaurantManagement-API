@@ -80,6 +80,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<TimeOnly>("BookingTime")
                         .HasColumnType("time");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
+
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(26)");

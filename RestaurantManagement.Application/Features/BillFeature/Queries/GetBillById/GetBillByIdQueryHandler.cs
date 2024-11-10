@@ -8,15 +8,8 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.BillFeature.Queries.GetBillById;
 
-public class GetBillByIdQueryHandler : IQueryHandler<GetBillByIdQuery, BillResponse>
+public class GetBillByIdQueryHandler(IApplicationDbContext context) : IQueryHandler<GetBillByIdQuery, BillResponse>
 {
-    private readonly IApplicationDbContext _context;
-
-    public GetBillByIdQueryHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Result<BillResponse>> Handle(GetBillByIdQuery request, CancellationToken cancellationToken)
     {
         var validator = new GetBillByIdQueryValidator();
@@ -24,7 +17,8 @@ public class GetBillByIdQueryHandler : IQueryHandler<GetBillByIdQuery, BillRespo
         {
             return Result<BillResponse>.Failure(errors);
         }
-        var bill = await _context.Bills
+        var bill = await context.Bills
+            .AsNoTracking()
             .Include(a => a.Booking)
             .ThenInclude(a => a.Customer.User)
             .Include(a => a.Order)

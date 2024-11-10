@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241109054657_RestaurantManagementDb")]
+    [Migration("20241110065155_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -82,6 +82,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.Property<TimeOnly>("BookingTime")
                         .HasColumnType("time");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("CustomerId")
                         .IsRequired()

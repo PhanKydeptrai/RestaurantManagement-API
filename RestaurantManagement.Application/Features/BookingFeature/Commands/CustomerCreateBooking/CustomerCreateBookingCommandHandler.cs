@@ -101,6 +101,7 @@ public class CustomerCreateBookingCommandHandler(
             BookingPrice = bookingPrice,
             PaymentStatus = "Waiting",
             BookingStatus = "Waiting",
+            CreatedDate = DateTime.Now,
             NumberOfCustomers = request.NumberOfCustomers,
             CustomerId = isCustomerExist?.CustomerId ?? customerId,
             Note = request.Note

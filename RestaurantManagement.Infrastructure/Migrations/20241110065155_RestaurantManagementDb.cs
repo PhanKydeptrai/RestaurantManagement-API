@@ -232,6 +232,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     BookId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     BookingDate = table.Column<DateOnly>(type: "date", nullable: false),
                     BookingTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     BookingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PaymentStatus = table.Column<string>(type: "varchar(20)", nullable: false),
                     BookingStatus = table.Column<string>(type: "varchar(20)", nullable: false),
