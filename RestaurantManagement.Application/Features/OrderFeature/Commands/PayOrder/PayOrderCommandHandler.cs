@@ -59,6 +59,7 @@ public class PayOrderCommandHandler(
         {
             BillId = Ulid.NewUlid(),
             BookId = checkBooking?.BookId ?? null,
+            CreatedDate = DateTime.Now,
             OrderId = order.OrderId,
             Total = order.Total,
             PaymentStatus = "Paid",

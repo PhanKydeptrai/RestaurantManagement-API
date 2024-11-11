@@ -12,8 +12,8 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241110065155_RestaurantManagementDb")]
-    partial class RestaurantManagementDb
+    [Migration("20241111045212_RestaurantManagemntDb")]
+    partial class RestaurantManagemntDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.Property<string>("BookId")
                         .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("OrderId")
                         .IsRequired()

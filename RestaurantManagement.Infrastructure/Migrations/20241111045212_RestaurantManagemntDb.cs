@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RestaurantManagementDb : Migration
+    public partial class RestaurantManagemntDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -363,6 +363,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 {
                     BillId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     PaymentStatus = table.Column<string>(type: "varchar(20)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     OrderId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     BookId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     VoucherId = table.Column<string>(type: "nvarchar(26)", nullable: true),
