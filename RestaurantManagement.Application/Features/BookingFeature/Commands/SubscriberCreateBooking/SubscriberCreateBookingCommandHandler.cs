@@ -79,7 +79,6 @@ public class SubscriberCreateBookingCommandHandler(
             CreatedDate = DateTime.Now,
             BookingStatus = "Waiting",
             PaymentStatus = "Waiting"
-
         };
 
         await bookingRepository.AddBooking(booking);
