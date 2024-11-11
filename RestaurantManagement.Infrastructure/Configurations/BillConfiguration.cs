@@ -21,6 +21,8 @@ internal sealed class BillConfiguration : IEntityTypeConfiguration<Bill>
 
         builder.Property(a => a.VoucherId).IsRequired(false).HasConversion<UlidToStringConverter>();
 
+        builder.Property(a => a.CreatedDate).IsRequired().HasColumnType("datetime");
+
         builder.Property(a => a.PaymentType).IsRequired().HasColumnType("varchar(20)");
 
         builder.Property(a => a.Total).IsRequired().HasColumnType("decimal(18,2)");

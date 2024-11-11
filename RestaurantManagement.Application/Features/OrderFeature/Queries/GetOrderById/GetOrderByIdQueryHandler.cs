@@ -27,6 +27,7 @@ public class GetOrderByIdQueryHandler(
                     b.OrderDetailId,
                     b.MealId,
                     b.Meal.MealName,
+                    b.Meal.Price,
                     b.Meal.ImageUrl,
                     b.Quantity,
                     b.UnitPrice

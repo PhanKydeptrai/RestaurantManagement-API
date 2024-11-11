@@ -12,6 +12,7 @@ public record OrderDetailResponse(
     Ulid OrderDetailId,
     Ulid MealId,
     string MealName,
+    decimal MealPrice,
     string ImageUrl,
     int Quantity,
     decimal UnitPrice

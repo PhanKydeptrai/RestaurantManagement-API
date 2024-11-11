@@ -30,6 +30,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<string>("BookId")
                         .HasColumnType("nvarchar(26)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
+
                     b.Property<string>("OrderId")
                         .IsRequired()
                         .HasColumnType("nvarchar(26)");

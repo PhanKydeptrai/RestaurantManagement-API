@@ -72,6 +72,7 @@ public class GetAllBillQueryHandler(
                 a.Booking.Customer.User.Phone,
                 a.Order.TableId,
                 a.BillId,
+                a.CreatedDate,
                 a.Booking.BookId,
                 a.Booking.BookingDate,
                 a.Booking.BookingTime,
@@ -82,6 +83,7 @@ public class GetAllBillQueryHandler(
                     b.OrderDetailId,
                     b.MealId,
                     b.Meal.MealName,
+                    b.Meal.Price,
                     b.Meal.ImageUrl,
                     b.Quantity,
                     b.UnitPrice

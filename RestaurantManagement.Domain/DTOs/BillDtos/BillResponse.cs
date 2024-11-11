@@ -10,6 +10,7 @@ public record BillResponse(
     string? PhoneNumber,
     int TableId,
     Ulid BillId,
+    DateTime CreatedDate,
     Ulid? BookingId,
     DateOnly? BookingDate,
     TimeOnly? BookingTime,

@@ -4,6 +4,7 @@ public class Bill
 {
     public Ulid BillId { get; set; }
     public string PaymentStatus { get; set; }
+    public DateTime CreatedDate { get; set; }
     public Ulid OrderId { get; set; }
     public Ulid? BookId { get; set; }
     public Ulid? VoucherId { get; set; }
