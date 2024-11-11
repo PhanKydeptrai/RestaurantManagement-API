@@ -52,10 +52,10 @@ namespace RestaurantManagement.API.Controllers
 
             {
                 var result = await sender.Send(new GetBillByIdQuery(id));
-                if(!result.IsSuccess)
-                {
-                    return Results.BadRequest(result);
-                }
+                // if(!result.IsSuccess)
+                // {
+                //     return Results.BadRequest(result);
+                // }
                 var html = await RazorTemplateEngine.RenderAsync("Views/BillReport.cshtml", result.Value);
                 var renderer = new ChromePdfRenderer();
 

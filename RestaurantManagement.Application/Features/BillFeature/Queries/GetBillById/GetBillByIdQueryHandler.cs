@@ -45,7 +45,8 @@ public class GetBillByIdQueryHandler(IApplicationDbContext context) : IQueryHand
                     b.Meal.ImageUrl,
                     b.Quantity,
                     b.UnitPrice
-                )).ToArray())).FirstOrDefaultAsync();
+                )).ToArray()))
+                .FirstOrDefaultAsync();
 
         if (bill != null)
         {

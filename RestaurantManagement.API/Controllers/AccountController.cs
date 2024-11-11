@@ -15,6 +15,7 @@ using RestaurantManagement.Application.Features.AccountFeature.Queries.DecodeTok
 using RestaurantManagement.Application.Features.AccountFeature.Queries.EmployeeLogin;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.GetEmployeeAccountInfo;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
+using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers
@@ -186,8 +187,8 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result);
             });
 
-
-            endpoints.MapGet("account-info", async (
+            //get employee account info
+            endpoints.MapGet("account-emp-info", async (
                 ISender sender,
                 HttpContext httpContext,
                 IJwtProvider jwtProvider) =>
@@ -195,6 +196,24 @@ namespace RestaurantManagement.API.Controllers
                 //lấy token
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
                 var result = await sender.Send(new GetEmployeeAccountInfoQuery(token));
+                if (result.IsSuccess)
+                {
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result);
+            }).RequireAuthorization();
+
+
+            //get customer account info
+            endpoints.MapGet("account-cus-info", async (
+                ISender sender,
+                HttpContext httpContext,
+                IJwtProvider jwtProvider) =>
+            {
+                //lấy token
+                var token = jwtProvider.GetTokenFromHeader(httpContext);
+                var userId = await sender.Send(new DecodeTokenQuery(token));
+                var result = await sender.Send(new GetCustomerByIdQuery(userId.Value));
                 if (result.IsSuccess)
                 {
                     return Results.Ok(result);
