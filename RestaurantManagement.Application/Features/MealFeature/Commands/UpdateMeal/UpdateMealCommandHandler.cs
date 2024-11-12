@@ -17,7 +17,7 @@ public class UpdateMealCommandHandler(
     public async Task<Result> Handle(UpdateMealCommand request, CancellationToken cancellationToken)
     {
         //validator 
-        var validator = new UpdateMealValidator(mealRepository, categoryRepository);
+        var validator = new UpdateMealCommandValidator(mealRepository, categoryRepository);
         if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);

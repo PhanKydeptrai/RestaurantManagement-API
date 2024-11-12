@@ -5,10 +5,10 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 
-public class GetCategoryByIdCommandHandler(IApplicationDbContext context) : IQueryHandler<GetCategoryByIdCommand, CategoryResponse>
+public class GetCategoryByIdQueryHandler(IApplicationDbContext context) : IQueryHandler<GetCategoryByIdQuery, CategoryResponse>
 {
     //REFACOTR
-    public async Task<Result<CategoryResponse>> Handle(GetCategoryByIdCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CategoryResponse>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
     {
         var result = await context.Categories
             .FindAsync(request.Id);

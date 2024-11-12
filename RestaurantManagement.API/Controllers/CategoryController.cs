@@ -30,7 +30,7 @@ public class CategoryController : IEndpoint
             [FromQuery] int? page,
             [FromQuery] int? pageSize, ISender sender) =>
         {
-            var query = new CategoryFilterQuery(filter ,searchTerm, sortColumn, sortOrder, page, pageSize);
+            var query = new GetAllCategoryQuery(filter ,searchTerm, sortColumn, sortOrder, page, pageSize);
             var response = await sender.Send(query);
             return Results.Ok(response);
 
@@ -39,7 +39,7 @@ public class CategoryController : IEndpoint
         //Lấy category theo id
         endpoints.MapGet("{id}", async (Ulid id, ISender sender) =>
         {
-            var response = await sender.Send(new GetCategoryByIdCommand(id));
+            var response = await sender.Send(new GetCategoryByIdQuery(id));
             if (response.IsSuccess)
             {
                 return Results.Ok(response);

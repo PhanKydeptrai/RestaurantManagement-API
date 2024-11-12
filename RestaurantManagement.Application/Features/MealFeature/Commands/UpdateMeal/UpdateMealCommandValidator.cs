@@ -3,9 +3,9 @@ using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.Application.Features.MealFeature.Commands.UpdateMeal;
 
-public class UpdateMealValidator : AbstractValidator<UpdateMealCommand>
+public class UpdateMealCommandValidator : AbstractValidator<UpdateMealCommand>
 {
-    public UpdateMealValidator(
+    public UpdateMealCommandValidator(
         IMealRepository mealRepository,
         ICategoryRepository categoryRepository)
     {

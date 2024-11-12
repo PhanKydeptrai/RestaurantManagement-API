@@ -4,9 +4,9 @@ using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.UpdateEmployeeRole;
 
-public class UpdateEmployeeRoleValidator : AbstractValidator<UpdateEmployeeRoleCommand>
+public class UpdateEmployeeRoleCommandValidator : AbstractValidator<UpdateEmployeeRoleCommand>
 {
-    public UpdateEmployeeRoleValidator(IEmployeeRepository employeeRepository)
+    public UpdateEmployeeRoleCommandValidator(IEmployeeRepository employeeRepository)
     {
         RuleFor(x => x.id)
             .Must(a => employeeRepository.IsEmployeeExist(Ulid.Parse(a)).Result == true)

@@ -3,9 +3,9 @@ using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.RestoreTableType;
 
-public class RestoreTableTyeCommandValidator : AbstractValidator<RestoreTableTyeCommand>
+public class RestoreTableTypeCommandValidator : AbstractValidator<RestoreTableTypeCommand>
 {
-    public RestoreTableTyeCommandValidator(ITableTypeRepository tableTypeRepository)
+    public RestoreTableTypeCommandValidator(ITableTypeRepository tableTypeRepository)
     {
         RuleFor(x => x.id)
             .Must(a => tableTypeRepository.IsTableTypeExist(Ulid.Parse(a)).Result == true)

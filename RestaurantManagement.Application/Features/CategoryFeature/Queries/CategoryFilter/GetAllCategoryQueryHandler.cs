@@ -8,9 +8,9 @@ using System.Linq.Expressions;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 
-public class CategoryFilterQueryHandler(IApplicationDbContext context) : IQueryHandler<CategoryFilterQuery, PagedList<CategoryResponse>>
+public class GetAllCategoryQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllCategoryQuery, PagedList<CategoryResponse>>
 {
-    public async Task<Result<PagedList<CategoryResponse>>> Handle(CategoryFilterQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PagedList<CategoryResponse>>> Handle(GetAllCategoryQuery request, CancellationToken cancellationToken)
     {
         var categoriesQuery = context.Categories.AsQueryable();
 
