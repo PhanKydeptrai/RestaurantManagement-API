@@ -98,7 +98,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok("Check your email!");
                 }
                 return Results.BadRequest(result);
-            });
+            }).RequireRateLimiting("ResetPass");
 
             //verify email (Active account for customer)
             endpoints.MapGet("verify-email", async (Ulid token, ISender sender) =>
@@ -112,7 +112,7 @@ namespace RestaurantManagement.API.Controllers
 
                 return Results.BadRequest(result.Errors[0].Message);
 
-            });
+            }).WithName("verify-email");
 
             //verify email to reset pass
             endpoints.MapGet("verify-reset-password", async (Ulid token, ISender sender) =>
@@ -125,7 +125,7 @@ namespace RestaurantManagement.API.Controllers
 
                 return Results.BadRequest(result.Errors[0].Message);
 
-            });
+            }).WithName("verify-reset-password");
 
             //verify email to change pass
             endpoints.MapGet("verify-change-password", async (Ulid token, ISender sender) =>
@@ -137,7 +137,7 @@ namespace RestaurantManagement.API.Controllers
                 }
 
                 return Results.BadRequest(result.Errors[0].Message);
-            });
+            }).WithName("verify-change-password");
 
             //Change password 
             endpoints.MapPost("change-password", async (
@@ -185,7 +185,7 @@ namespace RestaurantManagement.API.Controllers
                 }
 
                 return Results.BadRequest(result);
-            });
+            }).WithName("customer/confirm-delete-account");
 
             //get employee account info
             endpoints.MapGet("account-emp-info", async (

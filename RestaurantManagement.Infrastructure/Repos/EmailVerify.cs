@@ -14,43 +14,45 @@ public class EmailVerify(
     IFluentEmail fluentEmail) : IEmailVerify
 {
 
-    //tạo link xác thực email
-    //TODO: Fix hard code link
     public string Create(EmailVerificationToken emailVerificationToken)
     {
-        #region OldCode
-        //string? link = _linkGenerator.GetUriByName(
-        //        _httpContextAccessor.HttpContext!,
-        //        "verify-email",
-        //        new { emailVerificationToken.EmailVerificationTokenId });
-        #endregion
-
-        string? link = "https://localhost:7057/api/account/verify-email?token=" + emailVerificationToken.EmailVerificationTokenId.ToString();
+        
+        string? link = linkGenerator.GetUriByName(
+               httpContextAccessor.HttpContext!,
+               "verify-email",
+               new { token = emailVerificationToken.EmailVerificationTokenId });
+        
         return link;
     }
     public string CreateLinkForResetPass(EmailVerificationToken emailVerificationToken)
     {
-        #region OldCode
-        //string? link = _linkGenerator.GetUriByName(
-        //        _httpContextAccessor.HttpContext!,
-        //        "verify-email",
-        //        new { emailVerificationToken.EmailVerificationTokenId });
-        #endregion
+        string? link = linkGenerator.GetUriByName(
+               httpContextAccessor.HttpContext!,
+               "verify-reset-password",
+               new { token = emailVerificationToken.EmailVerificationTokenId });
 
-        string? link = "https://localhost:7057/api/account/verify-reset-password?token=" + emailVerificationToken.EmailVerificationTokenId.ToString();
         return link;
     }
 
     public string CreateLinkForChangePass(EmailVerificationToken emailVerificationToken)
     {
-        string? link = "https://localhost:7057/api/account/verify-change-password?token=" + emailVerificationToken.EmailVerificationTokenId.ToString();
+
+        string? link = linkGenerator.GetUriByName(
+               httpContextAccessor.HttpContext!,
+               "verify-change-password",
+               new { token = emailVerificationToken.EmailVerificationTokenId });
+
         return link;
     }
 
 
     public string CreateLinkForDeleteCustomerAccount(EmailVerificationToken emailVerificationToken)
     {
-        string? link = "https://localhost:7057/api/account/customer/confirm-delete-account?token=" + emailVerificationToken.EmailVerificationTokenId.ToString();
+        string? link = linkGenerator.GetUriByName(
+               httpContextAccessor.HttpContext!,
+               "confirm-delete-account",
+               new { token = emailVerificationToken.EmailVerificationTokenId });
+
         return link;
     }
 
