@@ -10,7 +10,7 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee;
 
-public class CreateEmployeeHandler(IEmployeeRepository employeeRepository, IUserRepository userRepository, IUnitOfWork unitOfWork, IFluentEmail fluentEmail, ISystemLogRepository systemLogRepository) : ICommandHandler<CreateEmployeeCommand>
+public class CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository, IUserRepository userRepository, IUnitOfWork unitOfWork, IFluentEmail fluentEmail, ISystemLogRepository systemLogRepository) : ICommandHandler<CreateEmployeeCommand>
 {
     public async Task<Result> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {

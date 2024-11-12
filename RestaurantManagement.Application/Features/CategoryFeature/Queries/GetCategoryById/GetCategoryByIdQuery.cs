@@ -3,4 +3,4 @@ using RestaurantManagement.Domain.DTOs.CategoryDto;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.GetCategoryById;
 
-public record GetCategoryByIdCommand(Ulid Id) : IQuery<CategoryResponse>;
+public record GetCategoryByIdQuery(Ulid Id) : IQuery<CategoryResponse>;

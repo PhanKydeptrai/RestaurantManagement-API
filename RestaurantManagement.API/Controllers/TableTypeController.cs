@@ -135,7 +135,7 @@ public class TableTypeController : IEndpoint
             string id,
             ISender sender) => 
         {
-            var result = await sender.Send(new RestoreTableTyeCommand(id));
+            var result = await sender.Send(new RestoreTableTypeCommand(id));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);

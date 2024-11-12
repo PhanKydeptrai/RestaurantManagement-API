@@ -4,7 +4,7 @@ using RestaurantManagement.Domain.DTOs.CategoryDto;
 
 namespace RestaurantManagement.Application.Features.CategoryFeature.Queries.CategoryFilter;
 
-public record CategoryFilterQuery(
+public record GetAllCategoryQuery(
     string? filter,
     string? searchTerm,
     string? sortColumn,

@@ -4,14 +4,14 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.RestoreTableType;
 
-public class RestoreTableTyeCommandHandler(
+public class RestoreTableTypeCommandHandler(
     ITableTypeRepository tableTypeRepository,
-    IUnitOfWork unitOfWork) : ICommandHandler<RestoreTableTyeCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<RestoreTableTypeCommand>
 {
-    public async Task<Result> Handle(RestoreTableTyeCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(RestoreTableTypeCommand request, CancellationToken cancellationToken)
     {
         //Validator
-        var validator = new RestoreTableTyeCommandValidator(tableTypeRepository);  
+        var validator = new RestoreTableTypeCommandValidator(tableTypeRepository);  
         var validationResult = await validator.ValidateAsync(request);
 
         if (!validationResult.IsValid)
