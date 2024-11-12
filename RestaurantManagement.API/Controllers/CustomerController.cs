@@ -14,7 +14,7 @@ public class CustomerController : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("api/customer").WithTags("Customer").DisableAntiforgery();
+        var endpoints = app.MapGroup("api/customer").WithTags("Customer").DisableAntiforgery().RequireRateLimiting("AntiSpam");
 
         // Get all with pagination
         endpoints.MapGet("",
@@ -59,8 +59,7 @@ public class CustomerController : IEndpoint
             }
             return Results.BadRequest(result);
             
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("boss");
 
 
 
@@ -107,8 +106,7 @@ public class CustomerController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("customer")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("customer");
 
     }
 }
