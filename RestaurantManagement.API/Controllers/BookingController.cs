@@ -19,7 +19,7 @@ public class BookingController : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("api/booking").WithTags("Booking").DisableAntiforgery();
+        var endpoints = app.MapGroup("api/booking").WithTags("Booking").DisableAntiforgery().RequireRateLimiting("AntiSpam");
 
         endpoints.MapGet("", async (
             [FromQuery] string? filterBookingStatus,
@@ -113,7 +113,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization("customer");
+        });
 
         //Xếp bàn cho khách 
         endpoints.MapPost("table-arrange/{BookingId}", async (
@@ -127,7 +127,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization();
+        });
 
         //Hủy đặt bàn
         endpoints.MapDelete("{id}", async (
@@ -140,7 +140,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireRateLimiting("AntiSpam");
+        });
 
         //Trả về url thanh toán
         endpoints.MapGet("ReturnUrl", async (

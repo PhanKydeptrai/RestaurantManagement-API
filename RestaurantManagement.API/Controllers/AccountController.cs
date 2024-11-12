@@ -26,7 +26,7 @@ namespace RestaurantManagement.API.Controllers
 
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            var endpoints = app.MapGroup("api/account").WithTags("Account").DisableAntiforgery();
+            var endpoints = app.MapGroup("api/account").WithTags("Account").DisableAntiforgery().RequireRateLimiting("AntiSpam");
 
             //Register for customer
             endpoints.MapPost("register",

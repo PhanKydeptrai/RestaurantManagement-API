@@ -29,11 +29,15 @@ builder.Services.AddInfrastructureExtentions(builder.Configuration)
 //Add endpoints
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
-// Add services to the container.
-// builder.Services.AddControllers().AddJsonOptions(options =>
-// {
-//     options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
-// });
+
+// builder.Services.AddControllersWithViews()
+//     .AddRazorRuntimeCompilation()
+//     .AddNewtonsoftJson();
+
+// builder.Services.AddRazorPages();
+
+
+
 
 //Add serilog
 builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
@@ -115,6 +119,11 @@ builder.Services.AddAuthentication(options =>
 //     googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 // });
 
+
+
+
+
+
 // Cấu hình cho swaggergen
 builder.Services.AddSwaggerGen(option =>
 {
@@ -148,6 +157,7 @@ builder.Services.AddSwaggerGen(option =>
     var filePath = Path.Combine(AppContext.BaseDirectory, fileName); //AppContext.BaseDirectory Lấy địa chỉ thư mục gốc
     Console.WriteLine(filePath);
     option.IncludeXmlComments(filePath);
+
     option.MapType<DateOnly>(() => new OpenApiSchema
     {
         Type = "string",

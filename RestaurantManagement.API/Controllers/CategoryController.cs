@@ -17,7 +17,7 @@ public class CategoryController : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("api/category").WithTags("Category").DisableAntiforgery();
+        var endpoints = app.MapGroup("api/category").WithTags("Category").DisableAntiforgery().RequireRateLimiting("AntiSpam");
 
 
         //Lấy danh sách category
@@ -73,8 +73,7 @@ public class CategoryController : IEndpoint
             }
 
             return Results.BadRequest(result);
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("boss");
 
         //Cập nhật category
         endpoints.MapPut("{id}",
@@ -101,8 +100,7 @@ public class CategoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("boss");
 
         //Xóa category
         endpoints.MapDelete("{id}",
@@ -123,8 +121,7 @@ public class CategoryController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("boss");
 
 
         //Xóa nhiều category
@@ -147,8 +144,7 @@ public class CategoryController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("boss");
 
         //Khôi phục category
         endpoints.MapPut("restore/{id}",
@@ -169,8 +165,7 @@ public class CategoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("boss");
 
         //Khôi phục nhiều category
         endpoints.MapPut("restore",
@@ -191,8 +186,7 @@ public class CategoryController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("boss");
 
 
         //Lấy tên và id của category

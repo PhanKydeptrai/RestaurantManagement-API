@@ -16,7 +16,10 @@ public class TableTypeController : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder builder)
     {
-        var endpoints = builder.MapGroup("api/tabletype").WithTags("TableType").DisableAntiforgery();
+        var endpoints = builder.MapGroup("api/tabletype")
+            .WithTags("TableType")
+            .DisableAntiforgery()
+            .RequireRateLimiting("AntiSpam");
 
         endpoints.MapGet("",
         async (
@@ -58,8 +61,7 @@ public class TableTypeController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("boss");
 
         //Update table type
         endpoints.MapPut("{id}",
@@ -89,8 +91,7 @@ public class TableTypeController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("boss");
 
 
         //Get table type by id
@@ -126,8 +127,7 @@ public class TableTypeController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("boss");
 
         //Restore table type by id
         endpoints.MapPut("restore/{id}",
@@ -142,8 +142,7 @@ public class TableTypeController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization("boss");
 
         endpoints.MapGet("tabletype-info", async (ISender sender) =>
         {
