@@ -1,8 +1,5 @@
 ﻿@model RestaurantManagement.Domain.DTOs.BillDtos.BillResponse
 
-@{
-
-}
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -22,6 +19,16 @@
                 <p class="font-medium">Khách hàng: @Model.FirstName @Model.LastName</p>
                 <p class="font-medium">Số điện thoại: @Model.PhoneNumber</p>
                 <p class="font-medium">Email: @Model.Email</p>
+            </div>
+        }
+
+        @if (@Model.BookPrice != null)
+        {
+            <div class="bg-gray-100 rounded-lg flex flex-col space-y-1 p-4 w-1/2">
+                <p class="font-medium">Mã đặt bàn: @Model.BookingId</p>
+                
+                <p class="font-medium">Giá booking: @Model.BookPrice (Đã trừ 50%)</p>
+               
             </div>
         }
     </div>
