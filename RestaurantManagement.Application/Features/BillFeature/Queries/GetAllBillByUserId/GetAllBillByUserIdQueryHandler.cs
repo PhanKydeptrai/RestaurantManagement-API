@@ -73,7 +73,7 @@ public class GetAllBillByUserIdQueryHandler(IApplicationDbContext context) : IQu
                 a.BillId,
                 a.CreatedDate,
                 a.Booking.BookId,
-                a.Booking.BookingPrice / 2,
+                (int)a.Booking.BookingPrice / 2,
                 a.Booking.BookingDate,
                 a.Booking.BookingTime,
                 a.Order.OrderId,

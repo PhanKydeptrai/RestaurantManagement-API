@@ -1,5 +1,4 @@
 using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace RestaurantManagement.Application.Features.BillFeature.Queries.GetBillById;
 
