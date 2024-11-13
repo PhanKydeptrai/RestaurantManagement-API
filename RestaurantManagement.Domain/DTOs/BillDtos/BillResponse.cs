@@ -12,7 +12,7 @@ public record BillResponse(
     Ulid BillId,
     DateTime CreatedDate,
     Ulid? BookingId,
-    decimal BookPrice,
+    int? BookPrice,
     DateOnly? BookingDate,
     TimeOnly? BookingTime,
     Ulid OrderId,
