@@ -16,7 +16,7 @@ public record BillResponse(
     DateOnly? BookingDate,
     TimeOnly? BookingTime,
     Ulid OrderId,
-    decimal TotalPrice,
+    int TotalPrice,
     string PaymentType,
     OrderDetailResponse[] OrderDetails
 );

@@ -188,7 +188,7 @@ public class BookingController : IEndpoint
 
             await unitOfWork.SaveChangesAsync();
 
-            return Results.Ok("Payment Success! Please check your email for more information");
+            return Results.Ok("Payment Success!");
         });
 
     }
