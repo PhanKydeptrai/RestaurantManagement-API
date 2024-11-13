@@ -235,16 +235,16 @@ namespace RestaurantManagement.API.Controllers
             });
 
             #region Google authen
-            endpoints.MapPost("test/{token}", async (
-                string token,
-                ISender sender) =>
-            {
-                var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings()
-                {
-                    Audience = new[] { "512717206233-ul0hu3t49c9o30rf4lqueiqrliddrk7q.apps.googleusercontent.com" }
-                });
-                return Results.Ok();
-            });
+            // endpoints.MapPost("test/{token}", async (
+            //     string token,
+            //     ISender sender) =>
+            // {
+            //     var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings()
+            //     {
+            //         Audience = new[] { "512717206233-ul0hu3t49c9o30rf4lqueiqrliddrk7q.apps.googleusercontent.com" }
+            //     });
+            //     return Results.Ok();
+            // });
             #endregion
 
         }
