@@ -22,15 +22,15 @@ public class GetOrderByIdQueryHandler(
                 a.TableId,
                 a.OrderId,
                 a.PaymentStatus,
-                a.Total,
+                (int)a.Total,
                 a.OrderDetails.Select(b => new OrderDetailResponse(
                     b.OrderDetailId,
                     b.MealId,
                     b.Meal.MealName,
-                    b.Meal.Price,
+                    (int)b.Meal.Price,
                     b.Meal.ImageUrl,
                     b.Quantity,
-                    b.UnitPrice
+                    (int)b.UnitPrice
                 )).ToArray()
             )).FirstOrDefaultAsync();
 

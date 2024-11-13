@@ -4,7 +4,7 @@ public record OrderResponse(
     int TableId,
     Ulid OrderId,
     string PaymentStatus,
-    decimal Total,
+    int Total,
     OrderDetailResponse[] OrderDetails
 );
 
@@ -12,8 +12,8 @@ public record OrderDetailResponse(
     Ulid OrderDetailId,
     Ulid MealId,
     string MealName,
-    decimal MealPrice,
+    int MealPrice,
     string ImageUrl,
     int Quantity,
-    decimal UnitPrice
+    int UnitPrice
 );

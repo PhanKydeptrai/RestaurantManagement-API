@@ -77,16 +77,16 @@ public class GetAllBillByUserIdQueryHandler(IApplicationDbContext context) : IQu
                 a.Booking.BookingDate,
                 a.Booking.BookingTime,
                 a.Order.OrderId,
-                a.Total,
+                (int)a.Total,
                 a.PaymentType,
                 a.Order.OrderDetails.Select(b => new OrderDetailResponse(
                     b.OrderDetailId,
                     b.MealId,
                     b.Meal.MealName,
-                    b.Meal.Price,
+                    (int)b.Meal.Price,
                     b.Meal.ImageUrl,
                     b.Quantity,
-                    b.UnitPrice
+                    (int)b.UnitPrice
                 )).ToArray())).AsQueryable();
 
 
