@@ -19,6 +19,7 @@ public class GetBillByIdQueryHandler(IApplicationDbContext context) : IQueryHand
         }
         var bill = await context.Bills
             .AsNoTracking()
+            .Where(a => a.BillId == Ulid.Parse(request.billId))
             .Include(a => a.Booking)
             .ThenInclude(a => a.Customer.User)
             .Include(a => a.Order)
@@ -34,6 +35,7 @@ public class GetBillByIdQueryHandler(IApplicationDbContext context) : IQueryHand
                 a.BillId,
                 a.CreatedDate,
                 a.Booking.BookId,
+                a.Booking.BookingPrice/2,
                 a.Booking.BookingDate,
                 a.Booking.BookingTime,
                 a.Order.OrderId,
@@ -49,6 +51,8 @@ public class GetBillByIdQueryHandler(IApplicationDbContext context) : IQueryHand
                     b.UnitPrice
                 )).ToArray()))
                 .FirstOrDefaultAsync();
+
+        
 
         if (bill != null)
         {

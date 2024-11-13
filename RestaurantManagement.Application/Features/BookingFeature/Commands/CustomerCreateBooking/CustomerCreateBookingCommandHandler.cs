@@ -139,8 +139,8 @@ public class CustomerCreateBookingCommandHandler(
         await fluentEmail.To(userEmail).Subject("Xác nhận đặt bàn")
             .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> <br> Mã booking của bạn là: {booking.BookId}", isHtml: true)
             .SendAsync();
+
         return Result.Success();
-        
     }
 
 }

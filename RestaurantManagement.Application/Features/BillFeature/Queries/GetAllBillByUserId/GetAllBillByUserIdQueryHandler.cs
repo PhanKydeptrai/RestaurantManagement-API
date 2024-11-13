@@ -7,24 +7,22 @@ using RestaurantManagement.Application.Features.Paging;
 using RestaurantManagement.Domain.DTOs.BillDtos;
 using RestaurantManagement.Domain.DTOs.OrderDto;
 using RestaurantManagement.Domain.Entities;
-using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.BillFeature.Queries.GetAllBill;
+namespace RestaurantManagement.Application.Features.BillFeature.Queries.GetAllBillByUserId;
 
-public class GetAllBillQueryHandler(
-    IBillRepository billRepository,
-    IApplicationDbContext context) : IQueryHandler<GetAllBillQuery, PagedList<BillResponse>>
+public class GetAllBillByUserIdQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllBillByUserIdQuery, PagedList<BillResponse>>
 {
-    public async Task<Result<PagedList<BillResponse>>> Handle(GetAllBillQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PagedList<BillResponse>>> Handle(GetAllBillByUserIdQuery request, CancellationToken cancellationToken)
     {
-        var validator = new GetAllBillQueryValidator();
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
-        {
-            return Result<PagedList<BillResponse>>.Failure(errors);
-        }
-        
+        //Decode jwt
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
+
+
         var billQuery = context.Bills
+            .AsNoTracking()
+            .Where(a => a.Booking.Customer.UserId == Ulid.Parse(userId))
             .Include(a => a.Booking)
             .ThenInclude(a => a.Customer.User)
             .Include(a => a.Order)
@@ -40,11 +38,10 @@ public class GetAllBillQueryHandler(
         // }
 
         //Filter
-        if (!string.IsNullOrEmpty(request.filter))
-        {
-            billQuery = billQuery.Where(x => x.Booking.Customer.UserId == Ulid.Parse(request.filter));
-        }
-
+        // if (!string.IsNullOrEmpty(request.filter))
+        // {
+        //     billQuery = billQuery.Where(x => x.Booking.Customer.UserId == Ulid.Parse(request.filter));
+        // }
 
         //sort
         Expression<Func<Bill, object>> keySelector = request.sortColumn?.ToLower() switch
@@ -62,8 +59,10 @@ public class GetAllBillQueryHandler(
             billQuery = billQuery.OrderBy(keySelector);
         }
 
+
         //paged
         var bills = billQuery
+
             .Select(a => new BillResponse(
                 a.Booking.Customer.UserId,
                 a.Booking.Customer.User.LastName,
@@ -74,7 +73,7 @@ public class GetAllBillQueryHandler(
                 a.BillId,
                 a.CreatedDate,
                 a.Booking.BookId,
-                a.Booking.BookingPrice/2,
+                a.Booking.BookingPrice / 2,
                 a.Booking.BookingDate,
                 a.Booking.BookingTime,
                 a.Order.OrderId,
@@ -89,6 +88,7 @@ public class GetAllBillQueryHandler(
                     b.Quantity,
                     b.UnitPrice
                 )).ToArray())).AsQueryable();
+
 
         var billsList = await PagedList<BillResponse>.CreateAsync(bills, request.page ?? 1, request.pageSize ?? 10);
         return Result<PagedList<BillResponse>>.Success(billsList);
