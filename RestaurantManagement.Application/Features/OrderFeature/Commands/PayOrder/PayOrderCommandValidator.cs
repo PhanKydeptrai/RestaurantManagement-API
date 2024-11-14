@@ -8,7 +8,7 @@ public class PayOrderCommandValidator : AbstractValidator<PayOrderCommand>
     public PayOrderCommandValidator(ITableRepository tableRepository)
     {
         RuleFor(a => a.tableId)
-            .Must(a => tableRepository.IsTableExist(int.Parse(a)).Result == true)
+            .Must(a => tableRepository.IsTableExistAndActive(int.Parse(a)).Result == true)
             .WithMessage("Table does not exist.")
             .When(a => int.TryParse(a.tableId, out _))
             

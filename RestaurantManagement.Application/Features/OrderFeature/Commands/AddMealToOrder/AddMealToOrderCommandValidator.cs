@@ -21,7 +21,7 @@ public class AddMealToOrderCommandValidator : AbstractValidator<AddMealToOrderCo
             .WithMessage("Quantity must be less than 100");
 
         RuleFor(a => a.TableId)
-            .Must(a => tableRepository.IsTableExist(int.Parse(a)).Result == true)
+            .Must(a => tableRepository.IsTableExistAndActive(int.Parse(a)).Result == true)
             .WithMessage("Table is not exist")
             .Must(a => tableRepository.GetActiveStatus(int.Parse(a)).Result == "Occupied")
             .WithMessage("Table is not occupied")

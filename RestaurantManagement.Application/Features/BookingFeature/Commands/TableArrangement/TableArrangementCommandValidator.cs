@@ -21,7 +21,7 @@ public class TableArrangementCommandValidator : AbstractValidator<TableArrangeme
             .WithMessage("Booking id is invalid");
             
         RuleFor(a => a.TableId)
-            .Must(a => tableRepository.IsTableExist(int.Parse(a)).Result == true)
+            .Must(a => tableRepository.IsTableExistAndActive(int.Parse(a)).Result == true)
             .WithMessage("table is not found")
             .Must(a => tableRepository.IsTableAvailable(int.Parse(a)).Result == true)
             .WithMessage("Table is not available")
