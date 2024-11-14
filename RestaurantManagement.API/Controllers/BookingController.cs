@@ -1,3 +1,4 @@
+using FluentEmail.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -153,7 +154,8 @@ public class BookingController : IEndpoint
             [FromQuery(Name = "vnp_TxnRef")] string vnp_TxnRef,
             [FromQuery(Name = "vnp_SecureHash")] string vnp_SecureHash,
             IUnitOfWork unitOfWork,
-            IApplicationDbContext _context) =>
+            IApplicationDbContext _context,
+            IFluentEmail fluentEmail) =>
         {
             var model = new VnPayReturnModel
             {
@@ -174,7 +176,7 @@ public class BookingController : IEndpoint
             //     return Results.BadRequest("Invalid VNPAY return data");
             // }
             #endregion
-            
+
 
             // Cập nhật thông tin trong cơ sở dữ liệu
             var booking = await _context.Bookings.FirstOrDefaultAsync(b => b.BookId == Ulid.Parse(model.vnp_TxnRef));
@@ -184,16 +186,19 @@ public class BookingController : IEndpoint
             }
 
             booking.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
-            // booking.PaymentDate = DateTime.Now;
-    
-            await unitOfWork.SaveChangesAsync();
-        //TODO: Gửi mail thông báo cho khách hàng
 
+            await unitOfWork.SaveChangesAsync();
+
+            await fluentEmail.To(booking.Customer.User.Email).Subject("Thông báo thanh toán")
+            .Body($"Quý khách đã thanh toán thành công. <br> Quý khách vui lòng chú ý email để nhận thông tin khi được xếp bàn. <br> Nhà hàng Nhum Nhum xin chân thành cảm ơn", isHtml: true)
+            .SendAsync();
+
+            
             return Results.Ok("Payment Success!");
         });
 
     }
-    
+
     #region Validate VnPay Return
     // private bool ValidateVnPayReturn(VnPayReturnModel model)
     // {
@@ -210,7 +215,7 @@ public class BookingController : IEndpoint
     //     return vnpay.ValidateSignature(model.vnp_SecureHash, vnp_HashSecret);
     // }
     #endregion
-    
+
 }
 
 
