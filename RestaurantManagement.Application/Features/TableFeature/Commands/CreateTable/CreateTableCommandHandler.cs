@@ -38,6 +38,8 @@ public class CreateTableCommandHandler(
 
         await context.Tables.AddRangeAsync(tableArray);
 
+
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //Decode jwt
         // var claims = JwtHelper.DecodeJwt(request.token);
