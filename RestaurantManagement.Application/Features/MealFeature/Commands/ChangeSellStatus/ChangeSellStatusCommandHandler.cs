@@ -19,24 +19,28 @@ public class ChangeSellStatusCommandHandler(
         {
             return Result.Failure(errors);
         }
-        
-        await mealRepository.ChangeSellStatus(Ulid.Parse(request.id));
-        
-        //Deocde jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Cập nhật thông tin trạng thái bán của {request.id} thành ngừng bán",
-            UserId = Ulid.Parse(userId)
-        });
+        await mealRepository.ChangeSellStatus(Ulid.Parse(request.id));
+
+
+        #region decode jwt and system log
+        // //Deocde jwt
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
+
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Cập nhật thông tin trạng thái bán của {request.id} thành ngừng bán",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
+
 
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
-        
+
     }
 }

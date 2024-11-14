@@ -186,5 +186,8 @@ public class TableController : IEndpoint
             }
             return Results.BadRequest(result);
         }).RequireAuthorization(); 
+
+
+        // TODO: Thêm endpoint xếp bàn cho khách
     }
 }

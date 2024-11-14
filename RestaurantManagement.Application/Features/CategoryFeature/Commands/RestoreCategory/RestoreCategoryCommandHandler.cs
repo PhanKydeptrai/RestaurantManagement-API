@@ -15,25 +15,28 @@ public class RestoreCategoryCommandHandler(
     {
         //validate
         var validator = new RestoreCategoryCommandValidator(categoryRepository);
-        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
 
         await categoryRepository.RestoreCategory(request.id);
-        //Decode token
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            UserId = Ulid.Parse(userId),
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"khôi phục danh mục {request.id}",
+        #region Decode jwt and system log
+        // //Decode token
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
 
-        });
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     UserId = Ulid.Parse(userId),
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"khôi phục danh mục {request.id}",
+
+        // });
+        #endregion
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

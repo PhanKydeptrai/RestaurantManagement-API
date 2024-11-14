@@ -23,17 +23,19 @@ public class RestoreTableCommandHandler(
         //restore table
         await tableRepository.RestoreTable(int.Parse(request.id));
 
-        //Decode jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Khôi phục trạng thái bàn {request.id} ",
-            UserId = Ulid.Parse(userId)
-        });
+        #region Decode jwt and system log
+        // //Decode jwt
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Khôi phục trạng thái bàn {request.id} ",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
 
         return Result.Success();
     }

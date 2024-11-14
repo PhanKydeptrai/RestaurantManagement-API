@@ -15,26 +15,28 @@ public class RestoreEmployeeCommandHandler(
     {
         //validate
         var validator = new RestoreEmployeeCommandValidator(employeeRepository);
-        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
         //Restore employee
         await employeeRepository.RestoreEmployee(Ulid.Parse(request.id));
 
-        //Decode jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
+        #region Decode jwt and system log
+        // //Decode jwt
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"{userId} restore employee {request.id}",
-            UserId = Ulid.Parse(userId)
-        });
-        
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"{userId} restore employee {request.id}",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
+
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

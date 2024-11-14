@@ -113,7 +113,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).RequireAuthorization();
 
         //Xếp bàn cho khách 
         endpoints.MapPost("table-arrange/{BookingId}", async (
@@ -127,7 +127,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).RequireAuthorization();
 
         //Hủy đặt bàn
         endpoints.MapDelete("{id}", async (
@@ -185,8 +185,9 @@ public class BookingController : IEndpoint
 
             booking.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
             // booking.PaymentDate = DateTime.Now;
-
+    
             await unitOfWork.SaveChangesAsync();
+        //TODO: Gửi mail thông báo cho khách hàng
 
             return Results.Ok("Payment Success!");
         });

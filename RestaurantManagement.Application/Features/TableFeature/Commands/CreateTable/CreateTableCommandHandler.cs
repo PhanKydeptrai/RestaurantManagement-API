@@ -24,8 +24,8 @@ public class CreateTableCommandHandler(
         //create table
         var tableArray = new Table[request.quantity];
         Ulid tableTypeId = Ulid.Parse(request.tableTypeId);
-        
-        for(int i = 0; i < request.quantity; i++)
+
+        for (int i = 0; i < request.quantity; i++)
         {
             tableArray[i] = new Table
             {
@@ -38,18 +38,20 @@ public class CreateTableCommandHandler(
 
         await context.Tables.AddRangeAsync(tableArray);
 
-        //Decode jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
+        #region Decode jwt and system log
+        // //Decode jwt
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Tạo {request.quantity} loại {request.tableTypeId} thành bán",
-            UserId = Ulid.Parse(userId)
-        });
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Tạo {request.quantity} loại {request.tableTypeId} thành bán",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

@@ -19,13 +19,12 @@ public class CreateCustomerCommandHandler(
     IFluentEmail fluentEmail,
     IEmailVerify emailVerify) : ICommandHandler<CreateCustomerCommand>
 {
-    private readonly ISystemLogRepository _systemLogRepository;
 
     public async Task<Result> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
         //Validate 
         var validator = new CreateCustomerCommandValidator(customerRepository);
-        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
@@ -92,18 +91,20 @@ public class CreateCustomerCommandHandler(
 
 
 
-        //Decode jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
+        #region Decode jwt and system log
+        // //Decode jwt
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
 
-        // Create System Log
-        // await _systemLogRepository.CreateSystemLog(new SystemLog
+        // // Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
         // {
         //     SystemLogId = Ulid.NewUlid(),
         //     LogDate = DateTime.Now,
         //     LogDetail = $"Tạo tài khoản cho khách {norm} thành bán",
         //     UserId = Ulid.Parse(userId)
         // });
+        #endregion
 
 
         await context.EmailVerificationTokens.AddAsync(emailVerificationToken);

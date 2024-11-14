@@ -22,13 +22,11 @@ public class UpdateVoucherCommandHandler(
             return Result.Failure(errors);
         }
 
-        //Decode jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
+
 
         //Update Voucher
         var voucher = await context.Vouchers.FindAsync(request.VoucherId);
-        
+
         voucher.VoucherName = request.VoucherName;
         voucher.MaxDiscount = request.MaxDiscount;
         voucher.VoucherCondition = request.VoucherCondition;
@@ -36,14 +34,20 @@ public class UpdateVoucherCommandHandler(
         voucher.ExpiredDate = request.ExpiredDate;
         voucher.Description = request.Description;
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Update Voucher {request.VoucherId}",
-            UserId = Ulid.Parse(userId)
-        });
+
+        #region Decode jwt and system log
+        // //Decode jwt
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Update Voucher {request.VoucherId}",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
 
         await unitOfWork.SaveChangesAsync();
         return Result.Success();

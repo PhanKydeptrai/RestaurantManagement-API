@@ -54,19 +54,21 @@ public class CreateTableTypeCommandHandler(
                 Description = request.Description
             });
 
-        //decode token
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
+        #region Decode jwt and system log
+        // //decode token
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Tạo danh mục {request.TableTypeName}",
-            UserId = Ulid.Parse(userId)
-        });
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Tạo danh mục {request.TableTypeName}",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
         await unitOfWork.SaveChangesAsync();
-        return Result.Success();    
+        return Result.Success();
     }
 }

@@ -66,18 +66,20 @@ public class UpdateMealCommandHandler(
             }
         }
 
-        //Deocde jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
+        #region decode jwt and system log
+        // //Deocde jwt
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Cập nhật thông tin món {request.MealName}",
-            UserId = Ulid.Parse(userId)
-        });
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Cập nhật thông tin món {request.MealName}",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
 
         await unitOfWork.SaveChangesAsync();
 

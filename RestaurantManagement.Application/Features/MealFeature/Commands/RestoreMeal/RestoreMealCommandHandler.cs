@@ -21,18 +21,21 @@ public class RestoreMealCommandHandler(
         
         await mealRepository.RestoreMeal(Ulid.Parse(request.id));
 
-        //Deocde jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
+        #region Decode jwt and system log
+        // //Deocde jwt
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Cập nhật thông tin món {request.id}",
-            UserId = Ulid.Parse(userId)
-        });
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Cập nhật thông tin món {request.id}",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
+        
 
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
