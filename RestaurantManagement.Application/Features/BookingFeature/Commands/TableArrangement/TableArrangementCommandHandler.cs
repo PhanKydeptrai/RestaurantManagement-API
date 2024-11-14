@@ -50,7 +50,7 @@ public class TableArrangementCommandHandler(
         //thông báo cho người dùng
         var bookingInfo = await bookingRepository.GetBookingResponseById(Ulid.Parse(request.BookingId));
         await fluentEmail.To(userEmail)
-            .Subject("Thông báo")
+            .Subject("Nhà hàng Nhum nhum - Thông báo thông tin đặt bàn")
             .Body($"Nhà hàng đã xác nhận được thông tin đặt bàn của bạn.<br> Đây là thông tin đặt bàn của bạn: <br> Mã Booking của bạn là: {bookingInfo.BookId} <br>Tên: {bookingInfo.LastName + " " + bookingInfo.FirstName} <br> Ngày:{bookingInfo.BookingDate}<br> Thời gian: {bookingInfo.BookingTime} <br> Email: {bookingInfo.Email} <br> Số điện thoại:{bookingInfo.Phone} <br> Số bàn của bạn là: {bookingDetail.TableId} " , isHtml: true)
             .SendAsync();
 

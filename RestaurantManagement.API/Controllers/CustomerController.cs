@@ -51,24 +51,34 @@ public class CustomerController : IEndpoint
         {
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
-            
+
             var result = await sender.Send(new CreateCustomerCommand(FirstName, LastName, Email, Phone, Gender, token));
             if (result != null)
             {
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-            
+
         }).RequireAuthorization("boss");
 
 
 
-        //Get by id
+        //Get customer by id
         endpoints.MapGet("{id}", async (string id, ISender sender) =>
         {
             GetCustomerByIdQuery request = new GetCustomerByIdQuery(id);
             var result = await sender.Send(request);
             return Results.Ok(result);
+        });
+
+
+        //Delete a customer
+        endpoints.MapDelete("{id}", async (
+            string id, 
+            ISender sender) =>
+        {
+            // var result = await sender.Send(new DeleteCustomerCommand(id));
+            return Results.Ok();
         });
 
         //Update information for a customer

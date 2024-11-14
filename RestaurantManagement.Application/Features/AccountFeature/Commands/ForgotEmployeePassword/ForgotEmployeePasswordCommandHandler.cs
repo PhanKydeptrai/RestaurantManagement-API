@@ -43,7 +43,7 @@ public class ForgotEmployeePasswordCommandHandler(
         //gửi mail xác thực
         var verificationLink = emailVerify.CreateLinkForResetPass(emailVerificationToken);
 
-        await fluentEmail.To(request.email).Subject("Mail xác nhận")
+        await fluentEmail.To(request.email).Subject("Nhà hàng Nhum nhum - Nhận mật khẩu mới")
             .Body($"Vui lòng nhấn vào link sau để nhận mật khẩu mới: <a href='{verificationLink}'>Click me</a>" +
             $"Link chỉ có hiệu lực trong 5 phút", isHtml: true)
             .SendAsync();
