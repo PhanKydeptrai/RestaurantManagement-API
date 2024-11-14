@@ -179,7 +179,7 @@ public class BookingController : IEndpoint
 
 
             // Cập nhật thông tin trong cơ sở dữ liệu
-            var booking = await _context.Bookings.FirstOrDefaultAsync(b => b.BookId == Ulid.Parse(model.vnp_TxnRef));
+            var booking = await _context.Bookings.Include(a => a.Customer).ThenInclude(a => a.User).FirstOrDefaultAsync(b => b.BookId == Ulid.Parse(model.vnp_TxnRef));
             if (booking == null)
             {
                 return Results.NotFound("Booking not found");
@@ -190,7 +190,7 @@ public class BookingController : IEndpoint
             await unitOfWork.SaveChangesAsync();
 
             await fluentEmail.To(booking.Customer.User.Email).Subject("Thông báo thanh toán")
-            .Body($"Quý khách đã thanh toán thành công. <br> Quý khách vui lòng chú ý email để nhận thông tin khi được xếp bàn. <br> Nhà hàng Nhum Nhum xin chân thành cảm ơn", isHtml: true)
+            .Body($"Quý khách đã thanh toán thành công. <br> Quý khách vui lòng chú ý email để nhận thông tin khi được xếp bàn. <br> Nhà hàng Nhum Nhum xin chân thành cảm ơn.", isHtml: true)
             .SendAsync();
 
             
