@@ -14,7 +14,9 @@ public class RegisterCommandHandler(
     ICustomerRepository customerRepository,
     IUnitOfWork unitOfWork,
     IUserRepository userRepository,
-    IApplicationDbContext context, IFluentEmail fluentEmail, IEmailVerify emailVerify) : ICommandHandler<RegisterCommand>
+    IApplicationDbContext context, 
+    IFluentEmail fluentEmail, 
+    IEmailVerify emailVerify) : ICommandHandler<RegisterCommand>
 {
     public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
