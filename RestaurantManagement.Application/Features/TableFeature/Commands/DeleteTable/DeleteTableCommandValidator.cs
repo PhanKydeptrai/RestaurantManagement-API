@@ -8,7 +8,7 @@ public class DeleteTableCommandValidator : AbstractValidator<DeleteTableCommand>
     public DeleteTableCommandValidator(ITableRepository tableRepository)
     {
         RuleFor(a => a.id)
-            .Must(a => tableRepository.IsTableExist(int.Parse(a)).Result == true)
+            .Must(a => tableRepository.IsTableExistAndActive(int.Parse(a)).Result == true)
             .WithMessage("Table is not exist") //Kiểm tra bàn có tồn tại hay không?
             .Must(a => tableRepository.GetActiveStatus(int.Parse(a)).Result == "Empty")
             .WithMessage("Table is not empty")

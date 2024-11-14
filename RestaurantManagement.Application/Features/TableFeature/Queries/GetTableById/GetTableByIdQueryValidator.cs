@@ -8,7 +8,7 @@ public class GetTableByIdQueryValidator : AbstractValidator<GetTableByIdQuery>
     public GetTableByIdQueryValidator(ITableRepository tableRepository)
     {
         RuleFor(p => p.id)
-            .Must(a => tableRepository.IsTableExist(int.Parse(a)).Result)
+            .Must(a => tableRepository.IsTableExistAndActive(int.Parse(a)).Result)
             .WithMessage("Table does not exist.")
             .When(a => int.TryParse(a.id, out _))
             

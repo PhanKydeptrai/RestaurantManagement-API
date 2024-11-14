@@ -19,7 +19,8 @@ public interface ITableRepository
     Task UpdateActiveStatus(int id, string status);
     void DeleteTable(Table table);
     Task<int> GetTableCapacity(int id);
-    Task<bool> IsTableExist(int id);
+    Task<bool> IsTableExistAndActive(int id);
+    Task<bool> IsTableJustExist(int id);
     //Queries
     Task<string?> GetTableStatus(int id); //Get table status 
     IQueryable<Table> GetQueryableOfTable(); //Get IQueryable of Table

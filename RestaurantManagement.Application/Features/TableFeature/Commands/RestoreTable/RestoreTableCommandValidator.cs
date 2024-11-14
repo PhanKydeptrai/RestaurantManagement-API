@@ -7,8 +7,9 @@ public class RestoreTableCommandValidator : AbstractValidator<RestoreTableComman
 {
     public RestoreTableCommandValidator(ITableRepository tableRepository)
     {
+        //TODO: Sửa tên phương thức IsTableJustExist
         RuleFor(a => a.id)
-            .Must(a => tableRepository.IsTableExist(int.Parse(a)).Result == true)
+            .Must(a => tableRepository.IsTableJustExist(int.Parse(a)).Result == true)
             .WithMessage("Table does not exist.")
             .Must(a => tableRepository.GetTableStatus(int.Parse(a)).Result == "InActive")
             .WithMessage("Table is still Active.")

@@ -76,10 +76,17 @@ public class TableRepository(RestaurantManagementDbContext context) : ITableRepo
                                     .FirstOrDefaultAsync();
     }
 
-    public async Task<bool> IsTableExist(int id)
+    public async Task<bool> IsTableExistAndActive(int id)
     {
         return await context.Tables.AsNoTracking()
             .AnyAsync(t => t.TableId == id && t.TableStatus == "Active");
+    }
+
+
+    public async Task<bool> IsTableJustExist(int id)
+    {
+        return await context.Tables.AsNoTracking()
+            .AnyAsync(t => t.TableId == id);
     }
 
     //Cập nhật trạng thái bàn khi booking
