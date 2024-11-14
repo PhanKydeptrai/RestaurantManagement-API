@@ -23,7 +23,7 @@ public class UpdateEmployeeRoleCommandHandler(
         //Update Employee Role
         await employeeRepository.UpdateEmployeeRole(Ulid.Parse(request.id), request.role);
 
-
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //Decode jwt
         // var claims = JwtHelper.DecodeJwt(request.token);

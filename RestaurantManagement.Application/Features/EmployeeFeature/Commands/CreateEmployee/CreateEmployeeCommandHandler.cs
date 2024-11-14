@@ -65,7 +65,8 @@ public class CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository
 
         await userRepository.CreateUser(user);
         await employeeRepository.CreateEmployee(employee);
-
+        
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         //Deocde jwt
         // var claims = JwtHelper.DecodeJwt(request.token);

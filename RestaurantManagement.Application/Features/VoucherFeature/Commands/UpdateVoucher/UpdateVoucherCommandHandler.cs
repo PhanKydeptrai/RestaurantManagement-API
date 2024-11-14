@@ -34,7 +34,7 @@ public class UpdateVoucherCommandHandler(
         voucher.ExpiredDate = request.ExpiredDate;
         voucher.Description = request.Description;
 
-
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //Decode jwt
         // var claims = JwtHelper.DecodeJwt(request.token);

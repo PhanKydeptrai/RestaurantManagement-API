@@ -141,7 +141,8 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+            
+        }).RequireAuthorization();
 
         //Trả về url thanh toán
         endpoints.MapGet("ReturnUrl", async (

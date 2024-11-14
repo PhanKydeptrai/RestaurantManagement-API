@@ -22,7 +22,7 @@ public class ChangeSellStatusCommandHandler(
 
         await mealRepository.ChangeSellStatus(Ulid.Parse(request.id));
 
-
+        //TODO: Cập nhật system log
         #region decode jwt and system log
         // //Deocde jwt
         // var claims = JwtHelper.DecodeJwt(request.token);

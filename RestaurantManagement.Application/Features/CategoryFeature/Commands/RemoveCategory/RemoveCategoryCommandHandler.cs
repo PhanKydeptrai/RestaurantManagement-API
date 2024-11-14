@@ -21,7 +21,7 @@ public class RemoveCategoryCommandHandler(
         //delete
         await categoryRepository.SoftDeleteCategory(Ulid.Parse(request.Id));
 
-
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //Decode
         // var claims = JwtHelper.DecodeJwt(request.Token);

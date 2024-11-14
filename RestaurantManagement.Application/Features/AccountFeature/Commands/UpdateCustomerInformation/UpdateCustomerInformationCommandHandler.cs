@@ -76,7 +76,8 @@ public class UpdateCustomerInformationCommandHandler(
                 Console.WriteLine(resultDelete.JsonObj);
             }
         }
-
+        
+        //TODO: Cập nhật system log
         #region Decode token and system log
         // //Decode token
         // var claims = JwtHelper.DecodeJwt(request.token);
