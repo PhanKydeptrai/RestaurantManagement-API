@@ -63,7 +63,7 @@ public class UpdateCategoryCommandHandler(
                 Console.WriteLine(resultDelete.JsonObj);
             }
         }
-
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //Decode
         // var claims = JwtHelper.DecodeJwt(request.Token);

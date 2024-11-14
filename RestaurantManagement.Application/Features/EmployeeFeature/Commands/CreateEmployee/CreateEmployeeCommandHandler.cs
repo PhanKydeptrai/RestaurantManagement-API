@@ -65,7 +65,8 @@ public class CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository
 
         await userRepository.CreateUser(user);
         await employeeRepository.CreateEmployee(employee);
-
+        
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         //Deocde jwt
         // var claims = JwtHelper.DecodeJwt(request.token);
@@ -82,7 +83,7 @@ public class CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository
         #endregion
         
 
-        await fluentEmail.To(user.Email).Subject("Thông báo thông tin tài khoản")
+        await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo thông tin tài khoản")
         .Body($"Thông tin tài khoản nhân viên của bạn: {request.Email} <br> Mật Khẩu mặc định: {password}")
         .SendAsync();
         

@@ -54,6 +54,7 @@ public class CreateTableTypeCommandHandler(
                 Description = request.Description
             });
 
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //decode token
         // var claims = JwtHelper.DecodeJwt(request.token);

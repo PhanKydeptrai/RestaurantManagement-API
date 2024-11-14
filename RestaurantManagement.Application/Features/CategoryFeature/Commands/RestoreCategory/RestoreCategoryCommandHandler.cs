@@ -22,6 +22,7 @@ public class RestoreCategoryCommandHandler(
 
         await categoryRepository.RestoreCategory(request.id);
 
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //Decode token
         // var claims = JwtHelper.DecodeJwt(request.token);

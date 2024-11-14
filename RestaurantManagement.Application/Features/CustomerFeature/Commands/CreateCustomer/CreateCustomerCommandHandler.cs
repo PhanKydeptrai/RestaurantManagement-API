@@ -85,12 +85,12 @@ public class CreateCustomerCommandHandler(
 
         //gửi mail kích hoạt tài khoản
         var verificationLink = emailVerify.Create(emailVerificationToken);
-        await fluentEmail.To(user.Email).Subject("Kích hoạt tài khoản")
+        await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
             .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> \n Đây là mật khẩu của bạn: {randomPassword}", isHtml: true)
             .SendAsync();
 
 
-
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //Decode jwt
         // var claims = JwtHelper.DecodeJwt(request.token);

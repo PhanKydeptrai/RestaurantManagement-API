@@ -25,7 +25,7 @@ public class RemoveMealCommandHandler(
         }
         await mealRepository.DeleteMeal(Ulid.Parse(request.id));
 
-
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //Decode jwt
         // var claims = JwtHelper.DecodeJwt(request.token);

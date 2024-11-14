@@ -35,6 +35,7 @@ public class CreateVoucherCommandHanler(
             Description = request.Description
         });
 
+        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //Decode jwt
         // var claims = JwtHelper.DecodeJwt(request.token);
