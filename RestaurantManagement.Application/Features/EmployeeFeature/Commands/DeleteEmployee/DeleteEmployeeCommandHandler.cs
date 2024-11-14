@@ -15,23 +15,25 @@ public class DeleteEmployeeCommandHandler(
     {
         //validate
         var validator = new DeleteEmployeeCommandValidator(employeeRepository);
-        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
 
-        //Decode jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
+        #region Decode jwt and system log
+        // //Decode jwt
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"{userId} deleted employee {request.id}",
-            UserId = Ulid.Parse(userId)
-        });
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"{userId} deleted employee {request.id}",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
 
         //Delete employee
         await employeeRepository.DeleteEmployee(Ulid.Parse(request.id));

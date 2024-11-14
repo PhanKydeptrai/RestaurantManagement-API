@@ -65,9 +65,11 @@ public class CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository
 
         await userRepository.CreateUser(user);
         await employeeRepository.CreateEmployee(employee);
+
+        #region Decode jwt and system log
         //Deocde jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
 
         // //Create System Log
         // await _systemLogRepository.CreateSystemLog(new SystemLog
@@ -77,10 +79,11 @@ public class CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository
         //     SystemLogId = Ulid.NewUlid(),
         //     UserId = Ulid.Parse(userId)
         // });
+        #endregion
+        
 
         await fluentEmail.To(user.Email).Subject("Thông báo thông tin tài khoản")
-        .Body($"Thông tin tài khoản nhân viên của bạn: {request.Email} " +
-        $"\n Mật Khẩu mặc định: {password}")
+        .Body($"Thông tin tài khoản nhân viên của bạn: {request.Email} <br> Mật Khẩu mặc định: {password}")
         .SendAsync();
         
         await unitOfWork.SaveChangesAsync();

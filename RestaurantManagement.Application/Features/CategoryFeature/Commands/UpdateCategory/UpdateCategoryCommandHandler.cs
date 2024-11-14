@@ -19,7 +19,7 @@ public class UpdateCategoryCommandHandler(
 
         //validate
         var validator = new UpdateCategoryValidator(categoryRepository);
-        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
+        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result.Failure(errors);
         }
@@ -64,18 +64,20 @@ public class UpdateCategoryCommandHandler(
             }
         }
 
+        #region Decode jwt and system log
+        // //Decode
+        // var claims = JwtHelper.DecodeJwt(request.Token);
+        // claims.TryGetValue("sub", out var userId);
 
-        var claims = JwtHelper.DecodeJwt(request.Token);
-        claims.TryGetValue("sub", out var userId);
-
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Tạo danh mục {request.CategoryName}",
-            UserId = Ulid.Parse(userId)
-        });
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Tạo danh mục {request.CategoryName}",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
 
         await unitOfWork.SaveChangesAsync();
         return Result.Success();

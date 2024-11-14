@@ -22,20 +22,22 @@ public class DeleteTableCommandHandler(
 
         //Delete table
         await tableRepository.DeleteTable(int.Parse(request.id));
-        
-        //Decode jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Cập nhật thông tin trạng thái bán của {request.id} thành bán",
-            UserId = Ulid.Parse(userId)
-        });
-        
+        #region Decode jwt and system log
+        // //Decode jwt
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
+
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Cập nhật thông tin trạng thái bán của {request.id} thành bán",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
+
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

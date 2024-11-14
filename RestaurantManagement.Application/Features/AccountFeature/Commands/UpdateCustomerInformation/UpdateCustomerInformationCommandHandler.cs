@@ -77,18 +77,21 @@ public class UpdateCustomerInformationCommandHandler(
             }
         }
 
-        //Ghi log
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
+        #region Decode token and system log
+        // //Decode token
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"{userId} cập nhật thông tin tài khoản",
-            UserId = Ulid.Parse(userId)
-        });
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"{userId} cập nhật thông tin tài khoản",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
+        
 
         await unitOfWork.SaveChangesAsync();
 

@@ -21,18 +21,21 @@ public class RemoveCategoryCommandHandler(
         //delete
         await categoryRepository.SoftDeleteCategory(Ulid.Parse(request.Id));
 
-        var claims = JwtHelper.DecodeJwt(request.Token);
 
-        claims.TryGetValue("sub", out var userId);
+        #region Decode jwt and system log
+        // //Decode
+        // var claims = JwtHelper.DecodeJwt(request.Token);
+        // claims.TryGetValue("sub", out var userId);
 
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            UserId = Ulid.Parse(userId),
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Xóa danh mục {request.Id}"
-        });
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     UserId = Ulid.Parse(userId),
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Xóa danh mục {request.Id}"
+        // });
+        #endregion
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

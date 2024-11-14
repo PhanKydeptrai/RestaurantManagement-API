@@ -39,15 +39,15 @@ public class CustomerCreateBookingCommandValidator : AbstractValidator<CustomerC
             .Must(a => bookingRepository.IsBookingTimeValid(a).Result == true)
             .WithMessage("{PropertyName} is outside of the working hours");
 
-        // RuleFor(a => a.NumberOfCustomers)
-        //     .NotNull()
-        //     .WithMessage("{PropertyName} is required")
-        //     .NotEmpty()
-        //     .WithMessage("{PropertyName} is required")
-        //     .GreaterThan(0)
-        //     .WithMessage("{PropertyName} must be greater than 0")
-        //     .Must(a => bookingRepository.IsCapacityAvailable(a).Result == true)
-        //     .WithMessage("Seat is not enough for {PropertyName} customers");
+        RuleFor(a => a.NumberOfCustomers)
+            .NotNull()
+            .WithMessage("{PropertyName} is null")
+            .NotEmpty()
+            .WithMessage("{PropertyName} is required")
+            .GreaterThan(0)
+            .WithMessage("{PropertyName} must be greater than 0")
+            .Must(a => bookingRepository.IsCapacityAvailable(a).Result == true)
+            .WithMessage("Seat is not enough for {PropertyName} customers");
 
         RuleFor(a => a.Note)
             .MaximumLength(250)

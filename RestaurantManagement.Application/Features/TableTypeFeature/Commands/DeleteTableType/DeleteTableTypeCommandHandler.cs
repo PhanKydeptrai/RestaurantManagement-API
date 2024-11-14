@@ -23,17 +23,19 @@ public class DeleteTableTypeCommandHandler(
 
         await tableTypeRepository.DeleteTableType(Ulid.Parse(request.id));
 
-        //Decode jwt
-        var claims = JwtHelper.DecodeJwt(request.token);
-        claims.TryGetValue("sub", out var userId);
-        //Create System Log
-        await systemLogRepository.CreateSystemLog(new SystemLog
-        {
-            SystemLogId = Ulid.NewUlid(),
-            LogDate = DateTime.Now,
-            LogDetail = $"Xoá loại bàn {request.id} ",
-            UserId = Ulid.Parse(userId)
-        });
+        #region Decode jwt and system log
+        // //Decode jwt
+        // var claims = JwtHelper.DecodeJwt(request.token);
+        // claims.TryGetValue("sub", out var userId);
+        // //Create System Log
+        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // {
+        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDate = DateTime.Now,
+        //     LogDetail = $"Xoá loại bàn {request.id} ",
+        //     UserId = Ulid.Parse(userId)
+        // });
+        #endregion
 
         await unitOfWork.SaveChangesAsync();
 
