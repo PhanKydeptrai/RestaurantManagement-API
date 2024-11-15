@@ -1,9 +1,9 @@
-
-
 using RestaurantManagement.Application.Abtractions;
 
 namespace RestaurantManagement.Application.Features.BookingFeature.Commands.SubscriberCreateBooking;
 
+
+//TODO: Untrusted data
 public record SubscriberCreateBookingCommand(
     DateOnly BookingDate,
     TimeOnly BookingTime,
