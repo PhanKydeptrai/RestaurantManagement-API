@@ -29,11 +29,14 @@ public class DeleteCustomerCommandHandler : ICommandHandler<DeleteCustomerComman
 
     public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
     {
-        // validate
+        
         var validator = new DeleteCustomerCommandValidator(_customerRepository);
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        //Validate request
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
 
         var userEmail = await _context.Users.Where(x => x.UserId == Ulid.Parse(request.userId)).Select(a => a.Email).FirstOrDefaultAsync();

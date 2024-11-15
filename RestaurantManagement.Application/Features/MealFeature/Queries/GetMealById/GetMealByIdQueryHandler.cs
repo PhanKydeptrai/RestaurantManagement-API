@@ -16,11 +16,14 @@ public class GetMealByIdQueryHandler(
     public async Task<Result<MealResponse>> Handle(GetMealByIdQuery request, CancellationToken cancellationToken)
     {
 
-        //validate
+        
+        //Validate request
         var validator = new GetMealByIdQueryValidator();
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result<MealResponse>.Failure(errors);
+            return Result<MealResponse>.Failure(errors!);
         }
 
         var meal = await context.Meals

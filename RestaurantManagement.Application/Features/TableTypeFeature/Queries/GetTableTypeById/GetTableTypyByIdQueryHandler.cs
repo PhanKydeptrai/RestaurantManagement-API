@@ -10,11 +10,14 @@ public class GetTableTypyByIdQueryHandler(ITableTypeRepository tableTypeReposito
 {
     public async Task<Result<TableTypeResponse>> Handle(GetTableTypyByIdQuery request, CancellationToken cancellationToken)
     {
-        //validate
+        
+        //Validate request
         var validator = new GetTableTypyByIdQueryValidator();
-        if (!ValidateRequest.RequestValidator(validator, request, out var error))
+        Error[]? error = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out error));
+        if (!isValid)
         {
-            return Result<TableTypeResponse>.Failure(error);
+            return Result<TableTypeResponse>.Failure(error!);
         }
 
         var tableType = await tableTypeRepository.GetTableTypeById(Ulid.Parse(request.id));

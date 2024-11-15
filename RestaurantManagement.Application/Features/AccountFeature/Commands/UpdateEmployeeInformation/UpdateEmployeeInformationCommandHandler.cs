@@ -3,7 +3,6 @@ using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Services;
-using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -17,16 +16,14 @@ public class UpdateEmployeeInformationCommandHandler(
 {
     public async Task<Result> Handle(UpdateEmployeeInformationCommand request, CancellationToken cancellationToken)
     {
-        //validator
+        
+        //Validate request
         var validator = new UpdateEmployeeInformationCommandValidator(employeeRepository);
-        var validationResult = await validator.ValidateAsync(request);
-        if (!validationResult.IsValid)
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            var errors = validationResult.Errors
-                .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
-                .ToArray();
-
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
 
         //Lấy user theo id

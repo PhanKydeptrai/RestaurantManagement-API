@@ -12,11 +12,15 @@ public class GetBillByIdQueryHandler(IApplicationDbContext context) : IQueryHand
 {
     public async Task<Result<BillResponse>> Handle(GetBillByIdQuery request, CancellationToken cancellationToken)
     {
+        //Validate request
         var validator = new GetBillByIdQueryValidator();
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result<BillResponse>.Failure(errors);
+            return Result<BillResponse>.Failure(errors!);
         }
+
         var bill = await context.Bills
             .AsNoTracking()
             .Where(a => a.BillId == Ulid.Parse(request.billId))

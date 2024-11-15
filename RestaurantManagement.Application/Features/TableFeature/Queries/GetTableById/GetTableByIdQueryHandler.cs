@@ -14,11 +14,14 @@ public class GetTableByIdQueryHandler(
 {
     public async Task<Result<TableResponse>> Handle(GetTableByIdQuery request, CancellationToken cancellationToken)
     {
-        //validate
+        
+        //Validate request
         var validator = new GetTableByIdQueryValidator(tableRepository);
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result<TableResponse>.Failure(errors);
+            return Result<TableResponse>.Failure(errors!);
         }
         
         var table = await context.Tables

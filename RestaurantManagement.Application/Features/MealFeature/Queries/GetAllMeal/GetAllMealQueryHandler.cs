@@ -14,13 +14,14 @@ public class GetAllMealQueryHandler(IApplicationDbContext context) : IQueryHandl
 {
     public async Task<Result<PagedList<MealResponse>>> Handle(GetAllMealQuery request, CancellationToken cancellationToken)
     {
-        //validate
         var validator = new GetAllMealQueryValidator();
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        //Validate request
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result<PagedList<MealResponse>>.Failure(errors);
+            return Result<PagedList<MealResponse>>.Failure(errors!);
         }
-
         var mealQuery = context.Meals.Include(x => x.Category).AsQueryable();
 
 

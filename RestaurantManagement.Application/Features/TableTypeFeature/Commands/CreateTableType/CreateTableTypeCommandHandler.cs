@@ -16,11 +16,14 @@ public class CreateTableTypeCommandHandler(
 {
     public async Task<Result> Handle(CreateTableTypeCommand request, CancellationToken cancellationToken)
     {
-        //validate
+        
+        //Validate request
         var validator = new CreateTableTypeCommandValidator(tableTypeRepository);
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
 
         //Xử lý ảnh

@@ -13,11 +13,14 @@ public class UpdateEmployeeRoleCommandHandler(
 {
     public async Task<Result> Handle(UpdateEmployeeRoleCommand request, CancellationToken cancellationToken)
     {
-        //validate
+        
         var validator = new UpdateEmployeeRoleCommandValidator(employeeRepository);
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        //Validate request
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
 
         //Update Employee Role

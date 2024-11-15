@@ -17,7 +17,7 @@ public class EmployeeLoginQueryHandler(
 {
     public async Task<Result<LoginResponse>> Handle(EmployeeLoginQuery request, CancellationToken cancellationToken)
     {
-       
+       //TODO: validate
         var validator = new EmployeeLoginQueryValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

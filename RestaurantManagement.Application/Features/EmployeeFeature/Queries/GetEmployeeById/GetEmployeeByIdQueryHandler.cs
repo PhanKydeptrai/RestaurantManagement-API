@@ -14,10 +14,12 @@ public class GetEmployeeByIdQueryHandler(IEmployeeRepository employeeRepository,
     {
 
         var validator = new GetEmployeeByIdQueryValidator(employeeRepository);
-        //validate
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        //Validate request
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result<EmployeeResponse>.Failure(errors);
+            return Result<EmployeeResponse>.Failure(errors!);
         }
 
         var employee = await context.Employees.Include(a => a.User)

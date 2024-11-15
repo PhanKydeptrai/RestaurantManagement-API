@@ -1,4 +1,5 @@
 using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -10,16 +11,14 @@ public class RestoreTableTypeCommandHandler(
 {
     public async Task<Result> Handle(RestoreTableTypeCommand request, CancellationToken cancellationToken)
     {
-        //Validator
+       
+        //Validate request
         var validator = new RestoreTableTypeCommandValidator(tableTypeRepository);  
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            var errors = validationResult.Errors
-                .Select(a => new Error(a.ErrorCode, a.ErrorMessage))
-                .ToArray();
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
 
         await tableTypeRepository.RestoreTableType(Ulid.Parse(request.id));

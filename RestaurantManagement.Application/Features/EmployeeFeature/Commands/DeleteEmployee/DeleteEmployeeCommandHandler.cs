@@ -13,11 +13,13 @@ public class DeleteEmployeeCommandHandler(
 {
     public async Task<Result> Handle(DeleteEmployeeCommand request, CancellationToken cancellationToken)
     {
-        //validate
         var validator = new DeleteEmployeeCommandValidator(employeeRepository);
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        //Validate request
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
         //TODO: Cập nhật system log
         #region Decode jwt and system log

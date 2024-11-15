@@ -14,11 +14,13 @@ public class LoginQueryHandler(IApplicationDbContext context, IJwtProvider jwtPr
 {
     public async Task<Result<LoginResponse>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
-        //validate
+        //Validate request
         var validator = new LoginQueryValidator();
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result<LoginResponse>.Failure(errors);
+            return Result<LoginResponse>.Failure(errors!);
         }
 
         var encryptedPassword = EncryptProvider.Sha256(request.passWord);

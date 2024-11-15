@@ -12,9 +12,12 @@ public class GetCustomerByIdQueryHandler(ICustomerRepository customerRepository)
     {
         
         var validator = new GetCustomerByIdQueryValidator();
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        //Validate request
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result<CustomerResponse>.Failure(errors);
+            return Result<CustomerResponse>.Failure(errors!);
         }
 
         CustomerResponse? customer = await customerRepository.GetCustomerById(Ulid.Parse(request.id));
