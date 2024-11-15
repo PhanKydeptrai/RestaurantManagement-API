@@ -18,10 +18,13 @@ public class UpdateTableTypeCommandValidator : AbstractValidator<UpdateTableType
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
             .MaximumLength(50)
-            .WithMessage("{PropertyName} must not exceed 50 characters.")
-            .Must(a => Ulid.TryParse(a, out _))
-            .WithMessage("{PropertyName} must be a valid Ulid.");
+            .WithMessage("{PropertyName} must not exceed 50 characters.");
+            // .Must(a => Ulid.TryParse(a, out _))
+            // .WithMessage("{PropertyName} must be a valid Ulid."); //HOTFIX: Kiểm tra sai giá trị
 
+        RuleFor(p => p.Description)
+            .MaximumLength(200)
+            .WithMessage("{PropertyName} must not exceed 200 characters.");
 
         RuleFor(p => p.TablePrice)
             .NotEmpty().WithMessage("{PropertyName} is required.")
@@ -29,5 +32,10 @@ public class UpdateTableTypeCommandValidator : AbstractValidator<UpdateTableType
             .Must(p => decimal.TryParse(p.ToString(), out _))
             .WithMessage("{PropertyName} must be a decimal.");
 
+        RuleFor(p => p.TableCapacity)
+            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .NotNull().WithMessage("{PropertyName} is required.")
+            .Must(p => int.TryParse(p.ToString(), out _))
+            .WithMessage("{PropertyName} must be an integer.");
     }
 }

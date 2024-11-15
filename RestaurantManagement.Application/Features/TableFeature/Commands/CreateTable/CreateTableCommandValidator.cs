@@ -15,21 +15,47 @@ public class CreateTableCommandValidator : AbstractValidator<CreateTableCommand>
             .WithMessage("{PropertyName} is not valid.");
 
         RuleFor(p => p.quantity)
-            // .Must(a => int.Parse(a) > 0)
-            // .WithMessage("{PropertyName} must be greater than 0.")
-            // .Must(a => int.Parse(a) < 100)
-            // .WithMessage("{PropertyName} must be less than 100.")
-            // .When(a => int.TryParse(a.quantity, out _))
+            .Must(a => int.Parse(a.ToString()) > 0)
+            .WithMessage("{PropertyName} must be greater than 0.")
+            .Must(a => int.Parse(a.ToString()) < 100)
+            .WithMessage("{PropertyName} must be less than 100.")
+            .When(a => int.TryParse(a.quantity.ToString(), out _))
             .NotNull()
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
-            .GreaterThan(0)
-            .WithMessage("{PropertyName} must be greater than 0.");
-            // .Must(a => int.TryParse(a, out _))
-            // .WithMessage("{PropertyName} is not valid.");
-
-        // RuleFor(p => p.TableTypeId)
-        //     .NotEmpty().WithMessage("{PropertyName} is required.");
+            .Must(a => int.TryParse(a.ToString(), out _))
+            .WithMessage("{PropertyName} is must a number.");
     }
+
+    #region Stable code
+    // public CreateTableCommandValidator()
+    // {
+    //     RuleFor(p => p.tableTypeId)
+    //         .NotNull()
+    //         .WithMessage("{PropertyName} is required.")
+    //         .NotEmpty()
+    //         .WithMessage("{PropertyName} is required.")
+    //         .Must(a => Ulid.TryParse(a, out _))
+    //         .WithMessage("{PropertyName} is not valid.");
+
+    //     RuleFor(p => p.quantity)
+    //         // .Must(a => int.Parse(a) > 0)
+    //         // .WithMessage("{PropertyName} must be greater than 0.")
+    //         // .Must(a => int.Parse(a) < 100)
+    //         // .WithMessage("{PropertyName} must be less than 100.")
+    //         // .When(a => int.TryParse(a.quantity, out _))
+    //         .NotNull()
+    //         .WithMessage("{PropertyName} is required.")
+    //         .NotEmpty()
+    //         .WithMessage("{PropertyName} is required.")
+    //         .GreaterThan(0)
+    //         .WithMessage("{PropertyName} must be greater than 0.");
+    //         // .Must(a => int.TryParse(a, out _))
+    //         // .WithMessage("{PropertyName} is not valid.");
+
+    //     // RuleFor(p => p.TableTypeId)
+    //     //     .NotEmpty().WithMessage("{PropertyName} is required.");
+    // }
+    #endregion
 }
