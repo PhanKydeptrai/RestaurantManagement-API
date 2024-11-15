@@ -35,7 +35,7 @@ public class UpdateTableTypeCommandValidator : AbstractValidator<UpdateTableType
         RuleFor(p => p.TableCapacity)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull().WithMessage("{PropertyName} is required.")
-            .Must(p => int.TryParse(p.ToString(), out _))
+            .Must(p => p != null && int.TryParse(p.ToString(), out _))
             .WithMessage("{PropertyName} must be an integer.");
     }
 }

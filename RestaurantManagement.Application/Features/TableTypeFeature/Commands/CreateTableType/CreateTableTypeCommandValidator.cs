@@ -18,13 +18,13 @@ public class CreateTableTypeCommandValidator : AbstractValidator<CreateTableType
         RuleFor(p => p.TablePrice)
             .NotNull().WithMessage("{PropertyName} is required.")   
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .Must(p => decimal.TryParse(p.ToString(), out _))
+            .Must(p => p != null && decimal.TryParse(p.ToString(), out _))
             .WithMessage("{PropertyName} must be a decimal.");
 
         RuleFor(p => p.TableCapacity)
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .Must(p => int.TryParse(p.ToString(), out _))
+            .Must(p => p != null && int.TryParse(p.ToString(), out _))
             .WithMessage("{PropertyName} must be an integer.");
             
     }

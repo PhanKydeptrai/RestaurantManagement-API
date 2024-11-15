@@ -12,12 +12,12 @@ public class RestoreTableTypeCommandValidator : AbstractValidator<RestoreTableTy
             .WithMessage("Table type does not exist.")
             .Must(a => tableTypeRepository.GetTableTypeStatus(Ulid.Parse(a)).Result == "InActive")
             .WithMessage("Table type is Active.")
-            .When(a => Ulid.TryParse(a.id, out _))
+            .When(a => a != null && Ulid.TryParse(a.id, out _))
             .NotNull()
             .WithMessage("Id is required.")
             .NotEmpty()
             .WithMessage("Id is required.")
-            .Must(a => Ulid.TryParse(a, out _))
+            .Must(a => a != null && Ulid.TryParse(a, out _))
             .WithMessage("Id is not valid.");
     }
 }
