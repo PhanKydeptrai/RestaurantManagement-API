@@ -43,7 +43,7 @@ public class TableTypeController : IEndpoint
         endpoints.MapPost("",
         async (
             [FromForm] string TableTypeName, 
-            [FromForm] int TableCapacity,
+            [FromForm] object TableCapacity,
             [FromForm] decimal TablePrice,
             [FromForm] string? Description,
             [FromForm] IFormFile? Image,
@@ -70,6 +70,7 @@ public class TableTypeController : IEndpoint
             [FromForm] string TableTypeName,
             [FromForm] decimal TablePrice,
             [FromForm] string? Description,
+            [FromForm] object TableCapacity,
             [FromForm] IFormFile? Image,
             HttpContext httpContext,
             ISender sender,
@@ -83,6 +84,7 @@ public class TableTypeController : IEndpoint
                 TableTypeName,
                 Image,
                 TablePrice,
+                TableCapacity,
                 Description,
                 token));
             if (result.IsSuccess)
