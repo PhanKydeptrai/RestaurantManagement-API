@@ -44,11 +44,32 @@ public class ForgotEmployeePasswordCommandHandler(
 
         //gửi mail xác thực
         var verificationLink = emailVerify.CreateLinkForResetPass(emailVerificationToken);
-        //TODO: Xử lý lỗi gửi mail
-        await fluentEmail.To(request.email).Subject("Nhà hàng Nhum nhum - Nhận mật khẩu mới")
-            .Body($"Vui lòng nhấn vào link sau để nhận mật khẩu mới: <a href='{verificationLink}'>Click me</a>" +
-            $"Link chỉ có hiệu lực trong 5 phút", isHtml: true)
-            .SendAsync();
+
+        bool emailSent = false;
+        int retryCount = 0;
+        int maxRetries = 5;
+
+        do
+        {
+            try
+            {
+                await fluentEmail.To(request.email).Subject("Nhà hàng Nhum nhum - Nhận mật khẩu mới")
+                        .Body($"Vui lòng nhấn vào link sau để nhận mật khẩu mới: <a href='{verificationLink}'>Click me</a>" +
+                        $"Link chỉ có hiệu lực trong 5 phút", isHtml: true)
+                        .SendAsync();
+
+            }
+            catch
+            {
+                retryCount++;
+                if (retryCount >= maxRetries)
+                {
+                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                }
+            }
+        }
+        while (!emailSent && retryCount < maxRetries);
+
 
         await context.EmailVerificationTokens.AddAsync(emailVerificationToken);
 

@@ -52,7 +52,7 @@ public class CreateTableTypeCommandHandler(
                 TableTypeName = request.TableTypeName,
                 ImageUrl = imageUrl,
                 Status = "Active",
-                TableCapacity = request.TableCapacity,
+                TableCapacity = (int)request.TableCapacity,
                 TablePrice = request.TablePrice,
                 Description = request.Description
             });

@@ -43,10 +43,32 @@ public class ActivateAccountCommandHandler(
             };
 
             string? verificationLink = emailVerify.Create(emailVerificationToken);
-            //TODO: Xử lý lỗi gửi mail
-            await fluentEmail.To(token.User.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
-            .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
-            .SendAsync();
+            // Gửi email thông báo
+            bool emailSent = false;
+            int retryCount = 0;
+            int maxRetries = 5;
+
+            do
+            {
+                try
+                {
+                    await fluentEmail.To(token.User.Email)
+                        .Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
+                        .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
+                        .SendAsync();
+                    emailSent = true;
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
+                }
+            }
+            while (!emailSent && retryCount < maxRetries);
+
 
             await emailVerificationTokenRepository.CreateVerificationToken(emailVerificationToken);
             emailVerificationTokenRepository.RemoveVerificationToken(token);

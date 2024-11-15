@@ -27,8 +27,8 @@ public class TableArrangementCommandHandler(
             return Result.Failure(errors!);
         }
 
-        
-        
+
+
         var userEmail = await context.Bookings
             .AsNoTracking()
             .Include(a => a.Customer)
@@ -49,19 +49,41 @@ public class TableArrangementCommandHandler(
         await bookingRepository.UpdateBookingStatus(Ulid.Parse(request.BookingId));
 
         await context.BookingDetails.AddAsync(bookingDetail);
-        
+
         //Cập nhật active status của bàn
         await tableRepository.UpdateActiveStatus(int.Parse(request.TableId.ToString()), "Booked");
-        
+
 
         //thông báo cho người dùng
         var bookingInfo = await bookingRepository.GetBookingResponseById(Ulid.Parse(request.BookingId));
-        //TODO: Xử lý lỗi gửi mail
-        await fluentEmail.To(userEmail)
-            .Subject("Nhà hàng Nhum nhum - Thông báo thông tin đặt bàn")
-            .Body($"Nhà hàng đã xác nhận được thông tin đặt bàn của bạn.<br> Đây là thông tin đặt bàn của bạn: <br> Mã Booking của bạn là: {bookingInfo.BookId} <br>Tên: {bookingInfo.LastName + " " + bookingInfo.FirstName} <br> Ngày:{bookingInfo.BookingDate}<br> Thời gian: {bookingInfo.BookingTime} <br> Email: {bookingInfo.Email} <br> Số điện thoại:{bookingInfo.Phone} <br> Số bàn của bạn là: {bookingDetail.TableId} " , isHtml: true)
-            .SendAsync();
-            
+        // Gửi email thông báo
+        bool emailSent = false;
+        int retryCount = 0;
+        int maxRetries = 5;
+
+        do
+        {
+            try
+            {
+                await fluentEmail.To(userEmail)
+                    .Subject("Nhà hàng Nhum nhum - Thông báo thông tin đặt bàn")
+                    .Body($"Nhà hàng đã xác nhận được thông tin đặt bàn của bạn.<br> Đây là thông tin đặt bàn của bạn: <br> Mã Booking của bạn là: {bookingInfo.BookId} <br>Tên: {bookingInfo.LastName + " " + bookingInfo.FirstName} <br> Ngày:{bookingInfo.BookingDate}<br> Thời gian: {bookingInfo.BookingTime} <br> Email: {bookingInfo.Email} <br> Số điện thoại:{bookingInfo.Phone} <br> Số bàn của bạn là: {bookingDetail.TableId} ", isHtml: true)
+                    .SendAsync();
+                    
+                emailSent = true;
+            }
+            catch
+            {
+                retryCount++;
+                if (retryCount >= maxRetries)
+                {
+                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                }
+            }
+        }
+        while (!emailSent && retryCount < maxRetries);
+    
+
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
@@ -107,7 +129,6 @@ public class TableArrangementCommandHandler(
 
 //         //thông báo cho người dùng
 //         var bookingInfo = await bookingRepository.GetBookingResponseById(Ulid.Parse(request.BookingId));
-//         //TODO: Xử lý lỗi gửi mail
 //         await fluentEmail.To(userEmail)
 //             .Subject("Nhà hàng Nhum nhum - Thông báo thông tin đặt bàn")
 //             .Body($"Nhà hàng đã xác nhận được thông tin đặt bàn của bạn.<br> Đây là thông tin đặt bàn của bạn: <br> Mã Booking của bạn là: {bookingInfo.BookId} <br>Tên: {bookingInfo.LastName + " " + bookingInfo.FirstName} <br> Ngày:{bookingInfo.BookingDate}<br> Thời gian: {bookingInfo.BookingTime} <br> Email: {bookingInfo.Email} <br> Số điện thoại:{bookingInfo.Phone} <br> Số bàn của bạn là: {bookingDetail.TableId} " , isHtml: true)

@@ -2,12 +2,11 @@ using RestaurantManagement.Application.Abtractions;
 
 namespace RestaurantManagement.Application.Features.BookingFeature.Commands.SubscriberCreateBooking;
 
-
-//TODO: Untrusted data
+//NOTE: Đã lý Unstrusted data
 public record SubscriberCreateBookingCommand(
-    DateOnly BookingDate,
+    DateOnly BookingDate, //TODO: Xử lý unstrusted date
     TimeOnly BookingTime,
-    int NumberOfCustomers,
+    object NumberOfCustomers,
     string? Note,
     string token
 ) : ICommand;
@@ -15,7 +14,25 @@ public record SubscriberCreateBookingCommand(
 public record SubscriberCreateBookingRequest(
     DateOnly BookingDate,
     TimeOnly BookingTime,
-    int NumberOfCustomers,
+    object NumberOfCustomers,
     string? Note
 );
+
+
+#region Stable code
+// public record SubscriberCreateBookingCommand(
+//     DateOnly BookingDate,
+//     TimeOnly BookingTime,
+//     int NumberOfCustomers,
+//     string? Note,
+//     string token
+// ) : ICommand;
+
+// public record SubscriberCreateBookingRequest(
+//     DateOnly BookingDate,
+//     TimeOnly BookingTime,
+//     int NumberOfCustomers,
+//     string? Note
+// );
+#endregion
 

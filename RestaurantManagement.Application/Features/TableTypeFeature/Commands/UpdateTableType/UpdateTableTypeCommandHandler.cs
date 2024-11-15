@@ -30,6 +30,7 @@ public class UpdateTableTypeCommandHandler(
         var tableType = await context.TableTypes.FindAsync(request.TableTypeId);
         //Update TableType
         tableType.TableTypeName = request.TableTypeName;
+        tableType.TableCapacity = (int)request.TableCapacity;
         tableType.TablePrice = request.TablePrice;
         tableType.Description = request.Description;
 

@@ -43,10 +43,33 @@ public class ResetPasswordVerifyCommandHandler(
         var user = await userRepository.GetUserById(token.UserId);
         user.Password = EncryptProvider.Sha256(randomPass);
 
-        //TODO: Xử lý lỗi gửi mail
-        await fluentEmail.To(token.User.Email).Subject("Mật khẩu mới")
-            .Body($"Mật khẩu mới của bạn là: {randomPass}", isHtml: true)
-            .SendAsync();
+        // Gửi email thông báo
+        bool emailSent = false;
+        int retryCount = 0;
+        int maxRetries = 5;
+
+        do
+        {
+            try
+            {
+
+                await fluentEmail.To(token.User.Email).Subject("Mật khẩu mới")
+                    .Body($"Mật khẩu mới của bạn là: {randomPass}", isHtml: true)
+                    .SendAsync();
+                    
+                emailSent = true;
+            }
+            catch
+            {
+                retryCount++;
+                if (retryCount >= maxRetries)
+                {
+                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                }
+            }
+        }
+        while (!emailSent && retryCount < maxRetries);
+
         //Xóa token
         emailVerificationTokenRepository.RemoveVerificationToken(token);
         await unitOfWork.SaveChangesAsync();

@@ -40,12 +40,34 @@ public class DeleteCustomerAccountCommandHandler(
         await emailVerificationTokenRepository.CreateVerificationToken(emailVerificationToken);
         await unitOfWork.SaveChangesAsync();
 
-        //gửi mail xác nhận
+
+        // Gửi mail xác nhận
         var verificationLink = emailVerify.CreateLinkForDeleteCustomerAccount(emailVerificationToken);
-        //TODO: Xử lý lỗi gửi mail
-        await fluentEmail.To(customer.Email).Subject("Nhà hàng Nhum nhum - Xác nhận huỷ tài khoản")
-            .Body($"Vui lòng xác nhận để huỷ tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> <br> Quý khách vui lòng xác nhận trong 24h, sau thời gian này, yêu cầu sẽ tự huỷ.",  isHtml: true)
-            .SendAsync();
+        bool emailSent = false;
+        int retryCount = 0;
+        int maxRetries = 5;
+
+        do
+        {
+            try
+            {
+                await fluentEmail.To(customer.Email)
+                    .Subject("Nhà hàng Nhum nhum - Xác nhận huỷ tài khoản")
+                    .Body($"Vui lòng xác nhận để huỷ tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> <br> Quý khách vui lòng xác nhận trong 24h, sau thời gian này, yêu cầu sẽ tự huỷ.", isHtml: true)
+                    .SendAsync();
+
+            }
+            catch
+            {
+                retryCount++;
+                if (retryCount >= maxRetries)
+                {
+                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                }
+            }
+        }
+        while (!emailSent && retryCount < maxRetries);
+
 
         return Result.Success();
     }

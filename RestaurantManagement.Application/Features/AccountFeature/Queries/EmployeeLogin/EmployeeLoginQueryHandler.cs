@@ -17,12 +17,17 @@ public class EmployeeLoginQueryHandler(
 {
     public async Task<Result<LoginResponse>> Handle(EmployeeLoginQuery request, CancellationToken cancellationToken)
     {
-       //TODO: validate
+        
+        //Validate request
         var validator = new EmployeeLoginQueryValidator();
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result<LoginResponse>.Failure(errors);
+            return Result<LoginResponse>.Failure(errors!);
         }
+
+
         //encrypt the password
         var encryptedPassword = EncryptProvider.Sha256(request.passWord);
 

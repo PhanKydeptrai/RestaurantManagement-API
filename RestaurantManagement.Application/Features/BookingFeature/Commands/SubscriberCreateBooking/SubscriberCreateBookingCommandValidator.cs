@@ -27,14 +27,55 @@ public class SubscriberCreateBookingCommandValidator : AbstractValidator<Subscri
             .MaximumLength(250)
             .WithMessage("{PropertyName} must not exceed 250 characters");
 
-        // RuleFor(a => a.NumberOfCustomers)
-        //     .NotNull()
-        //     .WithMessage("{PropertyName} is required")
-        //     .NotEmpty()
-        //     .WithMessage("{PropertyName} is required")
-        //     .GreaterThan(0)
-        //     .WithMessage("{PropertyName} must be greater than 0")
-        //     .Must(a => bookingRepository.IsCapacityAvailable(a).Result == true)
-        //     .WithMessage("Seat is not enough for {PropertyName} customers");
+        RuleFor(a => a.NumberOfCustomers)
+            .Must(a => bookingRepository.IsCapacityAvailable((int)a).Result == true)
+            .WithMessage("Seat is not enough for {PropertyName} customers")
+            .When(a => int.TryParse(a.NumberOfCustomers.ToString(), out _))
+
+            .NotNull()
+            .WithMessage("{PropertyName} is required")
+            .NotEmpty()
+            .WithMessage("{PropertyName} is required")
+            .Must(a => int.TryParse(a.ToString(), out _))
+            .WithMessage("{PropertyName} must be a number");
+
+
+
     }
+
+
+    #region Stable code
+    // public SubscriberCreateBookingCommandValidator(IBookingRepository bookingRepository)
+    // {
+    //     RuleFor(a => a.BookingDate)
+    //         .NotNull()
+    //         .WithMessage("{PropertyName} is required")
+    //         .NotEmpty()
+    //         .WithMessage("{PropertyName} is required")
+    //         .Must(a => bookingRepository.IsBookingDateValid(a).Result == true)
+    //         .WithMessage("{PropertyName} is invalid");
+
+    //     RuleFor(a => a.BookingTime)
+    //         .NotNull()
+    //         .WithMessage("{PropertyName} is required")
+    //         .NotEmpty()
+    //         .WithMessage("{PropertyName} is required")
+    //         .Must(a => bookingRepository.IsBookingTimeValid(a).Result == true)
+    //         .WithMessage("{PropertyName} is outside of the working hours");
+
+    //     RuleFor(a => a.Note)
+    //         .MaximumLength(250)
+    //         .WithMessage("{PropertyName} must not exceed 250 characters");
+
+    //     RuleFor(a => a.NumberOfCustomers)
+    //         .NotNull()
+    //         .WithMessage("{PropertyName} is required")
+    //         .NotEmpty()
+    //         .WithMessage("{PropertyName} is required")
+    //         .GreaterThan(0)
+    //         .WithMessage("{PropertyName} must be greater than 0")
+    //         .Must(a => bookingRepository.IsCapacityAvailable(a).Result == true)
+    //         .WithMessage("Seat is not enough for {PropertyName} customers");
+    // }
+    #endregion
 }
