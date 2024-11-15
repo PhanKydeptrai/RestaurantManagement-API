@@ -16,12 +16,14 @@ public class UpdateMealCommandHandler(
 {
     public async Task<Result> Handle(UpdateMealCommand request, CancellationToken cancellationToken)
     {
-        //validator 
-        //TODO: validate
+        
+        //Validate request
         var validator = new UpdateMealCommandValidator(mealRepository, categoryRepository);
-        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
 
         //Lấy meal theo id  

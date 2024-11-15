@@ -14,14 +14,16 @@ public class CreateTableCommandHandler(
 {
     public async Task<Result> Handle(CreateTableCommand request, CancellationToken cancellationToken)
     {
-        //TODO: validate
-        //validate
+        
+        //Validate request
         var validator = new CreateTableCommandValidator();
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
-
+        
         //create table
         var tableArray = new Table[request.quantity];
         Ulid tableTypeId = Ulid.Parse(request.tableTypeId);

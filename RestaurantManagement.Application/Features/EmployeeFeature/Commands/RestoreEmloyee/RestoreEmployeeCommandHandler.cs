@@ -13,12 +13,14 @@ public class RestoreEmployeeCommandHandler(
 {
     public async Task<Result> Handle(RestoreEmployeeCommand request, CancellationToken cancellationToken)
     {
-        //validate
-        //TODO: validate
+
         var validator = new RestoreEmployeeCommandValidator(employeeRepository);
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        //Validate request
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
         //Restore employee
         await employeeRepository.RestoreEmployee(Ulid.Parse(request.id));

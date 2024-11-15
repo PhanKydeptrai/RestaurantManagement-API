@@ -18,11 +18,13 @@ internal class ForgotCustomerPasswordCommandHandler(
 {
     public async Task<Result> Handle(ForgotCustomerPasswordCommand request, CancellationToken cancellationToken)
     {
-        //TODO: validate
+        //Validate request
         var validator = new ForgotCustomerPasswordCommandValidator(customerRepository);
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
 
 

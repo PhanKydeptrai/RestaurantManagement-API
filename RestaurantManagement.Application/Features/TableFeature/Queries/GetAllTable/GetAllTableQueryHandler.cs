@@ -14,12 +14,14 @@ public class GetAllTableQueryHandler(IApplicationDbContext context) : IQueryHand
 {
     public async Task<Result<PagedList<TableResponse>>> Handle(GetAllTableQuery request, CancellationToken cancellationToken)
     {
-        //TODO: validate
-        //validate
+        
+        //Validate request
         var validator = new GetAllTableQueryValidator();
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result<PagedList<TableResponse>>.Failure(errors);
+            return Result<PagedList<TableResponse>>.Failure(errors!);
         }
         var tableQuery = context.Tables.Include(a => a.TableType).AsQueryable();
 

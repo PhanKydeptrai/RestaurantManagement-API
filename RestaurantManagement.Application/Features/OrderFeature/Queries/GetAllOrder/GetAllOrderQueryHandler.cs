@@ -17,11 +17,14 @@ public class GetAllOrderQueryHandler(
 {
     public async Task<Result<PagedList<OrderResponse>>> Handle(GetAllOrderQuery request, CancellationToken cancellationToken)
     {
-        //TODO: validate
+        
+        //Validate request
         var validator = new GetAllOrderQueryValidator();
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result<PagedList<OrderResponse>>.Failure(errors);
+            return Result<PagedList<OrderResponse>>.Failure(errors!);
         }
         
         var orderQuery = context.Orders

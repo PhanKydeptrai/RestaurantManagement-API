@@ -18,16 +18,13 @@ public class ChangeCustomerPasswordCommandHandler(
 {
     public async Task<Result> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        //TODO: validate
+        //Validate request
         var validator = new ChangeCustomerPasswordCommandValidator();
-        var validationResult = await validator.ValidateAsync(request);
-        if (!validationResult.IsValid)
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            Error[] errors = validationResult.Errors
-                .Select(x => new Error(x.PropertyName, x.ErrorMessage))
-                .ToArray();
-
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
 
         //Lấy token
@@ -39,8 +36,8 @@ public class ChangeCustomerPasswordCommandHandler(
         string encryptPass = EncryptProvider.Sha256(request.oldPass);
         if (encryptPass != user.Password)
         {
-            Error[] errors = { new Error("OldPassword", "Mật khẩu cũ không đúng") };
-            return Result.Failure(errors);
+            Error[] error = { new Error("OldPassword", "Mật khẩu cũ không đúng") };
+            return Result.Failure(error);
         }
         //Tạo token xác thực 
         var token = new EmailVerificationToken

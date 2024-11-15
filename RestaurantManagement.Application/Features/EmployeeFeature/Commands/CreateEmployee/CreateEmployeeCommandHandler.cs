@@ -15,12 +15,14 @@ public class CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository
     public async Task<Result> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {
 
-        // validate
-        //TODO: validate
+        
         var validator = new CreateEmployeeCommandValidator(employeeRepository);
-        if(!ValidateRequest.RequestValidator(validator, request, out var errors))
+        //Validate request
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
 
         //Xử lý lưu 

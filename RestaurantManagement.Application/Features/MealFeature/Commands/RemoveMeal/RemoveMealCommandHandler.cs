@@ -13,16 +13,14 @@ public class RemoveMealCommandHandler(
 {
     public async Task<Result> Handle(RemoveMealCommand request, CancellationToken cancellationToken)
     {
-        //TODO: validate
         var validator = new RemoveMealCommandValidator(mealRepository);
-        var validationResult = await validator.ValidateAsync(request);
-        if(!validationResult.IsValid)
+        //TODO: validate
+        //Validate request
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            Error[] errors = validationResult.Errors
-                .Select(e => new Error(e.ErrorCode, e.ErrorMessage))
-                .ToArray();
-
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
         await mealRepository.DeleteMeal(Ulid.Parse(request.id));
 

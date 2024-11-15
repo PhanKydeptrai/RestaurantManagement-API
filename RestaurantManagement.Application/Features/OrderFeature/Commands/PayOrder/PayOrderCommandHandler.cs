@@ -15,7 +15,7 @@ public class PayOrderCommandHandler(
 {
     public async Task<Result> Handle(PayOrderCommand request, CancellationToken cancellationToken)
     {
-        //TODO: validate
+        //Validate request
         var validator = new PayOrderCommandValidator(tableRepository);
         Error[]? errors = null;
         var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
