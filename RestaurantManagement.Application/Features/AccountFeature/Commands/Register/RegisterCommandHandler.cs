@@ -14,14 +14,14 @@ public class RegisterCommandHandler(
     ICustomerRepository customerRepository,
     IUnitOfWork unitOfWork,
     IUserRepository userRepository,
-    IApplicationDbContext context, 
-    IFluentEmail fluentEmail, 
+    IApplicationDbContext context,
+    IFluentEmail fluentEmail,
     IEmailVerify emailVerify) : ICommandHandler<RegisterCommand>
 {
     public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
 
-        
+
         //Validate request
         var validator = new RegisterCommandValidator(customerRepository);
         Error[]? errors = null;
@@ -30,7 +30,7 @@ public class RegisterCommandHandler(
         {
             return Result.Failure(errors!);
         }
-        
+
         //REFACTOR:
         // 1. Sử dụng repository
         // 2. Tối ưu trường hợp khách đăng ký bị chéo thông tin giữa hai cặp tài khoản thường.
@@ -62,10 +62,32 @@ public class RegisterCommandHandler(
 
             //gửi mail kích hoạt tài khoản
             var verifiCationLink = emailVerify.Create(emailverificationToken);
-            //TODO: Xử lý lỗi gửi mail
-            await fluentEmail.To(normalCustomer.User.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
-                .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verifiCationLink}'>Click me</a>", isHtml: true)
-                .SendAsync();
+            // Gửi email thông báo
+            bool emailSent = false;
+            int retryCount = 0;
+            int maxRetries = 5;
+
+            do
+            {
+                try
+                {
+                    await fluentEmail.To(normalCustomer.User.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
+                    .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verifiCationLink}'>Click me</a>", isHtml: true)
+                    .SendAsync();
+                    emailSent = true;
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
+                }
+            }
+            while (!emailSent && retryCount < maxRetries);
+
+
             return Result.Success();
         }
 
@@ -102,14 +124,37 @@ public class RegisterCommandHandler(
         await context.EmailVerificationTokens.AddAsync(emailVerificationToken);
         await userRepository.CreateUser(user);
         await customerRepository.CreateCustomer(customer);
-        await unitOfWork.SaveChangesAsync();
+
 
         //gửi mail kích hoạt tài khoản
         var verificationLink = emailVerify.Create(emailVerificationToken);
-        //TODO: Xử lý lỗi gửi mail
-        await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
-            .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
-            .SendAsync();
+
+        bool emailSent2 = false;
+        int retryCount2 = 0;
+        int maxRetries2 = 5;
+
+        do
+        {
+            try
+            {
+                await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
+                    .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
+                    .SendAsync();
+
+            }
+            catch
+            {
+                retryCount2++;
+                if (retryCount2 >= maxRetries2)
+                {
+                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                }
+            }
+        }
+        while (!emailSent2 && retryCount2 < maxRetries2);
+
+
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

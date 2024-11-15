@@ -13,9 +13,9 @@ public class RemoveMealCommandHandler(
 {
     public async Task<Result> Handle(RemoveMealCommand request, CancellationToken cancellationToken)
     {
-        var validator = new RemoveMealCommandValidator(mealRepository);
-        //TODO: validate
+        
         //Validate request
+        var validator = new RemoveMealCommandValidator(mealRepository);
         Error[]? errors = null;
         var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
         if (!isValid)

@@ -15,7 +15,7 @@ public class CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository
     public async Task<Result> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {
 
-        
+
         var validator = new CreateEmployeeCommandValidator(employeeRepository);
         //Validate request
         Error[]? errors = null;
@@ -68,7 +68,7 @@ public class CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository
 
         await userRepository.CreateUser(user);
         await employeeRepository.CreateEmployee(employee);
-        
+
         //TODO: Cập nhật system log
         #region Decode jwt and system log
         //Deocde jwt
@@ -84,12 +84,33 @@ public class CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository
         //     UserId = Ulid.Parse(userId)
         // });
         #endregion
-        
-        //TODO: Xử lý lỗi gửi mail
-        await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo thông tin tài khoản")
-        .Body($"Thông tin tài khoản nhân viên của bạn: {request.Email} <br> Mật Khẩu mặc định: {password}")
-        .SendAsync();
-        
+
+        // Gửi email thông báo
+        bool emailSent = false;
+        int retryCount = 0;
+        int maxRetries = 5;
+
+        do
+        {
+            try
+            {
+                await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo thông tin tài khoản")
+                    .Body($"Thông tin tài khoản nhân viên của bạn: {request.Email} <br> Mật Khẩu mặc định: {password}")
+                    .SendAsync();
+                emailSent = true;
+            }
+            catch
+            {
+                retryCount++;
+                if (retryCount >= maxRetries)
+                {
+                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                }
+            }
+        }
+        while (!emailSent && retryCount < maxRetries);
+
+
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

@@ -45,7 +45,7 @@ public class CustomerCreateBookingCommandHandler(
                 Phone = request.PhoneNumber,
                 FirstName = request.FirstName,
                 Status = "NotActivated",
-                
+
                 LastName = request.LastName
             });
 
@@ -61,7 +61,7 @@ public class CustomerCreateBookingCommandHandler(
         {
             userEmail = isCustomerExist.User.Email;
         }
-        
+
         //Tính tiền booking
         TableType[] tableTypes = await context.TableTypes
             .AsNoTracking()
@@ -124,7 +124,7 @@ public class CustomerCreateBookingCommandHandler(
         vnpay.AddRequestData("vnp_Version", VnPayLibrary.VERSION);
         vnpay.AddRequestData("vnp_Command", "pay");
         vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
-        vnpay.AddRequestData("vnp_Amount", ((int)bookingPrice/2 * 100).ToString()); //Số tiền thanh toán. Số tiền không mang các ký tự phân tách thập phân, phần nghìn, ký tự tiền tệ. Để gửi số tiền thanh toán là 100,000 VND (một trăm nghìn VNĐ) thì merchant cần nhân thêm 100 lần (khử phần thập phân), sau đó gửi sang VNPAY là: 10000000
+        vnpay.AddRequestData("vnp_Amount", ((int)bookingPrice / 2 * 100).ToString()); //Số tiền thanh toán. Số tiền không mang các ký tự phân tách thập phân, phần nghìn, ký tự tiền tệ. Để gửi số tiền thanh toán là 100,000 VND (một trăm nghìn VNĐ) thì merchant cần nhân thêm 100 lần (khử phần thập phân), sau đó gửi sang VNPAY là: 10000000
         vnpay.AddRequestData("vnp_BankCode", "");
         vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
         vnpay.AddRequestData("vnp_CurrCode", "VND");
@@ -138,10 +138,32 @@ public class CustomerCreateBookingCommandHandler(
 
         string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
         //Gửi mail thông báo cho khách hàng
-        //TODO: Xử lý lỗi gửi mail
-        await fluentEmail.To(userEmail).Subject("Nhà hàng Nhum nhum - Thông báo thanh toán phí đặt bàn")
-            .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> <br> Mã booking của bạn là: {booking.BookId}", isHtml: true)
-            .SendAsync();
+
+        bool emailSent = false;
+        int retryCount = 0;
+        int maxRetries = 5;
+
+        do
+        {
+            try
+            {
+                await fluentEmail.To(userEmail)
+                    .Subject("Nhà hàng Nhum nhum - Thông báo thanh toán phí đặt bàn")
+                    .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> <br> Mã booking của bạn là: {booking.BookId}", isHtml: true)
+                    .SendAsync();
+                emailSent = true;
+            }
+            catch
+            {
+                retryCount++;
+                if (retryCount >= maxRetries)
+                {
+                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                }
+            }
+        }
+        while (!emailSent && retryCount < maxRetries);
+
 
         return Result.Success();
     }
