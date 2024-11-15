@@ -42,7 +42,7 @@ public class DeleteCustomerAccountCommandHandler(
 
         //gửi mail xác nhận
         var verificationLink = emailVerify.CreateLinkForDeleteCustomerAccount(emailVerificationToken);
-
+        //TODO: Xử lý lỗi gửi mail
         await fluentEmail.To(customer.Email).Subject("Nhà hàng Nhum nhum - Xác nhận huỷ tài khoản")
             .Body($"Vui lòng xác nhận để huỷ tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> <br> Quý khách vui lòng xác nhận trong 24h, sau thời gian này, yêu cầu sẽ tự huỷ.",  isHtml: true)
             .SendAsync();

@@ -1,17 +1,13 @@
-﻿using FluentEmail.Core;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
-using RestaurantManagement.Infrastructure.Persistence;
 
 namespace RestaurantManagement.Infrastructure.Repos;
 
 public class EmailVerify(
     LinkGenerator linkGenerator,
-    IHttpContextAccessor httpContextAccessor,
-    RestaurantManagementDbContext context,
-    IFluentEmail fluentEmail) : IEmailVerify
+    IHttpContextAccessor httpContextAccessor) : IEmailVerify
 {
 
     public string Create(EmailVerificationToken emailVerificationToken)

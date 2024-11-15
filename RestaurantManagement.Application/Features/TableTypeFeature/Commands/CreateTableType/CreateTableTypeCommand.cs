@@ -3,6 +3,7 @@ using RestaurantManagement.Application.Abtractions;
 
 namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.CreateTableType;
 
+//TODO: Untrusted data
 public record CreateTableTypeCommand(
     string TableTypeName, 
     IFormFile? Image, 

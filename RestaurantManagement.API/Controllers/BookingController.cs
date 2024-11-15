@@ -117,6 +117,8 @@ public class BookingController : IEndpoint
         }).RequireAuthorization();
 
         //Xếp bàn cho khách 
+        
+
         endpoints.MapPost("table-arrange/{BookingId}", async (
             string BookingId,
             [FromBody] TableArrangementRequest command,
@@ -130,6 +132,23 @@ public class BookingController : IEndpoint
             return Results.BadRequest(result);
         }).RequireAuthorization();
 
+        #region Stable code for endpoint table arrangement
+        // //Xếp bàn cho khách 
+        // endpoints.MapPost("table-arrange/{BookingId}", async (
+        //     string BookingId,
+        //     [FromBody] TableArrangementRequest command,
+        //     ISender sender) =>
+        // {
+        //     var result = await sender.Send(new TableArrangementCommand(BookingId, command.TableId));
+        //     if (result.IsSuccess)
+        //     {
+        //         return Results.Ok(result);
+        //     }
+        //     return Results.BadRequest(result);
+        // }).RequireAuthorization();
+        #endregion
+
+
         //Hủy đặt bàn
         endpoints.MapDelete("{id}", async (
             string id,
@@ -141,7 +160,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-            
+
         }).RequireAuthorization();
 
         //Trả về url thanh toán
@@ -180,21 +199,50 @@ public class BookingController : IEndpoint
 
 
             // Cập nhật thông tin trong cơ sở dữ liệu
-            var booking = await _context.Bookings.Include(a => a.Customer).ThenInclude(a => a.User).FirstOrDefaultAsync(b => b.BookId == Ulid.Parse(model.vnp_TxnRef));
+            var booking = await _context.Bookings.Include(a => a.Customer)
+                .ThenInclude(a => a.User)
+                .FirstOrDefaultAsync(b => b.BookId == Ulid.Parse(model.vnp_TxnRef));
+
             if (booking == null)
             {
                 return Results.NotFound("Booking not found");
             }
 
-            booking.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
+            if (booking.PaymentStatus == "Paid")
+            {
+                return Results.Ok("Payment is paid!");
+            }
 
+            booking.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
             await unitOfWork.SaveChangesAsync();
 
-            await fluentEmail.To(booking.Customer.User.Email).Subject("Nhà hàng Nhum nhum - Thông báo thanh toán thành công")
-            .Body($"Quý khách đã thanh toán thành công. <br> Quý khách vui lòng chú ý email để nhận thông tin khi được xếp bàn. <br> Nhà hàng Nhum Nhum xin chân thành cảm ơn.", isHtml: true)
-            .SendAsync();
+            // Gửi email thông báo
+            bool emailSent = false;
+            int retryCount = 0;
+            int maxRetries = 5;
 
-            
+            do
+            {
+                try
+                {
+                    await fluentEmail.To(booking.Customer.User.Email)
+                        .Subject("Nhà hàng Nhum Nhum - Thông báo thanh toán thành công")
+                        .Body($"Quý khách đã thanh toán thành công. <br> Quý khách vui lòng chú ý email để nhận thông tin khi được xếp bàn. <br> Nhà hàng Nhum Nhum xin chân thành cảm ơn.", isHtml: true)
+                        .SendAsync();
+
+                    emailSent = true;
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        return Results.BadRequest("Failed to send email");
+                    }
+                }
+            }
+            while (!emailSent && retryCount < maxRetries);
+
             return Results.Ok("Payment Success!");
         });
 

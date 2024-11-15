@@ -40,6 +40,8 @@ public class DeleteCustomerCommandHandler : ICommandHandler<DeleteCustomerComman
         await _customerRepository.DeleteCustomer(Ulid.Parse(request.userId));
         
         //Gửi mail thông báo
+        
+        //TODO: Xử lý lỗi gửi mail
         await _fluentEmail.To(userEmail).Subject("Nhà hàng Nhum nhum - Thông báo vô hiệu hoá tài khoản")
                 .Body($"Nhà hàng Nhum Nhum xin trân trọng thông báo: <br> Tài khoản của quý khách đã bị vô hiệu hoá do những vi phạm. <br> Nếu có sai sót xin quý khách vui lòng gọi vào số hotline 0903159123 của nhà hàng. <br> Nhum Nhum xin chân thành cảm ơn.", isHtml: true)
                 .SendAsync();

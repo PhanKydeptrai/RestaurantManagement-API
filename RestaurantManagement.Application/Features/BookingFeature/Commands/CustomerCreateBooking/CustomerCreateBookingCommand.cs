@@ -1,6 +1,8 @@
 using RestaurantManagement.Application.Abtractions;
 
 namespace RestaurantManagement.Application.Features.BookingFeature.Commands.CustomerCreateBooking;
+
+//TODO: Untrusted data
 public class CustomerCreateBookingCommand : ICommand
 {
     public string FirstName { get; set; }

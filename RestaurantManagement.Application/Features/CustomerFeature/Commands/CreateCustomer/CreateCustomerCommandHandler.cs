@@ -84,7 +84,9 @@ public class CreateCustomerCommandHandler(
         //End
 
         //gửi mail kích hoạt tài khoản
+        
         var verificationLink = emailVerify.Create(emailVerificationToken);
+        //TODO: Xử lý lỗi gửi mail
         await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
             .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> \n Đây là mật khẩu của bạn: {randomPassword}", isHtml: true)
             .SendAsync();

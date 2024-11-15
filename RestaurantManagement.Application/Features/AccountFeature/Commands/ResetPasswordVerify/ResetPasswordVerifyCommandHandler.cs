@@ -43,6 +43,7 @@ public class ResetPasswordVerifyCommandHandler(
         var user = await userRepository.GetUserById(token.UserId);
         user.Password = EncryptProvider.Sha256(randomPass);
 
+        //TODO: Xử lý lỗi gửi mail
         await fluentEmail.To(token.User.Email).Subject("Mật khẩu mới")
             .Body($"Mật khẩu mới của bạn là: {randomPass}", isHtml: true)
             .SendAsync();
