@@ -15,11 +15,13 @@ public class PayOrderCommandHandler(
 {
     public async Task<Result> Handle(PayOrderCommand request, CancellationToken cancellationToken)
     {
-        //validate
+        //TODO: validate
         var validator = new PayOrderCommandValidator(tableRepository);
-        if (!ValidateRequest.RequestValidator(validator, request, out var errors))
+        Error[]? errors = null;
+        var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
+        if (!isValid)
         {
-            return Result.Failure(errors);
+            return Result.Failure(errors!);
         }
 
         //Kiểm tra xem bàn đã có order chưa
@@ -41,7 +43,8 @@ public class PayOrderCommandHandler(
         await tableRepository.UpdateActiveStatus(int.Parse(request.tableId), "Empty");
 
         //Kiểm tra bàn có booking hay không
-        var checkBooking = await context.Tables.Include(a => a.BookingDetails)
+        var checkBooking = await context.Tables
+            .Include(a => a.BookingDetails)
             .Include(a => a.BookingDetails).ThenInclude(a => a.Booking)
             .Where(a => a.TableId == int.Parse(request.tableId))
             .Select(a => a.BookingDetails.FirstOrDefault(a => a.Booking.BookingStatus == "Occupied"))

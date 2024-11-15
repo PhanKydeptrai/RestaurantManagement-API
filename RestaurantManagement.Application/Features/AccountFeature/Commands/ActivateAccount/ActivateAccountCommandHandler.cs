@@ -42,7 +42,6 @@ public class ActivateAccountCommandHandler(
                 CreatedDate = DateTime.UtcNow
             };
 
-            //TODO: Refactor thành phương thức send mail
             string? verificationLink = emailVerify.Create(emailVerificationToken);
             //TODO: Xử lý lỗi gửi mail
             await fluentEmail.To(token.User.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")

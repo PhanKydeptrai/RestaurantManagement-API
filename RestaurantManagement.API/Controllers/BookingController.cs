@@ -117,6 +117,8 @@ public class BookingController : IEndpoint
         }).RequireAuthorization();
 
         //Xếp bàn cho khách 
+        
+
         endpoints.MapPost("table-arrange/{BookingId}", async (
             string BookingId,
             [FromBody] TableArrangementRequest command,
@@ -129,6 +131,23 @@ public class BookingController : IEndpoint
             }
             return Results.BadRequest(result);
         }).RequireAuthorization();
+
+        #region Stable code for endpoint table arrangement
+        // //Xếp bàn cho khách 
+        // endpoints.MapPost("table-arrange/{BookingId}", async (
+        //     string BookingId,
+        //     [FromBody] TableArrangementRequest command,
+        //     ISender sender) =>
+        // {
+        //     var result = await sender.Send(new TableArrangementCommand(BookingId, command.TableId));
+        //     if (result.IsSuccess)
+        //     {
+        //         return Results.Ok(result);
+        //     }
+        //     return Results.BadRequest(result);
+        // }).RequireAuthorization();
+        #endregion
+
 
         //Hủy đặt bàn
         endpoints.MapDelete("{id}", async (
