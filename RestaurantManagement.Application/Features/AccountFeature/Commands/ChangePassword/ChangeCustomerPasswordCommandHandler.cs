@@ -54,6 +54,7 @@ public class ChangeCustomerPasswordCommandHandler(
 
         string verificationLink = emailVerify.CreateLinkForChangePass(token);
         //Gửi mail xác thực 
+        //TODO: Xử lý lỗi gửi mail
         await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Xác nhận thay đổi mật khẩu")
             .Body($"Vui lòng xác nhận để thay đôi mật khẩu bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
             .SendAsync();

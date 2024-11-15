@@ -136,6 +136,7 @@ public class CustomerCreateBookingCommandHandler(
 
         string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
         //  Gửi mail thông báo cho khách hàng
+        //TODO: Xử lý lỗi gửi mail
         await fluentEmail.To(userEmail).Subject("Nhà hàng Nhum nhum - Thông báo thanh toán phí đặt bàn")
             .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> <br> Mã booking của bạn là: {booking.BookId}", isHtml: true)
             .SendAsync();

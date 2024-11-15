@@ -39,6 +39,8 @@ internal class ForgotCustomerPasswordCommandHandler(
 
         //gửi mail xác thực
         var verificationLink = emailVerify.CreateLinkForResetPass(emailVerificationToken);
+
+        //TODO: Xử lý lỗi gửi mail
         await fluentEmail.To(request.email).Subject("Nhà hàng Nhum nhum - Xác nhận đặt lại mật khẩu")
             .Body($"Vui lòng nhấn vào link sau để nhận mật khẩu mới: <a href='{verificationLink}'>Click me</a>" +
             $"<br> Link chỉ có hiệu lực trong 5 phút", isHtml: true)

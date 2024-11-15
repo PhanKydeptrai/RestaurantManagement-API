@@ -58,6 +58,7 @@ public class RegisterCommandHandler(
 
             //gửi mail kích hoạt tài khoản
             var verifiCationLink = emailVerify.Create(emailverificationToken);
+            //TODO: Xử lý lỗi gửi mail
             await fluentEmail.To(normalCustomer.User.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
                 .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verifiCationLink}'>Click me</a>", isHtml: true)
                 .SendAsync();
@@ -101,6 +102,7 @@ public class RegisterCommandHandler(
 
         //gửi mail kích hoạt tài khoản
         var verificationLink = emailVerify.Create(emailVerificationToken);
+        //TODO: Xử lý lỗi gửi mail
         await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
             .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
             .SendAsync();
