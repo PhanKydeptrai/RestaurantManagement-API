@@ -18,6 +18,7 @@ public class UpdateCategoryCommandHandler(
     {
 
         //validate
+        //TODO: validate
         var validator = new UpdateCategoryValidator(categoryRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

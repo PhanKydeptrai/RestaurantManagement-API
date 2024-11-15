@@ -18,6 +18,7 @@ public class ChangeCustomerPasswordCommandHandler(
 {
     public async Task<Result> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         var validator = new ChangeCustomerPasswordCommandValidator();
         var validationResult = await validator.ValidateAsync(request);
         if (!validationResult.IsValid)

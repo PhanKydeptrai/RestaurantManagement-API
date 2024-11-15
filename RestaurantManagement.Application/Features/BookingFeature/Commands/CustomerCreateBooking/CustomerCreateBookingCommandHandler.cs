@@ -18,7 +18,7 @@ public class CustomerCreateBookingCommandHandler(
 {
     public async Task<Result> Handle(CustomerCreateBookingCommand request, CancellationToken cancellationToken)
     {
-        
+        //TODO: validate
         var validator = new CustomerCreateBookingCommandValidator(bookingRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

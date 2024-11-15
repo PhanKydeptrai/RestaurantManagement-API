@@ -12,6 +12,7 @@ public class GetTableForCustomerCommandHandler(
     public async Task<Result> Handle(AssignTableToCustomerCommand request, CancellationToken cancellationToken)
     {
         //validate
+        //TODO: validate
         var validator = new AssignTableToCustomerCommandValidator(tableRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

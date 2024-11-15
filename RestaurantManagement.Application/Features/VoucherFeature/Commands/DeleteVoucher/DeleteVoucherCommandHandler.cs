@@ -15,6 +15,7 @@ public class DeleteVoucherCommandHandler(
     public async Task<Result> Handle(DeleteVoucherCommand request, CancellationToken cancellationToken)
     {
         //validate
+        //TODO: validate
         var validator = new DeleteVoucherCommandValidator(voucherRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

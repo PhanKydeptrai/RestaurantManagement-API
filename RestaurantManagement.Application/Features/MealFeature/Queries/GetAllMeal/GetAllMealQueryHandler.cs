@@ -15,6 +15,7 @@ public class GetAllMealQueryHandler(IApplicationDbContext context) : IQueryHandl
     public async Task<Result<PagedList<MealResponse>>> Handle(GetAllMealQuery request, CancellationToken cancellationToken)
     {
         //validate
+        //TODO: validate
         var validator = new GetAllMealQueryValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

@@ -14,6 +14,7 @@ public class DeleteTableTypeCommandHandler(
     public async Task<Result> Handle(DeleteTableTypeCommand request, CancellationToken cancellationToken)
     {
         //Validator
+        //TODO: validate
         var validator = new DeleteTableTypeCommandValidator(tableTypeRepository);
 
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

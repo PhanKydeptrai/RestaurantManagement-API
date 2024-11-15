@@ -17,6 +17,7 @@ public class GetAllOrderQueryHandler(
 {
     public async Task<Result<PagedList<OrderResponse>>> Handle(GetAllOrderQuery request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         var validator = new GetAllOrderQueryValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

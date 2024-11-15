@@ -18,6 +18,7 @@ internal class ForgotCustomerPasswordCommandHandler(
 {
     public async Task<Result> Handle(ForgotCustomerPasswordCommand request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         var validator = new ForgotCustomerPasswordCommandValidator(customerRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

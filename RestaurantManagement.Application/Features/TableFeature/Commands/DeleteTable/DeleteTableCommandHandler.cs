@@ -13,6 +13,7 @@ public class DeleteTableCommandHandler(
 {
     public async Task<Result> Handle(DeleteTableCommand request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new DeleteTableCommandValidator(tableRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

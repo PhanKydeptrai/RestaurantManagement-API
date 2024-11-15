@@ -21,6 +21,7 @@ public class RegisterCommandHandler(
     public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
 
+        //TODO: validate
         //validation
         var validator = new RegisterCommandValidator(customerRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

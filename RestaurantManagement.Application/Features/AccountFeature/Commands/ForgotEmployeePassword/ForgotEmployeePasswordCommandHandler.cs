@@ -18,7 +18,7 @@ public class ForgotEmployeePasswordCommandHandler(
 {
     public async Task<Result> Handle(ForgotEmployeePasswordCommand request, CancellationToken cancellationToken)
     {
-        
+        //TODO: validate
         var validator = new ForgotEmployeePasswordCommandValidator(employeeRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

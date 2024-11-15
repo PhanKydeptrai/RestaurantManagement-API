@@ -15,7 +15,8 @@ public class CreateVoucherCommandHanler(
 {
     public async Task<Result> Handle(CreateVoucherCommand request, CancellationToken cancellationToken)
     {
-        //validate
+        //
+        //TODO: validate
         var validator = new CreateVoucherCommandValidator(voucherRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

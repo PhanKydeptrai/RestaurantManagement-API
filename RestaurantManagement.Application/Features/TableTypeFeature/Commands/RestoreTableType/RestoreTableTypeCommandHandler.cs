@@ -11,6 +11,7 @@ public class RestoreTableTypeCommandHandler(
     public async Task<Result> Handle(RestoreTableTypeCommand request, CancellationToken cancellationToken)
     {
         //Validator
+        //TODO: validate
         var validator = new RestoreTableTypeCommandValidator(tableTypeRepository);  
         var validationResult = await validator.ValidateAsync(request);
 

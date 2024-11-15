@@ -11,6 +11,7 @@ public class GetTableTypyByIdQueryHandler(ITableTypeRepository tableTypeReposito
     public async Task<Result<TableTypeResponse>> Handle(GetTableTypyByIdQuery request, CancellationToken cancellationToken)
     {
         //validate
+        //TODO: validate
         var validator = new GetTableTypyByIdQueryValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var error))
         {

@@ -16,6 +16,7 @@ public class CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository
     {
 
         // validate
+        //TODO: validate
         var validator = new CreateEmployeeCommandValidator(employeeRepository);
         if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

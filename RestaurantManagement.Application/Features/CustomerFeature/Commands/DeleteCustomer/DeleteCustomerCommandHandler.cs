@@ -30,6 +30,7 @@ public class DeleteCustomerCommandHandler : ICommandHandler<DeleteCustomerComman
     public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
     {
         // validate
+        //TODO: validate
         var validator = new DeleteCustomerCommandValidator(_customerRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

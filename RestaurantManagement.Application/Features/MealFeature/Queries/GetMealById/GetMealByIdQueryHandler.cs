@@ -17,6 +17,7 @@ public class GetMealByIdQueryHandler(
     {
 
         //validate
+        //TODO: validate
         var validator = new GetMealByIdQueryValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

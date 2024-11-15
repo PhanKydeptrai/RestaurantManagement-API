@@ -16,6 +16,7 @@ public class CancelBookingCommandHandler(
 {
     public async Task<Result> Handle(CancelBookingCommand request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new CancelBookingCommandValidator(bookingRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

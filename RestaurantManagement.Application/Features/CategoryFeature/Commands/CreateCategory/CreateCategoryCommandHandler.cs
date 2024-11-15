@@ -15,6 +15,7 @@ public class CreateCategoryCommandHandler(
     public async Task<Result> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
         //validate
+        //TODO: validate
         var validator = new CreateCategoryCommandValidator(categoryRepository);
 
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

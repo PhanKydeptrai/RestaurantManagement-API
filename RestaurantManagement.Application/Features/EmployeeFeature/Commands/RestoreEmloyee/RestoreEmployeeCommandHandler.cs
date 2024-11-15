@@ -14,6 +14,7 @@ public class RestoreEmployeeCommandHandler(
     public async Task<Result> Handle(RestoreEmployeeCommand request, CancellationToken cancellationToken)
     {
         //validate
+        //TODO: validate
         var validator = new RestoreEmployeeCommandValidator(employeeRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

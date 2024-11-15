@@ -13,6 +13,7 @@ public class ChangeSellStatusCommandHandler(
 {
     public async Task<Result> Handle(ChangeSellStatusCommand request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new ChangeSellStatusCommandValidator(mealRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

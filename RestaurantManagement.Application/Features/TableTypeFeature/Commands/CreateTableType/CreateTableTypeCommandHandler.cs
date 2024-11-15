@@ -16,6 +16,7 @@ public class CreateTableTypeCommandHandler(
 {
     public async Task<Result> Handle(CreateTableTypeCommand request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new CreateTableTypeCommandValidator(tableTypeRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

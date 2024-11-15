@@ -14,6 +14,7 @@ public class UpdateEmployeeRoleCommandHandler(
     public async Task<Result> Handle(UpdateEmployeeRoleCommand request, CancellationToken cancellationToken)
     {
         //validate
+        //TODO: validate
         var validator = new UpdateEmployeeRoleCommandValidator(employeeRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

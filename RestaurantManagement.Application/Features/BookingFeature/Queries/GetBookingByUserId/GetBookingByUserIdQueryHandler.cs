@@ -12,13 +12,13 @@ public class GetBookingByUserIdQueryHandler(
 {
     public async Task<Result<BookingResponse[]>> Handle(GetBookingByUserIdQuery request, CancellationToken cancellationToken)
     {
-       
+        //TODO: validate
         var validator = new GetBookingByUserIdQueryValidator(customerRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
             return Result<BookingResponse[]>.Failure(errors);
         }
-        
+
         var booking = await bookingRepository.GetBookingResponseByUserId(Ulid.Parse(request.id));
 
         return Result<BookingResponse[]>.Success(booking);

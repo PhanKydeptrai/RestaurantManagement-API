@@ -13,6 +13,7 @@ public class RestoreMealCommandHandler(
     public async Task<Result> Handle(RestoreMealCommand request, CancellationToken cancellationToken)
     {
         var validator = new RestoreMealCommandValidator(mealRepository);
+        //TODO: validate
         //validate
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

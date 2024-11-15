@@ -13,7 +13,7 @@ public class DeleteEmployeeCommandHandler(
 {
     public async Task<Result> Handle(DeleteEmployeeCommand request, CancellationToken cancellationToken)
     {
-        //validate
+        //TODO: validate
         var validator = new DeleteEmployeeCommandValidator(employeeRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

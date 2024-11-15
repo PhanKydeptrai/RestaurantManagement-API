@@ -14,6 +14,7 @@ public class GetEmployeeByIdQueryHandler(IEmployeeRepository employeeRepository,
     {
 
         var validator = new GetEmployeeByIdQueryValidator(employeeRepository);
+        //TODO: validate
         //validate
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

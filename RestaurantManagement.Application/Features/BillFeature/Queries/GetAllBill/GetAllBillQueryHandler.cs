@@ -18,6 +18,7 @@ public class GetAllBillQueryHandler(
 {
     public async Task<Result<PagedList<BillResponse>>> Handle(GetAllBillQuery request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         var validator = new GetAllBillQueryValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

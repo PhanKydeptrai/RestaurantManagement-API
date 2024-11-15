@@ -11,6 +11,7 @@ public class UnAssignTableToBookedCustomerCommandHandler(
 {
     public async Task<Result> Handle(UnAssignTableToBookedCustomerCommand request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new UnAssignTableToBookedCustomerCommandValidator(tableRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

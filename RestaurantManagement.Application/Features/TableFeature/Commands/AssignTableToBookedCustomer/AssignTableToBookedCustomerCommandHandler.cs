@@ -14,8 +14,8 @@ public class AssignTableToBookedCustomerCommandHandler(
 {
     public async Task<Result> Handle(AssignTableToBookedCustomerCommand request, CancellationToken cancellationToken)
     {
-        
-         //validate
+        //TODO: validate
+        //validate
         var validator = new AssignTableToBookedCustomerCommandValidator(tableRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
@@ -25,13 +25,13 @@ public class AssignTableToBookedCustomerCommandHandler(
         //lấy thông tin booking
 
         var booking = await context.Bookings.Include(a => a.BookingDetails)
-            .Where(a =>  a.BookingDetails.Any(b => b.TableId == int.Parse(request.tableId) && a.BookingStatus == "Seated"))
+            .Where(a => a.BookingDetails.Any(b => b.TableId == int.Parse(request.tableId) && a.BookingStatus == "Seated"))
             .FirstOrDefaultAsync();
-            
-            booking.BookingStatus = "Occupied";
+
+        booking.BookingStatus = "Occupied";
 
         await tableRepository.UpdateActiveStatus(int.Parse(request.tableId), "Occupied");
-        await unitOfWork.SaveChangesAsync  ();
+        await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
 }

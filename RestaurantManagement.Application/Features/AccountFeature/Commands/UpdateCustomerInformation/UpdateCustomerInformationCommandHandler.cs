@@ -19,6 +19,7 @@ public class UpdateCustomerInformationCommandHandler(
     {
 
         //validation
+        //TODO: validate
         var validator = new UpdateCustomerInformationCommandValidator(customerRepository);
         if(!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

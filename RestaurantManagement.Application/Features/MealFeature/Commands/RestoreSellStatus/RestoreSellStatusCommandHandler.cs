@@ -14,6 +14,7 @@ public class RestoreSellStatusCommandHandler(
     public async Task<Result> Handle(RestoreSellStatusCommand request, CancellationToken cancellationToken)
     {
         var validator = new RestoreSellStatusCommandValidator(mealRepository);
+        //TODO: validate
         //validate
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

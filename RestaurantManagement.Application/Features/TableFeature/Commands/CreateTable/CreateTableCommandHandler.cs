@@ -14,6 +14,7 @@ public class CreateTableCommandHandler(
 {
     public async Task<Result> Handle(CreateTableCommand request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new CreateTableCommandValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

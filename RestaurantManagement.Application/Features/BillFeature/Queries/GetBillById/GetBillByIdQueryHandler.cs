@@ -12,6 +12,7 @@ public class GetBillByIdQueryHandler(IApplicationDbContext context) : IQueryHand
 {
     public async Task<Result<BillResponse>> Handle(GetBillByIdQuery request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         var validator = new GetBillByIdQueryValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

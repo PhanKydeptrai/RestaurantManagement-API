@@ -14,6 +14,7 @@ public class LoginQueryHandler(IApplicationDbContext context, IJwtProvider jwtPr
 {
     public async Task<Result<LoginResponse>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new LoginQueryValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

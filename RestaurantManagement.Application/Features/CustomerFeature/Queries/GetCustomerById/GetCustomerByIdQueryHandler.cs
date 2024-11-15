@@ -10,7 +10,7 @@ public class GetCustomerByIdQueryHandler(ICustomerRepository customerRepository)
 {
     public async Task<Result<CustomerResponse>> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
     {
-        
+        //TODO: validate
         var validator = new GetCustomerByIdQueryValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

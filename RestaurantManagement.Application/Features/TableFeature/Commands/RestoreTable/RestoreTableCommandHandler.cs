@@ -13,6 +13,7 @@ public class RestoreTableCommandHandler(
 {
     public async Task<Result> Handle(RestoreTableCommand request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new RestoreTableCommandValidator(tableRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

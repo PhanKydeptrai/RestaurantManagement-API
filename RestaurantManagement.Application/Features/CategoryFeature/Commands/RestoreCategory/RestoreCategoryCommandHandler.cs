@@ -14,6 +14,7 @@ public class RestoreCategoryCommandHandler(
     public async Task<Result> Handle(RestoreCategoryCommand request, CancellationToken cancellationToken)
     {
         //validate
+        //TODO: validate
         var validator = new RestoreCategoryCommandValidator(categoryRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

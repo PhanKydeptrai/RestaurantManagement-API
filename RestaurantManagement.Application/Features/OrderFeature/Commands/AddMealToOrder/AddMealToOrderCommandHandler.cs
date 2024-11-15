@@ -22,6 +22,7 @@ public class AddMealToOrderCommandHandler(
         // order chưa, nếu có thì cập nhật số lượng, nếu chưa thì tạo mới orderdetail
 
         //validate
+        //TODO: validate
         var validator = new AddMealToOrderCommandValidator(tableRepository, mealRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

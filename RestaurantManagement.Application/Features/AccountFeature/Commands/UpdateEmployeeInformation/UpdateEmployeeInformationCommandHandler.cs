@@ -17,6 +17,7 @@ public class UpdateEmployeeInformationCommandHandler(
 {
     public async Task<Result> Handle(UpdateEmployeeInformationCommand request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validator
         var validator = new UpdateEmployeeInformationCommandValidator(employeeRepository);
         var validationResult = await validator.ValidateAsync(request);

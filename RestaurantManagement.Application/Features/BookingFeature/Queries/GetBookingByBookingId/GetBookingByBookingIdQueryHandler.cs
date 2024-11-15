@@ -10,6 +10,7 @@ public class GetBookingByBookingIdQueryHandler(IBookingRepository bookingReposit
 {
     public async Task<Result<BookingResponse>> Handle(GetBookingByBookingIdQuery request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         var validator = new GetBookingByBookingIdQueryValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

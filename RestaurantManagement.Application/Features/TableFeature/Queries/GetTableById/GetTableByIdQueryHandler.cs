@@ -14,6 +14,7 @@ public class GetTableByIdQueryHandler(
 {
     public async Task<Result<TableResponse>> Handle(GetTableByIdQuery request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new GetTableByIdQueryValidator(tableRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

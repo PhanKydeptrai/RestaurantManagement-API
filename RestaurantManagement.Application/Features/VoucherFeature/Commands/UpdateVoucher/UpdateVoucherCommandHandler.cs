@@ -15,6 +15,7 @@ public class UpdateVoucherCommandHandler(
 {
     public async Task<Result> Handle(UpdateVoucherCommand request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new UpdateVoucherCommandValidator(voucherRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

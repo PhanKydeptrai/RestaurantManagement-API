@@ -23,6 +23,7 @@ public class CreateCustomerCommandHandler(
     public async Task<Result> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
         //Validate 
+        //TODO: validate
         var validator = new CreateCustomerCommandValidator(customerRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {

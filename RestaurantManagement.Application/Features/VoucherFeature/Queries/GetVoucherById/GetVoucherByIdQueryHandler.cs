@@ -10,6 +10,7 @@ public class GetVoucherByIdQueryHandler(IVoucherRepository voucherRepository) : 
 {
     public async Task<Result<Voucher>> Handle(GetVoucherByIdQuery request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new GetVoucherByIdQueryValidator(voucherRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

@@ -14,6 +14,7 @@ public class GetAllTableQueryHandler(IApplicationDbContext context) : IQueryHand
 {
     public async Task<Result<PagedList<TableResponse>>> Handle(GetAllTableQuery request, CancellationToken cancellationToken)
     {
+        //TODO: validate
         //validate
         var validator = new GetAllTableQueryValidator();
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))

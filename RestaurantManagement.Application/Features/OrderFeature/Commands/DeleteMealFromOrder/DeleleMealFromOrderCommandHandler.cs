@@ -15,6 +15,7 @@ public class DeleleMealFromOrderCommandHandler(
     public async Task<Result> Handle(DeleleMealFromOrderCommand request, CancellationToken cancellationToken)
     {
         //validate
+        //TODO: validate
         var validator = new DeleleMealFromOrderCommandValidator(orderDetailRepository);
         if (!ValidateRequest.RequestValidator(validator, request, out var errors))
         {
