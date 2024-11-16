@@ -81,7 +81,6 @@ namespace RestaurantManagement.API.Controllers
             endpoints.MapGet("bill-export/{id}", async (
                 string id,
                 ISender sender) =>
-
             {
                 var result = await sender.Send(new GetBillByIdQuery(id));
                 if (!result.IsSuccess)
