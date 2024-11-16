@@ -72,8 +72,8 @@ public class RegisterCommandHandler(
                 try
                 {
                     await fluentEmail.To(normalCustomer.User.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
-                    .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verifiCationLink}'>Click me</a>", isHtml: true)
-                    .SendAsync();
+                        .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verifiCationLink}'>Click me</a>", isHtml: true)
+                        .SendAsync();
                     emailSent = true;
                 }
                 catch
@@ -140,7 +140,7 @@ public class RegisterCommandHandler(
                 await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
                     .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
                     .SendAsync();
-
+                emailSent2 = true;
             }
             catch
             {
