@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using RestaurantManagement.Domain.DTOs.BookingDtos;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -105,6 +104,24 @@ public class BookingRepository(RestaurantManagementDbContext context) : IBooking
 
     public async Task<bool> IsBookingDateValid(DateOnly bookingDate)
     {
+        //NOTE: Unstrusted data
+        #region UnStable code
+            // string dateString = bookingDate.ToString();
+            // bool dateFormatOk = DateOnly.TryParseExact(
+            //     dateString, 
+            //     "MM/dd/yyyy",
+            //     CultureInfo.InvariantCulture,
+            //     DateTimeStyles.None,
+            //     out _
+            // );
+    
+            // if (dateFormatOk && bookingDate < DateOnly.FromDateTime(DateTime.Now))
+            // {
+            //     return false;
+            // }
+            // return true;
+        #endregion
+
         if (bookingDate < DateOnly.FromDateTime(DateTime.Now))
         {
             return false;

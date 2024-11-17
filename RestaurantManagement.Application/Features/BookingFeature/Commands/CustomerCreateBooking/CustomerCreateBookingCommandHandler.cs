@@ -18,7 +18,7 @@ public class CustomerCreateBookingCommandHandler(
 {
     public async Task<Result> Handle(CustomerCreateBookingCommand request, CancellationToken cancellationToken)
     {
-        //Validate request
+        #region ValidateRequest
         var validator = new CustomerCreateBookingCommandValidator(bookingRepository);
         Error[]? errors = null;
         var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
@@ -26,12 +26,15 @@ public class CustomerCreateBookingCommandHandler(
         {
             return Result.Failure(errors!);
         }
+        #endregion
 
-        //Kiểm tra user đã tồn tại chưa, Nếu chưa tạo mới
+
+        #region Kiểm tra user đã tồn tại chưa, Nếu chưa tạo mới
         var isCustomerExist = await context.Customers
             .Include(a => a.User)
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.User.Email == request.Email || a.User.Phone == request.PhoneNumber);
+
         string userEmail = string.Empty;
         var userId = Ulid.NewUlid();
         var customerId = Ulid.NewUlid();
@@ -61,8 +64,11 @@ public class CustomerCreateBookingCommandHandler(
         {
             userEmail = isCustomerExist.User.Email;
         }
+        #endregion
 
-        //Tính tiền booking
+
+
+        #region Tính tiền booking
         TableType[] tableTypes = await context.TableTypes
             .AsNoTracking()
             .Select(a => new TableType
@@ -73,28 +79,66 @@ public class CustomerCreateBookingCommandHandler(
             })
             .ToArrayAsync();
 
+        // Khởi tạo giá booking và biến lưu bàn có sức chứa lớn nhất
         decimal bookingPrice = 0;
         TableType? maxCapacityTable = null;
-
+        Ulid? tableTypeId = null;   
         foreach (var item in tableTypes)
         {
-            if ((int)request.NumberOfCustomers <= item.TableCapacity)
+            // Tìm bàn nhỏ nhất có thể chứa đủ số lượng khách
+            // Nếu tìm thấy, lấy giá của bàn đó và kết thúc vòng lặp
+            if (int.Parse(request.NumberOfCustomers.ToString()) <= item.TableCapacity)
             {
                 bookingPrice = item.TablePrice;
+                tableTypeId = item.TableTypeId;
                 break;
             }
+            // Song song đó, tìm và lưu lại bàn có sức chứa lớn nhất
+            // để dùng làm phương án dự phòng khi không có bàn nào đủ chỗ
             if (maxCapacityTable == null || item.TableCapacity > maxCapacityTable.TableCapacity)
             {
                 maxCapacityTable = item;
+                tableTypeId = item.TableTypeId;
             }
         }
 
+        // Nếu không tìm được bàn nào đủ chỗ (bookingPrice = 0)
+        // Sử dụng giá của bàn có sức chứa lớn nhất
         if (bookingPrice == 0 && maxCapacityTable != null)
         {
             bookingPrice = maxCapacityTable.TablePrice;
         }
+        #endregion
 
-        //Tạo booking
+        #region Kiểm tra số lượng bàn còn lại
+        /*
+        Kiểm tra số lượng theo loại và theo khung giờ book
+        Khung giờ book là 3 tiếng trước và sau khi 
+        Chỉ được tính là còn bàn khi bàn trống theo từng loại bàn
+        */
+        int quantity = await context.Tables
+            .AsNoTracking()
+            .Where(a => a.TableTypeId == tableTypeId
+                && a.ActiveStatus == "Empty")
+                .CountAsync();
+
+        if (quantity == 0)
+        {
+            return Result.Failure(new[] { new Error("Table", "No table available") });
+        }
+        //  var quantity = context.Tables
+        //     .AsNoTracking()
+        //     .Where(a => a.TableTypeId == maxCapacityTable.TableTypeId
+        //         && a.TableStatus == "Empty"
+        //         && !a.BookingDetails.Any(b =>
+        //             b.Booking.BookingDate == request.BookingDate
+        //             && b.Booking.BookingTime == request.BookingTime))
+        //     .Count();
+
+
+        #endregion
+
+        #region Tạo booking
         var booking = new Booking
         {
             BookId = Ulid.NewUlid(),
@@ -104,14 +148,16 @@ public class CustomerCreateBookingCommandHandler(
             PaymentStatus = "Waiting",
             BookingStatus = "Waiting",
             CreatedDate = DateTime.Now,
-            NumberOfCustomers = (int)request.NumberOfCustomers,
+            NumberOfCustomers = int.Parse(request.NumberOfCustomers.ToString()),
             CustomerId = isCustomerExist?.CustomerId ?? customerId,
             Note = request.Note
         };
         await context.Bookings.AddAsync(booking);
+        #endregion
 
         await unitOfWork.SaveChangesAsync();
 
+        #region VnPay
         //Get Config Info
         string vnp_Returnurl = "https://localhost:7057/api/booking/ReturnUrl"; //URL nhan ket qua tra ve 
         string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
@@ -137,8 +183,9 @@ public class CustomerCreateBookingCommandHandler(
         vnpay.AddRequestData("vnp_TxnRef", booking.BookId.ToString()); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
 
         string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
-        //Gửi mail thông báo cho khách hàng
+        #endregion
 
+        #region Gưi mail thông báo cho khách hàng
         bool emailSent = false;
         int retryCount = 0;
         int maxRetries = 5;
@@ -163,6 +210,7 @@ public class CustomerCreateBookingCommandHandler(
             }
         }
         while (!emailSent && retryCount < maxRetries);
+        #endregion
 
 
         return Result.Success();

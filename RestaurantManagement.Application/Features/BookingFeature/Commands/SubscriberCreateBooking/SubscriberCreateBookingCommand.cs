@@ -23,7 +23,7 @@ public record SubscriberCreateBookingRequest(
 // public record SubscriberCreateBookingCommand(
 //     DateOnly BookingDate,
 //     TimeOnly BookingTime,
-//     int NumberOfCustomers,
+//     object NumberOfCustomers,
 //     string? Note,
 //     string token
 // ) : ICommand;
@@ -31,7 +31,7 @@ public record SubscriberCreateBookingRequest(
 // public record SubscriberCreateBookingRequest(
 //     DateOnly BookingDate,
 //     TimeOnly BookingTime,
-//     int NumberOfCustomers,
+//     object NumberOfCustomers,
 //     string? Note
 // );
 #endregion
