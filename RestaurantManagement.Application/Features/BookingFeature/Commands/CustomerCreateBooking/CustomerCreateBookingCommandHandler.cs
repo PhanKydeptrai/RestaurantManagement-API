@@ -10,6 +10,7 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.BookingFeature.Commands.CustomerCreateBooking;
 
+#region Stable version
 public class CustomerCreateBookingCommandHandler(
     IUnitOfWork unitOfWork,
     IBookingRepository bookingRepository,
@@ -82,7 +83,7 @@ public class CustomerCreateBookingCommandHandler(
         // Khởi tạo giá booking và biến lưu bàn có sức chứa lớn nhất
         decimal bookingPrice = 0;
         TableType? maxCapacityTable = null;
-        Ulid? tableTypeId = null;   
+        Ulid? tableTypeId = null;
         foreach (var item in tableTypes)
         {
             // Tìm bàn nhỏ nhất có thể chứa đủ số lượng khách
@@ -110,12 +111,7 @@ public class CustomerCreateBookingCommandHandler(
         }
         #endregion
 
-        #region Kiểm tra số lượng bàn còn lại
-        /*
-        Kiểm tra số lượng theo loại và theo khung giờ book
-        Khung giờ book là 3 tiếng trước và sau khi 
-        Chỉ được tính là còn bàn khi bàn trống theo từng loại bàn
-        */
+        // Kiểm tra số lượng bàn còn lại
         int quantity = await context.Tables
             .AsNoTracking()
             .Where(a => a.TableTypeId == tableTypeId
@@ -126,17 +122,8 @@ public class CustomerCreateBookingCommandHandler(
         {
             return Result.Failure(new[] { new Error("Table", "No table available") });
         }
-        //  var quantity = context.Tables
-        //     .AsNoTracking()
-        //     .Where(a => a.TableTypeId == maxCapacityTable.TableTypeId
-        //         && a.TableStatus == "Empty"
-        //         && !a.BookingDetails.Any(b =>
-        //             b.Booking.BookingDate == request.BookingDate
-        //             && b.Booking.BookingTime == request.BookingTime))
-        //     .Count();
 
 
-        #endregion
 
         #region Tạo booking
         var booking = new Booking
@@ -154,6 +141,7 @@ public class CustomerCreateBookingCommandHandler(
         };
         await context.Bookings.AddAsync(booking);
         #endregion
+
 
         await unitOfWork.SaveChangesAsync();
 
@@ -185,7 +173,7 @@ public class CustomerCreateBookingCommandHandler(
         string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
         #endregion
 
-        #region Gưi mail thông báo cho khách hàng
+        #region Gửi mail thông báo cho khách hàng
         bool emailSent = false;
         int retryCount = 0;
         int maxRetries = 5;
@@ -217,6 +205,7 @@ public class CustomerCreateBookingCommandHandler(
     }
 
 }
+#endregion
 
 #region Stable Code
 // public class CustomerCreateBookingCommandHandler(
