@@ -33,8 +33,8 @@ public class SubscriberCreateBookingCommandHandler(
         claims.TryGetValue("sub", out var userId);
 
         var info = await context.Customers.Include(a => a.User).Where(a => a.UserId == Ulid.Parse(userId))
-            .Select(a => new { a.CustomerId, a.User.Email }).FirstOrDefaultAsync();
-
+            .Select(a => new { a.CustomerId, a.User.Email })
+            .FirstOrDefaultAsync();
 
         //Tính tiền booking
         TableType[] tableTypes = await context.TableTypes
@@ -107,7 +107,6 @@ public class SubscriberCreateBookingCommandHandler(
         vnpay.AddRequestData("vnp_Locale", "vn");
         vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang:" + booking.BookId);
         vnpay.AddRequestData("vnp_OrderType", "other"); //default value: other
-
         vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
         vnpay.AddRequestData("vnp_TxnRef", booking.BookId.ToString()); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
 
@@ -188,7 +187,7 @@ public class SubscriberCreateBookingCommandHandler(
 
 //         foreach (var item in tableTypes)
 //         {
-//             if (request.NumberOfCustomers <= item.TableCapacity)
+//             if ((int)request.NumberOfCustomers <= item.TableCapacity)
 //             {
 //                 bookingPrice = item.TablePrice;
 //                 break;
@@ -211,7 +210,7 @@ public class SubscriberCreateBookingCommandHandler(
 //             BookingDate = request.BookingDate,
 //             BookingTime = request.BookingTime,
 //             BookingPrice = bookingPrice,
-//             NumberOfCustomers = request.NumberOfCustomers,
+//             NumberOfCustomers = (int)request.NumberOfCustomers,
 //             Note = request.Note,
 //             CustomerId = info.CustomerId,
 //             CreatedDate = DateTime.Now,
