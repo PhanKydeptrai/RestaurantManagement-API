@@ -26,7 +26,7 @@ namespace RestaurantManagement.API.Controllers
 
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            var endpoints = app.MapGroup("api/account").WithTags("Account").DisableAntiforgery().RequireRateLimiting("AntiSpam");
+            var endpoints = app.MapGroup("api/account").WithTags("Account").DisableAntiforgery();
 
             //Register for customer
             endpoints.MapPost("register",
@@ -41,7 +41,7 @@ namespace RestaurantManagement.API.Controllers
                 }
 
                 return Results.BadRequest(result);
-            });
+            }).RequireRateLimiting("AntiSpam");
 
             //Login for customer
             endpoints.MapPost("login",
@@ -55,7 +55,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            });
+            }).RequireRateLimiting("AntiSpam");
 
             //login for employee
             endpoints.MapPost("employee-login",
@@ -69,7 +69,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            });
+            }).RequireRateLimiting("AntiSpam");
 
 
             //reset customer password 
@@ -84,8 +84,9 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok("Check your email!");
                 }
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("ResetPass");
-
+            }).RequireRateLimiting("AntiSpam");
+            //.RequireRateLimiting("ResetPass");
+            
             //reset employee password 
             endpoints.MapPost("employee-password",
             async (
@@ -98,12 +99,12 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok("Check your email!");
                 }
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("ResetPass");
+            }).RequireRateLimiting("AntiSpam");
+            // .RequireRateLimiting("ResetPass");
 
             //verify email (Active account for customer)
             endpoints.MapGet("verify-email", async (Ulid token, ISender sender) =>
             {
-
                 var result = await sender.Send(new ActivateAccountCommand(token));
                 if (result.IsSuccess)
                 {
@@ -154,7 +155,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            }).RequireAuthorization().RequireRateLimiting("ResetPass");
+            }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
             //Delete customer account
             endpoints.MapDelete("customer", async (
@@ -171,7 +172,7 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result.Errors[0].Message);
 
-            }).RequireAuthorization("customer");
+            }).RequireAuthorization("customer").RequireRateLimiting("AntiSpam");
 
             //verify delete customer account
             endpoints.MapGet("customer/confirm-delete-account", async (

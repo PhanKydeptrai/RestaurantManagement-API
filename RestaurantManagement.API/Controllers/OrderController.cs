@@ -14,7 +14,7 @@ public class OrderController : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("api/orders").WithTags("Orders").DisableAntiforgery().RequireRateLimiting("AntiSpam");
+        var endpoints = app.MapGroup("api/orders").WithTags("Orders").DisableAntiforgery();
 
         //Create order
         endpoints.MapPost("{id}", async (
@@ -33,7 +33,7 @@ public class OrderController : IEndpoint
                 return Results.BadRequest(result);
             }
             return Results.Ok(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
         endpoints.MapPut("{id}", async (
             string id,
@@ -46,7 +46,7 @@ public class OrderController : IEndpoint
                 return Results.BadRequest(result);
             }
             return Results.Ok(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
 
         endpoints.MapDelete("{id}", async (
@@ -59,7 +59,7 @@ public class OrderController : IEndpoint
                 return Results.BadRequest(result);
             }
             return Results.Ok(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
 
         //Get by id
@@ -87,7 +87,7 @@ public class OrderController : IEndpoint
                 return Results.BadRequest(result);
             }
             return Results.Ok(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
         //Get all order
         endpoints.MapGet("", async (

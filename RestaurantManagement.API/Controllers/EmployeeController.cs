@@ -46,7 +46,7 @@ public class EmployeeController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
         //Create employee
         endpoints.MapPost("",
@@ -83,7 +83,7 @@ public class EmployeeController : IEndpoint
             }
             return Results.Ok(result);
 
-        });
+        }).RequireRateLimiting("AntiSpam");
 
 
 
@@ -123,7 +123,7 @@ public class EmployeeController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization("management");
+        }).RequireAuthorization("management").RequireRateLimiting("AntiSpam");
 
         //restore employee
         endpoints.MapPut("restore-employee/{id}", async (
@@ -141,7 +141,7 @@ public class EmployeeController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("management");
+        }).RequireAuthorization("management").RequireRateLimiting("AntiSpam");
 
         //Thay đổi role cho nhân viên
         endpoints.MapPut("employee-role/{id}", async (
@@ -161,7 +161,7 @@ public class EmployeeController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("management");
+        }).RequireAuthorization("management").RequireRateLimiting("AntiSpam");
 
         //get employee by id 
         endpoints.MapGet("{id}", async (

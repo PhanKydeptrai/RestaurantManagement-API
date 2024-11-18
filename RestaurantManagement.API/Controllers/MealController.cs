@@ -19,7 +19,7 @@ public class MealController : IEndpoint
     //Add role
     public async void MapEndpoint(IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("api/meal").WithTags("Meal").DisableAntiforgery().RequireRateLimiting("AntiSpam");
+        var endpoints = app.MapGroup("api/meal").WithTags("Meal").DisableAntiforgery();
 
         endpoints.MapPost("",
         async (
@@ -50,7 +50,7 @@ public class MealController : IEndpoint
             }
             return Results.Ok(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
         //Get all meal
         endpoints.MapGet("",
@@ -107,7 +107,7 @@ public class MealController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
 
         //Xóa món
@@ -130,7 +130,7 @@ public class MealController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
         //khôi phục món
         endpoints.MapPut("restore/{id}",
@@ -149,8 +149,7 @@ public class MealController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization("boss")
-        ;
+        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
         //Chuyển sell status Active => InActive
         endpoints.MapPut("change-sellstatus/{id}",
@@ -169,7 +168,7 @@ public class MealController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
         //Chuyển sell status InActive => Active
         endpoints.MapPut("restore-sellstatus/{id}",
@@ -188,7 +187,7 @@ public class MealController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
         endpoints.MapGet("meal-info", async (
             [FromQuery] string? searchTerm,

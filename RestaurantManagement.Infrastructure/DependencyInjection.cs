@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Quartz;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Infrastructure.Authentication;
 using RestaurantManagement.Infrastructure.Repos;
@@ -27,10 +28,18 @@ public static class DependencyInjection
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ISystemLogRepository, SystemLogRepository>();
         services.AddScoped<IEmailVerify, EmailVerify>();
-        services.AddScoped <ITableTypeRepository, TableTypeRepository>();
+        services.AddScoped<ITableTypeRepository, TableTypeRepository>();
         services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();
         services.AddScoped<IVoucherRepository, VoucherRepository>();
         services.AddScoped<IBillRepository, BillRepository>();
+
+        services.AddQuartz(options =>
+        {
+            options.UseMicrosoftDependencyInjectionJobFactory();
+        });
+
+        services.AddQuartzHostedService();
+
         services.AddHttpContextAccessor();
         return services;
     }
