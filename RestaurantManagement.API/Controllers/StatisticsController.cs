@@ -12,12 +12,12 @@ public class StatisticsController : IEndpoint
         var endpoints = app.MapGroup("api/orders").WithTags("Statistic").DisableAntiforgery();
 
         // lấy theo ngày hiện tại
-        endpoints.MapGet("statistics/{datetime}", async (
-            string datetime,
-            ISender sender) =>
-        {
-            var result = await sender.Send(new GetStatisticsByDayQuery(datetime));
-            return Results.Ok(result);
-        });
+        // endpoints.MapGet("statistics/{datetime}", async (
+        //     string datetime,
+        //     ISender sender) =>
+        // {
+        //     var result = await sender.Send(new GetStatisticsByDayQuery(datetime));
+        //     return Results.Ok(result);
+        // });
     }
 }
