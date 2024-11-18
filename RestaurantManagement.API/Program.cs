@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using RestaurantManagement.API.Extentions;
 using RestaurantManagement.API.Middleware;
 using RestaurantManagement.Application;
@@ -30,23 +27,6 @@ builder.Services.AddInfrastructureExtentions(builder.Configuration)
                 .AddApplication(builder.Configuration);
 //Add endpoints
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
-
-
-// builder.Services.AddControllersWithViews()
-//     .AddRazorRuntimeCompilation()
-//     .AddNewtonsoftJson();
-
-// builder.Services.AddRazorPages();
-
-builder.Services.AddOpenTelemetry()
-    .ConfigureResource(resource => resource.AddService("RestaurantManagement.API"))
-    .WithTracing(tracing =>
-    {
-        tracing.AddHttpClientInstrumentation()
-        .AddAspNetCoreInstrumentation();
-
-        tracing.AddOtlpExporter();
-    });
 
 
 
