@@ -74,7 +74,7 @@ public class CategoryController : IEndpoint
 
             return Results.BadRequest(result);
         }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        .RequireRateLimiting("AntiSpamCreateCategoryCommand");
 
         //Cập nhật category
         endpoints.MapPut("{id}",
@@ -102,7 +102,7 @@ public class CategoryController : IEndpoint
             }
             return Results.BadRequest(result);
         }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        .RequireRateLimiting("AntiSpamUpdateCategoryCommand");
 
         //Xóa category
         endpoints.MapDelete("{id}",
@@ -124,7 +124,7 @@ public class CategoryController : IEndpoint
             return Results.BadRequest(result);
 
         }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        .RequireRateLimiting("AntiSpamRemoveCategoryCommand");
 
 
         //Xóa nhiều category
@@ -210,9 +210,4 @@ public class CategoryController : IEndpoint
         });
 
     }   
-
-
-    
-
-
 }
