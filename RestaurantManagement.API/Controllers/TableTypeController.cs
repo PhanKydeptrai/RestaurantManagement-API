@@ -39,9 +39,8 @@ public class TableTypeController : IEndpoint
         });
 
         //Create table type
-        endpoints.MapPost("",
-        async (
-            [FromForm] string TableTypeName, 
+        endpoints.MapPost("", async (
+            [FromForm] string TableTypeName,
             [FromForm] object TableCapacity,
             [FromForm] decimal TablePrice,
             [FromForm] string? Description,
@@ -60,12 +59,13 @@ public class TableTypeController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpamCreateTableTypeCommand");
 
         //Update table type
-        endpoints.MapPut("{id}",
-        async (
-            string id, 
+        endpoints.MapPut("{id}", async (
+            string id,
             [FromForm] string TableTypeName,
             [FromForm] decimal TablePrice,
             [FromForm] string? Description,
@@ -79,7 +79,7 @@ public class TableTypeController : IEndpoint
             string token = jwtProvider.GetTokenFromHeader(httpContext);
 
             var result = await sender.Send(new UpdateTableTypeCommand(
-                id, 
+                id,
                 TableTypeName,
                 Image,
                 TablePrice,
@@ -92,7 +92,9 @@ public class TableTypeController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpamUpdateTableTypeCommand");
 
 
         //Get table type by id
@@ -111,8 +113,7 @@ public class TableTypeController : IEndpoint
         });
 
         //Delete table type by id
-        endpoints.MapDelete("{id}",
-        async (
+        endpoints.MapDelete("{id}", async (
             string id,
             ISender sender,
             HttpContext httpContext,
@@ -121,20 +122,21 @@ public class TableTypeController : IEndpoint
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-            var result = await sender.Send(new DeleteTableTypeCommand(id,token));
+            var result = await sender.Send(new DeleteTableTypeCommand(id, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpamDeleteTableTypeCommand");
 
         //Restore table type by id
-        endpoints.MapPut("restore/{id}",
-        async (
+        endpoints.MapPut("restore/{id}", async (
             string id,
-            ISender sender) => 
+            ISender sender) =>
         {
             var result = await sender.Send(new RestoreTableTypeCommand(id));
             if (result.IsSuccess)
@@ -143,8 +145,10 @@ public class TableTypeController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
-
+        })
+        .RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpamRestoreTableTypeCommand");
+        
         endpoints.MapGet("tabletype-info", async (ISender sender) =>
         {
             var result = await sender.Send(new GetAllTableInfoQuery());

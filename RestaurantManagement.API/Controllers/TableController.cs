@@ -24,7 +24,7 @@ public class TableController : IEndpoint
         //Get all tables
         endpoints.MapGet("",
         async (
-            [FromQuery] string? filterTableType, 
+            [FromQuery] string? filterTableType,
             [FromQuery] string? filterActiveStatus,
             [FromQuery] string? filterStatus,
             //[FromQuery] string? searchTerm,
@@ -67,14 +67,13 @@ public class TableController : IEndpoint
         });
 
         //Create table
-        endpoints.MapPost("",
-        async (
+        endpoints.MapPost("", async (
             [FromBody] CreateTableRequest request,
             IJwtProvider jwtProvider,
             HttpContext httpContext,
             ISender sender) =>
         {
-            //lấy token
+            // Lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
             var result = await sender.Send(new CreateTableCommand(
                 request.quantity,
@@ -86,18 +85,19 @@ public class TableController : IEndpoint
                 return Results.BadRequest(result);
             }
             return Results.Ok(result);
-        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpamCreateTableCommand");
 
 
         //Remove table
-        endpoints.MapDelete("{id}",
-        async (
+        endpoints.MapDelete("{id}", async (
             string id,
             ISender sender,
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
         {
-            //lấy token
+            // Lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
             var result = await sender.Send(new DeleteTableCommand(id, token));
             if (result.IsSuccess)
@@ -105,18 +105,18 @@ public class TableController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-
-        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpamDeleteTableCommand");
 
         //Restore table
-        endpoints.MapPut("{id}",
-        async (
+        endpoints.MapPut("{id}",async (
             string id,
             ISender sender,
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
         {
-            //lấy token
+            // Lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
             var result = await sender.Send(new RestoreTableCommand(id, token));
             if (result.IsSuccess)
@@ -124,24 +124,28 @@ public class TableController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
+        })
+        .RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpamRestoreTableCommand");
 
-        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
         // Cho khách vãng lai nhận bàn
-        endpoints.MapPut("table-assign/{id}", async (string id,ISender sender) =>
+        endpoints.MapPut("table-assign/{id}", async (string id, ISender sender) =>
         {
-            var result = await sender.Send(new AssignTableToCustomerCommand(id)); 
+            var result = await sender.Send(new AssignTableToCustomerCommand(id));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization()
+        .RequireRateLimiting("AntiSpamAssignTableToCustomerCommand");
 
         //  thôi nhận bàn cho khách đã không book bàn (trong trường hợp nhân viên bấm nhầm)
         endpoints.MapPut("table-unassign/{id}", async (
-                string id,
-                ISender sender) =>
+            string id,
+            ISender sender) =>
         {
             var result = await sender.Send(new UnAssignTableToCustomerCommand(id));
             if (result.IsSuccess)
@@ -149,7 +153,9 @@ public class TableController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization()
+        .RequireRateLimiting("AntiSpamUnAssignTableToCustomerCommand");
 
 
         endpoints.MapPut("table-assign/booked/{id}", async (
@@ -162,12 +168,14 @@ public class TableController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization()
+        .RequireRateLimiting("AntiSpamAssignTableToBookedCustomerCommand");
 
         // thôi nhận bàn cho khách đã book bàn (trong trường hợp nhân viên bấm nhầm)
         endpoints.MapPut("table-unassign/booked/{id}", async (
-                string id,
-                ISender sender) =>
+            string id,
+            ISender sender) =>
         {
             var result = await sender.Send(new UnAssignTableToBookedCustomerCommand(id));
             if (result.IsSuccess)
@@ -175,7 +183,9 @@ public class TableController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization()
+        .RequireRateLimiting("AntiSpamUnAssignTableToBookedCustomerCommand");
 
         endpoints.MapGet("table-info", async (ISender sender) =>
         {
@@ -185,10 +195,10 @@ public class TableController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization(); 
+        }).RequireAuthorization();
 
 
         // TODO: Thêm endpoint xếp bàn cho khách
-        
+
     }
 }
