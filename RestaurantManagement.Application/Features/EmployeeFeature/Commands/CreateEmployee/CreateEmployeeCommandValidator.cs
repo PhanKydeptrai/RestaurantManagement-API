@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee
@@ -11,16 +12,32 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
                 .NotEmpty().WithMessage("First is Empty.")
                 .NotNull().WithMessage("FirstName is Null.")
                 .MaximumLength(50).WithMessage("FirstName must not exceed 50 characters.");
+                
+            RuleFor(a => a.Role)
+                .NotEmpty().WithMessage("Role is Empty.")
+                .NotNull().WithMessage("Role is Null.")
+                .Custom((id, context) =>
+                {
+                    var token = context.InstanceToValidate.token;
+                    var roleRq = context.InstanceToValidate.Role;
+                    //Decode jwt
+                    var claims = JwtHelper.DecodeJwt(token);
+                    claims.TryGetValue("role", out var role); //Lấy role của người gửi request
+                    claims.TryGetValue("sub", out var userId); //Lấy userId của người gửi request
+                    string employeeRole = employeeRepository.GetEmployeeRole(Ulid.Parse(id)).Result;
+
+                    //Check permission
+                    if (role == "Manager" && roleRq == "Manager" || roleRq == "Boss")
+                    {
+                        context.AddFailure("You dont have permission to update this role");
+                    }
+                });
+
             RuleFor(u => u.LastName)
                 .NotEmpty().WithMessage("LastName is Empty.")
                 .NotNull().WithMessage("LastName is Null.")
                 .MaximumLength(50).WithMessage("LastName must not exceed 50 characters.");
-            //RuleFor(u => u.Password)
-            //    .NotEmpty().WithMessage("Password is Empty.")
-            //    .NotNull().WithMessage("Password is Null.")
-            //    .MaximumLength(50).WithMessage("Password must not exceed 50 characters.")
-            //    .MinimumLength(8).WithMessage("Password must be at least 6 characters.")
-            //    .Matches(@"[!@#$%^&*(),.?\:{ }|<>]").WithMessage("Password must contain at least one special character.");
+
             RuleFor(u => u.PhoneNumber)
                 .NotEmpty().WithMessage("PhoneNumber is Empty.")
                 .NotNull().WithMessage("PhoneNumber is Null.")

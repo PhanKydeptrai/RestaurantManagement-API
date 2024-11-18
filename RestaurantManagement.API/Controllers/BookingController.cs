@@ -90,7 +90,7 @@ public class BookingController : IEndpoint
 
             }
             return Results.BadRequest(result);
-        }).RequireRateLimiting("AntiSpam");
+        }).RequireRateLimiting("AntiSpamCustomerCreateBooking");
 
         //Khách đặt bàn đã login
         endpoints.MapPost("subcriber", async (
@@ -115,7 +115,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization().RequireRateLimiting("AntiSpamSubscriberCreateBooking");
 
         //Xếp bàn cho khách
         endpoints.MapPost("table-arrange/{BookingId}", async (
@@ -129,7 +129,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization().RequireRateLimiting("AntiSpamTableArrange");
 
         #region Stable code for endpoint table arrangement
         // //Xếp bàn cho khách 
@@ -160,7 +160,7 @@ public class BookingController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
+        }).RequireAuthorization().RequireRateLimiting("AntiSpamCancelBooking");
 
         //Trả về url thanh toán
         endpoints.MapGet("ReturnUrl", async (

@@ -48,7 +48,7 @@ builder.Services.AddLogging(loggingBuilder =>
     loggingBuilder.AddSeq();
 });
 
-//Add rate limiter  
+#region Rate limiter
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -61,14 +61,131 @@ builder.Services.AddRateLimiter(options =>
             Window = TimeSpan.FromHours(1)
         }));
 
-    options.AddPolicy("AntiSpam", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+    options.AddPolicy("AntiSpamRegister", httpContext => RateLimitPartition.GetFixedWindowLimiter(
         partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
         factory: _ => new FixedWindowRateLimiterOptions
         {
             PermitLimit = 1,
             Window = TimeSpan.FromSeconds(2)
         }));
+
+    options.AddPolicy("AntiSpamLogin", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+
+    options.AddPolicy("AntiSpamEmplyeeLogin", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+    
+    options.AddPolicy("AntiSpamEmplyeeLogin", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+
+    options.AddPolicy("AntiSpamCustomerResetPass", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+
+    options.AddPolicy("AntiSpamEmployeeResetPass", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+    
+    options.AddPolicy("AntiSpamChangePassword", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+
+    //Khách hàng tự huỷ tài khoản 
+    options.AddPolicy("AntiSpamDeActiveCustomerAccount", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+
+    options.AddPolicy("AntiSpamCustomerCreateBooking", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+
+    options.AddPolicy("AntiSpamSubscriberCreateBooking", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+
+    options.AddPolicy("AntiSpamTableArrange", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+
+    options.AddPolicy("AntiSpamCancelBooking", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+    
+    options.AddPolicy("AntiSpamCreateCategoryCommand", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+
+    options.AddPolicy("AntiSpamUpdateCategoryCommand", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 1,
+            Window = TimeSpan.FromSeconds(2)
+        }));
+
+    options.AddPolicy("AntiSpamRemoveManyCategoryCommand", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+    factory: _ => new FixedWindowRateLimiterOptions
+    {
+        PermitLimit = 1,
+        Window = TimeSpan.FromSeconds(2)
+    }));
+
+    
 });
+#endregion 
+
 
 //Add authorization
 builder.Services.AddAuthorization(options =>

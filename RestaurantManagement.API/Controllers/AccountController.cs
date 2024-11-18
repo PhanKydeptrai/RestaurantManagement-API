@@ -41,7 +41,7 @@ namespace RestaurantManagement.API.Controllers
                 }
 
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("AntiSpam");
+            }).RequireRateLimiting("AntiSpamRegister");
 
             //Login for customer
             endpoints.MapPost("login",
@@ -55,7 +55,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("AntiSpam");
+            }).RequireRateLimiting("AntiSpamLogin");
 
             //login for employee
             endpoints.MapPost("employee-login",
@@ -69,7 +69,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("AntiSpam");
+            }).RequireRateLimiting("AntiSpamEmplyeeLogin");
 
 
             //reset customer password 
@@ -84,7 +84,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok("Check your email!");
                 }
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("AntiSpam");
+            }).RequireRateLimiting("AntiSpamCustomerResetPass");
             //.RequireRateLimiting("ResetPass");
             
             //reset employee password 
@@ -99,7 +99,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok("Check your email!");
                 }
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("AntiSpam");
+            }).RequireRateLimiting("AntiSpamEmployeeResetPass");
             // .RequireRateLimiting("ResetPass");
 
             //verify email (Active account for customer)
@@ -149,13 +149,18 @@ namespace RestaurantManagement.API.Controllers
             {
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-                var result = await sender.Send(new ChangePasswordCommand(request.oldPass, request.newPass, token));
+                var result = await sender.Send(new ChangePasswordCommand(
+                    request.oldPass, 
+                    request.newPass, 
+                    token
+                ));
+
                 if (result.IsSuccess)
                 {
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            }).RequireAuthorization().RequireRateLimiting("AntiSpam");
+            }).RequireAuthorization().RequireRateLimiting("AntiSpamChangePassword");
 
             //Delete customer account
             endpoints.MapDelete("customer", async (
@@ -172,7 +177,9 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result.Errors[0].Message);
 
-            }).RequireAuthorization("customer").RequireRateLimiting("AntiSpam");
+            })
+            .RequireAuthorization("customer")
+            .RequireRateLimiting("AntiSpamDeActiveCustomerAccount");
 
             //verify delete customer account
             endpoints.MapGet("customer/confirm-delete-account", async (
