@@ -14,7 +14,7 @@ public class VoucherController : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder builder)
     {
-        var endpoints = builder.MapGroup("api/voucher").WithTags("Voucher").DisableAntiforgery().RequireRateLimiting("AntiSpam");
+        var endpoints = builder.MapGroup("api/voucher").WithTags("Voucher").DisableAntiforgery();
 
         endpoints.MapGet("", async (
             [FromQuery] string? filterStatus,
@@ -67,8 +67,9 @@ public class VoucherController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpamCreateVoucherCommand");
 
         endpoints.MapPut("{id}", async (
             string id,
@@ -96,7 +97,9 @@ public class VoucherController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpamUpdateVoucherCommand");
 
         endpoints.MapDelete("{id}", async (
             string id,
@@ -114,7 +117,9 @@ public class VoucherController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
+        })
+        .RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpamDeleteVoucherCommand");
 
         endpoints.MapGet("{id}", async (
             string id,
