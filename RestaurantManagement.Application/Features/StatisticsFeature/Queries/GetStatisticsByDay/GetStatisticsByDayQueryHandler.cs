@@ -17,9 +17,9 @@ public class GetStatisticsByDayQueryHandler : IQueryHandler<GetStatisticsByDayQu
 
     public async Task<Result<StatisticsByDayResponse>> Handle(GetStatisticsByDayQuery request, CancellationToken cancellationToken)
     {
-        decimal statistics = await _context.Bills.Where(b => b.CreatedDate == DateTime.Now.Date)
+        decimal statistics = await _context.Bills.Where(b => b.CreatedDate.Date == DateTime.Parse(request.datetime))
             .SumAsync(a => a.Total);
-            
+
         return Result<StatisticsByDayResponse>.Success(new StatisticsByDayResponse(DateTime.Now.Date, statistics, "VNĐ"));
     }
 }

@@ -85,13 +85,13 @@ builder.Services.AddRateLimiter(options =>
             Window = TimeSpan.FromSeconds(2)
         }));
     
-    options.AddPolicy("AntiSpamEmplyeeLogin", httpContext => RateLimitPartition.GetFixedWindowLimiter(
-        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
-        factory: _ => new FixedWindowRateLimiterOptions
-        {
-            PermitLimit = 1,
-            Window = TimeSpan.FromSeconds(2)
-        }));
+    // options.AddPolicy("AntiSpamEmplyeeLogin", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+    //     partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+    //     factory: _ => new FixedWindowRateLimiterOptions
+    //     {
+    //         PermitLimit = 1,
+    //         Window = TimeSpan.FromSeconds(2)
+    //     }));
 
     options.AddPolicy("AntiSpamCustomerResetPass", httpContext => RateLimitPartition.GetFixedWindowLimiter(
         partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
