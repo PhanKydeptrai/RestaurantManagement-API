@@ -67,7 +67,8 @@ public class VoucherController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss")
+        .RequireRateLimiting("AntiSpam");
 
         endpoints.MapPut("{id}", async (
             string id,
@@ -95,7 +96,7 @@ public class VoucherController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
         endpoints.MapDelete("{id}", async (
             string id,
@@ -113,7 +114,7 @@ public class VoucherController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
         endpoints.MapGet("{id}", async (
             string id,

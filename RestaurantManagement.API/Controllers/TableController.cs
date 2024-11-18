@@ -19,7 +19,7 @@ public class TableController : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("api/table").WithTags("Table").DisableAntiforgery().RequireRateLimiting("AntiSpam");
+        var endpoints = app.MapGroup("api/table").WithTags("Table").DisableAntiforgery();
 
         //Get all tables
         endpoints.MapGet("",
@@ -86,7 +86,7 @@ public class TableController : IEndpoint
                 return Results.BadRequest(result);
             }
             return Results.Ok(result);
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
 
         //Remove table
@@ -106,7 +106,7 @@ public class TableController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
         //Restore table
         endpoints.MapPut("{id}",
@@ -125,7 +125,7 @@ public class TableController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("boss");
+        }).RequireAuthorization("boss").RequireRateLimiting("AntiSpam");
 
         // Cho khách vãng lai nhận bàn
         endpoints.MapPut("table-assign/{id}", async (string id,ISender sender) =>
@@ -136,7 +136,7 @@ public class TableController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
         //  thôi nhận bàn cho khách đã không book bàn (trong trường hợp nhân viên bấm nhầm)
         endpoints.MapPut("table-unassign/{id}", async (
@@ -149,7 +149,7 @@ public class TableController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
 
         endpoints.MapPut("table-assign/booked/{id}", async (
@@ -162,7 +162,7 @@ public class TableController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
         // thôi nhận bàn cho khách đã book bàn (trong trường hợp nhân viên bấm nhầm)
         endpoints.MapPut("table-unassign/booked/{id}", async (
@@ -175,7 +175,7 @@ public class TableController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
         endpoints.MapGet("table-info", async (ISender sender) =>
         {

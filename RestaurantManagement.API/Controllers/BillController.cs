@@ -15,7 +15,7 @@ namespace RestaurantManagement.API.Controllers
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            var endpoints = app.MapGroup("api/bill").WithTags("Bill").DisableAntiforgery().RequireRateLimiting("AntiSpam");
+            var endpoints = app.MapGroup("api/bill").WithTags("Bill").DisableAntiforgery();
 
             endpoints.MapGet("", async (
                 [FromQuery] string? filterUserId,

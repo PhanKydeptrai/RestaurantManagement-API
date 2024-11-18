@@ -2,6 +2,7 @@ using FluentEmail.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Features.BookingFeature.Commands.CancelCreateBooking;
@@ -20,7 +21,7 @@ public class BookingController : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("api/booking").WithTags("Booking").DisableAntiforgery().RequireRateLimiting("AntiSpam");
+        var endpoints = app.MapGroup("api/booking").WithTags("Booking").DisableAntiforgery();
 
         endpoints.MapGet("", async (
             [FromQuery] string? filterBookingStatus,
@@ -89,7 +90,7 @@ public class BookingController : IEndpoint
 
             }
             return Results.BadRequest(result);
-        });
+        }).RequireRateLimiting("AntiSpam");
 
         //Khách đặt bàn đã login
         endpoints.MapPost("subcriber", async (
@@ -114,11 +115,9 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
-        //Xếp bàn cho khách 
-        
-
+        //Xếp bàn cho khách
         endpoints.MapPost("table-arrange/{BookingId}", async (
             string BookingId,
             [FromBody] TableArrangementRequest command,
@@ -130,7 +129,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
         #region Stable code for endpoint table arrangement
         // //Xếp bàn cho khách 
@@ -161,7 +160,7 @@ public class BookingController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpam");
 
         //Trả về url thanh toán
         endpoints.MapGet("ReturnUrl", async (
@@ -238,12 +237,15 @@ public class BookingController : IEndpoint
                     if (retryCount >= maxRetries)
                     {
                         return Results.BadRequest("Failed to send email");
+                        // return Results.Redirect("YourSuccessPage");
+                        
                     }
                 }
             }
             while (!emailSent && retryCount < maxRetries);
 
             return Results.Ok("Payment Success!");
+            // return Results.Redirect("https://nhumnhum.com/success");
         });
 
     }
