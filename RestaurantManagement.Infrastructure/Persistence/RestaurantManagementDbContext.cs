@@ -8,7 +8,6 @@ public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagement
 {
     public DbSet<Bill> Bills { get; set; }
     public DbSet<CustomerVoucher> CustomerVouchers { get; set; }
-    // public DbSet<PaymentType> PaymentTypes { get; set; }
     public DbSet<TableType> TableTypes { get; set; }
     public DbSet<Voucher> Vouchers { get; set; }
     public DbSet<Booking> Bookings { get; set; }
@@ -31,6 +30,7 @@ public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagement
     public DbSet<OrderLog> OrderLogs { get; set; }
     public DbSet<CustomerLog> CustomerLogs { get; set; }
     public DbSet<EmployeeLog> EmployeeLogs { get; set; }
+    public DbSet<BookingLog> BookingLogs { get; set; }
 
     //Cấu hình fluent api
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,10 +39,10 @@ public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagement
     }
 
 
-    //protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-    //{
+    // protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    // {
     //    configurationBuilder
     //        .Properties<Ulid>()
     //        .HaveConversion<UlidToStringConverter>();
-    //}
+    // }
 }

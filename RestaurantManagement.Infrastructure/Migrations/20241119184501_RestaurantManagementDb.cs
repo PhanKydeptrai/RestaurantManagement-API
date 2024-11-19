@@ -144,6 +144,26 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BookingLogs",
+                columns: table => new
+                {
+                    BookingLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    LogDetails = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingLogs", x => x.BookingLogId);
+                    table.ForeignKey(
+                        name: "FK_BookingLogs_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CategoryLogs",
                 columns: table => new
                 {
@@ -586,6 +606,11 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "TableId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookingLogs_UserId",
+                table: "BookingLogs",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Bookings_CustomerId",
                 table: "Bookings",
                 column: "CustomerId");
@@ -704,6 +729,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "BookingDetails");
+
+            migrationBuilder.DropTable(
+                name: "BookingLogs");
 
             migrationBuilder.DropTable(
                 name: "CategoryLogs");

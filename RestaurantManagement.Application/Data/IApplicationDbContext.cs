@@ -29,4 +29,5 @@ public interface IApplicationDbContext
     DbSet<OrderLog> OrderLogs { get; set; }
     DbSet<CustomerLog> CustomerLogs { get; set; }
     DbSet<EmployeeLog> EmployeeLogs { get; set; }
+    DbSet<BookingLog> BookingLogs { get; set; }
 }

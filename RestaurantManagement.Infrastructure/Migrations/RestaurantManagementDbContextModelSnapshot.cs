@@ -151,6 +151,29 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.ToTable("BookingDetails");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.BookingLog", b =>
+                {
+                    b.Property<string>("BookingLogId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("LogDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("LogDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.HasKey("BookingLogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BookingLogs");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Category", b =>
                 {
                     b.Property<string>("CategoryId")
@@ -772,6 +795,17 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("Table");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.BookingLog", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
+                        .WithMany("BookingLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.CategoryLog", b =>
                 {
                     b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
@@ -1029,6 +1063,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.User", b =>
                 {
                     b.Navigation("BillLogs");
+
+                    b.Navigation("BookingLogs");
 
                     b.Navigation("CategoryLogs");
 

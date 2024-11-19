@@ -25,4 +25,5 @@ public class User
     public ICollection<CustomerLog>? CustomerLogs { get; set; }
     public ICollection<EmployeeLog>? EmployeeLogs { get; set; }
     public ICollection<TableTypeLog>? TableTypeLogs { get; set; }
+    public ICollection<BookingLog>? BookingLogs { get; set; }
 }
