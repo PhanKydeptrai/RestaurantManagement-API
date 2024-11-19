@@ -48,13 +48,14 @@ public class GetAllTableTypeQueryHandler(IApplicationDbContext context) : IQuery
 
         //Paging    
         var tableTypes = tableTypeQuery
-        .Select(a => new TableTypeResponse(
-        a.TableTypeId,
-        a.TableTypeName,
-        a.Status,
-        a.ImageUrl,
-        a.TablePrice,
-        a.Description)).AsQueryable();
+            .Select(a => new TableTypeResponse(
+                a.TableTypeId,
+                a.TableTypeName,
+                a.Status,
+                a.TableCapacity,
+                a.ImageUrl,
+                a.TablePrice,
+                a.Description)).AsQueryable();
         var tableTypeList = await PagedList<TableTypeResponse>.CreateAsync(tableTypes, request.page ?? 1, request.pageSize ?? 10);
 
         return Result<PagedList<TableTypeResponse>>.Success(tableTypeList);

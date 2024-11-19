@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RestaurantManagemntDb : Migration
+    public partial class RestaurantManagementDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,7 +50,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     Password = table.Column<string>(type: "varchar(64)", nullable: true),
-                    Phone = table.Column<string>(type: "varchar(20)", nullable: true),
+                    Phone = table.Column<string>(type: "varchar(10)", nullable: true),
                     Status = table.Column<string>(type: "varchar(20)", nullable: false),
                     Email = table.Column<string>(type: "varchar(50)", nullable: true),
                     ImageUrl = table.Column<string>(type: "varchar(255)", nullable: true),
@@ -124,6 +124,66 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BillLog",
+                columns: table => new
+                {
+                    BillLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    LogDetails = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BillLog", x => x.BillLogId);
+                    table.ForeignKey(
+                        name: "FK_BillLog_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoryLog",
+                columns: table => new
+                {
+                    CategoryLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    LogDetails = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryLog", x => x.CategoryLogId);
+                    table.ForeignKey(
+                        name: "FK_CategoryLog_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerLog",
+                columns: table => new
+                {
+                    CustomerLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    LogDetails = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerLog", x => x.CustomerLogId);
+                    table.ForeignKey(
+                        name: "FK_CustomerLog_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Customers",
                 columns: table => new
                 {
@@ -165,6 +225,26 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EmployeeLog",
+                columns: table => new
+                {
+                    EmployeeLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    LogDetails = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeLog", x => x.EmployeeLogId);
+                    table.ForeignKey(
+                        name: "FK_EmployeeLog_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Employees",
                 columns: table => new
                 {
@@ -178,6 +258,26 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     table.PrimaryKey("PK_Employees", x => x.EmployeeId);
                     table.ForeignKey(
                         name: "FK_Employees_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MealLog",
+                columns: table => new
+                {
+                    MealLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    LogDetails = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MealLog", x => x.MealLogId);
+                    table.ForeignKey(
+                        name: "FK_MealLog_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -206,19 +306,79 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SystemLogs",
+                name: "OrderLog",
                 columns: table => new
                 {
-                    SystemLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    LogDetail = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    OrderLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    LogDetails = table.Column<string>(type: "nvarchar(255)", nullable: false),
                     LogDate = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SystemLogs", x => x.SystemLogId);
+                    table.PrimaryKey("PK_OrderLog", x => x.OrderLogId);
                     table.ForeignKey(
-                        name: "FK_SystemLogs_Users_UserId",
+                        name: "FK_OrderLog_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TableLog",
+                columns: table => new
+                {
+                    TableLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    LogDetails = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TableLog", x => x.TableLogId);
+                    table.ForeignKey(
+                        name: "FK_TableLog_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TableTypeLog",
+                columns: table => new
+                {
+                    TableTypeLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    LogDetails = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TableTypeLog", x => x.TableTypeLogId);
+                    table.ForeignKey(
+                        name: "FK_TableTypeLog_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserLog",
+                columns: table => new
+                {
+                    UserLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    LogDetails = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLog", x => x.UserLogId);
+                    table.ForeignKey(
+                        name: "FK_UserLog_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -306,33 +466,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookingChangeLogs",
-                columns: table => new
-                {
-                    BookingChangeLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    LogMessage = table.Column<string>(type: "nvarchar(255)", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(255)", nullable: true),
-                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    BookId = table.Column<string>(type: "nvarchar(26)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BookingChangeLogs", x => x.BookingChangeLogId);
-                    table.ForeignKey(
-                        name: "FK_BookingChangeLogs_Bookings_BookId",
-                        column: x => x.BookId,
-                        principalTable: "Bookings",
-                        principalColumn: "BookId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BookingChangeLogs_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "BookingDetails",
                 columns: table => new
                 {
@@ -392,34 +525,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderChangeLogs",
-                columns: table => new
-                {
-                    OrderChangeLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    LogMessage = table.Column<string>(type: "nvarchar(255)", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(255)", nullable: true),
-                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    OrderId = table.Column<string>(type: "nvarchar(26)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderChangeLogs", x => x.OrderChangeLogId);
-                    table.ForeignKey(
-                        name: "FK_OrderChangeLogs_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "OrderId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderChangeLogs_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderDetails",
                 columns: table => new
                 {
@@ -448,6 +553,11 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_BillLog_UserId",
+                table: "BillLog",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Bills_BookId",
                 table: "Bills",
                 column: "BookId",
@@ -466,16 +576,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "VoucherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookingChangeLogs_BookId",
-                table: "BookingChangeLogs",
-                column: "BookId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BookingChangeLogs_UserId",
-                table: "BookingChangeLogs",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BookingDetails_BookId",
                 table: "BookingDetails",
                 column: "BookId");
@@ -489,6 +589,16 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "IX_Bookings_CustomerId",
                 table: "Bookings",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryLog_UserId",
+                table: "CategoryLog",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerLog_UserId",
+                table: "CustomerLog",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_UserId",
@@ -512,10 +622,20 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmployeeLog_UserId",
+                table: "EmployeeLog",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Employees_UserId",
                 table: "Employees",
                 column: "UserId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MealLog_UserId",
+                table: "MealLog",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Meals_CategoryId",
@@ -525,16 +645,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",
                 table: "Notifications",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderChangeLogs_OrderId",
-                table: "OrderChangeLogs",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderChangeLogs_UserId",
-                table: "OrderChangeLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -548,6 +658,11 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderLog_UserId",
+                table: "OrderLog",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
@@ -558,27 +673,43 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "TableId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SystemLogs_UserId",
-                table: "SystemLogs",
+                name: "IX_TableLog_UserId",
+                table: "TableLog",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tables_TableTypeId",
                 table: "Tables",
                 column: "TableTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TableTypeLog_UserId",
+                table: "TableTypeLog",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLog_UserId",
+                table: "UserLog",
+                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BillLog");
+
+            migrationBuilder.DropTable(
                 name: "Bills");
 
             migrationBuilder.DropTable(
-                name: "BookingChangeLogs");
+                name: "BookingDetails");
 
             migrationBuilder.DropTable(
-                name: "BookingDetails");
+                name: "CategoryLog");
+
+            migrationBuilder.DropTable(
+                name: "CustomerLog");
 
             migrationBuilder.DropTable(
                 name: "CustomerVouchers");
@@ -587,19 +718,31 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "EmailVerificationTokens");
 
             migrationBuilder.DropTable(
+                name: "EmployeeLog");
+
+            migrationBuilder.DropTable(
                 name: "Employees");
+
+            migrationBuilder.DropTable(
+                name: "MealLog");
 
             migrationBuilder.DropTable(
                 name: "Notifications");
 
             migrationBuilder.DropTable(
-                name: "OrderChangeLogs");
-
-            migrationBuilder.DropTable(
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
-                name: "SystemLogs");
+                name: "OrderLog");
+
+            migrationBuilder.DropTable(
+                name: "TableLog");
+
+            migrationBuilder.DropTable(
+                name: "TableTypeLog");
+
+            migrationBuilder.DropTable(
+                name: "UserLog");
 
             migrationBuilder.DropTable(
                 name: "Bookings");
