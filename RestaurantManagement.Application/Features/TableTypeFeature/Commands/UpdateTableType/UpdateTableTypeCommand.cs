@@ -9,7 +9,7 @@ public record UpdateTableTypeCommand(
     string TableTypeId, 
     string TableTypeName, 
     IFormFile? Image, 
-    decimal TablePrice,
+    string TablePrice,
     string? TableCapacity,
     string? Description,
     string token

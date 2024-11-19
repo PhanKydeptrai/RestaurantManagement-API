@@ -31,7 +31,7 @@ public class UpdateTableTypeCommandHandler(
         //Update TableType
         tableType.TableTypeName = request.TableTypeName ?? tableType.TableTypeName;
         tableType.TableCapacity = int.Parse(request.TableCapacity);
-        tableType.TablePrice = request.TablePrice;
+        tableType.TablePrice = decimal.Parse(request.TablePrice);
         tableType.Description = request.Description;
 
         if (request.Image != null)

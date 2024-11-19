@@ -6,7 +6,7 @@ namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.Cr
 public record CreateTableTypeCommand(
     string TableTypeName, 
     IFormFile? Image, 
-    decimal TablePrice,
+    string TablePrice,
     string TableCapacity,
     string? Description,
     string token) : ICommand;

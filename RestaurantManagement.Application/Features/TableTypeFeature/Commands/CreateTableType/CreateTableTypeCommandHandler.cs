@@ -52,7 +52,7 @@ public class CreateTableTypeCommandHandler(
                 ImageUrl = imageUrl,
                 Status = "Active",
                 TableCapacity = int.Parse(request.TableCapacity),
-                TablePrice = request.TablePrice,
+                TablePrice = decimal.Parse(request.TablePrice),
                 Description = request.Description
             });
 
