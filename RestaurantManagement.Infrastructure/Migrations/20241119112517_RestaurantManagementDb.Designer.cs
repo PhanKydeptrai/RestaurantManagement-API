@@ -12,8 +12,8 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241111045212_RestaurantManagemntDb")]
-    partial class RestaurantManagemntDb
+    [Migration("20241119112517_RestaurantManagementDb")]
+    partial class RestaurantManagementDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,6 +68,29 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.ToTable("Bills");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.BillLog", b =>
+                {
+                    b.Property<string>("BillLogId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("LogDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("LogDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.HasKey("BillLogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BillLog");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Booking", b =>
                 {
                     b.Property<string>("BookId")
@@ -108,38 +131,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Bookings");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.BookingChangeLog", b =>
-                {
-                    b.Property<string>("BookingChangeLogId")
-                        .HasColumnType("nvarchar(26)");
-
-                    b.Property<string>("BookId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
-
-                    b.Property<DateTime>("LogDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("LogMessage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
-
-                    b.HasKey("BookingChangeLogId");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("BookingChangeLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.BookingDetail", b =>
@@ -184,6 +175,29 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.CategoryLog", b =>
+                {
+                    b.Property<string>("CategoryLogId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("LogDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("LogDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.HasKey("CategoryLogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CategoryLog");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Customer", b =>
                 {
                     b.Property<string>("CustomerId")
@@ -207,6 +221,29 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.CustomerLog", b =>
+                {
+                    b.Property<string>("CustomerLogId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("LogDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("LogDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.HasKey("CustomerLogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CustomerLog");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.CustomerVoucher", b =>
@@ -284,6 +321,29 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.EmployeeLog", b =>
+                {
+                    b.Property<string>("EmployeeLogId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("LogDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("LogDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.HasKey("EmployeeLogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EmployeeLog");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Meal", b =>
                 {
                     b.Property<string>("MealId")
@@ -319,6 +379,29 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Meals");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.MealLog", b =>
+                {
+                    b.Property<string>("MealLogId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("LogDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("LogDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.HasKey("MealLogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MealLog");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Notification", b =>
@@ -381,38 +464,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.OrderChangeLog", b =>
-                {
-                    b.Property<string>("OrderChangeLogId")
-                        .HasColumnType("nvarchar(26)");
-
-                    b.Property<DateTime>("LogDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("LogMessage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("OrderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
-
-                    b.HasKey("OrderChangeLogId");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("OrderChangeLogs");
-                });
-
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.OrderDetail", b =>
                 {
                     b.Property<string>("OrderDetailId")
@@ -444,15 +495,15 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.SystemLog", b =>
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.OrderLog", b =>
                 {
-                    b.Property<string>("SystemLogId")
+                    b.Property<string>("OrderLogId")
                         .HasColumnType("nvarchar(26)");
 
                     b.Property<DateTime>("LogDate")
                         .HasColumnType("datetime");
 
-                    b.Property<string>("LogDetail")
+                    b.Property<string>("LogDetails")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
 
@@ -460,11 +511,11 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(26)");
 
-                    b.HasKey("SystemLogId");
+                    b.HasKey("OrderLogId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SystemLogs");
+                    b.ToTable("OrderLog");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>
@@ -489,6 +540,29 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.HasIndex("TableTypeId");
 
                     b.ToTable("Tables");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.TableLog", b =>
+                {
+                    b.Property<string>("TableLogId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("LogDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("LogDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.HasKey("TableLogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TableLog");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.TableType", b =>
@@ -521,6 +595,29 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.ToTable("TableTypes");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.TableTypeLog", b =>
+                {
+                    b.Property<string>("TableTypeLogId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("LogDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("LogDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.HasKey("TableTypeLogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TableTypeLog");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.User", b =>
                 {
                     b.Property<string>("UserId")
@@ -547,7 +644,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .HasColumnType("varchar(64)");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -556,6 +653,29 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.UserLog", b =>
+                {
+                    b.Property<string>("UserLogId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("LogDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("LogDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.HasKey("UserLogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserLog");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Voucher", b =>
@@ -614,6 +734,17 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("Voucher");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.BillLog", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
+                        .WithMany("BillLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Booking", b =>
                 {
                     b.HasOne("RestaurantManagement.Domain.Entities.Customer", "Customer")
@@ -623,25 +754,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.BookingChangeLog", b =>
-                {
-                    b.HasOne("RestaurantManagement.Domain.Entities.Booking", "Booking")
-                        .WithMany("BookingChangeLogs")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
-                        .WithMany("BookingChangeLogs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.BookingDetail", b =>
@@ -663,11 +775,33 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("Table");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.CategoryLog", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
+                        .WithMany("CategoryLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Customer", b =>
                 {
                     b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
                         .WithOne("Customer")
                         .HasForeignKey("RestaurantManagement.Domain.Entities.Customer", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.CustomerLog", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
+                        .WithMany("CustomerLogs")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -715,6 +849,17 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.EmployeeLog", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
+                        .WithMany("EmployeeLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Meal", b =>
                 {
                     b.HasOne("RestaurantManagement.Domain.Entities.Category", "Category")
@@ -724,6 +869,17 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.MealLog", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
+                        .WithMany("MealLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Notification", b =>
@@ -754,25 +910,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("Table");
                 });
 
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.OrderChangeLog", b =>
-                {
-                    b.HasOne("RestaurantManagement.Domain.Entities.Order", "Order")
-                        .WithMany("OrderChangeLogs")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
-                        .WithMany("OrderChangeLogs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.OrderDetail", b =>
                 {
                     b.HasOne("RestaurantManagement.Domain.Entities.Meal", "Meal")
@@ -792,10 +929,10 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.SystemLog", b =>
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.OrderLog", b =>
                 {
                     b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
-                        .WithMany("SystemLogs")
+                        .WithMany("OrderLogs")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -814,11 +951,42 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("TableType");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.TableLog", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
+                        .WithMany("TableLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.TableTypeLog", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
+                        .WithMany("TableTypeLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.UserLog", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
+                        .WithMany("UserLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Booking", b =>
                 {
                     b.Navigation("Bill");
-
-                    b.Navigation("BookingChangeLogs");
 
                     b.Navigation("BookingDetails");
                 });
@@ -846,8 +1014,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 {
                     b.Navigation("Bill");
 
-                    b.Navigation("OrderChangeLogs");
-
                     b.Navigation("OrderDetails");
                 });
 
@@ -865,19 +1031,31 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.User", b =>
                 {
-                    b.Navigation("BookingChangeLogs");
+                    b.Navigation("BillLogs");
+
+                    b.Navigation("CategoryLogs");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("CustomerLogs");
 
                     b.Navigation("EmailVerificationTokens");
 
                     b.Navigation("Employee");
 
+                    b.Navigation("EmployeeLogs");
+
+                    b.Navigation("MealLogs");
+
                     b.Navigation("Notifications");
 
-                    b.Navigation("OrderChangeLogs");
+                    b.Navigation("OrderLogs");
 
-                    b.Navigation("SystemLogs");
+                    b.Navigation("TableLogs");
+
+                    b.Navigation("TableTypeLogs");
+
+                    b.Navigation("UserLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Voucher", b =>

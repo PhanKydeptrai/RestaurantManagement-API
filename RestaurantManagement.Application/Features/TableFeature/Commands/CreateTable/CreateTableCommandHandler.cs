@@ -24,10 +24,10 @@ public class CreateTableCommandHandler(
         }
 
         //create table
-        var tableArray = new Table[(int)request.quantity];
+        var tableArray = new Table[int.Parse(request.quantity.ToString())];
         Ulid tableTypeId = Ulid.Parse(request.tableTypeId);
 
-        for (int i = 0; i < (int)request.quantity; i++)
+        for (int i = 0; i < int.Parse(request.quantity.ToString()); i++)
         {
             tableArray[i] = new Table
             {

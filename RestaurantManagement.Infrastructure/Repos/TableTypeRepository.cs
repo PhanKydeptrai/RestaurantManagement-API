@@ -29,6 +29,7 @@ public class TableTypeRepository(RestaurantManagementDbContext context) : ITable
             a.TableTypeId,
             a.TableTypeName,
             a.Status,
+            a.TableCapacity,
             a.ImageUrl,
             a.TablePrice,
             a.Description)).FirstOrDefaultAsync();
