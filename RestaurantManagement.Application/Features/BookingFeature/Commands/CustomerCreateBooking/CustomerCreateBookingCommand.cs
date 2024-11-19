@@ -15,17 +15,3 @@ public class CustomerCreateBookingCommand : ICommand
     public string? Note { get; set; }
 }
 
-#region Stable Code
-// public class CustomerCreateBookingCommand : ICommand
-// {
-//     public string FirstName { get; set; }
-//     public string LastName { get; set; }
-//     public string Email { get; set; }
-//     public string PhoneNumber { get; set; }
-//     public DateOnly BookingDate { get; set; }
-//     public TimeOnly BookingTime { get; set; }
-//     public int NumberOfCustomers { get; set; }
-//     public string? Note { get; set; }
-// }
-#endregion
-
