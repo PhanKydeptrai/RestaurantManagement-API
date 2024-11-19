@@ -42,7 +42,7 @@ public class TableTypeController : IEndpoint
         endpoints.MapPost("", async (
             [FromForm] string TableTypeName,
             [FromForm] string TableCapacity,
-            [FromForm] decimal TablePrice,
+            [FromForm] string TablePrice,
             [FromForm] string? Description,
             [FromForm] IFormFile? Image,
             HttpContext httpContext,
@@ -67,7 +67,7 @@ public class TableTypeController : IEndpoint
         endpoints.MapPut("{id}", async (
             string id,
             [FromForm] string TableTypeName,
-            [FromForm] decimal TablePrice,
+            [FromForm] string TablePrice,
             [FromForm] string? Description,
             [FromForm] string TableCapacity,
             [FromForm] IFormFile? Image,
