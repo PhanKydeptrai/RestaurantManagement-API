@@ -46,19 +46,13 @@ public class CustomerCreateBookingCommandValidator : AbstractValidator<CustomerC
                 .WithMessage("Vẫn chưa có lấy được số lượng khách nè thấy chưa!")
                 .NotEmpty()
                 .WithMessage("{PropertyName} is required")
+                .Must(a => a != null && int.TryParse(a.ToString(), out _))
+                .WithMessage("{PropertyName} must be a number")
                 .Must(a => a != null && int.Parse(a.ToString()) > 0)
                 .WithMessage("{PropertyName} must be greater than 0")
                 .Must(a => a != null && bookingRepository.IsCapacityAvailable(int.Parse(a.ToString())).Result == true)
-                .WithMessage("Seat is not enough for {PropertyName} customers")
-                // .When(a => a != null && int.TryParse(a.NumberOfCustomers.ToString(), out _))
-                .Must(a => a != null && int.TryParse(a.ToString(), out _))
-                .WithMessage("{PropertyName} must be a number");
-
-
-           
-
-
-
+                .WithMessage("Seat is not enough for {PropertyName} customers");
+                
 
         RuleFor(a => a.Note)
             .MaximumLength(250)
