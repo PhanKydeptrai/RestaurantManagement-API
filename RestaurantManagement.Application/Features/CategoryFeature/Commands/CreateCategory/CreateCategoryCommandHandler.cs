@@ -1,4 +1,5 @@
 ﻿using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Services;
 using RestaurantManagement.Domain.Entities;
@@ -9,7 +10,8 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Cre
 
 public class CreateCategoryCommandHandler(
     ICategoryRepository categoryRepository,
-    IUnitOfWork unitOfWork) : ICommandHandler<CreateCategoryCommand>
+    IUnitOfWork unitOfWork,
+    IApplicationDbContext context) : ICommandHandler<CreateCategoryCommand>
 {
     public async Task<Result> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
@@ -50,18 +52,18 @@ public class CreateCategoryCommandHandler(
             CategoryStatus = "Active",
             ImageUrl = imageUrl
         });
-        //TODO: Cập nhật system log
+        
         #region decode jwt and system log
-        // //Decode
+        //Decode
         // var claims = JwtHelper.DecodeJwt(request.Token);
         // claims.TryGetValue("sub", out var userId);
 
         // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // await context.CategoryLogs.AddAsync(new CategoryLog
         // {
-        //     SystemLogId = Ulid.NewUlid(),
+        //     CategoryLogId = Ulid.NewUlid(),
         //     LogDate = DateTime.Now,
-        //     LogDetail = $"Tạo danh mục {request.Name}",
+        //     LogDetails = $"Tạo danh mục {request.Name}",
         //     UserId = Ulid.Parse(userId)
         // });
         #endregion

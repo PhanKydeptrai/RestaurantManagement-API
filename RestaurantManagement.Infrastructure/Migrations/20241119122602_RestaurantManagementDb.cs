@@ -124,7 +124,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BillLog",
+                name: "BillLogs",
                 columns: table => new
                 {
                     BillLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -134,9 +134,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BillLog", x => x.BillLogId);
+                    table.PrimaryKey("PK_BillLogs", x => x.BillLogId);
                     table.ForeignKey(
-                        name: "FK_BillLog_Users_UserId",
+                        name: "FK_BillLogs_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -144,7 +144,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CategoryLog",
+                name: "CategoryLogs",
                 columns: table => new
                 {
                     CategoryLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -154,9 +154,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryLog", x => x.CategoryLogId);
+                    table.PrimaryKey("PK_CategoryLogs", x => x.CategoryLogId);
                     table.ForeignKey(
-                        name: "FK_CategoryLog_Users_UserId",
+                        name: "FK_CategoryLogs_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -164,7 +164,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CustomerLog",
+                name: "CustomerLogs",
                 columns: table => new
                 {
                     CustomerLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -174,9 +174,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CustomerLog", x => x.CustomerLogId);
+                    table.PrimaryKey("PK_CustomerLogs", x => x.CustomerLogId);
                     table.ForeignKey(
-                        name: "FK_CustomerLog_Users_UserId",
+                        name: "FK_CustomerLogs_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -225,7 +225,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EmployeeLog",
+                name: "EmployeeLogs",
                 columns: table => new
                 {
                     EmployeeLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -235,9 +235,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeLog", x => x.EmployeeLogId);
+                    table.PrimaryKey("PK_EmployeeLogs", x => x.EmployeeLogId);
                     table.ForeignKey(
-                        name: "FK_EmployeeLog_Users_UserId",
+                        name: "FK_EmployeeLogs_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -265,7 +265,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MealLog",
+                name: "MealLogs",
                 columns: table => new
                 {
                     MealLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -275,9 +275,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MealLog", x => x.MealLogId);
+                    table.PrimaryKey("PK_MealLogs", x => x.MealLogId);
                     table.ForeignKey(
-                        name: "FK_MealLog_Users_UserId",
+                        name: "FK_MealLogs_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -306,7 +306,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderLog",
+                name: "OrderLogs",
                 columns: table => new
                 {
                     OrderLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -316,9 +316,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderLog", x => x.OrderLogId);
+                    table.PrimaryKey("PK_OrderLogs", x => x.OrderLogId);
                     table.ForeignKey(
-                        name: "FK_OrderLog_Users_UserId",
+                        name: "FK_OrderLogs_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -326,7 +326,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TableLog",
+                name: "TableLogs",
                 columns: table => new
                 {
                     TableLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -336,9 +336,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TableLog", x => x.TableLogId);
+                    table.PrimaryKey("PK_TableLogs", x => x.TableLogId);
                     table.ForeignKey(
-                        name: "FK_TableLog_Users_UserId",
+                        name: "FK_TableLogs_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -346,7 +346,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TableTypeLog",
+                name: "TableTypeLogs",
                 columns: table => new
                 {
                     TableTypeLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -356,9 +356,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TableTypeLog", x => x.TableTypeLogId);
+                    table.PrimaryKey("PK_TableTypeLogs", x => x.TableTypeLogId);
                     table.ForeignKey(
-                        name: "FK_TableTypeLog_Users_UserId",
+                        name: "FK_TableTypeLogs_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -553,8 +553,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BillLog_UserId",
-                table: "BillLog",
+                name: "IX_BillLogs_UserId",
+                table: "BillLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -591,13 +591,13 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryLog_UserId",
-                table: "CategoryLog",
+                name: "IX_CategoryLogs_UserId",
+                table: "CategoryLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomerLog_UserId",
-                table: "CustomerLog",
+                name: "IX_CustomerLogs_UserId",
+                table: "CustomerLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -622,8 +622,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeLog_UserId",
-                table: "EmployeeLog",
+                name: "IX_EmployeeLogs_UserId",
+                table: "EmployeeLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -633,8 +633,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_MealLog_UserId",
-                table: "MealLog",
+                name: "IX_MealLogs_UserId",
+                table: "MealLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -658,8 +658,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderLog_UserId",
-                table: "OrderLog",
+                name: "IX_OrderLogs_UserId",
+                table: "OrderLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -673,8 +673,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "TableId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TableLog_UserId",
-                table: "TableLog",
+                name: "IX_TableLogs_UserId",
+                table: "TableLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -683,8 +683,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "TableTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TableTypeLog_UserId",
-                table: "TableTypeLog",
+                name: "IX_TableTypeLogs_UserId",
+                table: "TableTypeLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -697,7 +697,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BillLog");
+                name: "BillLogs");
 
             migrationBuilder.DropTable(
                 name: "Bills");
@@ -706,10 +706,10 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "BookingDetails");
 
             migrationBuilder.DropTable(
-                name: "CategoryLog");
+                name: "CategoryLogs");
 
             migrationBuilder.DropTable(
-                name: "CustomerLog");
+                name: "CustomerLogs");
 
             migrationBuilder.DropTable(
                 name: "CustomerVouchers");
@@ -718,13 +718,13 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "EmailVerificationTokens");
 
             migrationBuilder.DropTable(
-                name: "EmployeeLog");
+                name: "EmployeeLogs");
 
             migrationBuilder.DropTable(
                 name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "MealLog");
+                name: "MealLogs");
 
             migrationBuilder.DropTable(
                 name: "Notifications");
@@ -733,13 +733,13 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
-                name: "OrderLog");
+                name: "OrderLogs");
 
             migrationBuilder.DropTable(
-                name: "TableLog");
+                name: "TableLogs");
 
             migrationBuilder.DropTable(
-                name: "TableTypeLog");
+                name: "TableTypeLogs");
 
             migrationBuilder.DropTable(
                 name: "UserLog");

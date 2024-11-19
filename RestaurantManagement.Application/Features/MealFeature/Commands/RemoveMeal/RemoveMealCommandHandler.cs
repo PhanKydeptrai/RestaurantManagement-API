@@ -1,4 +1,5 @@
 ﻿using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -8,7 +9,8 @@ namespace RestaurantManagement.Application.Features.MealFeature.Commands.RemoveM
 
 public class RemoveMealCommandHandler(
     IMealRepository mealRepository,
-    IUnitOfWork unitOfWork) : ICommandHandler<RemoveMealCommand>
+    IUnitOfWork unitOfWork,
+    IApplicationDbContext context) : ICommandHandler<RemoveMealCommand>
 {
     public async Task<Result> Handle(RemoveMealCommand request, CancellationToken cancellationToken)
     {
@@ -23,18 +25,17 @@ public class RemoveMealCommandHandler(
         }
         await mealRepository.DeleteMeal(Ulid.Parse(request.id));
 
-        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //Decode jwt
         // var claims = JwtHelper.DecodeJwt(request.token);
         // claims.TryGetValue("sub", out var userId);
-
+        // var meal = await context.Meals.FindAsync(Ulid.Parse(request.id));
         // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // await context.MealLogs.AddAsync(new MealLog
         // {
-        //     SystemLogId = Ulid.NewUlid(),
+        //     MealLogId = Ulid.NewUlid(),
         //     LogDate = DateTime.Now,
-        //     LogDetail = $"Cập nhật meal status món {request.id} thành ngừng kinh doanh",
+        //     LogDetails = $"Cập nhật meal status món {meal.MealName} thành ngừng kinh doanh",
         //     UserId = Ulid.Parse(userId)
         // });
         #endregion

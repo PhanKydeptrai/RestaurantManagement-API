@@ -1,4 +1,5 @@
 ﻿using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -8,7 +9,8 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Rem
 
 public class RemoveCategoryCommandHandler(
     ICategoryRepository categoryRepository,
-    IUnitOfWork unitOfWork) : ICommandHandler<RemoveCategoryCommand>
+    IUnitOfWork unitOfWork,
+    IApplicationDbContext context) : ICommandHandler<RemoveCategoryCommand>
 {
     public async Task<Result> Handle(RemoveCategoryCommand request, CancellationToken cancellationToken)
     {
@@ -20,19 +22,18 @@ public class RemoveCategoryCommandHandler(
         //delete
         await categoryRepository.SoftDeleteCategory(Ulid.Parse(request.Id));
 
-        //TODO: Cập nhật system log
         #region Decode jwt and system log
-        // //Decode
+        //Decode
         // var claims = JwtHelper.DecodeJwt(request.Token);
         // claims.TryGetValue("sub", out var userId);
 
         // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // await context.CategoryLogs.AddAsync(new CategoryLog
         // {
         //     UserId = Ulid.Parse(userId),
-        //     SystemLogId = Ulid.NewUlid(),
+        //     CategoryLogId = Ulid.NewUlid(),
         //     LogDate = DateTime.Now,
-        //     LogDetail = $"Xóa danh mục {request.Id}"
+        //     LogDetails = $"Xóa danh mục {request.Id}"
         // });
         #endregion
         await unitOfWork.SaveChangesAsync();

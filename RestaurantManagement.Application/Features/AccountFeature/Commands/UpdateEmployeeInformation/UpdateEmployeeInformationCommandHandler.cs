@@ -3,6 +3,7 @@ using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Services;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -68,17 +69,16 @@ public class UpdateEmployeeInformationCommandHandler(
             }
         }
 
-        //TODO: Cập nhật system log
         #region Decode token and system log
-        // //Decode token
+        //Decode token
         // var claims = JwtHelper.DecodeJwt(request.token);
         // claims.TryGetValue("sub", out var userId);
         // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // await context.EmployeeLogs.AddAsync(new EmployeeLog
         // {
-        //     SystemLogId = Ulid.NewUlid(),
+        //     EmployeeLogId = Ulid.NewUlid(),
         //     LogDate = DateTime.Now,
-        //     LogDetail = $"{userId} cập nhật thông tin tài khoản",
+        //     LogDetails = $"{userId} tự cập nhật thông tin tài khoản",
         //     UserId = Ulid.Parse(userId)
         // });
         #endregion
