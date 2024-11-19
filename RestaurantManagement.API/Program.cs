@@ -28,7 +28,8 @@ builder.Services.AddInfrastructureExtentions(builder.Configuration)
 //Add endpoints
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
-
+builder.Services.AddExceptionHandler<GlobalExceptionHandling>();
+builder.Services.AddProblemDetails();
 
 //Add serilog
 builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
@@ -567,6 +568,10 @@ app.UseMiddleware<RequestLogContextMiddleware>();
 app.UseRateLimiter();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+
+app.UseExceptionHandler();
+
 // Map endpoints
 app.MapEndpoints();
 app.Run();

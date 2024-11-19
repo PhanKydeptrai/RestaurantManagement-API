@@ -7,8 +7,8 @@ public class LoginQueryValidator : AbstractValidator<LoginQuery>
     public LoginQueryValidator()
     {
         RuleFor(a => a.loginString)
-            .NotEmpty().WithMessage("Phone number or Email is required.")
             .NotNull().WithMessage("Phone number or Email is required.")
+            .NotEmpty().WithMessage("Phone number or Email is required.")
             .Custom((loginString, context) =>
             {
                 if (loginString.Any(char.IsLetter))

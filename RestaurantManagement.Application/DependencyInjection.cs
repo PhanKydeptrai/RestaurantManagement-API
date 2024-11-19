@@ -18,7 +18,11 @@ public static class DependencyInjection
             configuration.AddOpenBehavior(typeof(RequestLoggingPipelineBehavior<,>));
         });
         // Đăng ký FluentValidation
+
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+        ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
+        ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+
         services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Email:Sender"])
                 .AddSmtpSender(new SmtpClient(configuration["Email:Host"], int.Parse(configuration["Email:Port"])));
 
