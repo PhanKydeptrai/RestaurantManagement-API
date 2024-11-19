@@ -14,8 +14,15 @@ public class User
     public ICollection<Notification>? Notifications { get; set; }
     public Customer? Customer { get; set; }
     public Employee? Employee { get; set; }
-    public ICollection<SystemLog>? SystemLogs { get; set; }
-    public ICollection<BookingChangeLog>? BookingChangeLogs { get; set; }
-    public ICollection<OrderChangeLog>? OrderChangeLogs { get; set; }
     public ICollection<EmailVerificationToken>? EmailVerificationTokens { get; set; }
+    //Logs
+    public ICollection<UserLog>? UserLogs { get; set; }
+    public ICollection<OrderLog>? OrderLogs { get; set; }
+    public ICollection<BillLog>? BillLogs { get; set; }
+    public ICollection<TableLog>? TableLogs { get; set; }
+    public ICollection<MealLog>? MealLogs { get; set; }
+    public ICollection<CategoryLog>? CategoryLogs { get; set; }
+    public ICollection<CustomerLog>? CustomerLogs { get; set; }
+    public ICollection<EmployeeLog>? EmployeeLogs { get; set; }
+    public ICollection<TableTypeLog>? TableTypeLogs { get; set; }
 }

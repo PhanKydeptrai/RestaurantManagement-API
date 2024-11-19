@@ -24,8 +24,6 @@ internal sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
         //ForeignKey
         //Một Customer có nhiều booking
         builder.HasOne(a => a.Customer).WithMany(a => a.Bookings).HasForeignKey(a => a.CustomerId);
-        //Một booking có nhiều bookingchangelog
-        builder.HasMany(a => a.BookingChangeLogs).WithOne(a => a.Booking).HasForeignKey(a => a.BookId);
         //Một booking có nhiều bookingdetail
         builder.HasMany(a => a.BookingDetails).WithOne(a => a.Booking).HasForeignKey(a => a.BookId);
     }

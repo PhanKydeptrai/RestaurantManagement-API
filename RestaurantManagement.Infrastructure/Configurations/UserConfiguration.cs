@@ -24,9 +24,9 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         //Một user có nhiều notification
         builder.HasMany(a => a.Notifications).WithOne(a => a.User).HasForeignKey(a => a.UserId);
         //Một user có nhiều systemlog
-        builder.HasMany(a => a.SystemLogs).WithOne(a => a.User).HasForeignKey(a => a.UserId);
+        // builder.HasMany(a => a.SystemLogs).WithOne(a => a.User).HasForeignKey(a => a.UserId);
         //Một user có nhiều BookingChangeLog
-        builder.HasMany(a => a.BookingChangeLogs).WithOne(a => a.User).HasForeignKey(a => a.UserId).OnDelete(DeleteBehavior.NoAction); ;
+        // builder.HasMany(a => a.BookingChangeLogs).WithOne(a => a.User).HasForeignKey(a => a.UserId).OnDelete(DeleteBehavior.NoAction); ;
         //một user có một employee
         builder.HasOne(a => a.Employee).WithOne(a => a.User).HasForeignKey<Employee>(a => a.UserId);
     }

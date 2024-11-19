@@ -11,8 +11,7 @@ namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Upda
 public class UpdateEmployeeInformationCommandHandler(
     IUnitOfWork unitOfWork,
     IEmployeeRepository employeeRepository,
-    IApplicationDbContext context,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<UpdateEmployeeInformationCommand>
+    IApplicationDbContext context) : ICommandHandler<UpdateEmployeeInformationCommand>
 {
     public async Task<Result> Handle(UpdateEmployeeInformationCommand request, CancellationToken cancellationToken)
     {

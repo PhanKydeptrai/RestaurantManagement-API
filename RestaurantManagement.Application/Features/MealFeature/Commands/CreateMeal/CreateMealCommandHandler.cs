@@ -12,7 +12,6 @@ public class CreateMealCommandHandler(
     IMealRepository mealRepository,
     IUserRepository userRepository,
     IJwtProvider jwtProvider,
-    ISystemLogRepository systemLogRepository,
     ICategoryRepository categoryRepository) : ICommandHandler<CreateMealCommand>
 {
     public async Task<Result> Handle(CreateMealCommand request, CancellationToken cancellationToken)

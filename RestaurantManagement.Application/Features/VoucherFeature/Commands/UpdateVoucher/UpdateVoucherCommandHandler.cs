@@ -10,7 +10,6 @@ namespace RestaurantManagement.Application.Features.VoucherFeature.Commands.Upda
 public class UpdateVoucherCommandHandler(
     IVoucherRepository voucherRepository,
     IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository,
     IApplicationDbContext context) : ICommandHandler<UpdateVoucherCommand>
 {
     public async Task<Result> Handle(UpdateVoucherCommand request, CancellationToken cancellationToken)

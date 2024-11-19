@@ -57,7 +57,6 @@ public class CategoryController : IEndpoint
             [FromForm] string? description,
             HttpContext httpContext,
             ISender sender,
-            ISystemLogRepository systemLogRepository,
             IUnitOfWork unitOfWork,
             IJwtProvider jwtProvider) =>
         {

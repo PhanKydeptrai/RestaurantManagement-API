@@ -8,8 +8,7 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Del
 
 public class DeleteEmployeeCommandHandler(
     IUnitOfWork unitOfWork,
-    IEmployeeRepository employeeRepository,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<DeleteEmployeeCommand>
+    IEmployeeRepository employeeRepository) : ICommandHandler<DeleteEmployeeCommand>
 {
     public async Task<Result> Handle(DeleteEmployeeCommand request, CancellationToken cancellationToken)
     {

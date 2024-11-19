@@ -7,8 +7,7 @@ using RestaurantManagement.Domain.Shared;
 namespace RestaurantManagement.Application.Features.MealFeature.Commands.RestoreMeal;
 public class RestoreMealCommandHandler(
     IMealRepository mealRepository,
-    IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<RestoreMealCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<RestoreMealCommand>
 {
     public async Task<Result> Handle(RestoreMealCommand request, CancellationToken cancellationToken)
     {

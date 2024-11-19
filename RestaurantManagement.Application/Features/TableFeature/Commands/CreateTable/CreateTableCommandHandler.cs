@@ -8,7 +8,6 @@ using RestaurantManagement.Domain.Shared;
 namespace RestaurantManagement.Application.Features.TableFeature.Commands.CreateTable;
 
 public class CreateTableCommandHandler(
-    ISystemLogRepository systemLogRepository,
     IApplicationDbContext context,
     IUnitOfWork unitOfWork) : ICommandHandler<CreateTableCommand>
 {

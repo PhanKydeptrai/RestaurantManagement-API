@@ -8,8 +8,7 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Rem
 
 public class RemoveManyCategoryCommandHandler(
     ICategoryRepository categoryRepository,
-    IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<RemoveManyCategoryCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<RemoveManyCategoryCommand>
 {
     public async Task<Result> Handle(RemoveManyCategoryCommand request, CancellationToken cancellationToken)
     {
@@ -23,14 +22,14 @@ public class RemoveManyCategoryCommandHandler(
                 return Result.Failure(new[] { new Error("Category", $"Category {id} not found") });
             }
 
-            //Create System Log
-            await systemLogRepository.CreateSystemLog(new SystemLog
-            {
-                UserId = Ulid.Parse(userId),
-                SystemLogId = Ulid.NewUlid(),
-                LogDate = DateTime.Now,
-                LogDetail = $"Xóa danh mục {id}",
-            });
+            // //Create System Log
+            // await systemLogRepository.CreateSystemLog(new SystemLog
+            // {
+            //     UserId = Ulid.Parse(userId),
+            //     SystemLogId = Ulid.NewUlid(),
+            //     LogDate = DateTime.Now,
+            //     LogDetail = $"Xóa danh mục {id}",
+            // });
             await categoryRepository.SoftDeleteCategory(id);
         }
         await unitOfWork.SaveChangesAsync();

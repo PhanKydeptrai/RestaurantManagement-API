@@ -8,8 +8,7 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Rem
 
 public class RemoveCategoryCommandHandler(
     ICategoryRepository categoryRepository,
-    IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<RemoveCategoryCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<RemoveCategoryCommand>
 {
     public async Task<Result> Handle(RemoveCategoryCommand request, CancellationToken cancellationToken)
     {

@@ -1,3 +1,4 @@
+using System.Security.Principal;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
@@ -11,8 +12,7 @@ namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.Up
 public class UpdateTableTypeCommandHandler(
     IApplicationDbContext context,
     ITableTypeRepository tableTypeRepository,
-    IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<UpdateTableTypeCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<UpdateTableTypeCommand>
 {
     public async Task<Result> Handle(UpdateTableTypeCommand request, CancellationToken cancellationToken)
     {
@@ -27,10 +27,10 @@ public class UpdateTableTypeCommandHandler(
         }
 
         //Lấy TableType theo id  
-        var tableType = await context.TableTypes.FindAsync(request.TableTypeId);
+        var tableType = await context.TableTypes.FindAsync(Ulid.Parse(request.TableTypeId));
         //Update TableType
-        tableType.TableTypeName = request.TableTypeName;
-        tableType.TableCapacity = (int)request.TableCapacity;
+        tableType.TableTypeName = request.TableTypeName ?? tableType.TableTypeName;
+        tableType.TableCapacity = int.Parse(request.TableCapacity);
         tableType.TablePrice = request.TablePrice;
         tableType.Description = request.Description;
 

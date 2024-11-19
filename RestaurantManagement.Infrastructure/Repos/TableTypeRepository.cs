@@ -42,7 +42,7 @@ public class TableTypeRepository(RestaurantManagementDbContext context) : ITable
 
     public Task<bool> IsTableTypeExist(Ulid tableTypeId)
     {
-        return context.TableTypes.AnyAsync(x => x.TableTypeId == tableTypeId);
+        return context.TableTypes.AsNoTracking().AnyAsync(x => x.TableTypeId == tableTypeId);
     }
 
     public async Task<bool> IsTableTypeNameUnique(string tableTypeName)

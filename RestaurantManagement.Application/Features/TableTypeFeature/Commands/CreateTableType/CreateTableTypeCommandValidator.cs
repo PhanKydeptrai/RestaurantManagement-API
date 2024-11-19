@@ -22,8 +22,10 @@ public class CreateTableTypeCommandValidator : AbstractValidator<CreateTableType
             .WithMessage("{PropertyName} must be a decimal.");
 
         RuleFor(p => p.TableCapacity)
-            .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .NotNull()
+            .WithMessage("{PropertyName} is required.")
+            .NotEmpty()
+            .WithMessage("{PropertyName} is required.")
             .Must(p => p != null && int.TryParse(p.ToString(), out _))
             .WithMessage("{PropertyName} must be an integer.");
             

@@ -11,8 +11,7 @@ public class UpdateMealCommandHandler(
     IMealRepository mealRepository,
     IUnitOfWork unitOfWork,
     IApplicationDbContext context,
-    ICategoryRepository categoryRepository,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<UpdateMealCommand>
+    ICategoryRepository categoryRepository) : ICommandHandler<UpdateMealCommand>
 {
     public async Task<Result> Handle(UpdateMealCommand request, CancellationToken cancellationToken)
     {

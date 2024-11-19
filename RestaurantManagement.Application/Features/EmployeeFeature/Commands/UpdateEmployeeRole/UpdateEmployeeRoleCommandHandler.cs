@@ -8,8 +8,7 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Upd
 
 public class UpdateEmployeeRoleCommandHandler(
     IEmployeeRepository employeeRepository,
-    IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<UpdateEmployeeRoleCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<UpdateEmployeeRoleCommand>
 {
     public async Task<Result> Handle(UpdateEmployeeRoleCommand request, CancellationToken cancellationToken)
     {

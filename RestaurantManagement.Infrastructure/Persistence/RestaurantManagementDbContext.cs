@@ -7,9 +7,7 @@ namespace RestaurantManagement.Infrastructure.Persistence;
 public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagementDbContext> options) : DbContext(options), IApplicationDbContext
 {
     public DbSet<Bill> Bills { get; set; }
-    public DbSet<BookingChangeLog> BookingChangeLogs { get; set; }
     public DbSet<CustomerVoucher> CustomerVouchers { get; set; }
-    public DbSet<OrderChangeLog> OrderChangeLogs { get; set; }
     // public DbSet<PaymentType> PaymentTypes { get; set; }
     public DbSet<TableType> TableTypes { get; set; }
     public DbSet<Voucher> Vouchers { get; set; }
@@ -22,7 +20,7 @@ public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagement
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderDetail> OrderDetails { get; set; }
-    public DbSet<SystemLog> SystemLogs { get; set; }
+    // public DbSet<SystemLog> SystemLogs { get; set; }
     public DbSet<Table> Tables { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }

@@ -8,8 +8,7 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Res
 
 public class RestoreEmployeeCommandHandler(
     IUnitOfWork unitOfWork,
-    IEmployeeRepository employeeRepository,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<RestoreEmployeeCommand>
+    IEmployeeRepository employeeRepository) : ICommandHandler<RestoreEmployeeCommand>
 {
     public async Task<Result> Handle(RestoreEmployeeCommand request, CancellationToken cancellationToken)
     {
