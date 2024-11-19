@@ -12,8 +12,7 @@ namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Upda
 public class UpdateCustomerInformationCommandHandler(
     IUnitOfWork unitOfWork,
     ICustomerRepository customerRepository,
-    IApplicationDbContext context,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<UpdateCustomerInformationCommand>
+    IApplicationDbContext context) : ICommandHandler<UpdateCustomerInformationCommand>
 {
     public async Task<Result> Handle(UpdateCustomerInformationCommand request, CancellationToken cancellationToken)
     {

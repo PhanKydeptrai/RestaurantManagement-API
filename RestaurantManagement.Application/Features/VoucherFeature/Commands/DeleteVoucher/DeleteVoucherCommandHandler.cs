@@ -9,8 +9,7 @@ namespace RestaurantManagement.Application.Features.VoucherFeature.Commands.Dele
 
 public class DeleteVoucherCommandHandler(
     IVoucherRepository voucherRepository,
-    IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<DeleteVoucherCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<DeleteVoucherCommand>
 {
     public async Task<Result> Handle(DeleteVoucherCommand request, CancellationToken cancellationToken)
     {

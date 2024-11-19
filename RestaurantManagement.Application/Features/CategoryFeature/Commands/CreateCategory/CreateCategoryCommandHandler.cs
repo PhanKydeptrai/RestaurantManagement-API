@@ -9,8 +9,7 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Cre
 
 public class CreateCategoryCommandHandler(
     ICategoryRepository categoryRepository,
-    IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<CreateCategoryCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<CreateCategoryCommand>
 {
     public async Task<Result> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {

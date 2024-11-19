@@ -14,6 +14,5 @@ public class Booking
     public string? Note { get; set; }
     public Customer? Customer { get; set; }
     public ICollection<BookingDetail>? BookingDetails { get; set; }
-    public ICollection<BookingChangeLog>? BookingChangeLogs { get; set; }
     public Bill? Bill { get; set; }
 }

@@ -7,7 +7,17 @@ public class UpdateTableTypeCommandValidator : AbstractValidator<UpdateTableType
 {
     public UpdateTableTypeCommandValidator(ITableTypeRepository tableTypeRepository)
     {
-
+        RuleFor(p => p.TableTypeId)
+            .NotNull()
+            .WithMessage("{PropertyName} is required.")
+            .NotEmpty()
+            .WithMessage("{PropertyName} is required.")
+            .MaximumLength(50)
+            .WithMessage("{PropertyName} must not exceed 50 characters.")
+            .Must(a => tableTypeRepository.IsTableTypeExist(Ulid.Parse(a)).Result == true)
+            .WithMessage("{PropertyName} does not exist.")
+            .When(p => Ulid.TryParse(p.TableTypeId, out _));
+            
         RuleFor(p => p.TableTypeName)
             .Must((name, a) => tableTypeRepository.IsTableTypeNameUnique(a, Ulid.Parse(name.TableTypeId)).Result == false)
             .WithMessage("{PropertyName} must be unique.")

@@ -11,8 +11,7 @@ namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.Cr
 public class CreateTableTypeCommandHandler(
     IUnitOfWork unitOfWork,
     ITableTypeRepository tableTypeRepository,
-    IApplicationDbContext context,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<CreateTableTypeCommand>
+    IApplicationDbContext context) : ICommandHandler<CreateTableTypeCommand>
 {
     public async Task<Result> Handle(CreateTableTypeCommand request, CancellationToken cancellationToken)
     {
@@ -52,7 +51,7 @@ public class CreateTableTypeCommandHandler(
                 TableTypeName = request.TableTypeName,
                 ImageUrl = imageUrl,
                 Status = "Active",
-                TableCapacity = (int)request.TableCapacity,
+                TableCapacity = int.Parse(request.TableCapacity),
                 TablePrice = request.TablePrice,
                 Description = request.Description
             });

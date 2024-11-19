@@ -41,7 +41,7 @@ public class TableTypeController : IEndpoint
         //Create table type
         endpoints.MapPost("", async (
             [FromForm] string TableTypeName,
-            [FromForm] object TableCapacity,
+            [FromForm] string TableCapacity,
             [FromForm] decimal TablePrice,
             [FromForm] string? Description,
             [FromForm] IFormFile? Image,
@@ -69,7 +69,7 @@ public class TableTypeController : IEndpoint
             [FromForm] string TableTypeName,
             [FromForm] decimal TablePrice,
             [FromForm] string? Description,
-            [FromForm] object TableCapacity,
+            [FromForm] string TableCapacity,
             [FromForm] IFormFile? Image,
             HttpContext httpContext,
             ISender sender,

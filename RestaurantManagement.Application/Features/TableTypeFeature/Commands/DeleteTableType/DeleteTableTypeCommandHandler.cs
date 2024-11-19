@@ -8,8 +8,7 @@ namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.De
 
 public class DeleteTableTypeCommandHandler(
     ITableTypeRepository tableTypeRepository,
-    IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<DeleteTableTypeCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<DeleteTableTypeCommand>
 {
     public async Task<Result> Handle(DeleteTableTypeCommand request, CancellationToken cancellationToken)
     {

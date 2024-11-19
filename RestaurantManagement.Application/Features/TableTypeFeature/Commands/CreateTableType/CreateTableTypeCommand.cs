@@ -7,6 +7,6 @@ public record CreateTableTypeCommand(
     string TableTypeName, 
     IFormFile? Image, 
     decimal TablePrice,
-    object TableCapacity,
+    string TableCapacity,
     string? Description,
     string token) : ICommand;

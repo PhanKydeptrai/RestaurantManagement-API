@@ -12,7 +12,6 @@ public class Order
     public string? Note { get; set; }
     public Customer? Customer { get; set; }
     public ICollection<OrderDetail>? OrderDetails { get; set; }
-    public ICollection<OrderChangeLog>? OrderChangeLogs { get; set; }
     public Table? Table { get; set; }
     public Bill? Bill { get; set; }
 }

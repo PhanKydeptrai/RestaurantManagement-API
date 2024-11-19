@@ -8,8 +8,7 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Res
 
 public class RestoreManyCategoryCommandHandler(
     ICategoryRepository categoryRepository,
-    IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<RestoreManyCategoryCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<RestoreManyCategoryCommand>
 {
     public async Task<Result> Handle(RestoreManyCategoryCommand request, CancellationToken cancellationToken)
     {
@@ -22,14 +21,14 @@ public class RestoreManyCategoryCommandHandler(
                 return Result.Failure(new[] { new Error("Category", $"Category {Id} still sell") });
             }
 
-            //Create System Log
-            await systemLogRepository.CreateSystemLog(new SystemLog
-            {
-                UserId = Ulid.Parse(userId),
-                SystemLogId = Ulid.NewUlid(),
-                LogDate = DateTime.Now,
-                LogDetail = $"Khôi phục danh mục {Id}",
-            });
+            // //Create System Log
+            // await systemLogRepository.CreateSystemLog(new SystemLog
+            // {
+            //     UserId = Ulid.Parse(userId),
+            //     SystemLogId = Ulid.NewUlid(),
+            //     LogDate = DateTime.Now,
+            //     LogDetail = $"Khôi phục danh mục {Id}",
+            // });
 
             await categoryRepository.SoftDeleteCategory(Id);
         }

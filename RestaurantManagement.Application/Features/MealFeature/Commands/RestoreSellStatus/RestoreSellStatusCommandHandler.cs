@@ -8,7 +8,6 @@ namespace RestaurantManagement.Application.Features.MealFeature.Commands.Restore
 
 public class RestoreSellStatusCommandHandler(
     IMealRepository mealRepository,
-    ISystemLogRepository systemLogRepository,
     IUnitOfWork unitOfWork) : ICommandHandler<RestoreSellStatusCommand>
 {
     public async Task<Result> Handle(RestoreSellStatusCommand request, CancellationToken cancellationToken)

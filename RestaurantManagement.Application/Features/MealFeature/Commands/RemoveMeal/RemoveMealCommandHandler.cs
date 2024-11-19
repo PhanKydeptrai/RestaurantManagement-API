@@ -8,8 +8,7 @@ namespace RestaurantManagement.Application.Features.MealFeature.Commands.RemoveM
 
 public class RemoveMealCommandHandler(
     IMealRepository mealRepository,
-    IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<RemoveMealCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<RemoveMealCommand>
 {
     public async Task<Result> Handle(RemoveMealCommand request, CancellationToken cancellationToken)
     {

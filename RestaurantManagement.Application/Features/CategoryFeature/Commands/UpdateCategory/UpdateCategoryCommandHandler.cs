@@ -11,7 +11,6 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Upd
 public class UpdateCategoryCommandHandler(
     ICategoryRepository categoryRepository,
     IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository,
     IApplicationDbContext context) : ICommandHandler<UpdateCategoryCommand>
 {
     public async Task<Result> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)

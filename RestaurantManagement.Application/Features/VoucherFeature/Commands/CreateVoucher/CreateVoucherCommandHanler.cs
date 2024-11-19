@@ -10,7 +10,6 @@ namespace RestaurantManagement.Application.Features.VoucherFeature.Commands.Crea
 public class CreateVoucherCommandHanler(
     IApplicationDbContext context,
     IVoucherRepository voucherRepository,
-    ISystemLogRepository systemLogRepository,
     IUnitOfWork unitOfWork) : ICommandHandler<CreateVoucherCommand>
 {
     public async Task<Result> Handle(CreateVoucherCommand request, CancellationToken cancellationToken)

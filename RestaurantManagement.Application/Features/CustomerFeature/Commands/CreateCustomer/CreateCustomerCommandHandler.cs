@@ -12,7 +12,6 @@ namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.Cre
 
 public class CreateCustomerCommandHandler(
     ICustomerRepository customerRepository,
-    ISystemLogRepository systemLogRepository,
     IUnitOfWork unitOfWork,
     IUserRepository userRepository,
     IApplicationDbContext context,

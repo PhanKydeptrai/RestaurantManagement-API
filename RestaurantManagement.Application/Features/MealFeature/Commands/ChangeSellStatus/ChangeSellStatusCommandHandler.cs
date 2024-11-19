@@ -8,8 +8,7 @@ namespace RestaurantManagement.Application.Features.MealFeature.Commands.ChangeS
 
 public class ChangeSellStatusCommandHandler(
     IMealRepository mealRepository,
-    IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<ChangeSellStatusCommand>
+    IUnitOfWork unitOfWork) : ICommandHandler<ChangeSellStatusCommand>
 {
     public async Task<Result> Handle(ChangeSellStatusCommand request, CancellationToken cancellationToken)
     {

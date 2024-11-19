@@ -8,7 +8,6 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Res
 
 public class RestoreCategoryCommandHandler(
     IUnitOfWork unitOfWork,
-    ISystemLogRepository systemLogRepository,
     ICategoryRepository categoryRepository) : ICommandHandler<RestoreCategoryCommand>
 {
     public async Task<Result> Handle(RestoreCategoryCommand request, CancellationToken cancellationToken)

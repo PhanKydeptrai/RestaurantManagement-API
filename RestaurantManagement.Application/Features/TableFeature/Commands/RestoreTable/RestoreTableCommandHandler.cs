@@ -8,8 +8,7 @@ namespace RestaurantManagement.Application.Features.TableFeature.Commands.Restor
 
 public class RestoreTableCommandHandler(
     IUnitOfWork unitOfWork,
-    ITableRepository tableRepository,
-    ISystemLogRepository systemLogRepository) : ICommandHandler<RestoreTableCommand>
+    ITableRepository tableRepository) : ICommandHandler<RestoreTableCommand>
 {
     public async Task<Result> Handle(RestoreTableCommand request, CancellationToken cancellationToken)
     {
