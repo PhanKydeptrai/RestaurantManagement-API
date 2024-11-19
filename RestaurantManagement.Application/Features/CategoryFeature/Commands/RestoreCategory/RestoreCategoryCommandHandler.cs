@@ -1,4 +1,5 @@
 using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -8,7 +9,8 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Res
 
 public class RestoreCategoryCommandHandler(
     IUnitOfWork unitOfWork,
-    ICategoryRepository categoryRepository) : ICommandHandler<RestoreCategoryCommand>
+    ICategoryRepository categoryRepository,
+    IApplicationDbContext context) : ICommandHandler<RestoreCategoryCommand>
 {
     public async Task<Result> Handle(RestoreCategoryCommand request, CancellationToken cancellationToken)
     {
@@ -20,22 +22,23 @@ public class RestoreCategoryCommandHandler(
         {
             return Result.Failure(errors!);
         }
-
+        //NOTE: Need refactor
+        var category = await categoryRepository.GetCategoryById(request.id); //Get category by id to get category name
+        
         await categoryRepository.RestoreCategory(request.id);
 
-        //TODO: Cập nhật system log
         #region Decode jwt and system log
-        // //Decode token
+        //Decode token
         // var claims = JwtHelper.DecodeJwt(request.token);
         // claims.TryGetValue("sub", out var userId);
 
         // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // await context.CategoryLogs.AddAsync(new CategoryLog
         // {
         //     UserId = Ulid.Parse(userId),
-        //     SystemLogId = Ulid.NewUlid(),
+        //     CategoryLogId = Ulid.NewUlid(),
         //     LogDate = DateTime.Now,
-        //     LogDetail = $"khôi phục danh mục {request.id}",
+        //     LogDetails = $"khôi phục danh mục {category.CategoryName}",
 
         // });
         #endregion

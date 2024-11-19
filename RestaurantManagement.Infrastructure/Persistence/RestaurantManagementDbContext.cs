@@ -20,10 +20,17 @@ public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagement
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderDetail> OrderDetails { get; set; }
-    // public DbSet<SystemLog> SystemLogs { get; set; }
     public DbSet<Table> Tables { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
+    public DbSet<BillLog> BillLogs { get; set; }
+    public DbSet<TableLog> TableLogs { get; set; }
+    public DbSet<TableTypeLog> TableTypeLogs { get; set; }
+    public DbSet<CategoryLog> CategoryLogs { get; set; }
+    public DbSet<MealLog> MealLogs { get; set; }
+    public DbSet<OrderLog> OrderLogs { get; set; }
+    public DbSet<CustomerLog> CustomerLogs { get; set; }
+    public DbSet<EmployeeLog> EmployeeLogs { get; set; }
 
     //Cấu hình fluent api
     protected override void OnModelCreating(ModelBuilder modelBuilder)

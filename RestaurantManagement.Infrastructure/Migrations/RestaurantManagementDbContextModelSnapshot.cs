@@ -85,7 +85,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BillLog");
+                    b.ToTable("BillLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Booking", b =>
@@ -192,7 +192,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CategoryLog");
+                    b.ToTable("CategoryLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Customer", b =>
@@ -240,7 +240,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CustomerLog");
+                    b.ToTable("CustomerLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.CustomerVoucher", b =>
@@ -338,7 +338,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("EmployeeLog");
+                    b.ToTable("EmployeeLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Meal", b =>
@@ -398,7 +398,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("MealLog");
+                    b.ToTable("MealLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Notification", b =>
@@ -512,7 +512,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("OrderLog");
+                    b.ToTable("OrderLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>
@@ -559,7 +559,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TableLog");
+                    b.ToTable("TableLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.TableType", b =>
@@ -612,7 +612,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TableTypeLog");
+                    b.ToTable("TableTypeLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.User", b =>

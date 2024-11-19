@@ -1,5 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Domain.DTOs.EmployeeDto;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -8,13 +11,14 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Res
 
 public class RestoreEmployeeCommandHandler(
     IUnitOfWork unitOfWork,
-    IEmployeeRepository employeeRepository) : ICommandHandler<RestoreEmployeeCommand>
+    IEmployeeRepository employeeRepository,
+    IApplicationDbContext context) : ICommandHandler<RestoreEmployeeCommand>
 {
     public async Task<Result> Handle(RestoreEmployeeCommand request, CancellationToken cancellationToken)
     {
 
-        var validator = new RestoreEmployeeCommandValidator(employeeRepository);
         //Validate request
+        var validator = new RestoreEmployeeCommandValidator(employeeRepository);
         Error[]? errors = null;
         var isValid = await Task.Run(() => ValidateRequest.RequestValidator(validator, request, out errors));
         if (!isValid)
@@ -23,19 +27,34 @@ public class RestoreEmployeeCommandHandler(
         }
         //Restore employee
         await employeeRepository.RestoreEmployee(Ulid.Parse(request.id));
-
-        //TODO: Cập nhật system log
+        
         #region Decode jwt and system log
         // //Decode jwt
         // var claims = JwtHelper.DecodeJwt(request.token);
         // claims.TryGetValue("sub", out var userId);
+        // var user = await context.Users.FindAsync(Ulid.Parse(userId)); //Người thực hiện 
+
+        // var employee = await context.Employees.Include(a => a.User) //Nhân viên được khôi phục //NOTE: refactor 
+        //     .Where(a => a.UserId == Ulid.Parse(request.id))
+        //     .Select(a => new EmployeeResponse(
+        //         a.UserId,
+        //         a.User.FirstName,
+        //         a.User.LastName,
+        //         a.User.Email,
+        //         a.User.Phone,
+        //         a.User.Gender,
+        //         a.User.Status,
+        //         a.EmployeeStatus,
+        //         a.Role,
+        //         a.User.ImageUrl
+        //     )).FirstOrDefaultAsync();
 
         // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // await context.EmployeeLogs.AddAsync(new EmployeeLog
         // {
-        //     SystemLogId = Ulid.NewUlid(),
+        //     EmployeeLogId = Ulid.NewUlid(),
         //     LogDate = DateTime.Now,
-        //     LogDetail = $"{userId} restore employee {request.id}",
+        //     LogDetails = $"{user.FirstName + user.LastName} đã khôi phục nhân viên {employee.FirstName + employee.LastName} chức vụ {employee.Role}",
         //     UserId = Ulid.Parse(userId)
         // });
         #endregion

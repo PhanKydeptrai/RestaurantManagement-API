@@ -1,4 +1,5 @@
 ﻿using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Services;
 using RestaurantManagement.Domain.Entities;
@@ -12,7 +13,8 @@ public class CreateMealCommandHandler(
     IMealRepository mealRepository,
     IUserRepository userRepository,
     IJwtProvider jwtProvider,
-    ICategoryRepository categoryRepository) : ICommandHandler<CreateMealCommand>
+    ICategoryRepository categoryRepository,
+    IApplicationDbContext context) : ICommandHandler<CreateMealCommand>
 {
     public async Task<Result> Handle(CreateMealCommand request, CancellationToken cancellationToken)
     {
@@ -56,18 +58,17 @@ public class CreateMealCommandHandler(
             CategoryId = Ulid.Parse(request.CategoryId)
         });
 
-        //TODO: Cập nhật system log
         #region  decode jwt and system log
         // //Decode jwt
         // var claims = JwtHelper.DecodeJwt(request.token);
         // claims.TryGetValue("sub", out var userId);
 
         // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // await context.MealLogs.AddAsync(new MealLog
         // {
         //     LogDate = DateTime.Now,
-        //     LogDetail = $"Create Meal {request.MealName}",
-        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDetails = $"Tạo món {request.MealName}",
+        //     MealLogId = Ulid.NewUlid(),
         //     UserId = Ulid.Parse(userId)
         // });
         #endregion

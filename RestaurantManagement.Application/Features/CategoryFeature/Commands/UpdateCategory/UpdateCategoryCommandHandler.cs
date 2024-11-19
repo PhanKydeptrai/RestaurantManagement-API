@@ -64,18 +64,18 @@ public class UpdateCategoryCommandHandler(
                 Console.WriteLine(resultDelete.JsonObj);
             }
         }
-        //TODO: Cập nhật system log
+       
         #region Decode jwt and system log
-        // //Decode
+        //Decode
         // var claims = JwtHelper.DecodeJwt(request.Token);
         // claims.TryGetValue("sub", out var userId);
 
         // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // await context.CategoryLogs.AddAsync(new CategoryLog
         // {
-        //     SystemLogId = Ulid.NewUlid(),
+        //     CategoryLogId = Ulid.NewUlid(),
         //     LogDate = DateTime.Now,
-        //     LogDetail = $"Tạo danh mục {request.CategoryName}",
+        //     LogDetails = $"Tạo danh mục {request.CategoryName}",
         //     UserId = Ulid.Parse(userId)
         // });
         #endregion

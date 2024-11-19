@@ -111,18 +111,18 @@ public class CreateCustomerCommandHandler(
             }
         }
         while (!emailSent && retryCount < maxRetries);
-        //TODO: Cập nhật system log
+
         #region Decode jwt and system log
         // //Decode jwt
         // var claims = JwtHelper.DecodeJwt(request.token);
         // claims.TryGetValue("sub", out var userId);
 
         // // Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // await context.CustomerLogs.AddAsync(new CustomerLog
         // {
-        //     SystemLogId = Ulid.NewUlid(),
+        //     CustomerLogId = Ulid.NewUlid(),
         //     LogDate = DateTime.Now,
-        //     LogDetail = $"Tạo tài khoản cho khách {norm} thành bán",
+        //     LogDetails = $"Tạo tài khoản cho khách {request.FirstName + " " + request.LastName + "." + $"ID: {user.UserId}"}",
         //     UserId = Ulid.Parse(userId)
         // });
         #endregion

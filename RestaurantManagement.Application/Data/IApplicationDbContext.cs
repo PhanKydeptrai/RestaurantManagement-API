@@ -21,4 +21,12 @@ public interface IApplicationDbContext
     DbSet<User> Users { get; set; }
     DbSet<Voucher> Vouchers { get; set; }
     DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
+    DbSet<BillLog> BillLogs { get; set; }
+    DbSet<TableLog> TableLogs { get; set; }
+    DbSet<TableTypeLog> TableTypeLogs { get; set; }
+    DbSet<CategoryLog> CategoryLogs { get; set; }
+    DbSet<MealLog> MealLogs { get; set; }
+    DbSet<OrderLog> OrderLogs { get; set; }
+    DbSet<CustomerLog> CustomerLogs { get; set; }
+    DbSet<EmployeeLog> EmployeeLogs { get; set; }
 }

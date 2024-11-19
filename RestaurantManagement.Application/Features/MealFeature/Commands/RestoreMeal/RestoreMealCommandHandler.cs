@@ -1,4 +1,5 @@
 ﻿using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -7,7 +8,8 @@ using RestaurantManagement.Domain.Shared;
 namespace RestaurantManagement.Application.Features.MealFeature.Commands.RestoreMeal;
 public class RestoreMealCommandHandler(
     IMealRepository mealRepository,
-    IUnitOfWork unitOfWork) : ICommandHandler<RestoreMealCommand>
+    IUnitOfWork unitOfWork,
+    IApplicationDbContext context) : ICommandHandler<RestoreMealCommand>
 {
     public async Task<Result> Handle(RestoreMealCommand request, CancellationToken cancellationToken)
     {
@@ -22,18 +24,17 @@ public class RestoreMealCommandHandler(
         
         await mealRepository.RestoreMeal(Ulid.Parse(request.id));
 
-        //TODO: Cập nhật system log
         #region Decode jwt and system log
         // //Deocde jwt
         // var claims = JwtHelper.DecodeJwt(request.token);
         // claims.TryGetValue("sub", out var userId);
 
         // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
+        // await context.MealLogs.AddAsync(new MealLog
         // {
-        //     SystemLogId = Ulid.NewUlid(),
+        //     MealLogId = Ulid.NewUlid(),
         //     LogDate = DateTime.Now,
-        //     LogDetail = $"Cập nhật thông tin món {request.id}",
+        //     LogDetails = $"Cập nhật thông tin món {request.id}",
         //     UserId = Ulid.Parse(userId)
         // });
         #endregion

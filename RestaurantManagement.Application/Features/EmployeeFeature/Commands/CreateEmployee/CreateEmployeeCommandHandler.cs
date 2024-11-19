@@ -1,6 +1,7 @@
 ﻿using FluentEmail.Core;
 using NETCore.Encrypt;
 using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Services;
 using RestaurantManagement.Domain.Entities;
@@ -14,7 +15,8 @@ public class CreateEmployeeCommandHandler(
     IEmployeeRepository employeeRepository, 
     IUserRepository userRepository, 
     IUnitOfWork unitOfWork, 
-    IFluentEmail fluentEmail) : ICommandHandler<CreateEmployeeCommand>
+    IFluentEmail fluentEmail,
+    IApplicationDbContext context) : ICommandHandler<CreateEmployeeCommand>
 {
     public async Task<Result> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {
@@ -57,7 +59,7 @@ public class CreateEmployeeCommandHandler(
             Email = request.Email,
             Password = EncryptProvider.Sha256(password),
             Phone = request.PhoneNumber,
-            ImageUrl = imageUrl,
+            ImageUrl = imageUrl ?? string.Empty,
             Gender = request.Gender,
             Status = "Activated"
         };
@@ -73,18 +75,17 @@ public class CreateEmployeeCommandHandler(
         await userRepository.CreateUser(user);
         await employeeRepository.CreateEmployee(employee);
 
-        //TODO: Cập nhật system log
         #region Decode jwt and system log
-        //Deocde jwt
+        // //Deocde jwt
         // var claims = JwtHelper.DecodeJwt(request.token);
         // claims.TryGetValue("sub", out var userId);
 
         // //Create System Log
-        // await _systemLogRepository.CreateSystemLog(new SystemLog
+        // await context.EmployeeLogs.AddAsync(new EmployeeLog
         // {
         //     LogDate = DateTime.Now,
-        //     LogDetail = $"Thêm nhân viên {request.FirstName} {request.LastName}",
-        //     SystemLogId = Ulid.NewUlid(),
+        //     LogDetails = $"Thêm nhân viên {request.FirstName} {request.LastName} chức vụ {request.Role}",
+        //     EmployeeLogId = Ulid.NewUlid(),
         //     UserId = Ulid.Parse(userId)
         // });
         #endregion
