@@ -16,8 +16,7 @@ public class ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> lo
             var problemDetail = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "An error occurred while processing your request",
-                Detail = ex.Message
+                Title = "An error occurred while processing your request"
             };
 
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;

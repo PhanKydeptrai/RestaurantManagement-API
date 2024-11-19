@@ -40,19 +40,21 @@ public class CustomerCreateBookingCommandValidator : AbstractValidator<CustomerC
             .Must(a => bookingRepository.IsBookingTimeValid(a).Result == true)
             .WithMessage("{PropertyName} is outside of the working hours");
 
-            RuleFor(a => a.NumberOfCustomers)
-                .Cascade(CascadeMode.Stop)
-                .NotNull()
-                .WithMessage("Vẫn chưa có lấy được số lượng khách nè thấy chưa!")
-                .NotEmpty()
-                .WithMessage("{PropertyName} is required")
-                .Must(a => a != null && int.TryParse(a.ToString(), out _))
-                .WithMessage("{PropertyName} must be a number")
-                .Must(a => a != null && int.Parse(a.ToString()) > 0)
-                .WithMessage("{PropertyName} must be greater than 0")
-                .Must(a => a != null && bookingRepository.IsCapacityAvailable(int.Parse(a.ToString())).Result == true)
-                .WithMessage("Seat is not enough for {PropertyName} customers");
-                
+
+    
+       
+        RuleFor(a => a.NumberOfCustomers)
+            .NotNull()
+            .WithMessage("Vẫn chưa có lấy được số lượng khách nè thấy chưa!")
+            .NotEmpty()
+            .WithMessage("{PropertyName} is required")
+            .Must(a => a != null && int.TryParse(a.ToString(), out _))
+            .WithMessage("{PropertyName} must be a number")
+            .Must(a => a != null && int.Parse(a.ToString()) > 0)
+            .WithMessage("{PropertyName} must be greater than 0")
+            .Must(a => a != null && bookingRepository.IsCapacityAvailable(int.Parse(a.ToString())).Result == true)
+            .WithMessage("Seat is not enough for {PropertyName} customers");
+
 
         RuleFor(a => a.Note)
             .MaximumLength(250)
