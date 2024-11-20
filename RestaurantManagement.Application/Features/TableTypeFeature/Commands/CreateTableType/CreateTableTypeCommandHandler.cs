@@ -71,6 +71,8 @@ public class CreateTableTypeCommandHandler(
         });
         #endregion
         
+
+        
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

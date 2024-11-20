@@ -110,7 +110,7 @@ public class TableController : IEndpoint
         .RequireRateLimiting("AntiSpamDeleteTableCommand");
 
         //Restore table
-        endpoints.MapPut("{id}",async (
+        endpoints.MapPut("{id}", async (
             string id,
             ISender sender,
             HttpContext httpContext,
@@ -130,9 +130,15 @@ public class TableController : IEndpoint
 
 
         // Cho khách vãng lai nhận bàn
-        endpoints.MapPut("table-assign/{id}", async (string id, ISender sender) =>
+        endpoints.MapPut("table-assign/{id}", async (
+            string id,
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
         {
-            var result = await sender.Send(new AssignTableToCustomerCommand(id));
+            // Lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+            var result = await sender.Send(new AssignTableToCustomerCommand(id, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -160,9 +166,13 @@ public class TableController : IEndpoint
 
         endpoints.MapPut("table-assign/booked/{id}", async (
             string id,
-            ISender sender) =>
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
         {
-            var result = await sender.Send(new AssignTableToBookedCustomerCommand(id));
+            // Lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+            var result = await sender.Send(new AssignTableToBookedCustomerCommand(id, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);

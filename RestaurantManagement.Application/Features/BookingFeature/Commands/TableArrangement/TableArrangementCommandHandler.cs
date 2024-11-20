@@ -82,7 +82,7 @@ public class TableArrangementCommandHandler(
             }
         }
         while (!emailSent && retryCount < maxRetries);
-    
+        //TODO: Log
 
         await unitOfWork.SaveChangesAsync();
         return Result.Success();

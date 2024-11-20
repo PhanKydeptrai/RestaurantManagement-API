@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
@@ -14,7 +15,6 @@ public class AssignTableToBookedCustomerCommandHandler(
 {
     public async Task<Result> Handle(AssignTableToBookedCustomerCommand request, CancellationToken cancellationToken)
     {
-        
         //Validate request
         var validator = new AssignTableToBookedCustomerCommandValidator(tableRepository);
         Error[]? errors = null;
@@ -33,6 +33,22 @@ public class AssignTableToBookedCustomerCommandHandler(
         booking.BookingStatus = "Occupied";
 
         await tableRepository.UpdateActiveStatus(int.Parse(request.tableId), "Occupied");
+
+        #region Decode jwt and system log
+        //decode token
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
+
+        //Create System Log
+        await context.BookingLogs.AddAsync(new BookingLog
+        {
+            BookingLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"Cho khách nhận bàn {request.tableId}",
+            UserId = Ulid.Parse(userId)
+        });
+        #endregion
+        
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

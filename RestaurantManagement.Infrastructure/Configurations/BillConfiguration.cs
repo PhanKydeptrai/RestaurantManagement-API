@@ -15,7 +15,7 @@ internal sealed class BillConfiguration : IEntityTypeConfiguration<Bill>
 
         builder.Property(a => a.PaymentStatus).IsRequired().HasColumnType("varchar(20)");
 
-        builder.Property(a => a.OrderId).IsRequired().HasConversion<UlidToStringConverter>();
+        builder.Property(a => a.OrderId).IsRequired(false).HasConversion<UlidToStringConverter>();
 
         builder.Property(a => a.BookId).IsRequired(false).HasConversion<UlidToStringConverter>();
 
@@ -29,13 +29,12 @@ internal sealed class BillConfiguration : IEntityTypeConfiguration<Bill>
 
         //ForeignKey
         //Một bill có một order
-        builder.HasOne(a => a.Order).WithOne(a => a.Bill).HasForeignKey<Bill>(a => a.OrderId);
+        builder.HasOne(a => a.Order).WithOne(a => a.Bill).HasForeignKey<Bill>(a => a.OrderId).IsRequired(false);
         //Một bill có một booking?
         builder.HasOne(a => a.Booking).WithOne(a => a.Bill).HasForeignKey<Bill>(a => a.BookId).IsRequired(false);
         //Một voucher có nhiều bill
         builder.HasOne(a => a.Voucher).WithMany(a => a.Bills).HasForeignKey(a => a.VoucherId);
-        //Một payment type có nhiều bill
-        // builder.HasOne(a => a.PaymentType).WithMany(a => a.Bills).HasForeignKey(a => a.PaymentTypeId);
+        
 
 
     }

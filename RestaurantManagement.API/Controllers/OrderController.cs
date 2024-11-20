@@ -133,6 +133,7 @@ using RestaurantManagement.Application.Features.OrderFeature.Commands.PayOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.UpdateMealInOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Queries.GetAllOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Queries.GetOrderById;
+using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
 
@@ -146,12 +147,17 @@ public class OrderController : IEndpoint
         endpoints.MapPost("{id}", async (
             string id,
             [FromBody] AddMealToOrderRequest command,
-            ISender sender) =>
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
         {
+            // Lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
             var result = await sender.Send(new AddMealToOrderCommand(
                 id,
                 command.MealId,
-                command.Quantity
+                command.Quantity,
+                token
             ));
 
             if (!result.IsSuccess)

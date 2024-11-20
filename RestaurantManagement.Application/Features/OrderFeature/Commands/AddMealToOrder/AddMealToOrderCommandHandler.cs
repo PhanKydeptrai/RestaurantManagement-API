@@ -37,13 +37,25 @@ public class AddMealToOrderCommandHandler(
             .Where(a => a.TableId == int.Parse(request.TableId))
             .Select(a => a.Orders.FirstOrDefault(a => a.PaymentStatus == "Unpaid"))
             .FirstOrDefaultAsync();
+        
+        //Lấy bill chưa thanh toán của bàn đang ăn
+        try
+        {
+            var bill = await context.Tables
+            .Include(a => a.BookingDetails)
+            .ThenInclude(a => a.Booking)
+            .Where(a => a.TableId == int.Parse(request.TableId))
+            .Select(a => a.BookingDetails.FirstOrDefault().Booking.Bill)
+            .FirstOrDefaultAsync();
 
+            bill.OrderId = order.OrderId; //Cập nhật orderid cho bill
+        }
+        catch (Exception){ }
+        
         var mealPrice = await context.Meals.AsNoTracking() //Lấy giá món ăn
             .Where(a => a.MealId == Ulid.Parse(request.MealId))
             .Select(a => a.Price)
             .FirstOrDefaultAsync();
-
-
 
         if (order != null) //Kiểm tra order đã tồn tại hay chưa 
         {
@@ -109,10 +121,27 @@ public class AddMealToOrderCommandHandler(
                 order.CustomerId = customerId;
             }
 
+            
+
             await context.Orders.AddAsync(order);
             await context.OrderDetails.AddAsync(orderDetail);
         }
 
+        
+        #region Decode jwt and system log
+        //decode token
+        var claims = JwtHelper.DecodeJwt(request.Token);
+        claims.TryGetValue("sub", out var userId);
+       
+        //Create System Log
+        await context.OrderLogs.AddAsync(new OrderLog
+        {
+            OrderLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"Thêm món {request.MealId} vào order {order.OrderId}",
+            UserId = Ulid.Parse(userId)
+        });
+        #endregion
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

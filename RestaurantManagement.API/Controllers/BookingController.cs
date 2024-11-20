@@ -12,6 +12,7 @@ using RestaurantManagement.Application.Features.BookingFeature.Queries.GetAllBoo
 using RestaurantManagement.Application.Features.BookingFeature.Queries.GetBookingByBookingId;
 using RestaurantManagement.Application.Features.BookingFeature.Queries.GetBookingByUserId;
 using RestaurantManagement.Domain.DTOs.PaymentDtos;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
@@ -130,21 +131,6 @@ public class BookingController : IEndpoint
             return Results.BadRequest(result);
         }).RequireAuthorization().RequireRateLimiting("AntiSpamTableArrange");
 
-        #region Stable code for endpoint table arrangement
-        // //Xếp bàn cho khách 
-        // endpoints.MapPost("table-arrange/{BookingId}", async (
-        //     string BookingId,
-        //     [FromBody] TableArrangementRequest command,
-        //     ISender sender) =>
-        // {
-        //     var result = await sender.Send(new TableArrangementCommand(BookingId, command.TableId));
-        //     if (result.IsSuccess)
-        //     {
-        //         return Results.Ok(result);
-        //     }
-        //     return Results.BadRequest(result);
-        // }).RequireAuthorization();
-        #endregion
 
 
         //Hủy đặt bàn
@@ -200,7 +186,7 @@ public class BookingController : IEndpoint
             var booking = await _context.Bookings.Include(a => a.Customer)
                 .ThenInclude(a => a.User)
                 .FirstOrDefaultAsync(b => b.BookId == Ulid.Parse(model.vnp_TxnRef));
-
+            // booking không tồn tại
             if (booking == null)
             {
                 return Results.NotFound("Booking not found");
@@ -212,6 +198,22 @@ public class BookingController : IEndpoint
             }
 
             booking.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
+
+            //Tạo bill ghi nhận phí thanh toán
+            
+            var bill = new Bill
+            {
+                BillId = Ulid.NewUlid(),
+                BookId = booking.BookId,
+                CreatedDate = DateTime.Now,
+                // OrderId = order.OrderId,
+                Total = decimal.Parse(model.vnp_Amount),
+                PaymentStatus = "BookingPaid",
+                PaymentType = "Cash"
+            };
+            
+            await _context.Bills.AddAsync(bill);
+
             await unitOfWork.SaveChangesAsync();
 
             // Gửi email thông báo
@@ -237,7 +239,7 @@ public class BookingController : IEndpoint
                     {
                         return Results.BadRequest("Failed to send email");
                         // return Results.Redirect("YourSuccessPage");
-                        
+
                     }
                 }
             }
