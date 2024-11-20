@@ -1,7 +1,18 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetBillHistory;
+using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetBookingHistory;
+using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetCategoryHistory;
 using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetCustomerHistory;
+using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetEmployeeHistory;
+using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetMealHistory;
+using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetOrderHistory;
+using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetTableHistory;
+using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetTableTypeHistory;
+using RestaurantManagement.Application.Features.MealFeature.Queries.GetMealById;
+using RestaurantManagement.Application.Features.OrderFeature.Queries.GetOrderById;
+using RestaurantManagement.Application.Features.TableFeature.Queries.GetTableById;
 
 namespace RestaurantManagement.API.Controllers;
 
@@ -45,20 +56,20 @@ public class ActivityHistoryController : IEndpoint
             [FromQuery] int? pageSize,
             ISender sender) =>
         {
-            // var result = await sender.Send(new GetCustomerHistoryQuery(
-            //     filterUserId, 
-            //     searchTerm, 
-            //     sortColumn, 
-            //     sortOrder, 
-            //     page, 
-            //     pageSize
-            // ));
+            var result = await sender.Send(new GetEmployeeHistoryQuery(
+                filterUserId, 
+                searchTerm, 
+                sortColumn, 
+                sortOrder, 
+                page, 
+                pageSize
+            ));
 
-            // if(result.IsSuccess)
-            // {
-            //     return Results.Ok(result);
-            // }
-            // return Results.BadRequest(result);
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
         });
 
         endpoints.MapGet("meal", async (
@@ -70,20 +81,20 @@ public class ActivityHistoryController : IEndpoint
             [FromQuery] int? pageSize,
             ISender sender) =>
         {
-            // var result = await sender.Send(new GetCustomerHistoryQuery(
-            //     filterUserId, 
-            //     searchTerm, 
-            //     sortColumn, 
-            //     sortOrder, 
-            //     page, 
-            //     pageSize
-            // ));
+            var result = await sender.Send(new GetMealHistoryQuery(
+                filterUserId, 
+                searchTerm, 
+                sortColumn, 
+                sortOrder, 
+                page, 
+                pageSize
+            ));
 
-            // if(result.IsSuccess)
-            // {
-            //     return Results.Ok(result);
-            // }
-            // return Results.BadRequest(result);
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
         });
 
         endpoints.MapGet("order", async (
@@ -95,20 +106,20 @@ public class ActivityHistoryController : IEndpoint
             [FromQuery] int? pageSize,
             ISender sender) =>
         {
-            // var result = await sender.Send(new GetCustomerHistoryQuery(
-            //     filterUserId, 
-            //     searchTerm, 
-            //     sortColumn, 
-            //     sortOrder, 
-            //     page, 
-            //     pageSize
-            // ));
+            var result = await sender.Send(new GetOrderHistoryQuery(
+                filterUserId, 
+                searchTerm, 
+                sortColumn, 
+                sortOrder, 
+                page, 
+                pageSize
+            ));
 
-            // if(result.IsSuccess)
-            // {
-            //     return Results.Ok(result);
-            // }
-            // return Results.BadRequest(result);
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
         });
 
         endpoints.MapGet("bill", async (
@@ -120,20 +131,20 @@ public class ActivityHistoryController : IEndpoint
             [FromQuery] int? pageSize,
             ISender sender) =>
         {
-            // var result = await sender.Send(new GetCustomerHistoryQuery(
-            //     filterUserId, 
-            //     searchTerm, 
-            //     sortColumn, 
-            //     sortOrder, 
-            //     page, 
-            //     pageSize
-            // ));
+            var result = await sender.Send(new GetBillHistoryQuery(
+                filterUserId, 
+                searchTerm, 
+                sortColumn, 
+                sortOrder, 
+                page, 
+                pageSize
+            ));
 
-            // if(result.IsSuccess)
-            // {
-            //     return Results.Ok(result);
-            // }
-            // return Results.BadRequest(result);
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
         });
 
         endpoints.MapGet("booking", async (
@@ -145,20 +156,20 @@ public class ActivityHistoryController : IEndpoint
             [FromQuery] int? pageSize,
             ISender sender) =>
         {
-            // var result = await sender.Send(new GetCustomerHistoryQuery(
-            //     filterUserId, 
-            //     searchTerm, 
-            //     sortColumn, 
-            //     sortOrder, 
-            //     page, 
-            //     pageSize
-            // ));
+            var result = await sender.Send(new GetBookingHistoryQuery(
+                filterUserId, 
+                searchTerm, 
+                sortColumn, 
+                sortOrder, 
+                page, 
+                pageSize
+            ));
 
-            // if(result.IsSuccess)
-            // {
-            //     return Results.Ok(result);
-            // }
-            // return Results.BadRequest(result);
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
         });
 
         endpoints.MapGet("table", async (
@@ -170,20 +181,20 @@ public class ActivityHistoryController : IEndpoint
             [FromQuery] int? pageSize,
             ISender sender) =>
         {
-            // var result = await sender.Send(new GetCustomerHistoryQuery(
-            //     filterUserId, 
-            //     searchTerm, 
-            //     sortColumn, 
-            //     sortOrder, 
-            //     page, 
-            //     pageSize
-            // ));
+            var result = await sender.Send(new GetTableHistoryQuery(
+                filterUserId, 
+                searchTerm, 
+                sortColumn, 
+                sortOrder, 
+                page, 
+                pageSize
+            ));
 
-            // if(result.IsSuccess)
-            // {
-            //     return Results.Ok(result);
-            // }
-            // return Results.BadRequest(result);
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
         });
 
         endpoints.MapGet("table-type", async (
@@ -195,20 +206,20 @@ public class ActivityHistoryController : IEndpoint
             [FromQuery] int? pageSize,
             ISender sender) =>
         {
-            // var result = await sender.Send(new GetCustomerHistoryQuery(
-            //     filterUserId, 
-            //     searchTerm, 
-            //     sortColumn, 
-            //     sortOrder, 
-            //     page, 
-            //     pageSize
-            // ));
+            var result = await sender.Send(new GetTableTypeHistoryQuery (
+                filterUserId, 
+                searchTerm, 
+                sortColumn, 
+                sortOrder, 
+                page, 
+                pageSize
+            ));
 
-            // if(result.IsSuccess)
-            // {
-            //     return Results.Ok(result);
-            // }
-            // return Results.BadRequest(result);
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
         });
 
         endpoints.MapGet("category", async (
@@ -220,20 +231,20 @@ public class ActivityHistoryController : IEndpoint
             [FromQuery] int? pageSize,
             ISender sender) =>
         {
-            // var result = await sender.Send(new GetCustomerHistoryQuery(
-            //     filterUserId, 
-            //     searchTerm, 
-            //     sortColumn, 
-            //     sortOrder, 
-            //     page, 
-            //     pageSize
-            // ));
+            var result = await sender.Send(new GetCategoryHistoryQuery(
+                filterUserId, 
+                searchTerm, 
+                sortColumn, 
+                sortOrder, 
+                page, 
+                pageSize
+            ));
 
-            // if(result.IsSuccess)
-            // {
-            //     return Results.Ok(result);
-            // }
-            // return Results.BadRequest(result);
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
         });
 
         
