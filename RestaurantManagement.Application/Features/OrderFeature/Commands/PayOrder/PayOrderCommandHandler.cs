@@ -56,21 +56,36 @@ public class PayOrderCommandHandler(
             checkBooking.Booking.BookingStatus = "Completed";
         }
 
-        
-        //tạo bill 
-        var bill = new Bill
+        // Tìm bill id theo order id
+        try
         {
-            BillId = Ulid.NewUlid(),
-            BookId = checkBooking?.BookId ?? null,
-            CreatedDate = DateTime.Now,
-            OrderId = order.OrderId,
-            Total = order.Total,
-            PaymentStatus = "Paid",
-            PaymentType = "Cash"
-            
-        };
+            Bill? bill = await context.Bills
+                        .Where(a => a.OrderId == order.OrderId)
+                        .FirstOrDefaultAsync();
 
-        await context.Bills.AddAsync(bill);
+            bill.PaymentStatus = "Paid";
+            bill.PaymentType = "Cash";
+            bill.Total += order.Total;
+            bill.CreatedDate = DateTime.Now;
+        }
+        catch (Exception)
+        {
+            //tạo bill 
+            var bill = new Bill
+            {
+                BillId = Ulid.NewUlid(),
+                BookId = checkBooking?.BookId ?? null,
+                CreatedDate = DateTime.Now,
+                OrderId = order.OrderId,
+                Total = order.Total,
+                PaymentStatus = "Paid",
+                PaymentType = "Cash"
+            };
+
+            await context.Bills.AddAsync(bill);
+        }
+
+
 
         await unitOfWork.SaveChangesAsync();
         return Result.Success();

@@ -5,7 +5,8 @@ namespace RestaurantManagement.Application.Features.OrderFeature.Commands.AddMea
 public record AddMealToOrderCommand(
     string TableId,
     string MealId,
-    int Quantity
+    int Quantity,
+    string Token
 ) : ICommand;
 
 public record AddMealToOrderRequest(

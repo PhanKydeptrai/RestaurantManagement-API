@@ -517,7 +517,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     BillId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     PaymentStatus = table.Column<string>(type: "varchar(20)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    OrderId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     BookId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     VoucherId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     PaymentType = table.Column<string>(type: "varchar(20)", nullable: false),
@@ -535,8 +535,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         name: "FK_Bills_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
-                        principalColumn: "OrderId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "OrderId");
                     table.ForeignKey(
                         name: "FK_Bills_Vouchers_VoucherId",
                         column: x => x.VoucherId,
@@ -588,7 +587,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "IX_Bills_OrderId",
                 table: "Bills",
                 column: "OrderId",
-                unique: true);
+                unique: true,
+                filter: "[OrderId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bills_VoucherId",

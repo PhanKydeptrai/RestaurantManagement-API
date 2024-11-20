@@ -34,7 +34,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("OrderId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(26)");
 
                     b.Property<string>("PaymentStatus")
@@ -58,7 +57,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .HasFilter("[BookId] IS NOT NULL");
 
                     b.HasIndex("OrderId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[OrderId] IS NOT NULL");
 
                     b.HasIndex("VoucherId");
 
@@ -739,9 +739,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasOne("RestaurantManagement.Domain.Entities.Order", "Order")
                         .WithOne("Bill")
-                        .HasForeignKey("RestaurantManagement.Domain.Entities.Bill", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RestaurantManagement.Domain.Entities.Bill", "OrderId");
 
                     b.HasOne("RestaurantManagement.Domain.Entities.Voucher", "Voucher")
                         .WithMany("Bills")

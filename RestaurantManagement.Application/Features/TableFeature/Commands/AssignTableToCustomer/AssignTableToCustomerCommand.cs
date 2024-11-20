@@ -3,8 +3,5 @@ using RestaurantManagement.Application.Abtractions;
 namespace RestaurantManagement.Application.Features.TableFeature.Commands.AssignTableToCustomer;
 
 
-public record AssignTableToCustomerCommand(string id) : ICommand;
+public record AssignTableToCustomerCommand(string id, string token) : ICommand;
 
-#region Stable code
-// public record AssignTableToCustomerCommand(string id) : ICommand;
-#endregion
