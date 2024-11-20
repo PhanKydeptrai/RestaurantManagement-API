@@ -1,4 +1,5 @@
 using RestaurantManagement.Application.Abtractions;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
@@ -8,7 +9,8 @@ namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.De
 
 public class DeleteTableTypeCommandHandler(
     ITableTypeRepository tableTypeRepository,
-    IUnitOfWork unitOfWork) : ICommandHandler<DeleteTableTypeCommand>
+    IUnitOfWork unitOfWork,
+    IApplicationDbContext context) : ICommandHandler<DeleteTableTypeCommand>
 {
     public async Task<Result> Handle(DeleteTableTypeCommand request, CancellationToken cancellationToken)
     {
@@ -24,19 +26,18 @@ public class DeleteTableTypeCommandHandler(
 
         await tableTypeRepository.DeleteTableType(Ulid.Parse(request.id));
 
-        //TODO: Cập nhật system log
         #region Decode jwt and system log
-        // //Decode jwt
-        // var claims = JwtHelper.DecodeJwt(request.token);
-        // claims.TryGetValue("sub", out var userId);
-        // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
-        // {
-        //     SystemLogId = Ulid.NewUlid(),
-        //     LogDate = DateTime.Now,
-        //     LogDetail = $"Xoá loại bàn {request.id} ",
-        //     UserId = Ulid.Parse(userId)
-        // });
+        //Decode jwt
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
+        //Create System Log
+        await context.TableTypeLogs.AddAsync(new TableTypeLog
+        {
+            TableTypeLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"Xoá loại bàn {request.id} ",
+            UserId = Ulid.Parse(userId)
+        });
         #endregion
 
         await unitOfWork.SaveChangesAsync();

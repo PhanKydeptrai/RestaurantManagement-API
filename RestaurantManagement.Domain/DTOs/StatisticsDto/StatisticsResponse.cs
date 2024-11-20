@@ -1,10 +1,8 @@
 namespace RestaurantManagement.Domain.DTOs.StatisticsDto;
 
-public record StatisticsByYearResponse(
+public record StatisticsByDayResponse(
     DateTime Date,
-    decimal TotalRevenue,
-    StatisticsByMonthResponse[]? StatisticsByMonthResponses
-    
+    decimal TotalRevenue
 );
 
 public record StatisticsByMonthResponse(
@@ -13,15 +11,10 @@ public record StatisticsByMonthResponse(
     StatisticsByDayResponse[]? StatisticsByDayResponses
 );
 
-public record StatisticsByDayResponse(
-    DateTime Date,
-    decimal TotalRevenue
-);
-
-
 public record StatisticsResponse(
     string Year,
     decimal TotalRevenue,
     string Currency,
     StatisticsByMonthResponse[]? StatisticsByMonthResponses
 );
+
