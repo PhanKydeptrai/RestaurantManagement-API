@@ -41,21 +41,24 @@ public class CreateTableCommandHandler(
         await context.Tables.AddRangeAsync(tableArray);
 
 
-        //TODO: Cập nhật system log
         #region Decode jwt and system log
-        // //Decode jwt
-        // var claims = JwtHelper.DecodeJwt(request.token);
-        // claims.TryGetValue("sub", out var userId);
+        //Decode jwt
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
 
-        // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
-        // {
-        //     SystemLogId = Ulid.NewUlid(),
-        //     LogDate = DateTime.Now,
-        //     LogDetail = $"Tạo {request.quantity} loại {request.tableTypeId} thành bán",
-        //     UserId = Ulid.Parse(userId)
-        // });
+        //Lấy tên loại bàn //NOTE: Refactor
+        var tableType = await context.TableTypes.FindAsync(Ulid.Parse(request.tableTypeId));
+
+        //Create System Log
+        await context.TableLogs.AddAsync(new TableLog
+        {
+            TableLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"Tạo {request.quantity} bàn loại {tableType.TableTypeName}",
+            UserId = Ulid.Parse(userId)
+        });
         #endregion
+
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
@@ -97,8 +100,6 @@ public class CreateTableCommandHandler(
 
 //         await context.Tables.AddRangeAsync(tableArray);
 
-
-//         //TODO: Cập nhật system log
 //         #region Decode jwt and system log
 //         // //Decode jwt
 //         // var claims = JwtHelper.DecodeJwt(request.token);

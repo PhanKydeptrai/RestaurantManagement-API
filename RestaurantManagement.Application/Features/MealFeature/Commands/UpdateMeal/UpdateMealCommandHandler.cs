@@ -27,7 +27,7 @@ public class UpdateMealCommandHandler(
 
         //Lấy meal theo id  
         var meal = await context.Meals.FindAsync(request.MealId);
-
+                
         //Update meal
         meal.MealName = request.MealName;
         meal.Price = request.Price;
@@ -68,20 +68,20 @@ public class UpdateMealCommandHandler(
             }
         }
 
-        //TODO: Cập nhật system log
+        
         #region decode jwt and system log
-        // //Deocde jwt
-        // var claims = JwtHelper.DecodeJwt(request.token);
-        // claims.TryGetValue("sub", out var userId);
+        //Deocde jwt
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
 
-        // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
-        // {
-        //     SystemLogId = Ulid.NewUlid(),
-        //     LogDate = DateTime.Now,
-        //     LogDetail = $"Cập nhật thông tin món {request.MealName}",
-        //     UserId = Ulid.Parse(userId)
-        // });
+        //Create System Log
+        await context.MealLogs.AddAsync(new MealLog
+        {
+            MealLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"Cập nhật thông tin món {request.MealName}",
+            UserId = Ulid.Parse(userId)
+        });
         #endregion
 
         await unitOfWork.SaveChangesAsync();

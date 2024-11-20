@@ -1,6 +1,5 @@
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
-using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 

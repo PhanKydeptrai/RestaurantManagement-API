@@ -10,9 +10,6 @@ using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.Ge
 using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetOrderHistory;
 using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetTableHistory;
 using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetTableTypeHistory;
-using RestaurantManagement.Application.Features.MealFeature.Queries.GetMealById;
-using RestaurantManagement.Application.Features.OrderFeature.Queries.GetOrderById;
-using RestaurantManagement.Application.Features.TableFeature.Queries.GetTableById;
 
 namespace RestaurantManagement.API.Controllers;
 
