@@ -2,7 +2,6 @@ using FluentEmail.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Features.BookingFeature.Commands.CancelCreateBooking;
