@@ -113,18 +113,18 @@ public class CreateCustomerCommandHandler(
         while (!emailSent && retryCount < maxRetries);
 
         #region Decode jwt and system log
-        // //Decode jwt
-        // var claims = JwtHelper.DecodeJwt(request.token);
-        // claims.TryGetValue("sub", out var userId);
+        //Decode jwt
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
 
-        // // Create System Log
-        // await context.CustomerLogs.AddAsync(new CustomerLog
-        // {
-        //     CustomerLogId = Ulid.NewUlid(),
-        //     LogDate = DateTime.Now,
-        //     LogDetails = $"Tạo tài khoản cho khách {request.FirstName + " " + request.LastName + "." + $"ID: {user.UserId}"}",
-        //     UserId = Ulid.Parse(userId)
-        // });
+        // Create System Log
+        await context.CustomerLogs.AddAsync(new CustomerLog
+        {
+            CustomerLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"Tạo tài khoản cho khách {request.FirstName + " " + request.LastName + "." + $"ID: {user.UserId}"}",
+            UserId = Ulid.Parse(userId)
+        });
         #endregion
 
 
