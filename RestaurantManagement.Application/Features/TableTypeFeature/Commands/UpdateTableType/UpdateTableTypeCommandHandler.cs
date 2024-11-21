@@ -73,13 +73,14 @@ public class UpdateTableTypeCommandHandler(
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
 
+        
 
         //Create System Log
         await context.TableTypeLogs.AddAsync(new TableTypeLog
         {
             TableTypeLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetails = $"Tạo danh mục {request.TableTypeName}",
+            LogDetails = $"Cập nhật {request.TableTypeName}",
             UserId = Ulid.Parse(userId)
         });
         #endregion

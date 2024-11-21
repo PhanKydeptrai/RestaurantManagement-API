@@ -24,7 +24,6 @@ namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.Cre
                     var claims = JwtHelper.DecodeJwt(token);
                     claims.TryGetValue("role", out var role); //Lấy role của người gửi request
                     claims.TryGetValue("sub", out var userId); //Lấy userId của người gửi request
-                    string employeeRole = employeeRepository.GetEmployeeRole(Ulid.Parse(id)).Result;
 
                     //Check permission
                     if (role == "Manager" && roleRq == "Manager" || roleRq == "Boss")
