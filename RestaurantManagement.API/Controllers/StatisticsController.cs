@@ -1,6 +1,6 @@
 using MediatR;
-using Microsoft.VisualBasic;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.StatisticsFeature.Queries.GetStatisticsByDay;
 
 namespace RestaurantManagement.API.Controllers;
@@ -18,6 +18,6 @@ public class StatisticsController : IEndpoint
         {
             var result = await sender.Send(new GetStatisticsByDayQuery(datetime));
             return Results.Ok(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
     }
 }

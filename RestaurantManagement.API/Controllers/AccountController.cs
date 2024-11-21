@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ActivateAccount;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ChangeCustomerPassword;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.ConfirmDeleteCustomerAccount;
@@ -41,7 +42,8 @@ namespace RestaurantManagement.API.Controllers
                 }
 
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("AntiSpamRegister");
+            }).RequireRateLimiting("AntiSpamRegister")
+            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             //Login for customer
             endpoints.MapPost("login",
@@ -55,7 +57,8 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("AntiSpamLogin");
+            }).RequireRateLimiting("AntiSpamLogin")
+            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             //login for employee
             endpoints.MapPost("employee-login",
@@ -69,7 +72,8 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("AntiSpamEmplyeeLogin");
+            }).RequireRateLimiting("AntiSpamEmplyeeLogin")
+            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
             //reset customer password 
@@ -160,7 +164,9 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            }).RequireAuthorization().RequireRateLimiting("AntiSpamChangePassword");
+            }).RequireAuthorization()
+            .RequireRateLimiting("AntiSpamChangePassword")
+            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             //Delete customer account
             endpoints.MapDelete("customer", async (
@@ -179,7 +185,8 @@ namespace RestaurantManagement.API.Controllers
 
             })
             .RequireAuthorization("customer")
-            .RequireRateLimiting("AntiSpamDeActiveCustomerAccount");
+            .RequireRateLimiting("AntiSpamDeActiveCustomerAccount")
+            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             //verify delete customer account
             endpoints.MapGet("customer/confirm-delete-account", async (
@@ -209,7 +216,9 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            }).RequireAuthorization();
+            })
+            .RequireAuthorization()
+            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
             //get customer account info
@@ -227,7 +236,8 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization()
+            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             //Decode jwt token
             endpoints.MapGet("decode", async (
@@ -240,7 +250,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            });
+            }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             #region Google authen
             endpoints.MapPost("test/{token}", async (

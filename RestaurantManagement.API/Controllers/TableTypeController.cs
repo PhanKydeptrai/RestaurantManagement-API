@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.TableTypeFeature.Commands.CreateTableType;
 using RestaurantManagement.Application.Features.TableTypeFeature.Commands.DeleteTableType;
 using RestaurantManagement.Application.Features.TableTypeFeature.Commands.RestoreTableType;
@@ -36,7 +37,7 @@ public class TableTypeController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result.Errors);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Create table type
         endpoints.MapPost("", async (
@@ -61,7 +62,8 @@ public class TableTypeController : IEndpoint
 
         })
         .RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamCreateTableTypeCommand");
+        .RequireRateLimiting("AntiSpamCreateTableTypeCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Update table type
         endpoints.MapPut("{id}", async (
@@ -94,7 +96,8 @@ public class TableTypeController : IEndpoint
 
         })
         .RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamUpdateTableTypeCommand");
+        .RequireRateLimiting("AntiSpamUpdateTableTypeCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
         //Get table type by id
@@ -110,7 +113,7 @@ public class TableTypeController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Delete table type by id
         endpoints.MapDelete("{id}", async (
@@ -131,7 +134,8 @@ public class TableTypeController : IEndpoint
 
         })
         .RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamDeleteTableTypeCommand");
+        .RequireRateLimiting("AntiSpamDeleteTableTypeCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Restore table type by id
         endpoints.MapPut("restore/{id}", async (
@@ -147,7 +151,8 @@ public class TableTypeController : IEndpoint
 
         })
         .RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamRestoreTableTypeCommand");
+        .RequireRateLimiting("AntiSpamRestoreTableTypeCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
         
         endpoints.MapGet("tabletype-info", async (ISender sender) =>
         {
@@ -157,6 +162,7 @@ public class TableTypeController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result.Errors);
-        });
+        })
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
     }
 }

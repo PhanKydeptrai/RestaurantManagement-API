@@ -85,7 +85,7 @@ builder.Services.AddRateLimiter(options =>
             PermitLimit = 1,
             Window = TimeSpan.FromSeconds(2)
         }));
-    
+
     // options.AddPolicy("AntiSpamEmplyeeLogin", httpContext => RateLimitPartition.GetFixedWindowLimiter(
     //     partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
     //     factory: _ => new FixedWindowRateLimiterOptions
@@ -109,7 +109,7 @@ builder.Services.AddRateLimiter(options =>
             PermitLimit = 1,
             Window = TimeSpan.FromSeconds(2)
         }));
-    
+
     options.AddPolicy("AntiSpamChangePassword", httpContext => RateLimitPartition.GetFixedWindowLimiter(
         partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
         factory: _ => new FixedWindowRateLimiterOptions
@@ -158,7 +158,7 @@ builder.Services.AddRateLimiter(options =>
             PermitLimit = 1,
             Window = TimeSpan.FromSeconds(2)
         }));
-    
+
     options.AddPolicy("AntiSpamCreateCategoryCommand", httpContext => RateLimitPartition.GetFixedWindowLimiter(
         partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
         factory: _ => new FixedWindowRateLimiterOptions
@@ -230,7 +230,7 @@ builder.Services.AddRateLimiter(options =>
         PermitLimit = 1,
         Window = TimeSpan.FromSeconds(2)
     }));
-    
+
     options.AddPolicy("AntiSpamDeleteEmployeeCommand", httpContext => RateLimitPartition.GetFixedWindowLimiter(
     partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
     factory: _ => new FixedWindowRateLimiterOptions
@@ -447,7 +447,7 @@ builder.Services.AddRateLimiter(options =>
         Window = TimeSpan.FromSeconds(2)
     }));
 
-    
+
 });
 
 
@@ -512,6 +512,7 @@ builder.Services.AddSwaggerGen(option =>
         BearerFormat = "JWT",
         Scheme = "Bearer"
     });
+
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -526,12 +527,40 @@ builder.Services.AddSwaggerGen(option =>
             new string[]{}
         }
     });
-    //Xác định tên dựa theo 
-    var fileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    //Tạo địa chỉ file
-    var filePath = Path.Combine(AppContext.BaseDirectory, fileName); //AppContext.BaseDirectory Lấy địa chỉ thư mục gốc
-    Console.WriteLine(filePath);
-    option.IncludeXmlComments(filePath);
+
+    option.AddSecurityDefinition("X-Api-Key", new OpenApiSecurityScheme()
+    {
+        Description = "API Key",
+        Type = SecuritySchemeType.ApiKey,
+        Name = "X-Api-Key",
+        In = ParameterLocation.Header,
+        Scheme = "ApiKeyScheme"
+    });
+
+    var scheme = new OpenApiSecurityScheme()
+    {
+        Reference = new OpenApiReference()
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "X-Api-Key"
+            
+        },
+        In = ParameterLocation.Header
+    };
+
+    var requirement = new OpenApiSecurityRequirement()
+    {
+        { scheme, new string[] { } }
+    };
+
+    option.AddSecurityRequirement(requirement);
+
+    // //Xác định tên dựa theo 
+    // var fileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    // //Tạo địa chỉ file
+    // var filePath = Path.Combine(AppContext.BaseDirectory, fileName); //AppContext.BaseDirectory Lấy địa chỉ thư mục gốc
+    // Console.WriteLine(filePath);
+    // option.IncludeXmlComments(filePath);
 
     option.MapType<DateOnly>(() => new OpenApiSchema
     {
