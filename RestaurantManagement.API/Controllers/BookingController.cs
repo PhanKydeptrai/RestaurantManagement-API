@@ -1,8 +1,10 @@
+
 using FluentEmail.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Features.BookingFeature.Commands.CancelCreateBooking;
 using RestaurantManagement.Application.Features.BookingFeature.Commands.CustomerCreateBooking;
@@ -47,7 +49,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Lấy thông tin booking theo booking id
         endpoints.MapGet("{id}", async (
@@ -61,7 +63,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.NoContent();
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Lấy thông tin booking theo user id
         endpoints.MapGet("user/{id}", async (
@@ -74,7 +76,7 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Khách đặt bàn không login
         endpoints.MapPost("", async (
@@ -90,7 +92,8 @@ public class BookingController : IEndpoint
 
             }
             return Results.BadRequest(result);
-        }).RequireRateLimiting("AntiSpamCustomerCreateBooking");
+        }).RequireRateLimiting("AntiSpamCustomerCreateBooking")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Khách đặt bàn đã login
         endpoints.MapPost("subcriber", async (
@@ -115,7 +118,8 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization().RequireRateLimiting("AntiSpamSubscriberCreateBooking");
+        }).RequireAuthorization().RequireRateLimiting("AntiSpamSubscriberCreateBooking")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Xếp bàn cho khách
         endpoints.MapPost("table-arrange/{BookingId}", async (
@@ -129,7 +133,8 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization().RequireRateLimiting("AntiSpamTableArrange");
+        }).RequireAuthorization().RequireRateLimiting("AntiSpamTableArrange")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
 
@@ -145,7 +150,8 @@ public class BookingController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization().RequireRateLimiting("AntiSpamCancelBooking");
+        }).RequireAuthorization().RequireRateLimiting("AntiSpamCancelBooking")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Trả về url thanh toán
         endpoints.MapGet("ReturnUrl", async (
@@ -200,7 +206,7 @@ public class BookingController : IEndpoint
             booking.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
 
             //Tạo bill ghi nhận phí thanh toán
-            
+
             var bill = new Bill
             {
                 BillId = Ulid.NewUlid(),
@@ -211,7 +217,7 @@ public class BookingController : IEndpoint
                 PaymentStatus = "BookingPaid",
                 PaymentType = "Cash"
             };
-            
+
             await _context.Bills.AddAsync(bill);
 
             await unitOfWork.SaveChangesAsync();
@@ -269,5 +275,3 @@ public class BookingController : IEndpoint
     #endregion
 
 }
-
-

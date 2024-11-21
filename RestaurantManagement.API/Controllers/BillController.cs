@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Razor.Templating.Core;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.BillFeature.Queries.GetAllBill;
 using RestaurantManagement.Application.Features.BillFeature.Queries.GetAllBillByUserId;
 using RestaurantManagement.Application.Features.BillFeature.Queries.GetBillById;
@@ -33,7 +34,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            });
+            }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             //lấy bill theo bill id
             endpoints.MapGet("{id}", async (
@@ -47,7 +48,7 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            });
+            }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             endpoints.MapGet("bill-user", async (
                 // [FromQuery] string? searchTerm,
@@ -75,7 +76,7 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result);
 
-            }).RequireAuthorization();
+            }).RequireAuthorization().AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             //xuất bill pdf
             endpoints.MapGet("bill-export/{id}", async (
@@ -93,7 +94,7 @@ namespace RestaurantManagement.API.Controllers
                 using var pdfDocument = renderer.RenderHtmlAsPdf(html);
 
                 return Results.File(pdfDocument.BinaryData, "application/pdf", "bill.pdf");
-            }).RequireAuthorization();
+            }).RequireAuthorization().AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         }
     }

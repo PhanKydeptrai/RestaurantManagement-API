@@ -1,7 +1,7 @@
-﻿#region Development Code
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateCustomerInformation;
 using RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateCustomer;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
@@ -37,7 +37,7 @@ public class CustomerController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapPost("", async (
             [FromForm] string FirstName,
@@ -60,7 +60,8 @@ public class CustomerController : IEndpoint
             }
             return Results.BadRequest(result);
         }).RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamCreateCustomerCommand");
+        .RequireRateLimiting("AntiSpamCreateCustomerCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
 
@@ -70,7 +71,8 @@ public class CustomerController : IEndpoint
             GetCustomerByIdQuery request = new GetCustomerByIdQuery(id);
             var result = await sender.Send(request);
             return Results.Ok(result);
-        });
+        })
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
         //Delete a customer
@@ -81,7 +83,8 @@ public class CustomerController : IEndpoint
             // Gửi command để xóa khách hàng
             // var result = await sender.Send(new DeleteCustomerCommand(id));
             return Results.Ok();
-        }).RequireRateLimiting("AntiSpamDeleteCustomerCommand");
+        }).RequireRateLimiting("AntiSpamDeleteCustomerCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Update information for a customer
         endpoints.MapPut("{id}",
@@ -118,8 +121,8 @@ public class CustomerController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization("customer");
+        }).RequireAuthorization("customer")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
     }
 }
-#endregion

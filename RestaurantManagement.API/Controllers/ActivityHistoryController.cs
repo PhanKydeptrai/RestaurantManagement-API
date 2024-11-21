@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetBillHistory;
 using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetBookingHistory;
 using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetCategoryHistory;
@@ -42,7 +43,7 @@ public class ActivityHistoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapGet("employee", async (
             [FromQuery] string? filterUserId,
@@ -67,7 +68,7 @@ public class ActivityHistoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapGet("meal", async (
             [FromQuery] string? filterUserId,
@@ -92,7 +93,7 @@ public class ActivityHistoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapGet("order", async (
             [FromQuery] string? filterUserId,
@@ -117,7 +118,7 @@ public class ActivityHistoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapGet("bill", async (
             [FromQuery] string? filterUserId,
@@ -142,7 +143,7 @@ public class ActivityHistoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapGet("booking", async (
             [FromQuery] string? filterUserId,
@@ -167,7 +168,7 @@ public class ActivityHistoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapGet("table", async (
             [FromQuery] string? filterUserId,
@@ -192,7 +193,7 @@ public class ActivityHistoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapGet("table-type", async (
             [FromQuery] string? filterUserId,
@@ -217,7 +218,7 @@ public class ActivityHistoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapGet("category", async (
             [FromQuery] string? filterUserId,
@@ -242,7 +243,7 @@ public class ActivityHistoryController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         
     }

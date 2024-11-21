@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.VoucherFeature.Commands.CreateVoucher;
 using RestaurantManagement.Application.Features.VoucherFeature.Commands.DeleteVoucher;
 using RestaurantManagement.Application.Features.VoucherFeature.Commands.UpdateVoucher;
@@ -41,7 +42,7 @@ public class VoucherController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapPost("", async (
             [FromBody] CreateVoucherRequest request,
@@ -69,7 +70,8 @@ public class VoucherController : IEndpoint
 
         })
         .RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamCreateVoucherCommand");
+        .RequireRateLimiting("AntiSpamCreateVoucherCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapPut("{id}", async (
             string id,
@@ -99,7 +101,8 @@ public class VoucherController : IEndpoint
 
         })
         .RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamUpdateVoucherCommand");
+        .RequireRateLimiting("AntiSpamUpdateVoucherCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapDelete("{id}", async (
             string id,
@@ -119,7 +122,8 @@ public class VoucherController : IEndpoint
 
         })
         .RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamDeleteVoucherCommand");
+        .RequireRateLimiting("AntiSpamDeleteVoucherCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapGet("{id}", async (
             string id,
@@ -131,7 +135,8 @@ public class VoucherController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.NoContent();
-        });
+        })
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
     }
 
 

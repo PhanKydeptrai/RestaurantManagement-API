@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
+using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.TableFeature.Commands.AssignTableToBookedCustomer;
 using RestaurantManagement.Application.Features.TableFeature.Commands.AssignTableToCustomer;
 using RestaurantManagement.Application.Features.TableFeature.Commands.CreateTable;
@@ -52,7 +53,7 @@ public class TableController : IEndpoint
             }
             return Results.Ok(result);
 
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         endpoints.MapGet("{id}", async (
             string id,
@@ -64,7 +65,7 @@ public class TableController : IEndpoint
                 return Results.BadRequest(result);
             }
             return Results.Ok(result);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Create table
         endpoints.MapPost("", async (
@@ -87,7 +88,8 @@ public class TableController : IEndpoint
             return Results.Ok(result);
         })
         .RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamCreateTableCommand");
+        .RequireRateLimiting("AntiSpamCreateTableCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
         //Remove table
@@ -107,7 +109,8 @@ public class TableController : IEndpoint
             return Results.BadRequest(result);
         })
         .RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamDeleteTableCommand");
+        .RequireRateLimiting("AntiSpamDeleteTableCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Restore table
         endpoints.MapPut("{id}", async (
@@ -126,7 +129,8 @@ public class TableController : IEndpoint
             return Results.BadRequest(result);
         })
         .RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamRestoreTableCommand");
+        .RequireRateLimiting("AntiSpamRestoreTableCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
         // Cho khách vãng lai nhận bàn
@@ -146,7 +150,8 @@ public class TableController : IEndpoint
             return Results.BadRequest(result);
         })
         .RequireAuthorization()
-        .RequireRateLimiting("AntiSpamAssignTableToCustomerCommand");
+        .RequireRateLimiting("AntiSpamAssignTableToCustomerCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //  thôi nhận bàn cho khách đã không book bàn (trong trường hợp nhân viên bấm nhầm)
         endpoints.MapPut("table-unassign/{id}", async (
@@ -180,7 +185,8 @@ public class TableController : IEndpoint
             return Results.BadRequest(result);
         })
         .RequireAuthorization()
-        .RequireRateLimiting("AntiSpamAssignTableToBookedCustomerCommand");
+        .RequireRateLimiting("AntiSpamAssignTableToBookedCustomerCommand")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         // thôi nhận bàn cho khách đã book bàn (trong trường hợp nhân viên bấm nhầm)
         endpoints.MapPut("table-unassign/booked/{id}", async (
@@ -205,7 +211,8 @@ public class TableController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization();
+        }).RequireAuthorization()
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
         // TODO: Thêm endpoint xếp bàn cho khách
