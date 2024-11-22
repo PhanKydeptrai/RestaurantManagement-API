@@ -528,6 +528,7 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 
+    //Cấu hình swagger sử dụng ap key
     option.AddSecurityDefinition("X-Api-Key", new OpenApiSecurityScheme()
     {
         Description = "API Key",
@@ -596,7 +597,7 @@ app.UseMiddleware<RequestLogContextMiddleware>();
 
 app.UseRateLimiter();
 app.UseSerilogRequestLogging();
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+// app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 
 app.UseExceptionHandler();
