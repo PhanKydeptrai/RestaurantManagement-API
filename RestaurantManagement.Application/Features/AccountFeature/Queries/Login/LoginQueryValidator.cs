@@ -32,7 +32,9 @@ public class LoginQueryValidator : AbstractValidator<LoginQuery>
             }).When(a => !string.IsNullOrEmpty(a.loginString));
 
         RuleFor(a => a.passWord)
-            .NotEmpty().NotNull()
+            .NotNull()
+            .WithMessage("Password is required.")
+            .NotEmpty()
             .WithMessage("Password is required.");
     }
 }

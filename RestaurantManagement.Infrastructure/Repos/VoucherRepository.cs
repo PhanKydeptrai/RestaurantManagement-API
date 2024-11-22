@@ -30,4 +30,11 @@ public class VoucherRepository(RestaurantManagementDbContext context) : IVoucher
         await context.Vouchers.Where(a => a.VoucherId == voucherId)
             .ExecuteUpdateAsync(a => a.SetProperty(a => a.Status, "InActive"));
     }
+
+    public async Task<bool> IsVoucherValid(string voucherName)
+    {
+        return await context.Vouchers
+            .AsNoTracking()
+            .AnyAsync(a => a.VoucherName == voucherName && a.Status == "Active");
+    }
 }

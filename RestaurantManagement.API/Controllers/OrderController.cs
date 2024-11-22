@@ -48,7 +48,9 @@ public class OrderController : IEndpoint
         endpoints.MapPut("{id}", async (
             string id,
             [FromBody] UpdateMealInOrderRequest command,
-            ISender sender) =>
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
         {
             var result = await sender.Send(new UpdateMealInOrderCommand(id, command.Quantity));
             if (!result.IsSuccess)
@@ -64,7 +66,9 @@ public class OrderController : IEndpoint
 
         endpoints.MapDelete("{id}", async (
             string id,
-            ISender sender) =>
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
         {
             var result = await sender.Send(new DeleleMealFromOrderCommand(id)); // Đã sửa lỗi chính tả ở đây
             if (!result.IsSuccess)
@@ -76,10 +80,6 @@ public class OrderController : IEndpoint
         .RequireAuthorization()
         .RequireRateLimiting("AntiSpamDeleteMealFromOrderCommand")
         .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
-
-
-
-
 
         //Get by id
         endpoints.MapGet("{id}", async (
@@ -95,6 +95,26 @@ public class OrderController : IEndpoint
         }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
+        #region New payorder
+        //Pay order
+        // endpoints.MapPut("pay/{id}", async (
+        //     string id, // Id bàn
+        //     [FromBody] PayOrderRequest request,
+        //     ISender sender) =>
+        // {
+        //     var result = await sender.Send(new PayOrderCommand(id, request.voucherName, request.phoneNumber));
+        //     if (!result.IsSuccess)
+        //     {
+        //         return Results.BadRequest(result);
+        //     }
+        //     return Results.Ok(result);
+        // })
+        // .RequireAuthorization()
+        // .RequireRateLimiting("AntiSpamPayOrderCommand")
+        // .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+        #endregion
+
+        #region Old payorder
         //Pay order
         endpoints.MapPut("pay/{id}", async (
             string id, // Id bàn
@@ -110,6 +130,7 @@ public class OrderController : IEndpoint
         .RequireAuthorization()
         .RequireRateLimiting("AntiSpamPayOrderCommand")
         .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+        #endregion
 
         //Get all order
         endpoints.MapGet("", async (
