@@ -20,7 +20,7 @@ public static class DependencyInjection
         // Đăng ký FluentValidation
 
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
-        ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
+        // ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
         ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
 
         services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Email:Sender"])

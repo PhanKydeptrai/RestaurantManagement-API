@@ -20,8 +20,6 @@ public class RegisterCommandHandler(
 {
     public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-
-
         //Validate request
         var validator = new RegisterCommandValidator(customerRepository);
         Error[]? errors = null;

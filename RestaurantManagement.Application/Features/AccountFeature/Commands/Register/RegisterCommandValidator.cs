@@ -8,17 +8,24 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
     public RegisterCommandValidator(ICustomerRepository customerRepository)
     {
         RuleFor(p => p.FirstName)
-            .NotEmpty().NotNull()
+            .NotNull()
+            .WithMessage("LastName is required.")
+            .NotEmpty()
             .WithMessage("FirstName is required.");
 
         RuleFor(a => a.LastName)
-            .NotEmpty().NotNull()
+            .NotNull()
+            .WithMessage("LastName is required.")
+            .NotEmpty()
             .WithMessage("LastName is required.");
 
         RuleFor(a => a.Email)
-            .NotEmpty().NotNull()
-            .EmailAddress()
+            .NotNull()
             .WithMessage("Email is required.")
+            .NotEmpty()
+            .WithMessage("Email is required.")
+            .EmailAddress()
+            .WithMessage("Email format is incorrect.")
             .Must(a => customerRepository.IsCustomerEmailExist(a).Result == false)
             .WithMessage("Email is exist");
 
@@ -32,14 +39,18 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .WithMessage("Phonenumber is exist");
 
         RuleFor(a => a.Password)
-            .NotEmpty().NotNull()
+            .NotNull()
+            .WithMessage("Password is required.")
+            .NotEmpty()
             .WithMessage("Password is required.")
             .MinimumLength(8)
             .WithMessage("Password must be at least 8 characters long.");
 
         RuleFor(b => b.Gender)
-            .NotNull().WithMessage("Gender is required")
-            .NotEmpty().WithMessage("Gender must not be empty")
+            .NotNull()
+            .WithMessage("Gender is required")
+            .NotEmpty()
+            .WithMessage("Gender must not be empty")
             .Must(b => b == "Male" || b == "Female" || b == "Orther")
             .WithMessage("Gender must be Male, Female or Orther");
 
