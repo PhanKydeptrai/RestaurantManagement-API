@@ -97,30 +97,12 @@ public class OrderController : IEndpoint
 
         #region New payorder
         //Pay order
-        // endpoints.MapPut("pay/{id}", async (
-        //     string id, // Id bàn
-        //     [FromBody] PayOrderRequest request,
-        //     ISender sender) =>
-        // {
-        //     var result = await sender.Send(new PayOrderCommand(id, request.voucherName, request.phoneNumber));
-        //     if (!result.IsSuccess)
-        //     {
-        //         return Results.BadRequest(result);
-        //     }
-        //     return Results.Ok(result);
-        // })
-        // .RequireAuthorization()
-        // .RequireRateLimiting("AntiSpamPayOrderCommand")
-        // .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
-        #endregion
-
-        #region Old payorder
-        //Pay order
         endpoints.MapPut("pay/{id}", async (
             string id, // Id bàn
+            [FromBody] PayOrderRequest request,
             ISender sender) =>
         {
-            var result = await sender.Send(new PayOrderCommand(id));
+            var result = await sender.Send(new PayOrderCommand(id, request.voucherName, request.phoneNumber));
             if (!result.IsSuccess)
             {
                 return Results.BadRequest(result);
@@ -130,6 +112,24 @@ public class OrderController : IEndpoint
         .RequireAuthorization()
         .RequireRateLimiting("AntiSpamPayOrderCommand")
         .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+        #endregion
+
+        #region Old payorder
+        // //Pay order
+        // endpoints.MapPut("pay/{id}", async (
+        //     string id, // Id bàn
+        //     ISender sender) =>
+        // {
+        //     var result = await sender.Send(new PayOrderCommand(id));
+        //     if (!result.IsSuccess)
+        //     {
+        //         return Results.BadRequest(result);
+        //     }
+        //     return Results.Ok(result);
+        // })
+        // .RequireAuthorization()
+        // .RequireRateLimiting("AntiSpamPayOrderCommand")
+        // .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
         #endregion
 
         //Get all order
