@@ -81,9 +81,18 @@ public class CustomerRepository(RestaurantManagementDbContext context) : ICustom
             .AnyAsync(a => a.User.Email == email && a.CustomerType == "Subscriber" && a.CustomerStatus == "Active");
     }
 
-    public async Task<bool> IsCustomerPhoneExist(string phone)
+    public async Task<bool> IsCustomerHasThisPhoneNumberActive(string phone)
     {
         return await context.Customers
+            .AsNoTracking()
+            .Include(c => c.User)
+            .AnyAsync(a => a.User.Phone == phone && a.CustomerType == "Subscriber" && a.CustomerStatus == "Active");
+    }
+
+    public async Task<bool> IsCustomerPhoneExist(string phone) //Kiểm tra xem số điện thoại này có được đăng ký hay chưa
+    {
+        return await context.Customers
+            .AsNoTracking()
             .Include(c => c.User)
             .AnyAsync(a => a.User.Phone == phone && a.CustomerType == "Subscriber");
     }

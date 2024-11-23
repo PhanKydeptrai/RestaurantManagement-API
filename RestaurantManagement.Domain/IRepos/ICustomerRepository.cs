@@ -8,6 +8,7 @@ public interface ICustomerRepository
     Task CreateCustomer(Customer customer);
     Task<IEnumerable<Customer>> GetAllCustomers();
     Task<CustomerResponse?> GetCustomerById(Ulid id);
+    Task<bool> IsCustomerHasThisPhoneNumberActive(string phone);
     Task DeleteCustomer(Ulid id);
     void UpdateCustomer(Customer customer);
     // Task<bool> IsCustomerExist(string email);    
