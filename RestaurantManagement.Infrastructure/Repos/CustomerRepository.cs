@@ -62,6 +62,13 @@ public class CustomerRepository(RestaurantManagementDbContext context) : ICustom
             .AnyAsync(a => a.UserId == id);
     }
 
+    public async Task<bool> IsCustomerIdActive(Ulid id)
+    {
+        return await context.Customers
+            .AsNoTracking()
+            .AnyAsync(a => a.UserId == id && a.CustomerStatus == "Active" && a.CustomerType == "Subscriber");
+    }
+
     public IQueryable<Customer> GetCustomersQueryable()
     {
         return context.Customers.AsQueryable();

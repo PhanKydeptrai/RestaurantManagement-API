@@ -31,6 +31,7 @@ public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagement
     public DbSet<CustomerLog> CustomerLogs { get; set; }
     public DbSet<EmployeeLog> EmployeeLogs { get; set; }
     public DbSet<BookingLog> BookingLogs { get; set; }
+    public DbSet<VoucherLog> VoucherLogs { get; set; }
 
     //Cấu hình fluent api
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,11 +39,4 @@ public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagement
         modelBuilder.ApplyConfigurationsFromAssembly(AssemblyReference.Assembly);
     }
 
-
-    // protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-    // {
-    //    configurationBuilder
-    //        .Properties<Ulid>()
-    //        .HaveConversion<UlidToStringConverter>();
-    // }
 }

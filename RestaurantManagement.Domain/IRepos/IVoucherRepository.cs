@@ -9,5 +9,6 @@ public interface IVoucherRepository
     Task<bool> IsVoucherIdExists(Ulid voucherId);
     Task<Voucher?> GetVoucherById(Ulid id);
     Task<bool> IsVoucherValid(string voucherName);
+    Task<bool> IsVoucherCodeExists(string voucherCode);
     Task DeleteVoucher(Ulid voucherId);
 }
