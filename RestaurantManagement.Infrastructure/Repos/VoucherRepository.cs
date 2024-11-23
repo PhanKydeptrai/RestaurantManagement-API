@@ -37,4 +37,9 @@ public class VoucherRepository(RestaurantManagementDbContext context) : IVoucher
             .AsNoTracking()
             .AnyAsync(a => a.VoucherName == voucherName && a.Status == "Active");
     }
+
+    public async Task<bool> IsVoucherCodeExists(string voucherCode)
+    {
+        return await context.Vouchers.AsNoTracking().AnyAsync(a => a.VoucherCode == voucherCode);
+    }
 }

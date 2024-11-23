@@ -118,9 +118,10 @@ public class OrderController : IEndpoint
         // //Pay order
         // endpoints.MapPut("pay/{id}", async (
         //     string id, // Id bàn
+        //     [FromBody] PayOrderRequest request,
         //     ISender sender) =>
         // {
-        //     var result = await sender.Send(new PayOrderCommand(id));
+        //     var result = await sender.Send(new PayOrderCommand(id, request.voucherName, request.phoneNumber));
         //     if (!result.IsSuccess)
         //     {
         //         return Results.BadRequest(result);

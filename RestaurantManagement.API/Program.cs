@@ -28,7 +28,7 @@ builder.Services.AddInfrastructureExtentions(builder.Configuration)
 //Add endpoints
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
-// builder.Services.AddExceptionHandler<GlobalExceptionHandling>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandling>();
 builder.Services.AddProblemDetails();
 
 //Add serilog
@@ -176,6 +176,14 @@ builder.Services.AddRateLimiter(options =>
         }));
 
     options.AddPolicy("AntiSpamRemoveManyCategoryCommand", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+    factory: _ => new FixedWindowRateLimiterOptions
+    {
+        PermitLimit = 1,
+        Window = TimeSpan.FromSeconds(2)
+    }));
+
+    options.AddPolicy("AntiSpamRemoveCategoryCommand", httpContext => RateLimitPartition.GetFixedWindowLimiter(
     partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
     factory: _ => new FixedWindowRateLimiterOptions
     {

@@ -55,12 +55,16 @@ public class VoucherController : IEndpoint
 
             var result = await sender.Send(new CreateVoucherCommand(
                 request.VoucherName,
-                request.MaxDiscount,
-                request.VoucherCondition,
+                request.VoucherCode,
+                request.PercentageDiscount,
+                request.MaximumDiscountAmount,
+                request.MinimumOrderAmount,
+                request.VoucherConditions,
                 request.StartDate,
                 request.ExpiredDate,
                 request.Description,
-                token));
+                token
+            ));
 
             if (result.IsSuccess)
             {

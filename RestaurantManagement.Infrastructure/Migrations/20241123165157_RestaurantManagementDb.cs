@@ -66,9 +66,13 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     VoucherId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    VoucherName = table.Column<string>(type: "varchar(50)", nullable: false),
-                    MaxDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    VoucherCondition = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    VoucherName = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    VoucherCode = table.Column<string>(type: "varchar(50)", nullable: false),
+                    VoucherType = table.Column<string>(type: "varchar(20)", nullable: false),
+                    PercentageDiscount = table.Column<int>(type: "int", nullable: true),
+                    MaximumDiscountAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MinimumOrderAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    VoucherConditions = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     ExpiredDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(255)", nullable: true),
@@ -406,6 +410,26 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "VoucherLog",
+                columns: table => new
+                {
+                    VoucherLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    LogDetails = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VoucherLog", x => x.VoucherLogId);
+                    table.ForeignKey(
+                        name: "FK_VoucherLog_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Bookings",
                 columns: table => new
                 {
@@ -716,6 +740,11 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "IX_UserLog_UserId",
                 table: "UserLog",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VoucherLog_UserId",
+                table: "VoucherLog",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -771,6 +800,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserLog");
+
+            migrationBuilder.DropTable(
+                name: "VoucherLog");
 
             migrationBuilder.DropTable(
                 name: "Bookings");

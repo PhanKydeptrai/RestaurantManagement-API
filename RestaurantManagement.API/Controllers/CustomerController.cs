@@ -4,6 +4,7 @@ using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateCustomerInformation;
 using RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateCustomer;
+using RestaurantManagement.Application.Features.CustomerFeature.Commands.DeleteCustomer;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
 using RestaurantManagement.Domain.IRepos;
@@ -81,8 +82,12 @@ public class CustomerController : IEndpoint
             ISender sender) =>
         {
             // Gửi command để xóa khách hàng
-            // var result = await sender.Send(new DeleteCustomerCommand(id));
-            return Results.Ok();
+            var result = await sender.Send(new DeleteCustomerCommand(id));
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
         }).RequireRateLimiting("AntiSpamDeleteCustomerCommand")
         .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 

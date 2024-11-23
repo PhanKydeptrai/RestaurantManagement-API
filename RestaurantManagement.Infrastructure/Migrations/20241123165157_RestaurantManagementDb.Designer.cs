@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241120130324_RestaurantManagementDb")]
+    [Migration("20241123165157_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -712,8 +712,14 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<DateTime>("ExpiredDate")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal>("MaxDiscount")
+                    b.Property<decimal>("MaximumDiscountAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("MinimumOrderAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("PercentageDiscount")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime");
@@ -722,16 +728,47 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("VoucherCondition")
+                    b.Property<string>("VoucherCode")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<decimal>("VoucherConditions")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("VoucherName")
                         .IsRequired()
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("VoucherType")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("VoucherId");
 
                     b.ToTable("Vouchers");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.VoucherLog", b =>
+                {
+                    b.Property<string>("VoucherLogId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<DateTime>("LogDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("LogDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.HasKey("VoucherLogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("VoucherLog");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Bill", b =>
@@ -1016,6 +1053,17 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.VoucherLog", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.User", "User")
+                        .WithMany("VoucherLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Booking", b =>
                 {
                     b.Navigation("Bill");
@@ -1090,6 +1138,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("TableTypeLogs");
 
                     b.Navigation("UserLogs");
+
+                    b.Navigation("VoucherLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Voucher", b =>
