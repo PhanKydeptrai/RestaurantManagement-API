@@ -11,8 +11,6 @@ namespace RestaurantManagement.Application.Features.ActivtyHistoryFeature.Querie
 
 public class GetCategoryHistoryQueryHandler : IQueryHandler<GetCategoryHistoryQuery, PagedList<ActivityHistoryResponse>>
 {
-
-
     private readonly IApplicationDbContext _context;
 
     public GetCategoryHistoryQueryHandler(IApplicationDbContext context)

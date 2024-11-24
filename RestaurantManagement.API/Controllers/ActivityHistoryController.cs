@@ -11,6 +11,7 @@ using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.Ge
 using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetOrderHistory;
 using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetTableHistory;
 using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetTableTypeHistory;
+using RestaurantManagement.Application.Features.ActivtyHistoryFeature.Queries.GetVoucherHistory;
 
 namespace RestaurantManagement.API.Controllers;
 
@@ -245,6 +246,30 @@ public class ActivityHistoryController : IEndpoint
             return Results.BadRequest(result);
         }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
-        
+        endpoints.MapGet("voucher", async (
+            [FromQuery] string? filterUserId,
+            [FromQuery] string? searchTerm,
+            [FromQuery] string? sortColumn,
+            [FromQuery] string? sortOrder,
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new GetVoucherHistoryQuery(
+                filterUserId, 
+                searchTerm, 
+                sortColumn, 
+                sortOrder, 
+                page, 
+                pageSize
+            ));
+
+            if(result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+            
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
     }
 }
