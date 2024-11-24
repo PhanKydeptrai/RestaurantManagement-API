@@ -19,6 +19,7 @@ public class VoucherController : IEndpoint
 
         endpoints.MapGet("", async (
             [FromQuery] string? filterStatus,
+            [FromQuery] string? filterType,
             [FromQuery] string? searchTerm,
             [FromQuery] string? sortColumn,
             [FromQuery] string? sortOrder,
@@ -29,6 +30,7 @@ public class VoucherController : IEndpoint
             //lấy token
             var result = await sender.Send(new GetAllVoucherQuery(
                 filterStatus,
+                filterType,
                 searchTerm,
                 sortColumn,
                 sortOrder,

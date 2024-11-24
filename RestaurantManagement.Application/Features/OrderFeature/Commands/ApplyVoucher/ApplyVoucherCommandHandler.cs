@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
@@ -67,6 +68,12 @@ public class ApplyVoucherCommandHandler : ICommandHandler<ApplyVoucherCommand>
                         .Where(a => a.OrderId == order.OrderId)
                         .FirstOrDefaultAsync();
 
+            if (bill.VoucherId != null) //Nếu bill đã có voucher thì không thể áp dụng voucher mới
+            {
+                var error = new[] { new Error("Voucher", "This order already has a voucher.") };
+                return Result.Failure(error);
+            }
+
             bill.CreatedDate = DateTime.Now; //Cập nhật lại thời gian tạo bill
 
             //lấy voucher theo voucher code
@@ -86,12 +93,19 @@ public class ApplyVoucherCommandHandler : ICommandHandler<ApplyVoucherCommand>
             {
                 if (voucher.VoucherType == "DirectDiscount")
                 {
-                    bill.Total -= voucher.MaximumDiscountAmount;
+                    if (bill.Total > voucher.MaximumDiscountAmount)
+                    {
+                        bill.Total -= voucher.MaximumDiscountAmount;
+                    }
+                    else
+                    {
+                        bill.Total -= 0;
+                    }
                 }
                 else
                 {
                     decimal discountAmount = bill.Total * (decimal)voucher.PercentageDiscount / 100;
-                    if(discountAmount > voucher.MaximumDiscountAmount)
+                    if (discountAmount > voucher.MaximumDiscountAmount)
                     {
                         bill.Total -= voucher.MaximumDiscountAmount;
                     }
@@ -142,12 +156,20 @@ public class ApplyVoucherCommandHandler : ICommandHandler<ApplyVoucherCommand>
             {
                 if (voucher.VoucherType == "DirectDiscount")
                 {
-                    bill.Total -= voucher.MaximumDiscountAmount;
+
+                    if (bill.Total > voucher.MaximumDiscountAmount)
+                    {
+                        bill.Total -= voucher.MaximumDiscountAmount;
+                    }
+                    else
+                    {
+                        bill.Total -= 0;
+                    }
                 }
                 else
                 {
                     decimal discountAmount = bill.Total * (decimal)voucher.PercentageDiscount / 100;
-                    if(discountAmount > voucher.MaximumDiscountAmount)
+                    if (discountAmount > voucher.MaximumDiscountAmount)
                     {
                         bill.Total -= voucher.MaximumDiscountAmount;
                     }
