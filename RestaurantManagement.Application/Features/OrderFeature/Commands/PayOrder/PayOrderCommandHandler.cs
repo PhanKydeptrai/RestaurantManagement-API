@@ -135,7 +135,7 @@ public class PayOrderCommandHandler(
         //     .Include(a => a.BookingDetails).ThenInclude(a => a.Booking)
         //     .Where(a => a.TableId == int.Parse(request.tableId))
         //     .Select(a => a.BookingDetails.FirstOrDefault(a => a.Booking.BookingStatus == "Occupied"))
-        //     .FirstOrDefaultAsync();
+        //     .FirstOrDefaultAsync(); 
 
         // if (checkBooking != null)
         // {

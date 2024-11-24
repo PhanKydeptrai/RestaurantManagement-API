@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.AddMealToOrder;
+using RestaurantManagement.Application.Features.OrderFeature.Commands.ApplyVoucher;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.DeleteMealFromOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.PayOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.UpdateMealInOrder;
@@ -165,15 +166,15 @@ public class OrderController : IEndpoint
         //Áp dụng voucher
         endpoints.MapPut("apply-voucher/{id}", async (
             string id,
-            // [FromBody] ApplyVoucherRequest request,
+            [FromBody] ApplyVoucherRequest request,
             ISender sender) =>
         {
-            // var result = await sender.Send(new ApplyVoucherCommand(id, request.VoucherCode));
-            // if (!result.IsSuccess)
-            // {
-            //     return Results.BadRequest(result);
-            // }
-            // return Results.Ok(result);
+                var result = await sender.Send(new ApplyVoucherCommand(id, request.voucherCode, request.phoneNumber));
+                if (!result.IsSuccess)
+                {
+                    return Results.BadRequest(result);
+                }
+                return Results.Ok(result);
         });
     }
 }

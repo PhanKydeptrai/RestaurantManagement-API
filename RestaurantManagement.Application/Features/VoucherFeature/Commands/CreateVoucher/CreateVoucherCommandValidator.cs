@@ -40,11 +40,11 @@ public class CreateVoucherCommandValidator : AbstractValidator<CreateVoucherComm
             .WithMessage("{PropertyName} already exists");
 
         RuleFor(a => a.PercentageDiscount)
-            .Must(p => p == null || int.TryParse(p, out _))
+            .Must(p => p == null || int.TryParse(p.ToString(), out _))
             .WithMessage("{PropertyName} must be an integer.")
-            .Must(p => p != null && int.Parse(p) >= 0 && int.Parse(p) <= 100)
+            .Must(p => p != null && int.Parse(p.ToString()) >= 0 && int.Parse(p.ToString()) <= 100)
             .WithMessage("{PropertyName} must be between 0 and 100.")
-            .When(p => !string.IsNullOrEmpty(p.PercentageDiscount));
+            .When(p => p.PercentageDiscount != null && !string.IsNullOrEmpty(p.PercentageDiscount.ToString()));
 
         
 
@@ -65,11 +65,11 @@ public class CreateVoucherCommandValidator : AbstractValidator<CreateVoucherComm
             .WithMessage("{PropertyName} must be a decimal.");
 
         RuleFor(a => a.VoucherConditions)
-            .Must(p => decimal.TryParse(p, out _))
+            .Must(p => decimal.TryParse(p.ToString(), out _))
             .WithMessage("{PropertyName} must be a decimal.")
-            .Must(a => a != null && decimal.Parse(a) >= 0)
+            .Must(a => a != null && decimal.Parse(a.ToString()) >= 0)
             .WithMessage("{PropertyName} must be greater than or equal to 0.")
-            .When(p => !string.IsNullOrEmpty(p.VoucherConditions)); 
+            .When(p => p.VoucherConditions != null && !string.IsNullOrEmpty(p.VoucherConditions.ToString())); 
             
         RuleFor(a => a.StartDate)
             .NotNull()
@@ -88,7 +88,7 @@ public class CreateVoucherCommandValidator : AbstractValidator<CreateVoucherComm
             .WithMessage("{PropertyName} must be greater than StartDate.");
 
         RuleFor(a => a.Description)
-            .MaximumLength(500)
+            .MaximumLength(255)
             .WithMessage("{PropertyName} must not exceed 500 characters.")
             .When(p => !string.IsNullOrEmpty(p.Description));
 
