@@ -7,6 +7,7 @@ using RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateC
 using RestaurantManagement.Application.Features.CustomerFeature.Commands.DeleteCustomer;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
+using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetVoucherOfCustomerByUserId;
 using RestaurantManagement.Domain.IRepos;
 
 
@@ -107,8 +108,6 @@ public class CustomerController : IEndpoint
 
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
-
-            
             var updateCustomerCommand = new UpdateCustomerInformationCommand(
                 id,
                 FirstName,
@@ -127,6 +126,31 @@ public class CustomerController : IEndpoint
             return Results.BadRequest(result);
 
         }).RequireAuthorization("customer")
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+
+        endpoints.MapGet("customer-voucher",
+        async (
+            [FromQuery]string? filterType,
+            [FromQuery]string? filterStatus,
+            [FromQuery]string? searchTerm,
+            [FromQuery]string? sortColumn,
+            [FromQuery]string? sortOrder,
+            [FromQuery]int? page,
+            [FromQuery]int? pageSize,
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
+        {
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+            var result = await sender.Send(new GetVoucherOfCustomerByUserIdQuery(filterStatus,filterType,searchTerm,sortColumn,sortOrder,page,pageSize,token));   
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+
+        }).RequireAuthorization()
         .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
     }
