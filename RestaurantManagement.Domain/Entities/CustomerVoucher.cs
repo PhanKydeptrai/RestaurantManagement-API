@@ -9,3 +9,5 @@ public class CustomerVoucher
     public Customer? Customer { get; set; }
     public Voucher? Voucher { get; set; }
 }
+
+
