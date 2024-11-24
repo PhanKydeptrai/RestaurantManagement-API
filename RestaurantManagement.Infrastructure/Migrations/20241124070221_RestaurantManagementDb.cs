@@ -410,7 +410,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VoucherLog",
+                name: "VoucherLogs",
                 columns: table => new
                 {
                     VoucherLogId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -420,9 +420,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VoucherLog", x => x.VoucherLogId);
+                    table.PrimaryKey("PK_VoucherLogs", x => x.VoucherLogId);
                     table.ForeignKey(
-                        name: "FK_VoucherLog_Users_UserId",
+                        name: "FK_VoucherLogs_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -742,8 +742,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_VoucherLog_UserId",
-                table: "VoucherLog",
+                name: "IX_VoucherLogs_UserId",
+                table: "VoucherLogs",
                 column: "UserId");
         }
 
@@ -802,7 +802,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "UserLog");
 
             migrationBuilder.DropTable(
-                name: "VoucherLog");
+                name: "VoucherLogs");
 
             migrationBuilder.DropTable(
                 name: "Bookings");

@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241123165157_RestaurantManagementDb")]
+    [Migration("20241124070221_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -768,7 +768,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("VoucherLog");
+                    b.ToTable("VoucherLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Bill", b =>

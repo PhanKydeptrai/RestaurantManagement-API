@@ -24,8 +24,6 @@ public class Voucher
     public string VoucherCode { get; set; } //Sử dụng để áp dụng
     public string VoucherType { get; set; } //Loại voucher 
 
-    // Loại A: Giảm giá trực tiếp vào hóa đơn
-    // Loại B: Giảm giá theo phần trăm
     public int? PercentageDiscount { get; set; } //Phần trăm giảm giá
     public decimal MaximumDiscountAmount { get; set; } //Số tiền giảm tối đa
     public decimal MinimumOrderAmount { get; set; } //Khoản tiền tối thiểu để sử dụng voucher

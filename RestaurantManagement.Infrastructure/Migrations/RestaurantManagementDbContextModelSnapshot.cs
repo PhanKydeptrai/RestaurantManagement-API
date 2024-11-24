@@ -765,7 +765,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("VoucherLog");
+                    b.ToTable("VoucherLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Bill", b =>
