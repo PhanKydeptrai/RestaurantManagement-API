@@ -24,7 +24,6 @@ public class VoucherController : IEndpoint
             [FromQuery] string? sortOrder,
             [FromQuery] int? page,
             [FromQuery] int? pageSize,
-
             ISender sender) =>
         {
             //lấy token
@@ -77,37 +76,38 @@ public class VoucherController : IEndpoint
         .RequireRateLimiting("AntiSpamCreateVoucherCommand")
         .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
-        endpoints.MapPut("{id}", async (
-            string id,
-            [FromBody] UpdateVoucherRequest request,
-            ISender sender,
-            IJwtProvider jwtProvider,
-            HttpContext httpContext) =>
-        {
-            //lấy token
-            var token = jwtProvider.GetTokenFromHeader(httpContext);
+        #region Update Voucher
+        // endpoints.MapPut("{id}", async (
+        //     string id,
+        //     [FromBody] UpdateVoucherRequest request,
+        //     ISender sender,
+        //     IJwtProvider jwtProvider,
+        //     HttpContext httpContext) =>
+        // {
+        //     //lấy token
+        //     var token = jwtProvider.GetTokenFromHeader(httpContext);
 
-            var result = await sender.Send(new UpdateVoucherCommand(
-                id,
-                request.VoucherName,
-                request.MaxDiscount,
-                request.VoucherCondition,
-                request.StartDate,
-                request.ExpiredDate,
-                request.Description,
-                token));
+        //     var result = await sender.Send(new UpdateVoucherCommand(
+        //         id,
+        //         request.VoucherName,
+        //         request.MaxDiscount,
+        //         request.VoucherCondition,
+        //         request.StartDate,
+        //         request.ExpiredDate,
+        //         request.Description,
+        //         token));
 
-            if (result.IsSuccess)
-            {
-                return Results.Ok(result);
-            }
-            return Results.BadRequest(result);
+        //     if (result.IsSuccess)
+        //     {
+        //         return Results.Ok(result);
+        //     }
+        //     return Results.BadRequest(result);
 
-        })
-        .RequireAuthorization("boss")
-        .RequireRateLimiting("AntiSpamUpdateVoucherCommand")
-        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
-
+        // })
+        // .RequireAuthorization("boss")
+        // .RequireRateLimiting("AntiSpamUpdateVoucherCommand")
+        // .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+        #endregion
         endpoints.MapDelete("{id}", async (
             string id,
             ISender sender,

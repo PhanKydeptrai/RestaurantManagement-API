@@ -161,5 +161,19 @@ public class OrderController : IEndpoint
             }
             return Results.Ok(result);
         }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+
+        //Áp dụng voucher
+        endpoints.MapPut("apply-voucher/{id}", async (
+            string id,
+            // [FromBody] ApplyVoucherRequest request,
+            ISender sender) =>
+        {
+            // var result = await sender.Send(new ApplyVoucherCommand(id, request.VoucherCode));
+            // if (!result.IsSuccess)
+            // {
+            //     return Results.BadRequest(result);
+            // }
+            // return Results.Ok(result);
+        });
     }
 }

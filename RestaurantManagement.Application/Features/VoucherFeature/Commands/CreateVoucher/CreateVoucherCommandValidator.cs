@@ -36,7 +36,7 @@ public class CreateVoucherCommandValidator : AbstractValidator<CreateVoucherComm
             .WithMessage("{PropertyName} is required")
             .MaximumLength(50)
             .WithMessage("{PropertyName} must not exceed 50 characters")
-            .Must(a => voucherRepository.IsVoucherCodeExists(a).Result)
+            .Must(a => !voucherRepository.IsVoucherCodeExists(a).Result)
             .WithMessage("{PropertyName} already exists");
 
         RuleFor(a => a.PercentageDiscount)
