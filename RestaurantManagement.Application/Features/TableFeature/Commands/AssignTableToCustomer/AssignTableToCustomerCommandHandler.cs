@@ -27,16 +27,16 @@ public class GetTableForCustomerCommandHandler(
         }
         await tableRepository.UpdateActiveStatus(int.Parse(request.id), "Occupied");
 
-        await context.Bills.AddAsync(new Bill
-        {
-            BillId = Ulid.NewUlid(),
-            CreatedDate = DateTime.Now,
-            Total = 0,
-            PaymentStatus = "Unpaid",
-            PaymentType = "Cash"
-        });
-
-
+        #region Tạo bill
+        // await context.Bills.AddAsync(new Bill
+        // {
+        //     BillId = Ulid.NewUlid(),
+        //     CreatedDate = DateTime.Now,
+        //     Total = 0,
+        //     PaymentStatus = "Unpaid",
+        //     PaymentType = "Cash"
+        // });
+        #endregion
 
         #region Decode jwt and system log
         //decode token

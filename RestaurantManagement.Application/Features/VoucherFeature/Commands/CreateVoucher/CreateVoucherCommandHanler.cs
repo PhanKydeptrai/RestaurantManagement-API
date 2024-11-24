@@ -29,17 +29,18 @@ public class CreateVoucherCommandHanler(
             VoucherId = Ulid.NewUlid(),
             VoucherName = request.VoucherName,
             VoucherCode = request.VoucherCode,
-            VoucherType = string.IsNullOrEmpty(request.PercentageDiscount) ? "DirectDiscount" : "PercentageDiscount",
-            PercentageDiscount = string.IsNullOrEmpty(request.PercentageDiscount) ? null : int.Parse(request.PercentageDiscount),
+            VoucherType = string.IsNullOrEmpty(request.PercentageDiscount.ToString()) ? "DirectDiscount" : "PercentageDiscount",
+            PercentageDiscount = string.IsNullOrEmpty(request.PercentageDiscount.ToString()) ? null : int.Parse(request.PercentageDiscount.ToString()),
             MaximumDiscountAmount = decimal.Parse(request.MaximumDiscountAmount),
             MinimumOrderAmount = decimal.Parse(request.MinimumOrderAmount),
-            VoucherConditions = string.IsNullOrEmpty(request.VoucherConditions) ? 0 : decimal.Parse(request.VoucherConditions),
+            VoucherConditions = string.IsNullOrEmpty(request.VoucherConditions.ToString()) ? 0 : decimal.Parse(request.VoucherConditions.ToString()),
             StartDate = request.StartDate,
             ExpiredDate = request.ExpiredDate,
             Description = request.Description,
             Status = "Active"
         };
         await context.Vouchers.AddAsync(voucher);
+        
 
         #region Decode jwt and system log
         //decode token

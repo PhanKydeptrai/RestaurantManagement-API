@@ -6,10 +6,10 @@ namespace RestaurantManagement.Application.Features.VoucherFeature.Commands.Crea
 public record CreateVoucherCommand(
     string VoucherName,
     string VoucherCode,
-    string? PercentageDiscount,
+    object? PercentageDiscount,
     string MaximumDiscountAmount,
     string MinimumOrderAmount,
-    string? VoucherConditions,
+    object? VoucherConditions,
     DateTime StartDate,
     DateTime ExpiredDate,
     string? Description,
@@ -19,10 +19,10 @@ public record CreateVoucherCommand(
 public record CreateVoucherRequest(
     string VoucherName,
     string VoucherCode,
-    string? PercentageDiscount,
+    object? PercentageDiscount,
     string MaximumDiscountAmount,
     string MinimumOrderAmount,
-    string? VoucherConditions,
+    object? VoucherConditions,
     DateTime StartDate,
     DateTime ExpiredDate,
     string? Description

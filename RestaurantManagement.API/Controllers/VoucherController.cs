@@ -19,6 +19,7 @@ public class VoucherController : IEndpoint
 
         endpoints.MapGet("", async (
             [FromQuery] string? filterStatus,
+            [FromQuery] string? filterType,
             [FromQuery] string? searchTerm,
             [FromQuery] string? sortColumn,
             [FromQuery] string? sortOrder,
@@ -29,6 +30,7 @@ public class VoucherController : IEndpoint
             //lấy token
             var result = await sender.Send(new GetAllVoucherQuery(
                 filterStatus,
+                filterType,
                 searchTerm,
                 sortColumn,
                 sortOrder,
@@ -43,34 +45,44 @@ public class VoucherController : IEndpoint
 
         }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
+
         endpoints.MapPost("", async (
             [FromBody] CreateVoucherRequest request,
             ISender sender,
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
         {
-            //lấy token
-            var token = jwtProvider.GetTokenFromHeader(httpContext);
-
-            var result = await sender.Send(new CreateVoucherCommand(
-                request.VoucherName,
-                request.VoucherCode,
-                request.PercentageDiscount,
-                request.MaximumDiscountAmount,
-                request.MinimumOrderAmount,
-                request.VoucherConditions,
-                request.StartDate,
-                request.ExpiredDate,
-                request.Description,
-                token
-            ));
-
-            if (result.IsSuccess)
+            try
             {
-                return Results.Ok(result);
-            }
-            return Results.BadRequest(result);
+                //lấy token
+                var token = jwtProvider.GetTokenFromHeader(httpContext);
+                if (request.VoucherConditions == null)
+                {
+                    return Results.UnprocessableEntity();
+                }
+                var result = await sender.Send(new CreateVoucherCommand(
+                    request.VoucherName,
+                    request.VoucherCode,
+                    request.PercentageDiscount,
+                    request.MaximumDiscountAmount,
+                    request.MinimumOrderAmount,
+                    request.VoucherConditions,
+                    request.StartDate,
+                    request.ExpiredDate,
+                    request.Description,
+                    token
+                ));
 
+                if (result.IsSuccess)
+                {
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result);
+            }
+            catch (Exception)
+            {
+                return Results.UnprocessableEntity();
+            }
         })
         .RequireAuthorization("boss")
         .RequireRateLimiting("AntiSpamCreateVoucherCommand")

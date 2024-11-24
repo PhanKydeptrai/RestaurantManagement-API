@@ -205,7 +205,7 @@ public class BookingController : IEndpoint
 
             booking.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
 
-            //Tạo bill ghi nhận phí thanh toán
+            //Tạo bill ghi nhận phí booking
 
             var bill = new Bill
             {

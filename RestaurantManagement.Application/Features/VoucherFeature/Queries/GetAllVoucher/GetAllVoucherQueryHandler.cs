@@ -12,6 +12,7 @@ public class GetAllVoucherQueryHandler(IApplicationDbContext context) : IQueryHa
     public async Task<Result<PagedList<Voucher>>> Handle(GetAllVoucherQuery request, CancellationToken cancellationToken)
     {
         var voucherQuery = context.Vouchers.AsQueryable();
+        
         //Search
         if (!string.IsNullOrEmpty(request.searchTerm))
         {
@@ -22,6 +23,11 @@ public class GetAllVoucherQueryHandler(IApplicationDbContext context) : IQueryHa
         if(!string.IsNullOrEmpty(request.filterStatus))
         {
             voucherQuery = voucherQuery.Where(x => x.Status == request.filterStatus);
+        }
+
+        if(!string.IsNullOrEmpty(request.filterType))
+        {
+            voucherQuery = voucherQuery.Where(x => x.VoucherType == request.filterType);
         }
 
 

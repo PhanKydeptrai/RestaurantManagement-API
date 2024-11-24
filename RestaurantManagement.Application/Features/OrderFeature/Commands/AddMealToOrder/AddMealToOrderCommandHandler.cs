@@ -21,7 +21,7 @@ public class AddMealToOrderCommandHandler(
         // Nếu đã có order => kiểm tra món đã có trong  
         // order chưa, nếu có thì cập nhật số lượng, nếu chưa thì tạo mới orderdetail
 
-        
+
         //Validate request
         var validator = new AddMealToOrderCommandValidator(tableRepository, mealRepository);
         Error[]? errors = null;
@@ -37,21 +37,22 @@ public class AddMealToOrderCommandHandler(
             .Where(a => a.TableId == int.Parse(request.TableId))
             .Select(a => a.Orders.FirstOrDefault(a => a.PaymentStatus == "Unpaid"))
             .FirstOrDefaultAsync();
+
         
-        //Lấy bill chưa thanh toán của bàn đang ăn
-        try
+        try //Lấy bill chưa thanh toán của bàn đang ăn (có booking)
         {
             var bill = await context.Tables
-            .Include(a => a.BookingDetails)
-            .ThenInclude(a => a.Booking)
-            .Where(a => a.TableId == int.Parse(request.TableId))
-            .Select(a => a.BookingDetails.FirstOrDefault().Booking.Bill)
-            .FirstOrDefaultAsync();
+                .Include(a => a.BookingDetails)
+                .ThenInclude(a => a.Booking)
+                .ThenInclude(a => a.Bill)
+                .Where(a => a.TableId == int.Parse(request.TableId) && a.BookingDetails.Any(a => a.Booking.Bill.PaymentStatus == "Unpaid"))
+                .Select(a => a.BookingDetails.FirstOrDefault().Booking.Bill)
+                .FirstOrDefaultAsync();
 
             bill.OrderId = order.OrderId; //Cập nhật orderid cho bill
         }
-        catch (Exception){ }
-        
+        catch (Exception) { }
+
         var mealPrice = await context.Meals.AsNoTracking() //Lấy giá món ăn
             .Where(a => a.MealId == Ulid.Parse(request.MealId))
             .Select(a => a.Price)
@@ -121,18 +122,18 @@ public class AddMealToOrderCommandHandler(
                 order.CustomerId = customerId;
             }
 
-            
+
 
             await context.Orders.AddAsync(order);
             await context.OrderDetails.AddAsync(orderDetail);
         }
 
-        
+
         #region Decode jwt and system log
         //decode token
         var claims = JwtHelper.DecodeJwt(request.Token);
         claims.TryGetValue("sub", out var userId);
-       
+
         //Create System Log
         await context.OrderLogs.AddAsync(new OrderLog
         {

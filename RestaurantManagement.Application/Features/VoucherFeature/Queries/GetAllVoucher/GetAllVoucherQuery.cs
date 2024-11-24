@@ -6,6 +6,7 @@ namespace RestaurantManagement.Application.Features.VoucherFeature.Queries.GetAl
 
 public record GetAllVoucherQuery(
     string? filterStatus,
+    string? filterType,
     string? searchTerm,
     string? sortColumn,
     string? sortOrder,
