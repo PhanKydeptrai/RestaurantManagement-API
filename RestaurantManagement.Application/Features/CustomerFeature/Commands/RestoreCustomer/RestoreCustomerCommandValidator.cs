@@ -14,7 +14,7 @@ public class RestoreCustomerCommandValidator : AbstractValidator<RestoreCustomer
             .WithMessage("{PropertyName} is required.")
             .Must(a => Ulid.TryParse(a, out _))
             .WithMessage("{PropertyName} is not a valid Ulid.")
-            .Must(a => customerRepository.IsCustomerIdActive(Ulid.Parse(a)).Result)
-            .WithMessage("{PropertyName} is not active.");
+            .Must(a => !customerRepository.IsCustomerIdActive(Ulid.Parse(a)).Result)
+            .WithMessage("{PropertyName} is active.");
     }
 }

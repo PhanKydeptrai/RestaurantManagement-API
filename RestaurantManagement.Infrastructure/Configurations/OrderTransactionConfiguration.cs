@@ -5,7 +5,7 @@ using RestaurantManagement.Infrastructure.Converter;
 
 namespace RestaurantManagement.Infrastructure.Configurations;
 
-internal sealed class PaymentTransactionConfiguration : IEntityTypeConfiguration<OrderTransaction>
+internal sealed class OrderTransactionConfiguration : IEntityTypeConfiguration<OrderTransaction>
 {
     public void Configure(EntityTypeBuilder<OrderTransaction> builder)
     {
@@ -18,14 +18,4 @@ internal sealed class PaymentTransactionConfiguration : IEntityTypeConfiguration
         builder.Property(a => a.Status).IsRequired().HasColumnType("nvarchar(20)");
     }
 
-    // public Ulid TransactionId { get; set; }  // Mã giao dịch
-    // public string PayerName { get; set; }  // Tên người thanh toán
-    // public string PayerEmail { get; set; }  // Email người thanh toán
-    // public string PayeeName { get; set; }  // Tên người nhận
-    // public decimal Amount { get; set; }  // Số tiền
-    // public string? Description { get; set; }  // Mô tả giao dịch
-    // public string Status { get; set; }  // Trạng thái giao dịch
-    // public DateTime TransactionDate { get; set; }  // Thời gian giao dịch
-    // public Ulid OrderId { get; set; }
-    // public Order? Order { get; set; }
 }

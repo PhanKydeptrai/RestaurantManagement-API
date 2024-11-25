@@ -1,4 +1,5 @@
 using FluentEmail.Core;
+using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
@@ -42,7 +43,16 @@ public class RestoreCustomerCommandHandler : ICommandHandler<RestoreCustomerComm
         claims.TryGetValue("sub", out var userId);
 
         //lấy mail khách hàng
-        var customerInfo = await _customerRepository.GetCustomerById(Ulid.Parse(userId));
+        var customerInfo = await _context.Users
+            .FirstOrDefaultAsync(a => a.UserId == Ulid.Parse(request.userId));
+
+        //khôi phục tài khoản
+        var customer = await _context.Customers
+            .FirstOrDefaultAsync(a => a.UserId == Ulid.Parse(request.userId));
+
+        customer.CustomerStatus = "Active";
+        customerInfo.Status = "Actived";
+        
 
         // Gửi email thông báo
         bool emailSent = false;
@@ -53,7 +63,7 @@ public class RestoreCustomerCommandHandler : ICommandHandler<RestoreCustomerComm
         {
             try
             {
-                await _fluentEmail.To(customerInfo.Email).Subject("Nhà hàng Nhum nhum - Thông báo vô hiệu hoá tài khoản")
+                await _fluentEmail.To(customerInfo.Email).Subject("Nhà hàng Nhum nhum - Thông báo khôi phục tài khoản")
                     .Body($"Nhà hàng Nhum Nhum xin trân trọng thông báo: <br> Tài khoản của quý khách đã được khôi phục. <br>Chúc quý khách một ngày tốt lành. <br> Nhum Nhum xin chân thành cảm ơn.", isHtml: true)
                     .SendAsync();
                 emailSent = true;
@@ -69,7 +79,7 @@ public class RestoreCustomerCommandHandler : ICommandHandler<RestoreCustomerComm
         }
         while (!emailSent && retryCount < maxRetries);
 
-        //
+        
         //Create System Log
         await _context.CustomerLogs.AddAsync(new CustomerLog
         {

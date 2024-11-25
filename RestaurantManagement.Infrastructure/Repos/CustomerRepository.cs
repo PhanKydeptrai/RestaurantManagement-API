@@ -42,7 +42,7 @@ public class CustomerRepository(RestaurantManagementDbContext context) : ICustom
         return await context.Customers
             .Where(a => a.UserId == id)
             .Select(a => new CustomerResponse(
-                a.CustomerId,
+                a.UserId,
                 a.User.FirstName,
                 a.User.LastName,
                 a.User.Email,

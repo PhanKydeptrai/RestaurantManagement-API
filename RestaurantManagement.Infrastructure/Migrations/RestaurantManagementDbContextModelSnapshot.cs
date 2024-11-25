@@ -33,6 +33,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime");
 
+                    b.Property<bool>("IsVoucherUsed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(26)");
 
@@ -538,6 +541,43 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.ToTable("OrderLogs");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.OrderTransaction", b =>
+                {
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(26)");
+
+                    b.Property<string>("PayerEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PayerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TransactionId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("PaymentTransactions");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>
                 {
                     b.Property<int>("TableId")
@@ -1006,6 +1046,17 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.OrderTransaction", b =>
+                {
+                    b.HasOne("RestaurantManagement.Domain.Entities.Order", "Order")
+                        .WithMany("PaymentTransactions")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>
                 {
                     b.HasOne("RestaurantManagement.Domain.Entities.TableType", "TableType")
@@ -1092,6 +1143,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("Bill");
 
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("PaymentTransactions");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>
