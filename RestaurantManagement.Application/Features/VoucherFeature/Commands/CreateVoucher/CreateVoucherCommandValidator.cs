@@ -52,17 +52,17 @@ public class CreateVoucherCommandValidator : AbstractValidator<CreateVoucherComm
             .NotNull()
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
-            .WithMessage("{PropertyName} is required.")
-            .Must(p => decimal.TryParse(p, out _))
-            .WithMessage("{PropertyName} must be a decimal.");
+            .WithMessage("{PropertyName} is required.");
+            // .Must(p => decimal.TryParse(p, out _))
+            // .WithMessage("{PropertyName} must be a decimal.");
         
         RuleFor(a => a.MinimumOrderAmount)
             .NotNull()
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
-            .WithMessage("{PropertyName} is required.")
-            .Must(p => decimal.TryParse(p, out _))
-            .WithMessage("{PropertyName} must be a decimal.");
+            .WithMessage("{PropertyName} is required.");
+            // .Must(p => decimal.TryParse(p, out _))
+            // .WithMessage("{PropertyName} must be a decimal.");
 
         RuleFor(a => a.VoucherConditions)
             .Must(p => decimal.TryParse(p.ToString(), out _))
