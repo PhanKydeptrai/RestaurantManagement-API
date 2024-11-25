@@ -52,37 +52,33 @@ public class VoucherController : IEndpoint
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
         {
-            try
-            {
-                //lấy token
-                var token = jwtProvider.GetTokenFromHeader(httpContext);
-                if (request.VoucherConditions == null)
-                {
-                    return Results.UnprocessableEntity();
-                }
-                var result = await sender.Send(new CreateVoucherCommand(
-                    request.VoucherName,
-                    request.VoucherCode,
-                    request.PercentageDiscount,
-                    request.MaximumDiscountAmount,
-                    request.MinimumOrderAmount,
-                    request.VoucherConditions,
-                    request.StartDate,
-                    request.ExpiredDate,
-                    request.Description,
-                    token
-                ));
 
-                if (result.IsSuccess)
-                {
-                    return Results.Ok(result);
-                }
-                return Results.BadRequest(result);
-            }
-            catch (Exception)
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+            if (request.VoucherConditions == null)
             {
                 return Results.UnprocessableEntity();
             }
+            var result = await sender.Send(new CreateVoucherCommand(
+                request.VoucherName,
+                request.VoucherCode,
+                request.PercentageDiscount,
+                request.MaximumDiscountAmount,
+                request.MinimumOrderAmount,
+                request.VoucherConditions,
+                request.StartDate,
+                request.ExpiredDate,
+                request.Description,
+                token
+            ));
+
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+
+
         })
         .RequireAuthorization("boss")
         .RequireRateLimiting("AntiSpamCreateVoucherCommand")
