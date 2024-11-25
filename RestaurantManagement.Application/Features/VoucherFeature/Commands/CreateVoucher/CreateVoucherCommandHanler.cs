@@ -34,8 +34,8 @@ public class CreateVoucherCommandHanler(
             MaximumDiscountAmount = decimal.Parse(request.MaximumDiscountAmount),
             MinimumOrderAmount = decimal.Parse(request.MinimumOrderAmount),
             VoucherConditions = string.IsNullOrEmpty(request.VoucherConditions.ToString()) ? 0 : decimal.Parse(request.VoucherConditions.ToString()),
-            StartDate = request.StartDate,
-            ExpiredDate = request.ExpiredDate,
+            StartDate = DateTime.Parse(request.StartDate),
+            ExpiredDate = DateTime.Parse(request.ExpiredDate),
             Description = request.Description,
             Status = "Active"
         };

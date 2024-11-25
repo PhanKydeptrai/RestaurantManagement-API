@@ -33,7 +33,7 @@ public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagement
     public DbSet<EmployeeLog> EmployeeLogs { get; set; }
     public DbSet<BookingLog> BookingLogs { get; set; }
     public DbSet<VoucherLog> VoucherLogs { get; set; }
-    public DbSet<OrderTransaction> PaymentTransactions { get; set; }
+    public DbSet<OrderTransaction> OrderTransactions { get; set; }
 
     //Cấu hình fluent api
     protected override void OnModelCreating(ModelBuilder modelBuilder)
