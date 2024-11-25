@@ -23,13 +23,27 @@ public class CreateVoucherCommandHanler(
         {
             return Result.Failure(errors!);
         }
+        
+        #region Tạm thời
+        
+        string voucherType = string.Empty;
+        if (request.PercentageDiscount == 0)
+        {
+            voucherType = "DirectDiscount";
+        }
+        else
+        {
+            voucherType = "PercentageDiscount";
+        }
+        #endregion
 
         var voucher = new Voucher
         {
             VoucherId = Ulid.NewUlid(),
             VoucherName = request.VoucherName,
             VoucherCode = request.VoucherCode,
-            VoucherType = string.IsNullOrEmpty(request.PercentageDiscount.ToString()) ? "DirectDiscount" : "PercentageDiscount",
+            VoucherType = voucherType,
+            // VoucherType = string.IsNullOrEmpty(request.PercentageDiscount.ToString()) ? "DirectDiscount" : "PercentageDiscount",
             PercentageDiscount = string.IsNullOrEmpty(request.PercentageDiscount.ToString()) ? null : int.Parse(request.PercentageDiscount.ToString()),
             // MaximumDiscountAmount = decimal.Parse(request.MaximumDiscountAmount),
             // MinimumOrderAmount = decimal.Parse(request.MinimumOrderAmount),
@@ -42,7 +56,7 @@ public class CreateVoucherCommandHanler(
             Status = "Active"
         };
         await context.Vouchers.AddAsync(voucher);
-        
+
 
         #region Decode jwt and system log
         //decode token
