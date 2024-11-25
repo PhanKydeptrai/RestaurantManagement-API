@@ -5,6 +5,7 @@ using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.AccountFeature.Commands.UpdateCustomerInformation;
 using RestaurantManagement.Application.Features.CustomerFeature.Commands.CreateCustomer;
 using RestaurantManagement.Application.Features.CustomerFeature.Commands.DeleteCustomer;
+using RestaurantManagement.Application.Features.CustomerFeature.Commands.RestoreCustomer;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.CustomerFilter;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetVoucherOfCustomerByUserId;
@@ -130,20 +131,20 @@ public class CustomerController : IEndpoint
 
         endpoints.MapGet("customer-voucher",
         async (
-            [FromQuery]string? filterType,
-            [FromQuery]string? filterStatus,
-            [FromQuery]string? searchTerm,
-            [FromQuery]string? sortColumn,
-            [FromQuery]string? sortOrder,
-            [FromQuery]int? page,
-            [FromQuery]int? pageSize,
+            [FromQuery] string? filterType,
+            [FromQuery] string? filterStatus,
+            [FromQuery] string? searchTerm,
+            [FromQuery] string? sortColumn,
+            [FromQuery] string? sortOrder,
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize,
             ISender sender,
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
         {
             //lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
-            var result = await sender.Send(new GetVoucherOfCustomerByUserIdQuery(filterStatus,filterType,searchTerm,sortColumn,sortOrder,page,pageSize,token));   
+            var result = await sender.Send(new GetVoucherOfCustomerByUserIdQuery(filterStatus, filterType, searchTerm, sortColumn, sortOrder, page, pageSize, token));
             if (result.IsSuccess)
             {
                 return Results.Ok(result);
@@ -152,6 +153,26 @@ public class CustomerController : IEndpoint
 
         }).RequireAuthorization()
         .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+
+        endpoints.MapPut("restore/{id}", async (
+            string id,
+            ISender sender,
+            IJwtProvider jwtProvider,
+            HttpContext httpContext) =>
+        {
+            
+            //lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+            var result = await sender.Send(new RestoreCustomerCommand(id, token));
+            if (result.IsSuccess)
+            {
+                return Results.Ok(result);
+            }
+            return Results.BadRequest(result);
+        }).RequireAuthorization()
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+
+
 
     }
 }
