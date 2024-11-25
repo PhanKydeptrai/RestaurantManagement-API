@@ -10,8 +10,8 @@ public record CreateVoucherCommand(
     string MaximumDiscountAmount,
     string MinimumOrderAmount,
     object? VoucherConditions,
-    DateTime StartDate,
-    DateTime ExpiredDate,
+    string StartDate,
+    string ExpiredDate,
     string? Description,
     string token
 ) : ICommand;
@@ -23,8 +23,8 @@ public record CreateVoucherRequest(
     string MaximumDiscountAmount,
     string MinimumOrderAmount,
     object? VoucherConditions,
-    DateTime StartDate,
-    DateTime ExpiredDate,
+    string StartDate,
+    string ExpiredDate,
     string? Description
 );
 #endregion

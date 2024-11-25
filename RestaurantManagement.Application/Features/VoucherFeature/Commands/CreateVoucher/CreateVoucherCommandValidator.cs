@@ -76,7 +76,9 @@ public class CreateVoucherCommandValidator : AbstractValidator<CreateVoucherComm
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
-            .Must(p => p > DateTime.UtcNow)
+            .Must(a => DateTime.TryParse(a, out _))
+            .WithMessage("{PropertyName} must be a valid date.")
+            .Must(p => DateTime.Parse(p) > DateTime.UtcNow)
             .WithMessage("{PropertyName} must be greater than current date.");
 
         RuleFor(a => a.ExpiredDate)
@@ -84,7 +86,9 @@ public class CreateVoucherCommandValidator : AbstractValidator<CreateVoucherComm
             .WithMessage("{PropertyName} is required.")
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
-            .Must((a, b) => b > a.StartDate)
+            .Must(a => DateTime.TryParse(a, out _))
+            .WithMessage("{PropertyName} must be a valid date.")
+            .Must((a, b) => DateTime.Parse(b) > DateTime.Parse(a.StartDate))
             .WithMessage("{PropertyName} must be greater than StartDate.");
 
         RuleFor(a => a.Description)
