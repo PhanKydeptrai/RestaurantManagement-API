@@ -11,16 +11,19 @@ namespace RestaurantManagement.Application.Features.CustomerFeature.Commands.Res
 public class RestoreCustomerCommandHandler : ICommandHandler<RestoreCustomerCommand>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IFluentEmail _fluentEmail;
     private readonly ICustomerRepository _customerRepository;
     public RestoreCustomerCommandHandler(
         IApplicationDbContext context,
         ICustomerRepository customerRepository,
-        IFluentEmail fluentEmail)
+        IFluentEmail fluentEmail,
+        IUnitOfWork unitOfWork)
     {
         _context = context;
         _customerRepository = customerRepository;
         _fluentEmail = fluentEmail;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result> Handle(RestoreCustomerCommand request, CancellationToken cancellationToken)
@@ -75,6 +78,7 @@ public class RestoreCustomerCommandHandler : ICommandHandler<RestoreCustomerComm
             LogDetails = $"khôi phục tài khoản cho khách hàng {customerInfo.FirstName} {customerInfo.LastName} ID: {customerInfo.UserId}",
             UserId = Ulid.Parse(userId)
         });
+        await _unitOfWork.SaveChangesAsync();
         return Result.Success();
 
     }
