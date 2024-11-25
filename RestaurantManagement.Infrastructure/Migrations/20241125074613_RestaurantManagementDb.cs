@@ -535,40 +535,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bills",
-                columns: table => new
-                {
-                    BillId = table.Column<string>(type: "nvarchar(26)", nullable: false),
-                    PaymentStatus = table.Column<string>(type: "varchar(20)", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    OrderId = table.Column<string>(type: "nvarchar(26)", nullable: true),
-                    BookId = table.Column<string>(type: "nvarchar(26)", nullable: true),
-                    VoucherId = table.Column<string>(type: "nvarchar(26)", nullable: true),
-                    PaymentType = table.Column<string>(type: "varchar(20)", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    IsVoucherUsed = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bills", x => x.BillId);
-                    table.ForeignKey(
-                        name: "FK_Bills_Bookings_BookId",
-                        column: x => x.BookId,
-                        principalTable: "Bookings",
-                        principalColumn: "BookId");
-                    table.ForeignKey(
-                        name: "FK_Bills_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "OrderId");
-                    table.ForeignKey(
-                        name: "FK_Bills_Vouchers_VoucherId",
-                        column: x => x.VoucherId,
-                        principalTable: "Vouchers",
-                        principalColumn: "VoucherId");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderDetails",
                 columns: table => new
                 {
@@ -597,7 +563,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PaymentTransactions",
+                name: "OrderTransactions",
                 columns: table => new
                 {
                     TransactionId = table.Column<string>(type: "nvarchar(26)", nullable: false),
@@ -605,19 +571,67 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     PayerEmail = table.Column<string>(type: "nvarchar(255)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(20)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(20)", nullable: false),
-                    TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OrderId = table.Column<string>(type: "nvarchar(26)", nullable: false)
+                    TransactionDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    IsVoucherUsed = table.Column<bool>(type: "bit", nullable: false),
+                    VoucherId = table.Column<string>(type: "nvarchar(26)", nullable: true),
+                    OrderId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    BillId = table.Column<string>(type: "nvarchar(26)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PaymentTransactions", x => x.TransactionId);
+                    table.PrimaryKey("PK_OrderTransactions", x => x.TransactionId);
                     table.ForeignKey(
-                        name: "FK_PaymentTransactions_Orders_OrderId",
+                        name: "FK_OrderTransactions_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "OrderId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderTransactions_Vouchers_VoucherId",
+                        column: x => x.VoucherId,
+                        principalTable: "Vouchers",
+                        principalColumn: "VoucherId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bills",
+                columns: table => new
+                {
+                    BillId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    PaymentStatus = table.Column<string>(type: "varchar(20)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(26)", nullable: true),
+                    BookId = table.Column<string>(type: "nvarchar(26)", nullable: true),
+                    VoucherId = table.Column<string>(type: "nvarchar(26)", nullable: true),
+                    PaymentType = table.Column<string>(type: "varchar(20)", nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsVoucherUsed = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bills", x => x.BillId);
+                    table.ForeignKey(
+                        name: "FK_Bills_Bookings_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Bookings",
+                        principalColumn: "BookId");
+                    table.ForeignKey(
+                        name: "FK_Bills_OrderTransactions_BillId",
+                        column: x => x.BillId,
+                        principalTable: "OrderTransactions",
+                        principalColumn: "TransactionId");
+                    table.ForeignKey(
+                        name: "FK_Bills_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId");
+                    table.ForeignKey(
+                        name: "FK_Bills_Vouchers_VoucherId",
+                        column: x => x.VoucherId,
+                        principalTable: "Vouchers",
+                        principalColumn: "VoucherId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -747,9 +761,14 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "TableId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PaymentTransactions_OrderId",
-                table: "PaymentTransactions",
+                name: "IX_OrderTransactions_OrderId",
+                table: "OrderTransactions",
                 column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderTransactions_VoucherId",
+                table: "OrderTransactions",
+                column: "VoucherId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TableLogs_UserId",
@@ -823,9 +842,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "OrderLogs");
 
             migrationBuilder.DropTable(
-                name: "PaymentTransactions");
-
-            migrationBuilder.DropTable(
                 name: "TableLogs");
 
             migrationBuilder.DropTable(
@@ -838,16 +854,19 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "VoucherLogs");
 
             migrationBuilder.DropTable(
-                name: "Bookings");
+                name: "OrderTransactions");
 
             migrationBuilder.DropTable(
-                name: "Vouchers");
+                name: "Bookings");
 
             migrationBuilder.DropTable(
                 name: "Meals");
 
             migrationBuilder.DropTable(
                 name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "Vouchers");
 
             migrationBuilder.DropTable(
                 name: "Categories");

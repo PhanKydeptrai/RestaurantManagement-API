@@ -35,7 +35,8 @@ internal sealed class BillConfiguration : IEntityTypeConfiguration<Bill>
         builder.HasOne(a => a.Booking).WithOne(a => a.Bill).HasForeignKey<Bill>(a => a.BookId).IsRequired(false);
         //Một voucher có nhiều bill
         builder.HasOne(a => a.Voucher).WithMany(a => a.Bills).HasForeignKey(a => a.VoucherId);
-        
+        //Một bill có một transaction
+        builder.HasOne(a => a.OrderTransaction).WithOne(a => a.Bill).HasForeignKey<Bill>(a => a.BillId).IsRequired(false);
 
 
     }
