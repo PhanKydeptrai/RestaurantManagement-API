@@ -545,7 +545,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     BookId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     VoucherId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     PaymentType = table.Column<string>(type: "varchar(20)", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsVoucherUsed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -589,6 +590,30 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderDetails_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentTransactions",
+                columns: table => new
+                {
+                    TransactionId = table.Column<string>(type: "nvarchar(26)", nullable: false),
+                    PayerName = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    PayerEmail = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(20)", nullable: false),
+                    TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(26)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentTransactions", x => x.TransactionId);
+                    table.ForeignKey(
+                        name: "FK_PaymentTransactions_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "OrderId",
@@ -722,6 +747,11 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 column: "TableId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PaymentTransactions_OrderId",
+                table: "PaymentTransactions",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TableLogs_UserId",
                 table: "TableLogs",
                 column: "UserId");
@@ -791,6 +821,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrderLogs");
+
+            migrationBuilder.DropTable(
+                name: "PaymentTransactions");
 
             migrationBuilder.DropTable(
                 name: "TableLogs");
