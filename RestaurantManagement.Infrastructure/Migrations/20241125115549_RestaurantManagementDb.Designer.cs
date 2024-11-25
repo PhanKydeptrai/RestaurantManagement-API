@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241125074613_RestaurantManagementDb")]
+    [Migration("20241125115549_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -553,7 +553,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("BillId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(26)");
 
                     b.Property<string>("Description")
@@ -567,11 +566,9 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .HasColumnType("nvarchar(26)");
 
                     b.Property<string>("PayerEmail")
-                        .IsRequired()
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PayerName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PaymentMethod")
@@ -588,6 +585,10 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .HasColumnType("nvarchar(26)");
 
                     b.HasKey("TransactionId");
+
+                    b.HasIndex("BillId")
+                        .IsUnique()
+                        .HasFilter("[BillId] IS NOT NULL");
 
                     b.HasIndex("OrderId");
 
@@ -828,10 +829,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Bill", b =>
                 {
-                    b.HasOne("RestaurantManagement.Domain.Entities.OrderTransaction", "OrderTransaction")
-                        .WithOne("Bill")
-                        .HasForeignKey("RestaurantManagement.Domain.Entities.Bill", "BillId");
-
                     b.HasOne("RestaurantManagement.Domain.Entities.Booking", "Booking")
                         .WithOne("Bill")
                         .HasForeignKey("RestaurantManagement.Domain.Entities.Bill", "BookId");
@@ -847,8 +844,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("Booking");
 
                     b.Navigation("Order");
-
-                    b.Navigation("OrderTransaction");
 
                     b.Navigation("Voucher");
                 });
@@ -1072,6 +1067,10 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.OrderTransaction", b =>
                 {
+                    b.HasOne("RestaurantManagement.Domain.Entities.Bill", "Bill")
+                        .WithOne("OrderTransaction")
+                        .HasForeignKey("RestaurantManagement.Domain.Entities.OrderTransaction", "BillId");
+
                     b.HasOne("RestaurantManagement.Domain.Entities.Order", "Order")
                         .WithMany("OrderTransactions")
                         .HasForeignKey("OrderId")
@@ -1081,6 +1080,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.HasOne("RestaurantManagement.Domain.Entities.Voucher", "Voucher")
                         .WithMany("OrderTransactions")
                         .HasForeignKey("VoucherId");
+
+                    b.Navigation("Bill");
 
                     b.Navigation("Order");
 
@@ -1142,6 +1143,11 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.Bill", b =>
+                {
+                    b.Navigation("OrderTransaction");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Booking", b =>
                 {
                     b.Navigation("Bill");
@@ -1175,11 +1181,6 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("OrderDetails");
 
                     b.Navigation("OrderTransactions");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.OrderTransaction", b =>
-                {
-                    b.Navigation("Bill");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>

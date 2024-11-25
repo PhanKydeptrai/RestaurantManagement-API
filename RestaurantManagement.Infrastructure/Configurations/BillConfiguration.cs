@@ -22,7 +22,7 @@ internal sealed class BillConfiguration : IEntityTypeConfiguration<Bill>
         builder.Property(a => a.VoucherId).IsRequired(false).HasConversion<UlidToStringConverter>();
 
         builder.Property(a => a.CreatedDate).IsRequired().HasColumnType("datetime");
-
+        
         builder.Property(a => a.PaymentType).IsRequired().HasColumnType("varchar(20)");
 
         builder.Property(a => a.Total).IsRequired().HasColumnType("decimal(18,2)");
@@ -36,7 +36,8 @@ internal sealed class BillConfiguration : IEntityTypeConfiguration<Bill>
         //Một voucher có nhiều bill
         builder.HasOne(a => a.Voucher).WithMany(a => a.Bills).HasForeignKey(a => a.VoucherId);
         //Một bill có một transaction
-        builder.HasOne(a => a.OrderTransaction).WithOne(a => a.Bill).HasForeignKey<Bill>(a => a.BillId).IsRequired(false);
+        
+        
 
 
     }
