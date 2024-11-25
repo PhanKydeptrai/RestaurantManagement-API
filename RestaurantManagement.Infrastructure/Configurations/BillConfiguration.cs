@@ -26,6 +26,7 @@ internal sealed class BillConfiguration : IEntityTypeConfiguration<Bill>
         builder.Property(a => a.PaymentType).IsRequired().HasColumnType("varchar(20)");
 
         builder.Property(a => a.Total).IsRequired().HasColumnType("decimal(18,2)");
+        builder.Property(a => a.IsVoucherUsed).IsRequired().HasColumnType("bit");
 
         //ForeignKey
         //Một bill có một order

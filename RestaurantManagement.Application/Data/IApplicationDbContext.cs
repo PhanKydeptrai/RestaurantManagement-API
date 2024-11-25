@@ -31,4 +31,5 @@ public interface IApplicationDbContext
     DbSet<EmployeeLog> EmployeeLogs { get; set; }
     DbSet<BookingLog> BookingLogs { get; set; }
     DbSet<VoucherLog> VoucherLogs { get; set; }
+    DbSet<OrderTransaction> PaymentTransactions { get; set; }
 }
