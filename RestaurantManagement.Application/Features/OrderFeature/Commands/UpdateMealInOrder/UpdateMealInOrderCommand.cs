@@ -4,7 +4,7 @@ namespace RestaurantManagement.Application.Features.OrderFeature.Commands.Update
 
 public record UpdateMealInOrderCommand(
     string OrderDetailId,
-    string Quantity) : ICommand;
+    object Quantity) : ICommand;
 
 public record UpdateMealInOrderRequest(
-    string Quantity);
+    object Quantity);

@@ -1,3 +1,4 @@
+using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Domain.Entities;
@@ -32,6 +33,7 @@ public class RestaurantManagementDbContext(DbContextOptions<RestaurantManagement
     public DbSet<EmployeeLog> EmployeeLogs { get; set; }
     public DbSet<BookingLog> BookingLogs { get; set; }
     public DbSet<VoucherLog> VoucherLogs { get; set; }
+    public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
 
     //Cấu hình fluent api
     protected override void OnModelCreating(ModelBuilder modelBuilder)

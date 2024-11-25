@@ -19,15 +19,14 @@ public class UpdateMealInOrderCommandValidator : AbstractValidator<UpdateMealInO
             .WithMessage("OrderDetailId is invalid.");
 
         RuleFor(x => x.Quantity)
-            .Must(a => int.Parse(a) > 0)
-            .WithMessage("Quantity must be greater than 0.")
-            .When(a => int.TryParse(a.Quantity, out _))
             .NotNull()
             .WithMessage("Quantity is required.")
             .NotEmpty()
             .WithMessage("Quantity is required.")
-            .Must(a => int.TryParse(a, out _))
-            .WithMessage("Quantity is invalid.");
+            .Must(a => a != null && int.TryParse(a.ToString(), out _))
+            .WithMessage("Quantity is invalid.")
+            .Must(a => a != null && int.Parse(a.ToString()) > 0)
+            .WithMessage("Quantity must be greater than 0.");
             
     }
 }
