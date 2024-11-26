@@ -267,7 +267,7 @@ public class OrderController : IEndpoint
 
 
             return Results.Ok("Payment Success!");
-            // return Results.Redirect("https://nhumnhum.com/success");
+            // return Results.Redirect("http://localhost:5173/donetransaction");
         });
 
         endpoints.MapDelete("remove-transaction/{id}", async (

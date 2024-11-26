@@ -252,8 +252,8 @@ public class BookingController : IEndpoint
             }
             while (!emailSent && retryCount < maxRetries);
 
-            return Results.Ok("Payment Success!");
-            // return Results.Redirect("https://nhumnhum.com/success");
+            // return Results.Ok("Payment Success!");
+            return Results.Redirect("http://localhost:5173/donetransaction");
         });
 
     }
