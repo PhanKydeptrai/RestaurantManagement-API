@@ -150,7 +150,8 @@ public class BookingController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).RequireAuthorization().RequireRateLimiting("AntiSpamCancelBooking")
+        }).RequireAuthorization()
+        .RequireRateLimiting("AntiSpamCancelBooking")
         .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Trả về url thanh toán
