@@ -232,13 +232,16 @@ public class OrderController : IEndpoint
 
             // Cập nhật thông tin trong cơ sở dữ liệu
             var transaction = await _context.OrderTransactions
-                .Include(a => a.Order)    
+                .Include(a => a.Bill)
+                .Include(a => a.Order)
                 .FirstOrDefaultAsync(b => b.TransactionId == Ulid.Parse(model.vnp_TxnRef));
 
-            // booking không tồn tại
+            
+
+            // transaction không tồn tại
             if (transaction == null)
             {
-                return Results.NotFound("Booking not found");
+                return Results.BadRequest("Transaction not found!");
             }
 
             if (transaction.Status == "Paid")
@@ -247,27 +250,57 @@ public class OrderController : IEndpoint
             }
 
             transaction.Status = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
-
-            //Tạo bill ghi nhận phí booking
-
-            var bill = new Bill
+            transaction.Order.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
+            var table = await _context.Tables.FindAsync(transaction.Order.TableId);
+            table.ActiveStatus = "Empty";
+            bool isVoucherUsed = false;
+            if (!string.IsNullOrEmpty(transaction.VoucherId.ToString()))
             {
-                BillId = Ulid.NewUlid(),
-                BookId = transaction.Bill.BookId ?? null,
-                CreatedDate = DateTime.Now,
-                OrderId = transaction.OrderId,
-                Total = decimal.Parse(model.vnp_Amount) / 100,
-                PaymentStatus = "Paid",
-                PaymentType = "Cash"
-            };
+                //TODO: Cập nhật số lượng voucher cho khách hàng
 
-            await _context.Bills.AddAsync(bill);
+                // customerVoucher = await context.CustomerVouchers
+                //     .Include(a => a.Customer)
+                //     .ThenInclude(a => a.User)
+                //     .Where(a => a.VoucherId == order.OrderTransaction.VoucherId && a.Customer.User.Phone == order.OrderTransaction.PayerName)
+                //     .FirstOrDefaultAsync();
+                // customerVoucher.Quantity -= 1;
+                isVoucherUsed = true;
 
+            }
+
+            if (transaction.BillId != null) //Có book bàn
+            {
+                //truy vấn lấy bill
+                // var bill = await _context.Bills.FindAsync(transaction.BillId);
+                var booking = await _context.Bookings.FindAsync(transaction.Order.Bill.BookId);
+                booking.BookingStatus = "Completed"; //Cập nhật trạng thái booking
+                transaction.Bill.Total = decimal.Parse(model.vnp_Amount) / 100;
+                transaction.Bill.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
+                transaction.Bill.IsVoucherUsed = isVoucherUsed;
+                transaction.Bill.PaymentType = "VNPay";
+                transaction.Bill.CreatedDate = DateTime.Now;
+                transaction.Bill.VoucherId = transaction.VoucherId;
+            }
+            else //Không book bàn
+            {
+                var bill = new Bill
+                {
+                    BillId = Ulid.NewUlid(),
+                    BookId = null,
+                    CreatedDate = DateTime.Now,
+                    OrderId = transaction.OrderId,
+                    Total = decimal.Parse(model.vnp_Amount) / 100,
+                    PaymentStatus = "Paid",
+                    IsVoucherUsed = isVoucherUsed,
+                    VoucherId = transaction.VoucherId,
+                    PaymentType = "VNPay"
+                };
+                await _context.Bills.AddAsync(bill);
+            }
             await unitOfWork.SaveChangesAsync();
 
-
-            return Results.Ok("Payment Success!");
-            // return Results.Redirect("http://localhost:5173/donetransaction");
+            // return Results.Ok("Payment Success!");
+            return Results.Redirect("http://localhost:5173/donetransaction");
         });
 
         endpoints.MapDelete("remove-transaction/{id}", async (
