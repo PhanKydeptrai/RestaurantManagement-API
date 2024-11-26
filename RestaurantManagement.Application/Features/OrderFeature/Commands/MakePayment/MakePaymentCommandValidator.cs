@@ -26,10 +26,14 @@ public class MakePaymentCommandValidator : AbstractValidator<MakePaymentCommand>
             .When(a => !string.IsNullOrEmpty(a.voucherCode));
 
         RuleFor(a => a.phoneNumber) //Kiểm tra số điện thoại khách hàng
+            .NotNull()
+            .WithMessage("{PropertyName} is required.")
+            .NotEmpty()
+            .WithMessage("{PropertyName} is required.")
             .Matches(@"^0\d{9}$")
             .WithMessage("PhoneNumber must start with 0 and be 10 digits long.")
             .Must(a => customerRepository.IsCustomerHasThisPhoneNumberActive(a).Result)
             .WithMessage("Phonenumber of customer is not exist")
-            .When(a => !string.IsNullOrEmpty(a.phoneNumber));
+            .When(a => !string.IsNullOrEmpty(a.voucherCode) || !string.IsNullOrEmpty(a.phoneNumber));
     }
 }

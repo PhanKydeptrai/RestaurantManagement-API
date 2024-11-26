@@ -213,7 +213,7 @@ public class BookingController : IEndpoint
                 BookId = booking.BookId,
                 CreatedDate = DateTime.Now,
                 // OrderId = order.OrderId,
-                Total = decimal.Parse(model.vnp_Amount),
+                Total = decimal.Parse(model.vnp_Amount)/100,
                 PaymentStatus = "BookingPaid",
                 PaymentType = "Cash"
             };

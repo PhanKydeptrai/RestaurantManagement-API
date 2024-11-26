@@ -123,7 +123,56 @@ public class MakePaymentCommandHandler : ICommandHandler<MakePaymentCommand>
                     }
                 }
 
-                //Tạo transaction
+                if (billId.ToString() == "00000000000000000000000000")
+                {
+                    //Tạo transaction
+                    var orderTransaction = new OrderTransaction
+                    {
+                        TransactionId = Ulid.NewUlid(),
+                        Status = "Unpaid",
+                        Amount = transactionAmount,
+                        IsVoucherUsed = isVoucherUsed,
+                        TransactionDate = DateTime.Now,
+                        PayerEmail = string.Empty,
+                        PayerName = request.phoneNumber,
+                        OrderId = order.OrderId,
+                        BillId = null,
+                        PaymentMethod = string.Empty,
+                        VoucherId = voucher.VoucherId
+                    };
+
+                    await _context.OrderTransactions.AddAsync(orderTransaction);
+
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                else
+                {
+                    //Tạo transaction
+                    var orderTransaction = new OrderTransaction
+                    {
+                        TransactionId = Ulid.NewUlid(),
+                        Status = "Unpaid",
+                        Amount = transactionAmount,
+                        IsVoucherUsed = isVoucherUsed,
+                        TransactionDate = DateTime.Now,
+                        PayerEmail = string.Empty,
+                        PayerName = request.phoneNumber,
+                        OrderId = order.OrderId,
+                        BillId = billId,
+                        PaymentMethod = string.Empty,
+                        VoucherId = voucher.VoucherId
+                    };
+
+                    await _context.OrderTransactions.AddAsync(orderTransaction);
+
+                    await _unitOfWork.SaveChangesAsync();
+                }
+            }
+        }
+        else
+        {
+            if (billId.ToString() == "00000000000000000000000000")
+            {
                 var orderTransaction = new OrderTransaction
                 {
                     TransactionId = Ulid.NewUlid(),
@@ -134,38 +183,36 @@ public class MakePaymentCommandHandler : ICommandHandler<MakePaymentCommand>
                     PayerEmail = string.Empty,
                     PayerName = string.Empty,
                     OrderId = order.OrderId,
-                    BillId = billId,
                     PaymentMethod = string.Empty,
-                    VoucherId = voucher.VoucherId
+                    VoucherId = null,
+                    BillId = null
                 };
 
                 await _context.OrderTransactions.AddAsync(orderTransaction);
 
                 await _unitOfWork.SaveChangesAsync();
             }
-        }
-        else
-        {
-
-            //Tạo transaction
-            var orderTransaction = new OrderTransaction
+            else
             {
-                TransactionId = Ulid.NewUlid(),
-                Status = "Unpaid",
-                Amount = transactionAmount,
-                IsVoucherUsed = isVoucherUsed,
-                TransactionDate = DateTime.Now,
-                PayerEmail = string.Empty,
-                PayerName = string.Empty,
-                OrderId = order.OrderId,
-                PaymentMethod = string.Empty,
-                VoucherId = null,
-                BillId = billId
-            };
+                var orderTransaction = new OrderTransaction
+                {
+                    TransactionId = Ulid.NewUlid(),
+                    Status = "Unpaid",
+                    Amount = transactionAmount,
+                    IsVoucherUsed = isVoucherUsed,
+                    TransactionDate = DateTime.Now,
+                    PayerEmail = string.Empty,
+                    PayerName = string.Empty,
+                    OrderId = order.OrderId,
+                    PaymentMethod = string.Empty,
+                    VoucherId = null,
+                    BillId = billId
+                };
 
-            await _context.OrderTransactions.AddAsync(orderTransaction);
+                await _context.OrderTransactions.AddAsync(orderTransaction);
 
-            await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
 
         return Result.Success();
