@@ -48,15 +48,33 @@ public class MakePaymentCommandHandler : ICommandHandler<MakePaymentCommand>
 
         //Kiểm tra xem bàn đã có order chưa
 
+        #region truy vấn cũ
+        // var order = await _context.Tables
+        //     .Include(a => a.Orders)
+        //     .Where(a => a.TableId == int.Parse(request.tableId))
+        //     .Select(a => a.Orders.FirstOrDefault(a => a.PaymentStatus == "Unpaid"))
+        //     .FirstOrDefaultAsync();
+        #endregion
+
         var order = await _context.Tables
+            .Include(a => a.BookingDetails.Where(a => a.Booking.BookingStatus == "Occupied"))
             .Include(a => a.Orders)
+            .ThenInclude(a => a.OrderTransaction)
             .Where(a => a.TableId == int.Parse(request.tableId))
             .Select(a => a.Orders.FirstOrDefault(a => a.PaymentStatus == "Unpaid"))
             .FirstOrDefaultAsync();
 
+        
+        //refactor
         if (order == null)
         {
             var error = new[] { new Error("Order", "Table does not have any order.") };
+            return Result.Failure(error);
+        }
+
+        if(order.OrderTransaction != null)
+        {
+            var error = new[] { new Error("Order", "Transaction exist!.") };
             return Result.Failure(error);
         }
 
@@ -65,17 +83,19 @@ public class MakePaymentCommandHandler : ICommandHandler<MakePaymentCommand>
         //Kiểm tra bàn có booking hay không
         var checkBooking = await _context.Tables
             .Include(a => a.BookingDetails)
-            .Include(a => a.BookingDetails).ThenInclude(a => a.Booking)
-            .ThenInclude(a => a.Bill)
+            .ThenInclude(a => a.Booking)
             .Where(a => a.TableId == int.Parse(request.tableId))
-            .Select(a => a.BookingDetails.FirstOrDefault(a => a.Booking.BookingStatus == "Occupied"))
+            .Select(a => a.BookingDetails.FirstOrDefault(a => a.Booking.BookingStatus == "Occupied").Booking)
             .FirstOrDefaultAsync();
+
 
         Ulid billId = Ulid.Empty;
         if (checkBooking != null) //Tính tiền booking
         {
-            transactionAmount = order.Total + (checkBooking.Booking.BookingPrice / 2);
-            billId = checkBooking.Booking.Bill.BillId;
+            transactionAmount = order.Total + (checkBooking.BookingPrice / 2);
+
+            //Thực hiện truy vấn lấy bill id
+            billId = await _context.Bills.Where(a => a.BookId == checkBooking.BookId).Select(a => a.BillId).FirstOrDefaultAsync();
         }
 
         bool isVoucherUsed = false;

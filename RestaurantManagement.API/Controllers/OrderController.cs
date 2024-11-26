@@ -232,7 +232,7 @@ public class OrderController : IEndpoint
 
             // Cập nhật thông tin trong cơ sở dữ liệu
             var transaction = await _context.OrderTransactions
-                .Include(a => a.Order)    
+                .Include(a => a.Order)
                 .FirstOrDefaultAsync(b => b.TransactionId == Ulid.Parse(model.vnp_TxnRef));
 
             // booking không tồn tại
@@ -249,17 +249,22 @@ public class OrderController : IEndpoint
             transaction.Status = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
 
             //Tạo bill ghi nhận phí booking
+            // if(transaction.)
+            // {
 
+            // }
+            
             var bill = new Bill
             {
                 BillId = Ulid.NewUlid(),
-                BookId = transaction.Bill.BookId ?? null,
+                BookId = null,
                 CreatedDate = DateTime.Now,
                 OrderId = transaction.OrderId,
                 Total = decimal.Parse(model.vnp_Amount) / 100,
                 PaymentStatus = "Paid",
                 PaymentType = "Cash"
             };
+
 
             await _context.Bills.AddAsync(bill);
 
