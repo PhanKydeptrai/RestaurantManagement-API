@@ -29,7 +29,7 @@ public class PayOrderCommandHandler(
         var order = await context.Tables
             .Include(a => a.BookingDetails.Where(a => a.Booking.BookingStatus == "Occupied"))
             .Include(a => a.Orders)
-            .ThenInclude(a => a.OrderTransactions.Where(a => a.Status == "Unpaid"))
+            .ThenInclude(a => a.OrderTransaction)
             .Where(a => a.TableId == int.Parse(request.tableId))
             .Select(a => a.Orders.FirstOrDefault(a => a.PaymentStatus == "Unpaid"))
             .FirstOrDefaultAsync();
@@ -41,16 +41,18 @@ public class PayOrderCommandHandler(
         }
 
         //Cập nhật transaction  
-        order.OrderTransactions.FirstOrDefault().Status = "Paid";
+        order.OrderTransaction.Status = "Paid";
         //Cập nhật trạng thái bàn
-        await tableRepository.UpdateActiveStatus(int.Parse(request.tableId), "Empty");
+        // await tableRepository.UpdateActiveStatus(int.Parse(request.tableId), "Empty");
+        var table = await context.Tables.FindAsync(int.Parse(request.tableId));
+        table.ActiveStatus = "Empty";
         //Cập nhật trạng thái order
         order.PaymentStatus = "Paid";
-
+        
         //Kiểm tra bàn có booking hay không
         var checkBooking = await context.Tables
             .Include(a => a.BookingDetails)
-            .Include(a => a.BookingDetails).ThenInclude(a => a.Booking)
+            .ThenInclude(a => a.Booking)
             .ThenInclude(a => a.Bill)
             .Where(a => a.TableId == int.Parse(request.tableId))
             .Select(a => a.BookingDetails.FirstOrDefault(a => a.Booking.BookingStatus == "Occupied"))
@@ -66,20 +68,20 @@ public class PayOrderCommandHandler(
         //Kiểm tra xem khách hàng có sử dụng voucher hay không
         var customerVoucher = new CustomerVoucher();
         bool isVoucherUsed = false;
-        if (!string.IsNullOrEmpty(order.OrderTransactions.FirstOrDefault().VoucherId.ToString()))
+        if (!string.IsNullOrEmpty(order.OrderTransaction.VoucherId.ToString()))
         {
             customerVoucher = await context.CustomerVouchers
                 .Include(a => a.Customer)
                 .ThenInclude(a => a.User)
-                .Where(a => a.VoucherId == order.OrderTransactions.FirstOrDefault().VoucherId && a.Customer.User.Phone == order.OrderTransactions.FirstOrDefault().PayerName)
+                .Where(a => a.VoucherId == order.OrderTransaction.VoucherId && a.Customer.User.Phone == order.OrderTransaction.PayerName)
                 .FirstOrDefaultAsync();
             isVoucherUsed = true;
             customerVoucher.Quantity -= 1;
         }
 
-        if (isBooking == true)
+        if (isBooking == true) //Có booking thì cập nhật bill vì khi thanh toán booking đã có bill
         {
-            checkBooking.Booking.Bill.Total += order.OrderTransactions.FirstOrDefault(a => a.OrderId == order.OrderId).Amount;
+            checkBooking.Booking.Bill.Total += order.OrderTransaction.Amount;
             await unitOfWork.SaveChangesAsync();
         }
         else
@@ -91,7 +93,7 @@ public class PayOrderCommandHandler(
                 BookId = null,
                 CreatedDate = DateTime.Now,
                 OrderId = order.OrderId,
-                Total = order.OrderTransactions.FirstOrDefault(a => a.OrderId == order.OrderId).Amount,
+                Total = order.OrderTransaction.Amount,
                 PaymentStatus = "Paid",
                 PaymentType = "Cash",
                 IsVoucherUsed = isVoucherUsed

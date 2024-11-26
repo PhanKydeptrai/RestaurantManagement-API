@@ -26,7 +26,7 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.HasMany(a => a.OrderDetails).WithOne(a => a.Order).HasForeignKey(a => a.OrderId);
         //Một Customer có nhiều order
         builder.HasOne(a => a.Customer).WithMany(a => a.Orders).HasForeignKey(a => a.CustomerId).IsRequired(false);
-        //Một Order có nhiều OrderTransaction
-        builder.HasMany(a => a.OrderTransactions).WithOne(a => a.Order).HasForeignKey(a => a.OrderId);
+        //Một Order có một OrderTransaction
+        builder.HasOne(a => a.OrderTransaction).WithOne(a => a.Order).HasForeignKey<OrderTransaction>(a => a.OrderId).IsRequired();
     }
 }

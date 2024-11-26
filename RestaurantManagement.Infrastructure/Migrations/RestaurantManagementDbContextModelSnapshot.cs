@@ -587,7 +587,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[BillId] IS NOT NULL");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderId")
+                        .IsUnique();
 
                     b.HasIndex("VoucherId");
 
@@ -1069,8 +1070,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                         .HasForeignKey("RestaurantManagement.Domain.Entities.OrderTransaction", "BillId");
 
                     b.HasOne("RestaurantManagement.Domain.Entities.Order", "Order")
-                        .WithMany("OrderTransactions")
-                        .HasForeignKey("OrderId")
+                        .WithOne("OrderTransaction")
+                        .HasForeignKey("RestaurantManagement.Domain.Entities.OrderTransaction", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1177,7 +1178,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.Navigation("OrderDetails");
 
-                    b.Navigation("OrderTransactions");
+                    b.Navigation("OrderTransaction");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>

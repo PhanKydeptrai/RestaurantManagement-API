@@ -770,7 +770,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_OrderTransactions_OrderId",
                 table: "OrderTransactions",
-                column: "OrderId");
+                column: "OrderId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderTransactions_VoucherId",
