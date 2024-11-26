@@ -36,14 +36,13 @@ public class PayOrderCommandHandler(
 
         if (order == null)
         {
-            var error = new[] { new Error("Order", "Table does not have any order.") };
-            return Result.Failure(error);
+            return Result.Failure(new[] { new Error("Order", "Table does not have any order.") });
         }
 
-        if(order.OrderTransaction == null)
+        //Kiểm tra transaction
+        if (order.OrderTransaction == null)
         {
-            var error = new[] { new Error("Order", "Transaction not found!.") };
-            return Result.Failure(error);
+            return Result.Failure(new[] { new Error("Order", "Transaction not found!.") });
         }
 
         //Cập nhật transaction  
@@ -54,7 +53,7 @@ public class PayOrderCommandHandler(
         table.ActiveStatus = "Empty";
         //Cập nhật trạng thái order
         order.PaymentStatus = "Paid";
-        
+
         //Kiểm tra bàn có booking hay không
         var checkBooking = await context.Tables
             .Include(a => a.BookingDetails)
@@ -72,23 +71,29 @@ public class PayOrderCommandHandler(
         }
 
         //Kiểm tra xem khách hàng có sử dụng voucher hay không
-        var customerVoucher = new CustomerVoucher();
+        // CustomerVoucher? customerVoucher = new CustomerVoucher();
         bool isVoucherUsed = false;
         if (!string.IsNullOrEmpty(order.OrderTransaction.VoucherId.ToString()))
         {
-            customerVoucher = await context.CustomerVouchers
-                .Include(a => a.Customer)
-                .ThenInclude(a => a.User)
-                .Where(a => a.VoucherId == order.OrderTransaction.VoucherId && a.Customer.User.Phone == order.OrderTransaction.PayerName)
-                .FirstOrDefaultAsync();
+            //TODO: Cập nhật số lượng voucher cho khách hàng
+            
+            // customerVoucher = await context.CustomerVouchers
+            //     .Include(a => a.Customer)
+            //     .ThenInclude(a => a.User)
+            //     .Where(a => a.VoucherId == order.OrderTransaction.VoucherId && a.Customer.User.Phone == order.OrderTransaction.PayerName)
+            //     .FirstOrDefaultAsync();
+            // customerVoucher.Quantity -= 1;
             isVoucherUsed = true;
-            customerVoucher.Quantity -= 1;
+
         }
 
         if (isBooking == true) //Có booking thì cập nhật bill vì khi thanh toán booking đã có bill
         {
             checkBooking.Booking.Bill.Total += order.OrderTransaction.Amount;
-            await unitOfWork.SaveChangesAsync();
+            checkBooking.Booking.Bill.IsVoucherUsed = isVoucherUsed;
+            checkBooking.Booking.Bill.VoucherId = order.OrderTransaction.VoucherId;
+            checkBooking.Booking.Bill.PaymentStatus = "Paid";
+            checkBooking.Booking.BookingStatus = "Completed";
         }
         else
         {
@@ -102,14 +107,16 @@ public class PayOrderCommandHandler(
                 Total = order.OrderTransaction.Amount,
                 PaymentStatus = "Paid",
                 PaymentType = "Cash",
+                VoucherId = order.OrderTransaction.VoucherId,
                 IsVoucherUsed = isVoucherUsed
             };
 
             await context.Bills.AddAsync(bill);
-            await unitOfWork.SaveChangesAsync();
+
         }
 
-        
+        await unitOfWork.SaveChangesAsync();
+
         return Result.Success();
     }
 }
