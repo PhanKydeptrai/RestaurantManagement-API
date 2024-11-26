@@ -9,6 +9,7 @@ using RestaurantManagement.Application.Features.OrderFeature.Commands.MakePaymen
 using RestaurantManagement.Application.Features.OrderFeature.Commands.PayOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.UpdateMealInOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Queries.GetAllOrder;
+using RestaurantManagement.Application.Features.OrderFeature.Queries.GetMakePaymentInformation;
 using RestaurantManagement.Application.Features.OrderFeature.Queries.GetOrderById;
 using RestaurantManagement.Domain.IRepos;
 
@@ -111,7 +112,7 @@ public class OrderController : IEndpoint
 
         #region New payorder
         //Pay order
-        endpoints.MapPut("pay/{id}", 
+        endpoints.MapPut("pay/{id}",
         async (
             string id, // Id bàn
             ISender sender) =>
@@ -148,7 +149,7 @@ public class OrderController : IEndpoint
         #endregion
 
         //Get all order
-        endpoints.MapGet("", 
+        endpoints.MapGet("",
         async (
             [FromQuery] string? filterUserId,
             [FromQuery] string? filterTableId,
@@ -190,5 +191,17 @@ public class OrderController : IEndpoint
         //     }
         //     return Results.Ok(result);
         // });
+
+
+        endpoints.MapGet("make-payment-information/{id}", async (string id,ISender sender) =>
+        {
+            var result = await sender.Send(new GetMakePaymentInformationQuery(id));
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+            return Results.Ok(result);
+        });
     }
 }
