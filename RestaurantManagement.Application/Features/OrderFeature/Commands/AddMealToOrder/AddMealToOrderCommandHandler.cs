@@ -117,7 +117,7 @@ public class AddMealToOrderCommandHandler(
                 Note = string.Empty
             };
 
-            if (customerId != null) //Nếu có đặt sẽ lấy id khách hàng
+            if (customerId != null) //Nếu có đặt bàn sẽ lấy id khách hàng
             {
                 order.CustomerId = customerId;
             }

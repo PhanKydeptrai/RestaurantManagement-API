@@ -22,5 +22,9 @@ internal sealed class VoucherConfiguration : IEntityTypeConfiguration<Voucher>
         builder.Property(a => a.ExpiredDate).IsRequired().HasColumnType("datetime");
         builder.Property(a => a.Status).IsRequired().HasColumnType("varchar(50)");
         builder.Property(a => a.Description).IsRequired(false).HasColumnType("nvarchar(255)");
+
+        //ForeignKey
+        //Một voucher có nhiều transaction
+        builder.HasMany(a => a.OrderTransactions).WithOne(a => a.Voucher).HasForeignKey(a => a.VoucherId);
     }
 }

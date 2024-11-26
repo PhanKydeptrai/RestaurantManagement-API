@@ -18,6 +18,7 @@ public class Voucher
     public string Status { get; set; } //Trạng thái của voucher
     public ICollection<CustomerVoucher>? CustomerVouchers { get; set; }
     public ICollection<Bill>? Bills { get; set; }
+    public ICollection<OrderTransaction>? OrderTransactions { get; set; }
 }
 #endregion
 

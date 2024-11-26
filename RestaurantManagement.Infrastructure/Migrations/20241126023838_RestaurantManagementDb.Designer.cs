@@ -12,7 +12,7 @@ using RestaurantManagement.Infrastructure.Persistence;
 namespace RestaurantManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantManagementDbContext))]
-    [Migration("20241125033911_RestaurantManagementDb")]
+    [Migration("20241126023838_RestaurantManagementDb")]
     partial class RestaurantManagementDb
     {
         /// <inheritdoc />
@@ -552,33 +552,50 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("BillId")
+                        .HasColumnType("nvarchar(26)");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsVoucherUsed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("OrderId")
                         .IsRequired()
                         .HasColumnType("nvarchar(26)");
 
                     b.Property<string>("PayerEmail")
-                        .IsRequired()
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PayerName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("VoucherId")
+                        .HasColumnType("nvarchar(26)");
 
                     b.HasKey("TransactionId");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("BillId")
+                        .IsUnique()
+                        .HasFilter("[BillId] IS NOT NULL");
 
-                    b.ToTable("PaymentTransactions");
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.HasIndex("VoucherId");
+
+                    b.ToTable("OrderTransactions");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>
@@ -1051,13 +1068,25 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.OrderTransaction", b =>
                 {
+                    b.HasOne("RestaurantManagement.Domain.Entities.Bill", "Bill")
+                        .WithOne("OrderTransaction")
+                        .HasForeignKey("RestaurantManagement.Domain.Entities.OrderTransaction", "BillId");
+
                     b.HasOne("RestaurantManagement.Domain.Entities.Order", "Order")
-                        .WithMany("PaymentTransactions")
-                        .HasForeignKey("OrderId")
+                        .WithOne("OrderTransaction")
+                        .HasForeignKey("RestaurantManagement.Domain.Entities.OrderTransaction", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("RestaurantManagement.Domain.Entities.Voucher", "Voucher")
+                        .WithMany("OrderTransactions")
+                        .HasForeignKey("VoucherId");
+
+                    b.Navigation("Bill");
+
                     b.Navigation("Order");
+
+                    b.Navigation("Voucher");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>
@@ -1115,6 +1144,11 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RestaurantManagement.Domain.Entities.Bill", b =>
+                {
+                    b.Navigation("OrderTransaction");
+                });
+
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Booking", b =>
                 {
                     b.Navigation("Bill");
@@ -1147,7 +1181,7 @@ namespace RestaurantManagement.Infrastructure.Migrations
 
                     b.Navigation("OrderDetails");
 
-                    b.Navigation("PaymentTransactions");
+                    b.Navigation("OrderTransaction");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Table", b =>
@@ -1200,6 +1234,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                     b.Navigation("Bills");
 
                     b.Navigation("CustomerVouchers");
+
+                    b.Navigation("OrderTransactions");
                 });
 #pragma warning restore 612, 618
         }

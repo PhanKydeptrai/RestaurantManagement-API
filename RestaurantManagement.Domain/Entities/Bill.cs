@@ -13,5 +13,6 @@ public class Bill
     public bool IsVoucherUsed { get; set; }
     public Order? Order { get; set; }
     public Booking? Booking { get; set; }
+    public OrderTransaction? OrderTransaction { get; set; }
     public Voucher? Voucher { get; set; }
 }

@@ -5,6 +5,7 @@ using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.AddMealToOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.ApplyVoucher;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.DeleteMealFromOrder;
+using RestaurantManagement.Application.Features.OrderFeature.Commands.MakePayment;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.PayOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.UpdateMealInOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Queries.GetAllOrder;
@@ -95,15 +96,27 @@ public class OrderController : IEndpoint
             return Results.Ok(result);
         }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
+        endpoints.MapPut("make-payment/{id}", async (
+            string id, // Id bàn
+            [FromBody] MakePaymentRequest request,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new MakePaymentCommand(id, request.voucherCode, request.phoneNumber));
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+            return Results.Ok(result);
+        });
 
         #region New payorder
         //Pay order
-        endpoints.MapPut("pay/{id}", async (
+        endpoints.MapPut("pay/{id}", 
+        async (
             string id, // Id bàn
-            [FromBody] PayOrderRequest request,
             ISender sender) =>
         {
-            var result = await sender.Send(new PayOrderCommand(id, request.voucherName, request.phoneNumber));
+            var result = await sender.Send(new PayOrderCommand(id));
             if (!result.IsSuccess)
             {
                 return Results.BadRequest(result);
@@ -135,7 +148,8 @@ public class OrderController : IEndpoint
         #endregion
 
         //Get all order
-        endpoints.MapGet("", async (
+        endpoints.MapGet("", 
+        async (
             [FromQuery] string? filterUserId,
             [FromQuery] string? filterTableId,
             [FromQuery] string? filterPaymentStatus,
@@ -163,18 +177,18 @@ public class OrderController : IEndpoint
             return Results.Ok(result);
         }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
-        //Áp dụng voucher
-        endpoints.MapPut("apply-voucher/{id}", async (
-            string id,
-            [FromBody] ApplyVoucherRequest request,
-            ISender sender) =>
-        {
-                var result = await sender.Send(new ApplyVoucherCommand(id, request.voucherCode, request.phoneNumber));
-                if (!result.IsSuccess)
-                {
-                    return Results.BadRequest(result);
-                }
-                return Results.Ok(result);
-        });
+        // //Áp dụng voucher
+        // endpoints.MapPut("apply-voucher/{id}", async (
+        //     string id,
+        //     [FromBody] ApplyVoucherRequest request,
+        //     ISender sender) =>
+        // {
+        //     var result = await sender.Send(new ApplyVoucherCommand(id, request.voucherCode, request.phoneNumber));
+        //     if (!result.IsSuccess)
+        //     {
+        //         return Results.BadRequest(result);
+        //     }
+        //     return Results.Ok(result);
+        // });
     }
 }
