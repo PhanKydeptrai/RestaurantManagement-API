@@ -1,16 +1,24 @@
+using System.Transactions;
+using FluentEmail.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Authentication;
+using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.AddMealToOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.ApplyVoucher;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.DeleteMealFromOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.MakePayment;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.PayOrder;
+using RestaurantManagement.Application.Features.OrderFeature.Commands.PayOrderWithVnPay;
+using RestaurantManagement.Application.Features.OrderFeature.Commands.RemoveTransaction;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.UpdateMealInOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Queries.GetAllOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Queries.GetMakePaymentInformation;
 using RestaurantManagement.Application.Features.OrderFeature.Queries.GetOrderById;
+using RestaurantManagement.Domain.DTOs.PaymentDtos;
+using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.API.Controllers;
@@ -108,7 +116,8 @@ public class OrderController : IEndpoint
                 return Results.BadRequest(result);
             }
             return Results.Ok(result);
-        });
+        }).RequireAuthorization()
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         #region New payorder
         //Pay order
@@ -127,25 +136,6 @@ public class OrderController : IEndpoint
         .RequireAuthorization()
         .RequireRateLimiting("AntiSpamPayOrderCommand")
         .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
-        #endregion
-
-        #region Old payorder
-        // //Pay order
-        // endpoints.MapPut("pay/{id}", async (
-        //     string id, // Id bàn
-        //     [FromBody] PayOrderRequest request,
-        //     ISender sender) =>
-        // {
-        //     var result = await sender.Send(new PayOrderCommand(id, request.voucherName, request.phoneNumber));
-        //     if (!result.IsSuccess)
-        //     {
-        //         return Results.BadRequest(result);
-        //     }
-        //     return Results.Ok(result);
-        // })
-        // .RequireAuthorization()
-        // .RequireRateLimiting("AntiSpamPayOrderCommand")
-        // .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
         #endregion
 
         //Get all order
@@ -178,22 +168,7 @@ public class OrderController : IEndpoint
             return Results.Ok(result);
         }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
-        // //Áp dụng voucher
-        // endpoints.MapPut("apply-voucher/{id}", async (
-        //     string id,
-        //     [FromBody] ApplyVoucherRequest request,
-        //     ISender sender) =>
-        // {
-        //     var result = await sender.Send(new ApplyVoucherCommand(id, request.voucherCode, request.phoneNumber));
-        //     if (!result.IsSuccess)
-        //     {
-        //         return Results.BadRequest(result);
-        //     }
-        //     return Results.Ok(result);
-        // });
-
-
-        endpoints.MapGet("make-payment-information/{id}", async (string id,ISender sender) =>
+        endpoints.MapGet("make-payment-information/{id}", async (string id, ISender sender) =>
         {
             var result = await sender.Send(new GetMakePaymentInformationQuery(id));
 
@@ -202,6 +177,113 @@ public class OrderController : IEndpoint
                 return Results.BadRequest(result);
             }
             return Results.Ok(result);
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+
+        //Apply voucher
+        endpoints.MapGet("vn-pay/{id}", async (
+            string id,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new PayOrderWithVnPayCommand(id));
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+            Console.WriteLine(result.Value);
+
+            return Results.Redirect(result.Value);
         });
+
+
+        //Trả về url thanh toán
+        endpoints.MapGet("ReturnUrl", async (
+            [FromQuery(Name = "vnp_Amount")] string vnp_Amount,
+            [FromQuery(Name = "vnp_BankCode")] string vnp_BankCode,
+            [FromQuery(Name = "vnp_OrderInfo")] string vnp_OrderInfo,
+            [FromQuery(Name = "vnp_ResponseCode")] string vnp_ResponseCode,
+            [FromQuery(Name = "vnp_TmnCode")] string vnp_TmnCode,
+            [FromQuery(Name = "vnp_TransactionNo")] string vnp_TransactionNo,
+            [FromQuery(Name = "vnp_TxnRef")] string vnp_TxnRef,
+            [FromQuery(Name = "vnp_SecureHash")] string vnp_SecureHash,
+            IUnitOfWork unitOfWork,
+            IApplicationDbContext _context,
+            IFluentEmail fluentEmail) =>
+        {
+            var model = new VnPayReturnModel
+            {
+                vnp_Amount = vnp_Amount,
+                vnp_BankCode = vnp_BankCode,
+                vnp_OrderInfo = vnp_OrderInfo,
+                vnp_ResponseCode = vnp_ResponseCode,
+                vnp_TmnCode = vnp_TmnCode,
+                vnp_TransactionNo = vnp_TransactionNo,
+                vnp_TxnRef = vnp_TxnRef,
+                vnp_SecureHash = vnp_SecureHash
+            };
+
+            #region Xác thực dữ liệu trả về từ VNPAY
+            // bool isValid = ValidateVnPayReturn(model);
+            // if (!isValid)
+            // {
+            //     return Results.BadRequest("Invalid VNPAY return data");
+            // }
+            #endregion
+
+
+            // Cập nhật thông tin trong cơ sở dữ liệu
+            var transaction = await _context.OrderTransactions
+                .Include(a => a.Order)    
+                .FirstOrDefaultAsync(b => b.TransactionId == Ulid.Parse(model.vnp_TxnRef));
+
+            // booking không tồn tại
+            if (transaction == null)
+            {
+                return Results.NotFound("Booking not found");
+            }
+
+            if (transaction.Status == "Paid")
+            {
+                return Results.Ok("Payment is paid!");
+            }
+
+            transaction.Status = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
+
+            //Tạo bill ghi nhận phí booking
+
+            var bill = new Bill
+            {
+                BillId = Ulid.NewUlid(),
+                BookId = transaction.Bill.BookId ?? null,
+                CreatedDate = DateTime.Now,
+                OrderId = transaction.OrderId,
+                Total = decimal.Parse(model.vnp_Amount) / 100,
+                PaymentStatus = "Paid",
+                PaymentType = "Cash"
+            };
+
+            await _context.Bills.AddAsync(bill);
+
+            await unitOfWork.SaveChangesAsync();
+
+
+            return Results.Ok("Payment Success!");
+            // return Results.Redirect("https://nhumnhum.com/success");
+        });
+
+        endpoints.MapDelete("remove-transaction/{id}", async (
+            string id,
+            ISender sender) =>
+        {
+            var result = await sender.Send(new RemoveTransactionCommand(id));
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+            return Results.Ok(result);
+        }).RequireAuthorization()
+        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+
     }
+
 }
+
