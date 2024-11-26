@@ -46,6 +46,11 @@ public class PayOrderWithVnPayCommandHandler : ICommandHandler<PayOrderWithVnPay
             return Result<string>.Failure(error);
         }
 
+        if(order.OrderTransaction == null)
+        {
+            var error = new[] { new Error("Order", "Transaction not found!.") };
+            return Result<string>.Failure(error);
+        }
         
         
         #region VnPay
