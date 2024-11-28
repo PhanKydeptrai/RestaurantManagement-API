@@ -206,7 +206,7 @@ public class OrderController : IEndpoint
             [FromQuery(Name = "vnp_TxnRef")] string vnp_TxnRef,
             [FromQuery(Name = "vnp_SecureHash")] string vnp_SecureHash,
             IUnitOfWork unitOfWork,
-            IApplicationDbContext _context,
+            IApplicationDbContext context,
             IFluentEmail fluentEmail) =>
         {
             var model = new VnPayReturnModel
@@ -231,12 +231,10 @@ public class OrderController : IEndpoint
 
 
             // Cập nhật thông tin trong cơ sở dữ liệu
-            var transaction = await _context.OrderTransactions
+            var transaction = await context.OrderTransactions
                 .Include(a => a.Bill)
                 .Include(a => a.Order)
                 .FirstOrDefaultAsync(b => b.TransactionId == Ulid.Parse(model.vnp_TxnRef));
-
-            
 
             // transaction không tồn tại
             if (transaction == null)
@@ -251,19 +249,20 @@ public class OrderController : IEndpoint
 
             transaction.Status = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
             transaction.Order.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
-            var table = await _context.Tables.FindAsync(transaction.Order.TableId);
+            var table = await context.Tables.FindAsync(transaction.Order.TableId);
             table.ActiveStatus = "Empty";
             bool isVoucherUsed = false;
+            CustomerVoucher customerVoucher = new CustomerVoucher();
             if (!string.IsNullOrEmpty(transaction.VoucherId.ToString()))
             {
                 //TODO: Cập nhật số lượng voucher cho khách hàng
 
-                // customerVoucher = await context.CustomerVouchers
-                //     .Include(a => a.Customer)
-                //     .ThenInclude(a => a.User)
-                //     .Where(a => a.VoucherId == order.OrderTransaction.VoucherId && a.Customer.User.Phone == order.OrderTransaction.PayerName)
-                //     .FirstOrDefaultAsync();
-                // customerVoucher.Quantity -= 1;
+                customerVoucher = await context.CustomerVouchers
+                    .Include(a => a.Customer)
+                    .ThenInclude(a => a.User)
+                    .Where(a => a.VoucherId == transaction.VoucherId && a.Customer.User.Phone == transaction.PayerName)
+                    .FirstOrDefaultAsync();
+                customerVoucher.Quantity -= 1;
                 isVoucherUsed = true;
 
             }
@@ -272,7 +271,7 @@ public class OrderController : IEndpoint
             {
                 //truy vấn lấy bill
                 // var bill = await _context.Bills.FindAsync(transaction.BillId);
-                var booking = await _context.Bookings.FindAsync(transaction.Order.Bill.BookId);
+                var booking = await context.Bookings.FindAsync(transaction.Order.Bill.BookId);
                 booking.BookingStatus = "Completed"; //Cập nhật trạng thái booking
                 transaction.Bill.Total = decimal.Parse(model.vnp_Amount) / 100;
                 transaction.Bill.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
@@ -295,7 +294,7 @@ public class OrderController : IEndpoint
                     VoucherId = transaction.VoucherId,
                     PaymentType = "VNPay"
                 };
-                await _context.Bills.AddAsync(bill);
+                await context.Bills.AddAsync(bill);
             }
             await unitOfWork.SaveChangesAsync();
 

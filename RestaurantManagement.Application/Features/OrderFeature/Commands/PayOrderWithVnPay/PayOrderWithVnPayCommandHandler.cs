@@ -13,7 +13,9 @@ public class PayOrderWithVnPayCommandHandler : ICommandHandler<PayOrderWithVnPay
     private readonly IApplicationDbContext _context;
     private readonly ITableRepository _tableRepository;
 
-    public PayOrderWithVnPayCommandHandler(IApplicationDbContext context, ITableRepository tableRepository)
+    public PayOrderWithVnPayCommandHandler(
+        IApplicationDbContext context, 
+        ITableRepository tableRepository)
     {
         _context = context;
         _tableRepository = tableRepository;
@@ -50,8 +52,7 @@ public class PayOrderWithVnPayCommandHandler : ICommandHandler<PayOrderWithVnPay
         {
             var error = new[] { new Error("Order", "Transaction not found!.") };
             return Result<string>.Failure(error);
-        }
-        
+        }        
         
         #region VnPay
         //Get Config Info
