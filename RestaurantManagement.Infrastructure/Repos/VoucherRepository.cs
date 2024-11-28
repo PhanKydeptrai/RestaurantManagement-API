@@ -44,4 +44,6 @@ public class VoucherRepository(RestaurantManagementDbContext context) : IVoucher
     {
         return await context.Vouchers.AsNoTracking().AnyAsync(a => a.VoucherCode == voucherCode);
     }
+
+
 }
