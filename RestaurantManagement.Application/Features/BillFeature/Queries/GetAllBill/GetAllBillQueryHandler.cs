@@ -67,6 +67,7 @@ public class GetAllBillQueryHandler(
 
         //paged
         var bills = billQuery
+            .Where(a => a.PaymentStatus != "BookingPaid")
             .Select(a => new BillResponse(
                 a.Booking.Customer.UserId,
                 a.Booking.Customer.User.LastName,
