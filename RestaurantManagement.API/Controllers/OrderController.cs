@@ -1,4 +1,3 @@
-using System.Transactions;
 using FluentEmail.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,6 @@ using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.AddMealToOrder;
-using RestaurantManagement.Application.Features.OrderFeature.Commands.ApplyVoucher;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.DeleteMealFromOrder;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.MakePayment;
 using RestaurantManagement.Application.Features.OrderFeature.Commands.PayOrder;
@@ -179,7 +177,7 @@ public class OrderController : IEndpoint
             return Results.Ok(result);
         }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
-        //Apply voucher
+        
         endpoints.MapGet("vn-pay/{id}", async (
             string id,
             ISender sender) =>

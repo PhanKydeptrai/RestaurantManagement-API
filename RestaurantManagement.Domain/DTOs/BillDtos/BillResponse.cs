@@ -8,16 +8,16 @@ public record BillResponse(
     string? FirstName,
     string? Email,
     string? PhoneNumber,
-    int TableId,
+    int? TableId,
     Ulid BillId,
     DateTime CreatedDate,
     Ulid? BookingId,
     int? BookPrice,
     DateOnly? BookingDate,
     TimeOnly? BookingTime,
-    Ulid OrderId,
+    Ulid? OrderId,
     int TotalPrice,
-    string PaymentType,
+    string? PaymentType,
     OrderDetailResponse[] OrderDetails
 );
 

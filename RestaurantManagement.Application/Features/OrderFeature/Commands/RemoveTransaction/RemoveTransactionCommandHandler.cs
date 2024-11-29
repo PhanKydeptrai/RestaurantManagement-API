@@ -49,7 +49,7 @@ public class RemoveTransactionCommandHandler : ICommandHandler<RemoveTransaction
             return Result.Failure(error);
         }
 
-        if(order.OrderTransaction == null)
+        if(order.OrderTransaction == null || order.OrderTransaction.Status == "Paid")
         {
             var error = new[] { new Error("Order", "Transaction not found!.") };
             return Result.Failure(error);

@@ -89,6 +89,10 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result);
             }).RequireRateLimiting("AntiSpamCustomerResetPass");
+
+
+
+            
             //.RequireRateLimiting("ResetPass");
             
             //reset employee password 
