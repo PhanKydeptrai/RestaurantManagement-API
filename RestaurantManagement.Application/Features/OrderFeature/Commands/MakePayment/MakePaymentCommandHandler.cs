@@ -81,7 +81,7 @@ public class MakePaymentCommandHandler : ICommandHandler<MakePaymentCommand>
         decimal transactionAmount = order.Total; //Cập nhật giá order cho transaction
 
         //Kiểm tra bàn có booking hay không
-        var checkBooking = await _context.Tables
+        Booking? checkBooking = await _context.Tables
             .Include(a => a.BookingDetails)
             .ThenInclude(a => a.Booking)
             .Where(a => a.TableId == int.Parse(request.tableId))
@@ -188,10 +188,56 @@ public class MakePaymentCommandHandler : ICommandHandler<MakePaymentCommand>
                     await _unitOfWork.SaveChangesAsync();
                 }
             }
+            else
+            {
+                //TODO: Thêm logic phân biệt chưa sở và chưa đủ giá trị 
+                return Result.Failure(new[] { new Error("Voucher", "This customer cant use this voucher") });
+            }
         }
         else
         {
-            return Result.Failure(new[] { new Error("Voucher", "This customer don't have this voucher") });
+            if (billId.ToString() == "00000000000000000000000000")
+            {
+                var orderTransaction = new OrderTransaction
+                {
+                    TransactionId = Ulid.NewUlid(),
+                    Status = "Unpaid",
+                    Amount = transactionAmount,
+                    IsVoucherUsed = isVoucherUsed,
+                    TransactionDate = DateTime.Now,
+                    PayerEmail = string.Empty,
+                    PayerName = string.Empty,
+                    OrderId = order.OrderId,
+                    PaymentMethod = string.Empty,
+                    VoucherId = null,
+                    BillId = null
+                };
+
+                await _context.OrderTransactions.AddAsync(orderTransaction);
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            else
+            {
+                var orderTransaction = new OrderTransaction
+                {
+                    TransactionId = Ulid.NewUlid(),
+                    Status = "Unpaid",
+                    Amount = transactionAmount,
+                    IsVoucherUsed = isVoucherUsed,
+                    TransactionDate = DateTime.Now,
+                    PayerEmail = string.Empty,
+                    PayerName = string.Empty,
+                    OrderId = order.OrderId,
+                    PaymentMethod = string.Empty,
+                    VoucherId = null,
+                    BillId = billId
+                };
+
+                await _context.OrderTransactions.AddAsync(orderTransaction);
+
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
 
         return Result.Success();
