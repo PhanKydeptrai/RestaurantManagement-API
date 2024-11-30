@@ -223,6 +223,7 @@ public class TableController : IEndpoint
             HttpContext httpContext,
             IJwtProvider jwtProvider) =>
         {
+            
             // Lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
             var result = await sender.Send(new ChangeTableCommand(

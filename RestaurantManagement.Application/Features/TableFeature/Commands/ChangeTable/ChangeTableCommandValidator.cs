@@ -18,7 +18,7 @@ public class ChangeTableCommandValidator : AbstractValidator<ChangeTableCommand>
             .WithMessage("This table is not exist or not active")
             .Must(a => tableRepository.IsTableOccupied(int.Parse(a)).Result)
             .WithMessage("This table is not occupied");
-            
+
         RuleFor(a => a.newTableId)
             .NotNull()
             .WithMessage("Old table id is required")
@@ -26,6 +26,13 @@ public class ChangeTableCommandValidator : AbstractValidator<ChangeTableCommand>
             .WithMessage("Old table id is required")
             .Must(a => !string.IsNullOrEmpty(a.ToString()) && int.TryParse(a.ToString(), out _))
             .WithMessage("Old table id must be a number")
+            .Custom(async (a, context) =>
+            {
+                if (int.Parse(a.ToString()) == int.Parse(context.InstanceToValidate.oldtableId))
+                {
+                    context.AddFailure("New table id must be different from old table id");
+                }
+            })
             .Must(a => tableRepository.IsTableExistAndActive(int.Parse(a.ToString())).Result)
             .WithMessage("This table is not exist or not active")
             .Must(a => tableRepository.GetTableStatus(int.Parse(a.ToString())).Result != "Booked")
