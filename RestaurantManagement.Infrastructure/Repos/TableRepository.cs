@@ -49,13 +49,12 @@ public class TableRepository(RestaurantManagementDbContext context) : ITableRepo
 
     public async Task<bool> IsTableHasUnpaidOrder(int id)
     {
-        var a = await context.Tables
+        return await context.Tables
             .AsNoTracking()
             .Include(a => a.Orders)
             .Where(a => a.TableId == id)
             .Select(a => a.Orders.Any(a => a.PaymentStatus == "Unpaid"))
             .FirstOrDefaultAsync();
-        return a;
     }
 
     public async Task<bool> IsTableHasBooking(int id)
@@ -78,7 +77,8 @@ public class TableRepository(RestaurantManagementDbContext context) : ITableRepo
 
     public async Task<bool> IsTableExistAndActive(int id)
     {
-        return await context.Tables.AsNoTracking()
+        return await context.Tables
+            .AsNoTracking()
             .AnyAsync(t => t.TableId == id && t.TableStatus == "Active");
     }
 

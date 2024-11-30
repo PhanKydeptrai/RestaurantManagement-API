@@ -254,7 +254,6 @@ public class OrderController : IEndpoint
             if (!string.IsNullOrEmpty(transaction.VoucherId.ToString()))
             {
                 //TODO: Cập nhật số lượng voucher cho khách hàng
-
                 customerVoucher = await context.CustomerVouchers
                     .Include(a => a.Customer)
                     .ThenInclude(a => a.User)
