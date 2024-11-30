@@ -4,6 +4,7 @@ using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Authentication;
 using RestaurantManagement.Application.Features.TableFeature.Commands.AssignTableToBookedCustomer;
 using RestaurantManagement.Application.Features.TableFeature.Commands.AssignTableToCustomer;
+using RestaurantManagement.Application.Features.TableFeature.Commands.ChangeTable;
 using RestaurantManagement.Application.Features.TableFeature.Commands.CreateTable;
 using RestaurantManagement.Application.Features.TableFeature.Commands.DeleteTable;
 using RestaurantManagement.Application.Features.TableFeature.Commands.RestoreTable;
@@ -215,7 +216,27 @@ public class TableController : IEndpoint
         .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
-        // TODO: Thêm endpoint xếp bàn cho khách
+        endpoints.MapPut("change-table/{id}", async (
+            string id,
+            [FromBody] ChangeTableRequest request,
+            ISender sender,
+            HttpContext httpContext,
+            IJwtProvider jwtProvider) =>
+        {
+            // Lấy token
+            var token = jwtProvider.GetTokenFromHeader(httpContext);
+            var result = await sender.Send(new ChangeTableCommand(
+                // request.oldtableId,
+                id,
+                request.newTableId,
+                token));
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(result);
+            }
+            return Results.Ok(result);
+        });
 
     }
 }
