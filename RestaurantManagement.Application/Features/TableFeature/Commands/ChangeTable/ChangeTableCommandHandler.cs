@@ -35,7 +35,7 @@ public class ChangeTableCommandHandler : ICommandHandler<ChangeTableCommand>
             return Result.Failure(errors!);
         }
 
-        var order = await _context.Tables
+        var transactionCheck = await _context.Tables
             .Include(a => a.BookingDetails.Where(a => a.Booking.BookingStatus == "Occupied"))
             .Include(a => a.Orders)
             .ThenInclude(a => a.OrderTransaction)
@@ -44,7 +44,7 @@ public class ChangeTableCommandHandler : ICommandHandler<ChangeTableCommand>
             .FirstOrDefaultAsync();
 
         //TODO: Đổi lại message và mang vào validator
-        if(order.OrderTransaction == null)
+        if(transactionCheck.OrderTransaction == null)
         {
             return Result.Failure(new[] { new Error("Transaction", "Bàn này đang thanh toán hong có dời được đâu.") });
         }
