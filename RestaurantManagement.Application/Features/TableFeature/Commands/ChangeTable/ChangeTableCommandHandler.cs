@@ -34,7 +34,7 @@ public class ChangeTableCommandHandler : ICommandHandler<ChangeTableCommand>
         {
             return Result.Failure(errors!);
         }
-
+        //TODO: Refactor
         var transactionCheck = await _context.Tables
             .Include(a => a.BookingDetails.Where(a => a.Booking.BookingStatus == "Occupied"))
             .Include(a => a.Orders)

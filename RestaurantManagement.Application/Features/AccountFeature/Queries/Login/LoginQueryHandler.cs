@@ -10,7 +10,9 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
 
-public class LoginQueryHandler(IApplicationDbContext context, IJwtProvider jwtProvider) : ICommandHandler<LoginQuery, LoginResponse>
+public class LoginQueryHandler(
+    IApplicationDbContext context, 
+    IJwtProvider jwtProvider) : ICommandHandler<LoginQuery, LoginResponse>
 {
     public async Task<Result<LoginResponse>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
@@ -24,7 +26,8 @@ public class LoginQueryHandler(IApplicationDbContext context, IJwtProvider jwtPr
         }
 
         var encryptedPassword = EncryptProvider.Sha256(request.passWord);
-        //REFACTOR
+
+        //TODO: REFACTOR
         CustomerLoginResponse? loginResponse = await context.Customers
             .Where(a => a.User.Password == encryptedPassword
             && (a.User.Email == request.loginString
@@ -41,14 +44,12 @@ public class LoginQueryHandler(IApplicationDbContext context, IJwtProvider jwtPr
 
         if (loginResponse == null)
         {
-            Error[] a = { new Error("Login Fail", "Invalid login") };
-            return Result<LoginResponse>.Failure(a);
+            return Result<LoginResponse>.Failure(new[] { new Error("Login Fail", "Invalid login") });
         }
 
         if (loginResponse.UserStatus != "Activated") //Chỉ khách hàng đã kích hoạt mới được đăng nhập
         {
-            Error[] a = { new Error("Login Fail", "Account is not activated") };
-            return Result<LoginResponse>.Failure(a);
+            return Result<LoginResponse>.Failure(new[] { new Error("Login Fail", "Account is not activated") });
         }
 
         var token = jwtProvider.GenerateJwtToken(

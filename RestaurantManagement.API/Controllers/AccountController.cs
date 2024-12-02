@@ -1,5 +1,4 @@
-﻿using Google.Apis.Auth;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Authentication;
@@ -16,6 +15,7 @@ using RestaurantManagement.Application.Features.AccountFeature.Queries.DecodeTok
 using RestaurantManagement.Application.Features.AccountFeature.Queries.EmployeeLogin;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.GetEmployeeAccountInfo;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
+using RestaurantManagement.Application.Features.AccountFeature.Queries.LoginWithGoogle;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
 using RestaurantManagement.Domain.IRepos;
 
@@ -257,15 +257,17 @@ namespace RestaurantManagement.API.Controllers
             }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             #region Google authen
-            endpoints.MapPost("test/{token}", async (
+            endpoints.MapPost("google-login/{token}", async (
                 string token,
                 ISender sender) =>
             {
-                var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings()
+                // var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings());
+                var result = await sender.Send(new LoginWithGoogleQuery(token));
+                if(result.IsSuccess)
                 {
-                    Audience = new[] { "512717206233-ul0hu3t49c9o30rf4lqueiqrliddrk7q.apps.googleusercontent.com" }
-                });
-                return Results.Ok();
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result);
             });
             #endregion
 
