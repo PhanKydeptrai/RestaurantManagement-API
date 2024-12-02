@@ -209,7 +209,7 @@ public class CategoryController : IEndpoint
             }
             return Results.BadRequest(result);
 
-        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+        });
 
     }
 }
