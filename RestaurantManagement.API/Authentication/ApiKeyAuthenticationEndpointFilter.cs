@@ -29,6 +29,8 @@ internal class ApiKeyAuthenticationEndpointFilter : IEndpointFilter
             return false;
         }
         string? actualApiKey = _configuration.GetValue<string>("ApiKey")!;
+        // string? actualApiKey = _configuration.GetValue<string>("ApiKey")!;
+        // string? hehe = _configuration["ApiKey"];
         return apiKey == actualApiKey;
     }
 }

@@ -257,18 +257,17 @@ namespace RestaurantManagement.API.Controllers
             }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             #region Google authen
-            // endpoints.MapPost("google-login/{token}", async (
-            //     string token,
-            //     ISender sender) =>
-            // {
-            //     // var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings());
-            //     var result = await sender.Send(new LoginWithGoogleQuery(token));
-            //     if(result.IsSuccess)
-            //     {
-            //         return Results.Ok(result);
-            //     }
-            //     return Results.BadRequest(result);
-            // });
+            endpoints.MapPost("google-login/{token}", async (
+                string token,
+                ISender sender) =>
+            {
+                var result = await sender.Send(new LoginWithGoogleQuery(token));
+                if(result.IsSuccess)
+                {
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result);
+            });
             #endregion
 
         }
