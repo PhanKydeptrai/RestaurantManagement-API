@@ -36,8 +36,7 @@ public class ChangeCustomerPasswordCommandHandler(
         string encryptPass = EncryptProvider.Sha256(request.oldPass);
         if (encryptPass != user.Password)
         {
-            Error[] error = { new Error("OldPassword", "Mật khẩu cũ không đúng") };
-            return Result.Failure(error);
+            return Result.Failure(new[] { new Error("OldPassword", "Mật khẩu cũ không đúng") });
         }
         //Tạo token xác thực 
         var token = new EmailVerificationToken
