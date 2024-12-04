@@ -496,6 +496,7 @@ builder.Services.AddAuthentication(options =>
     };
 
 });
+//
 // .AddGoogle(googleOptions =>
 // {
 //     googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
