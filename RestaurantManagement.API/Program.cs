@@ -496,7 +496,6 @@ builder.Services.AddAuthentication(options =>
     };
 
 });
-//
 // .AddGoogle(googleOptions =>
 // {
 //     googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
@@ -566,12 +565,6 @@ builder.Services.AddSwaggerGen(option =>
 
     option.AddSecurityRequirement(requirement);
 
-    // //Xác định tên dựa theo 
-    // var fileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    // //Tạo địa chỉ file
-    // var filePath = Path.Combine(AppContext.BaseDirectory, fileName); //AppContext.BaseDirectory Lấy địa chỉ thư mục gốc
-    // Console.WriteLine(filePath);
-    // option.IncludeXmlComments(filePath);
 
     option.MapType<DateOnly>(() => new OpenApiSchema
     {

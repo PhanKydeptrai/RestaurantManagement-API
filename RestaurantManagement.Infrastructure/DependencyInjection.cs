@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Infrastructure.Authentication;
+using RestaurantManagement.Infrastructure.Persistence;
 using RestaurantManagement.Infrastructure.Repos;
 
 namespace RestaurantManagement.Infrastructure;
@@ -32,6 +33,9 @@ public static class DependencyInjection
         services.AddScoped<IEmailVerificationTokenRepository, EmailVerificationTokenRepository>();
         services.AddScoped<IVoucherRepository, VoucherRepository>();
         services.AddScoped<IBillRepository, BillRepository>();
+
+        //Health check
+        services.AddHealthChecks().AddDbContextCheck<RestaurantManagementDbContext>();
 
         services.AddQuartz(options =>
         {
