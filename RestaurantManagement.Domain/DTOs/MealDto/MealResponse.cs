@@ -8,4 +8,5 @@ public record MealResponse(
     string? Description,
     string SellStatus,
     string MealStatus,
-    string CategoryName);
+    string CategoryName,
+    string CategoryId);

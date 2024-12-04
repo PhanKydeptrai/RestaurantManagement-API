@@ -2,7 +2,6 @@
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
-using RestaurantManagement.Application.Features.MealFeature.Queries.GetAllMeal;
 using RestaurantManagement.Domain.DTOs.MealDto;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
@@ -36,7 +35,8 @@ public class GetMealByIdQueryHandler(
                 a.Description,
                 a.SellStatus,
                 a.MealStatus,
-                a.Category.CategoryName))
+                a.Category.CategoryName,
+                a.Category.CategoryId.ToString()))
             .FirstOrDefaultAsync();
 
 
