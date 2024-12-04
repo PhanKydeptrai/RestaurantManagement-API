@@ -92,9 +92,9 @@ namespace RestaurantManagement.API.Controllers
 
 
 
-            
+
             //.RequireRateLimiting("ResetPass");
-            
+
             //reset employee password 
             endpoints.MapPost("employee-password",
             async (
@@ -158,8 +158,8 @@ namespace RestaurantManagement.API.Controllers
                 var token = jwtProvider.GetTokenFromHeader(httpContext);
 
                 var result = await sender.Send(new ChangePasswordCommand(
-                    request.oldPass, 
-                    request.newPass, 
+                    request.oldPass,
+                    request.newPass,
                     token
                 ));
 
@@ -269,6 +269,13 @@ namespace RestaurantManagement.API.Controllers
             //     return Results.BadRequest(result);
             // });
             #endregion
+
+
+            endpoints.MapGet("check-api", async () =>
+            {
+                var result = "API is working!";
+                return Results.Ok(result);
+            });
 
         }
     }
