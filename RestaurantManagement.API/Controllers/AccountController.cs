@@ -72,8 +72,8 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("AntiSpamEmplyeeLogin")
-            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+            }).RequireRateLimiting("AntiSpamEmplyeeLogin");
+            // .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
             //reset customer password 
@@ -221,8 +221,8 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result);
             })
-            .RequireAuthorization()
-            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+            .RequireAuthorization();
+            // .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
             //get customer account info
