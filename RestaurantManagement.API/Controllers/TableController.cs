@@ -227,8 +227,8 @@ public class TableController : IEndpoint
             // Lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);
             var result = await sender.Send(new ChangeTableCommand(
-                // request.oldtableId,
                 id,
+                request.note,
                 request.newTableId,
                 token));
 

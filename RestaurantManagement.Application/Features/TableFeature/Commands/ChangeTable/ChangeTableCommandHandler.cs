@@ -82,6 +82,22 @@ public class ChangeTableCommandHandler : ICommandHandler<ChangeTableCommand>
         oldTable.ActiveStatus = "Empty";
         newTable.ActiveStatus = "Occupied";
 
+        //ghi log
+        #region Decode jwt and system log
+        //Decode jwt
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
+
+        //Create System Log
+        await _context.TableLogs.AddAsync(new TableLog
+        {
+            TableLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"Tạo {userId} dời bàn {request.oldtableId} sang bàn {request.newTableId} với lý do {request.note}",
+            UserId = Ulid.Parse(userId)
+        });
+        #endregion
+
         await _unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
