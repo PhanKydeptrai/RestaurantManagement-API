@@ -13,6 +13,7 @@ public class CreateTableCommandHandler(
 {
     public async Task<Result> Handle(CreateTableCommand request, CancellationToken cancellationToken)
     {
+        //TODO: Thêm xử lý ảnh cho table type
 
         //Validate request
         var validator = new CreateTableCommandValidator();
