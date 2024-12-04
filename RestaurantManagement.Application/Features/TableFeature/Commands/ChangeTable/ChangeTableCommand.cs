@@ -4,8 +4,10 @@ namespace RestaurantManagement.Application.Features.TableFeature.Commands.Change
 
 public record ChangeTableRequest(
     // string oldtableId, 
-    object newTableId);
+    object newTableId,
+    string note);
 public record ChangeTableCommand(
     string oldtableId, 
+    string note,
     object newTableId,
     string token) : ICommand;
