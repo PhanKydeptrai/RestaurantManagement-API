@@ -73,7 +73,8 @@ public class GetAllMealQueryHandler(IApplicationDbContext context) : IQueryHandl
                 a.Description,
                 a.SellStatus,
                 a.MealStatus,
-                a.Category.CategoryName));
+                a.Category.CategoryName,
+                a.Category.CategoryId.ToString()));
 
         var mealList = await PagedList<MealResponse>.CreateAsync(meal, request.page ?? 1, request.pageSize ?? 10);
 
