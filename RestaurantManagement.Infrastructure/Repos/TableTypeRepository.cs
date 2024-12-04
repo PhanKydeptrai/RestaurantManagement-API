@@ -25,7 +25,9 @@ public class TableTypeRepository(RestaurantManagementDbContext context) : ITable
     }
     public async Task<TableTypeResponse?> GetTableTypeById(Ulid tableTypeId)
     {
-        return await context.TableTypes.Select(a => new TableTypeResponse(
+        return await context.TableTypes
+        .Where(a => a.TableTypeId == tableTypeId)
+        .Select(a => new TableTypeResponse(
             a.TableTypeId,
             a.TableTypeName,
             a.Status,
