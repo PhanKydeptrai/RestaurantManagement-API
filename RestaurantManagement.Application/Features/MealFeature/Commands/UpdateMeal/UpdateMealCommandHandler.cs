@@ -26,7 +26,7 @@ public class UpdateMealCommandHandler(
         }
 
         //Lấy meal theo id  
-        var meal = await context.Meals.FindAsync(request.MealId);
+        var meal = await context.Meals.FindAsync(Ulid.Parse(request.MealId));
                 
         //Update meal
         meal.MealName = request.MealName;
