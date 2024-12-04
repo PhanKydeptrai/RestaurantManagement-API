@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.EntityFrameworkCore.Metadata;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.Application.Features.TableFeature.Commands.ChangeTable;
@@ -7,6 +8,14 @@ public class ChangeTableCommandValidator : AbstractValidator<ChangeTableCommand>
 {
     public ChangeTableCommandValidator(ITableRepository tableRepository)
     {
+        RuleFor(a => a.note)
+            .NotNull()
+            .WithMessage("Note is required")
+            .NotEmpty()
+            .WithMessage("Note is required")
+            .MaximumLength(100)
+            .WithMessage("Note must not exceed 100 characters");
+            
         RuleFor(a => a.oldtableId)
             .NotNull()
             .WithMessage("Old table id is required")
