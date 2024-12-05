@@ -271,11 +271,11 @@ namespace RestaurantManagement.API.Controllers
             #endregion
 
 
-            // endpoints.MapGet("check-api", async () =>
-            // {
-            //     var result = "API is working!";
-            //     return Results.Ok(result);
-            // });
+            endpoints.MapGet("check-api", async () =>
+            {
+                var result = "API is working!";
+                return Results.Ok(result);
+            });
 
         }
     }
