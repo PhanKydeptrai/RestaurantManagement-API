@@ -47,7 +47,7 @@ public class SubscriberCreateBookingCommandHandler(
             })
             .ToArrayAsync();
 
-        
+
 
         decimal bookingPrice = 0;
         Ulid? tableTypeId = null;
@@ -92,7 +92,7 @@ public class SubscriberCreateBookingCommandHandler(
             BookingDate = request.BookingDate,
             BookingTime = request.BookingTime,
             BookingPrice = bookingPrice,
-            NumberOfCustomers = (int)request.NumberOfCustomers,
+            NumberOfCustomers = int.Parse(request.NumberOfCustomers.ToString()),
             Note = request.Note,
             CustomerId = info.CustomerId,
             CreatedDate = DateTime.Now,
@@ -104,6 +104,8 @@ public class SubscriberCreateBookingCommandHandler(
 
         await unitOfWork.SaveChangesAsync();
 
+        //NOTE: VNPAY return URL
+        #region VnPay
         //Get Config Info
         string vnp_Returnurl = "https://localhost:7057/api/booking/ReturnUrl"; //URL nhan ket qua tra ve 
         string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
@@ -128,7 +130,8 @@ public class SubscriberCreateBookingCommandHandler(
         vnpay.AddRequestData("vnp_TxnRef", booking.BookId.ToString()); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
 
         string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
-        
+        #endregion
+
         //  Gửi mail thông báo cho khách hàng
         bool emailSent = false;
         int retryCount = 0;

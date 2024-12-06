@@ -58,6 +58,7 @@ public class PayOrderWithVnPayCommandHandler : ICommandHandler<PayOrderWithVnPay
             return Result<string>.Failure(error);
         }        
         
+        //NOTE: VNPAY return URL
         #region VnPay
         //Get Config Info
         string vnp_Returnurl = _configuration["VNP_RETURNURL"]!; //URL nhan ket qua tra ve 
