@@ -14,8 +14,6 @@ public static class AddInfrastructureExtention
         services.AddDbContext<RestaurantManagementDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("MyDB")));
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<RestaurantManagementDbContext>());
 
-        // services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Emai:Sender"])
-        //     .AddSmtpSender(configuration["Email:Host"], configuration.GetValue<int>("Email:Port"));
         return services;
     }
 }
