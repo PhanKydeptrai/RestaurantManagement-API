@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
@@ -11,14 +12,17 @@ namespace RestaurantManagement.Application.Features.OrderFeature.Commands.PayOrd
 public class PayOrderWithVnPayCommandHandler : ICommandHandler<PayOrderWithVnPayCommand, string>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IConfiguration _configuration;
     private readonly ITableRepository _tableRepository;
 
     public PayOrderWithVnPayCommandHandler(
-        IApplicationDbContext context, 
-        ITableRepository tableRepository)
+        IApplicationDbContext context,
+        ITableRepository tableRepository,
+        IConfiguration configuration)
     {
         _context = context;
         _tableRepository = tableRepository;
+        _configuration = configuration;
     }
 
     public async Task<Result<string>> Handle(PayOrderWithVnPayCommand request, CancellationToken cancellationToken)
@@ -56,10 +60,10 @@ public class PayOrderWithVnPayCommandHandler : ICommandHandler<PayOrderWithVnPay
         
         #region VnPay
         //Get Config Info
-        string vnp_Returnurl = "https://localhost:7057/api/orders/ReturnUrl"; //URL nhan ket qua tra ve 
-        string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
-        string vnp_TmnCode = "XFROYZ8A"; //Ma định danh merchant kết nối (Terminal Id)
-        string vnp_HashSecret = "VJJDQOWMKEA13EFEMV1VGY2A17KDM5Z0"; //Secret Key
+        string vnp_Returnurl = _configuration["VNP_RETURNURL"]!; //URL nhan ket qua tra ve 
+        string vnp_Url = _configuration["VNP_URL"]!; //URL thanh toan cua VNPAY 
+        string vnp_TmnCode = _configuration["VNP_TMNCODE"]!; //Ma định danh merchant kết nối (Terminal Id)
+        string vnp_HashSecret = _configuration["VNP_TMNCODE"]!; //Secret Key
 
         //Build URL for VNPAY
         VnPayLibrary vnpay = new VnPayLibrary();
