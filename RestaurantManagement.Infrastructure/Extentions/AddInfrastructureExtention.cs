@@ -8,10 +8,20 @@ namespace RestaurantManagement.Infrastructure.Extentions;
 
 public static class AddInfrastructureExtention
 {
-    public static IServiceCollection AddInfrastructureExtentions(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureExtentions(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
+        string? connectionString = configuration["MyDB"];
 
-        services.AddDbContext<RestaurantManagementDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("MyDB")));
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            connectionString = configuration.GetConnectionString("DefaultConnection");
+        }
+
+        services.AddDbContext<RestaurantManagementDbContext>(options => options.UseSqlServer(connectionString));
+
+
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<RestaurantManagementDbContext>());
 
         return services;

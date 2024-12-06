@@ -9,9 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	
     <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
-    <PackageReference Include="dotenv.net" Version="3.2.1" />
     <PackageReference Include="IronPdf" Version="2024.11.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
@@ -21,7 +19,7 @@
     <PackageReference Include="Razor.Templating.Core" Version="2.1.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="8.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.1.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
   </ItemGroup>
 

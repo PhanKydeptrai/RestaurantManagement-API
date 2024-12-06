@@ -480,21 +480,6 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    // options.TokenValidationParameters = new TokenValidationParameters
-    // {
-    //     ValidateIssuer = true,
-    //     ValidIssuer = builder.Configuration["JWT:Issuer"],
-    //     ValidateAudience = true,
-    //     ValidAudience = builder.Configuration["JWT:Audience"],
-    //     ValidateIssuerSigningKey = true,
-    //     IssuerSigningKey = new SymmetricSecurityKey(
-    //         System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])),
-    //     ValidateLifetime = true, // Kiểm tra thời gian hết hạn của token
-    //     ClockSkew = TimeSpan.Zero, // Loại bỏ thời gian trễ mặc định
-    //                                // Đảm bảo token chứa claim về vai trò
-    //     RoleClaimType = ClaimTypes.Role
-    // };
-
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -503,24 +488,19 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Audience"],
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
-            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["SigningKey"])),
+        System.Text.Encoding.UTF8.GetBytes(builder.Configuration["SigningKey"])),
         ValidateLifetime = true, // Kiểm tra thời gian hết hạn của token
         ClockSkew = TimeSpan.Zero, // Loại bỏ thời gian trễ mặc định
                                    // Đảm bảo token chứa claim về vai trò
         RoleClaimType = ClaimTypes.Role
     };
 
+})
+.AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = builder.Configuration["ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["ClientSecret"];
 });
-// .AddGoogle(googleOptions =>
-// {
-//     googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-//     googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-    
-// });
-
-
-
-
 
 
 // Cấu hình cho swaggergen
@@ -568,7 +548,7 @@ builder.Services.AddSwaggerGen(option =>
         {
             Type = ReferenceType.SecurityScheme,
             Id = "X-Api-Key"
-            
+
         },
         In = ParameterLocation.Header
     };

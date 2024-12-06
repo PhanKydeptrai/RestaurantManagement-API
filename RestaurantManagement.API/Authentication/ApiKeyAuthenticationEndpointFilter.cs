@@ -3,7 +3,7 @@ namespace RestaurantManagement.API.Authentication;
 internal class ApiKeyAuthenticationEndpointFilter : IEndpointFilter
 {
     private const string ApiKeyHeaderName = "X-Api-Key";
-    private readonly IConfiguration _configuration  ;
+    private readonly IConfiguration _configuration;
 
     public ApiKeyAuthenticationEndpointFilter(IConfiguration configuration)
     {
@@ -29,7 +29,6 @@ internal class ApiKeyAuthenticationEndpointFilter : IEndpointFilter
             return false;
         }
         string? actualApiKey = _configuration.GetValue<string>("ApiKey")!;
-        // string? actualApiKey = _configuration.GetValue<string>("ApiKey")!;
         // string? hehe = _configuration["ApiKey"];
         return apiKey == actualApiKey;
     }

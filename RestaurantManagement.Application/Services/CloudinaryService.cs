@@ -1,16 +1,16 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using dotenv.net;
+using Microsoft.Extensions.Configuration;
 
 namespace RestaurantManagement.Application.Services;
 
 public class CloudinaryService
 {
     private readonly Cloudinary _cloudinary;
+    private readonly IConfiguration _configuration;
     public CloudinaryService()
     {
-        DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-        _cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+        _cloudinary = new Cloudinary(_configuration["Cloudinary"]);
         _cloudinary.Api.Secure = true;
     }
 
@@ -21,7 +21,14 @@ public class CloudinaryService
         {
             File = new FileDescription(fileName, memoryStream),
             UploadPreset = "iiwd8tcu",
-            Transformation = new Transformation().Width(300).Height(300).Crop("fill").Chain().Quality("auto").Chain().FetchFormat("auto")
+            Transformation = new Transformation()
+                .Width(300)
+                .Height(300)
+                .Crop("fill")
+                .Chain()
+                .Quality("auto")
+                .Chain()
+                .FetchFormat("auto")
         };
         return await _cloudinary.UploadAsync(uploadParams);
     }
