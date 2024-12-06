@@ -257,43 +257,18 @@ namespace RestaurantManagement.API.Controllers
             }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
             #region Google authen
-            // endpoints.MapPost("google-login/{token}", async (
-            //     string token,
-            //     ISender sender) =>
-            // {
-            //     var result = await sender.Send(new LoginWithGoogleQuery(token));
-            //     if(result.IsSuccess)
-            //     {
-            //         return Results.Ok(result);
-            //     }
-            //     return Results.BadRequest(result);
-            // });
+            endpoints.MapPost("google-login/{token}", async (
+                string token,
+                ISender sender) =>
+            {
+                var result = await sender.Send(new LoginWithGoogleQuery(token));
+                if(result.IsSuccess)
+                {
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result);
+            });
             #endregion
-
-
-            endpoints.MapGet("check-issuer", async () =>
-            {
-                var builder = WebApplication.CreateBuilder();
-            
-                return Results.Ok(builder.Configuration["Issuer"]);
-            });
-
-            endpoints.MapGet("check-audience", async () =>
-            {
-                var builder = WebApplication.CreateBuilder();
-            
-                return Results.Ok(builder.Configuration["Audience"]);
-            });
-
-            endpoints.MapGet("check-signingKey", async () =>
-            {
-                var builder = WebApplication.CreateBuilder();
-            
-                return Results.Ok(builder.Configuration["SigningKey"]);
-            });
-
-
-            
 
         }
     }
