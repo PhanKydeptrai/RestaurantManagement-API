@@ -50,7 +50,7 @@ public class CategoryController : IEndpoint
                 return Results.Ok(response);
             }
             return Results.BadRequest(response);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();;
 
 
         //Tạo mới category
@@ -157,10 +157,10 @@ public class CategoryController : IEndpoint
 
         //Khôi phục category
         endpoints.MapPut("restore/{id}", async (
-        Ulid id,
-        HttpContext httpContext,
-        ISender sender,
-        IJwtProvider jwtProvider) =>
+            Ulid id,
+            HttpContext httpContext,
+            ISender sender,
+            IJwtProvider jwtProvider) =>
         {
             // Lấy token
             var token = jwtProvider.GetTokenFromHeader(httpContext);

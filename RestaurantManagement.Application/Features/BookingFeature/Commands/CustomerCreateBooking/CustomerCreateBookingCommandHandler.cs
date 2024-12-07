@@ -1,5 +1,6 @@
 using FluentEmail.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
@@ -12,6 +13,7 @@ namespace RestaurantManagement.Application.Features.BookingFeature.Commands.Cust
 
 
 public class CustomerCreateBookingCommandHandler(
+    IConfiguration configuration,
     IUnitOfWork unitOfWork,
     IBookingRepository bookingRepository,
     IApplicationDbContext context,
@@ -144,13 +146,15 @@ public class CustomerCreateBookingCommandHandler(
 
 
         await unitOfWork.SaveChangesAsync();
-
+        //NOTE: VNPAY return URL
         #region VnPay
         //Get Config Info
         string vnp_Returnurl = "https://localhost:7057/api/booking/ReturnUrl"; //URL nhan ket qua tra ve 
-        string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
-        string vnp_TmnCode = "XFROYZ8A"; //Ma định danh merchant kết nối (Terminal Id)
-        string vnp_HashSecret = "VJJDQOWMKEA13EFEMV1VGY2A17KDM5Z0"; //Secret Key
+        string vnp_Url = configuration["VNP_URL"]!; //URL thanh toan cua VNPAY 
+        string vnp_TmnCode = configuration["VNP_TMNCODE"]!; //Ma định danh merchant kết nối (Terminal Id)
+        string vnp_HashSecret = configuration["VNP_TMNCODE"]!; //Secret Key
+
+        
 
         //Build URL for VNPAY
         VnPayLibrary vnpay = new VnPayLibrary();

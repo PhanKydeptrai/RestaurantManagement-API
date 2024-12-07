@@ -15,7 +15,7 @@ public class JwtProvider : IJwtProvider
     public JwtProvider(IConfiguration config)
     {
         _config = config;
-        _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]));
+        _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["SigningKey"]));
     }
 
 
@@ -35,8 +35,8 @@ public class JwtProvider : IJwtProvider
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddHours(10),
             SigningCredentials = credentials,
-            Issuer = _config["JWT:Issuer"],
-            Audience = _config["JWT:Audience"]
+            Issuer = _config["Issuer"],
+            Audience = _config["Audience"]
 
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
