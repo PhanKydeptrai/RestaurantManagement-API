@@ -295,8 +295,8 @@ public class OrderController : IEndpoint
             }
             await unitOfWork.SaveChangesAsync();
 
-            // return Results.Ok("Payment Success!");
-            return Results.Redirect("http://localhost:5173/donetransaction");
+            return Results.Ok("Payment Success!");
+            // return Results.Redirect("http://localhost:5173/donetransaction");
         });
 
         endpoints.MapDelete("remove-transaction/{id}", async (
