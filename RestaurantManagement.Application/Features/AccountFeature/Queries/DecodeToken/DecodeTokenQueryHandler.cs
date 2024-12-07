@@ -12,7 +12,7 @@ public class DecodeTokenQueryHandler : IQueryHandler<DecodeTokenQuery, string>
         try
         {
             var claims = JwtHelper.DecodeJwt(request.token);
-            claims.TryGetValue("email", out var userId);
+            claims.TryGetValue("sub", out var userId);
             return Result<string>.Success(userId);
         }
         catch

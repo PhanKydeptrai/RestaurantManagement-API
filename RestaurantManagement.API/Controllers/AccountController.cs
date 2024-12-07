@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System.Net;
+using System.Net.Mail;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Authentication;
@@ -221,8 +223,8 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result);
             })
-            .RequireAuthorization();
-            // .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+            .RequireAuthorization()
+            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
             //get customer account info
@@ -256,19 +258,17 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result);
             }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
-            #region Google authen
             endpoints.MapPost("google-login/{token}", async (
                 string token,
                 ISender sender) =>
             {
                 var result = await sender.Send(new LoginWithGoogleQuery(token));
-                if(result.IsSuccess)
+                if (result.IsSuccess)
                 {
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
             });
-            #endregion
 
         }
     }

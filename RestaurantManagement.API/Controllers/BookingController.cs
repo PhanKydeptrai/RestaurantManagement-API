@@ -232,7 +232,8 @@ public class BookingController : IEndpoint
             {
                 try
                 {
-                    await fluentEmail.To(booking.Customer.User.Email)
+                    await fluentEmail
+                        .To(booking.Customer.User.Email)
                         .Subject("Nhà hàng Nhum Nhum - Thông báo thanh toán thành công")
                         .Body($"Quý khách đã thanh toán thành công. <br> Quý khách vui lòng chú ý email để nhận thông tin khi được xếp bàn. <br> Nhà hàng Nhum Nhum xin chân thành cảm ơn.", isHtml: true)
                         .SendAsync();
