@@ -57,7 +57,7 @@ public class ForgotEmployeePasswordCommandHandler(
                         .Body($"Vui lòng nhấn vào link sau để nhận mật khẩu mới: <a href='{verificationLink}'>Click me</a>" +
                         $"Link chỉ có hiệu lực trong 5 phút", isHtml: true)
                         .SendAsync();
-
+                emailSent = true;
             }
             catch
             {
