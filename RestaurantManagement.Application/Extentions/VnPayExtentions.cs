@@ -3,20 +3,17 @@ using RestaurantManagement.Application.Services;
 
 namespace RestaurantManagement.Application.Extentions;
 
-public class VnPayExtentions
+public static class VnPayExtentions
 {
-    private readonly IConfiguration _configuration;
+    private static IConfiguration _configuration;
 
-    public VnPayExtentions(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
-    public string GetVnPayUrl(int amount, string transactionId)
+    //OrderInfo: Mã đơn hàng, có thể là transactionId hoặc bookingId nếu là thanh toán order hoặc đặt bàn
+    public static string GetVnPayUrl(string returnUrl, int amount, string orderInfo)
     {
         #region VnPay
         //Get Config Info
-        string vnp_Returnurl = _configuration["VNP_RETURNURL"]!; //URL nhan ket qua tra ve 
+        string vnp_Returnurl = returnUrl; //URL nhan ket qua tra ve
+
         string vnp_Url = _configuration["VNP_URL"]!; //URL thanh toan cua VNPAY 
         string vnp_TmnCode = _configuration["VNP_TMNCODE"]!; //Ma định danh merchant kết nối (Terminal Id)
         string vnp_HashSecret = _configuration["VNP_TMNCODE"]!; //Secret Key
@@ -33,11 +30,11 @@ public class VnPayExtentions
         vnpay.AddRequestData("vnp_CurrCode", "VND");
         vnpay.AddRequestData("vnp_IpAddr", ":1");
         vnpay.AddRequestData("vnp_Locale", "vn");
-        vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang:" + transactionId);
+        vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang:" + orderInfo);
         vnpay.AddRequestData("vnp_OrderType", "other"); //default value: other
 
         vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
-        vnpay.AddRequestData("vnp_TxnRef", transactionId); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
+        vnpay.AddRequestData("vnp_TxnRef", orderInfo); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
 
         string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
 
