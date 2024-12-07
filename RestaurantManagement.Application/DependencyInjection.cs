@@ -30,12 +30,9 @@ public static class DependencyInjection
         SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
         {
             Port = int.Parse(configuration["Port"]!), // Cổng SMTP cho Gmail với TLS
-            Credentials = new NetworkCredential(configuration["RestaurantEmail"], configuration["AppPasswords"]), // Mật khẩu ứng dụng ở đây
+            Credentials = new NetworkCredential(configuration["SenderEmail"], configuration["AppPasswords"]),
             EnableSsl = true // Sử dụng SSL
         };
-
-        // services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Email:Sender"])
-        //         .AddSmtpSender(new SmtpClient(configuration["Email:Host"], int.Parse(configuration["Email:Port"])));
 
         services.AddFluentEmail(configuration["SenderEmail"], configuration["Sender"])
                 .AddSmtpSender(smtpClient);

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Mail;
+using FluentEmail.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
@@ -270,6 +271,26 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result);
             });
 
+
+            // endpoints.MapPost("test", async (
+            //     string email,
+            //     IFluentEmail fluentEmail) =>
+            // {
+            //     try
+            //     {
+            //         await fluentEmail
+            //             .To(email)
+            //             .Subject("Nhà hàng Nhum Nhum - Thông báo thanh toán thành công")
+            //             .Body($"Quý khách đã thanh toán thành công. <br> Quý khách vui lòng chú ý email để nhận thông tin khi được xếp bàn. <br> Nhà hàng Nhum Nhum xin chân thành cảm ơn.", isHtml: true)
+            //             .SendAsync();
+
+            //         return Results.Ok("Email sent!");
+            //     }
+            //     catch(Exception ex)
+            //     {
+            //         return Results.BadRequest("Email not sent!");
+            //     }
+            // });
         }
     }
 }
