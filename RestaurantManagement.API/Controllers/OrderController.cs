@@ -177,7 +177,7 @@ public class OrderController : IEndpoint
             return Results.Ok(result);
         }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
-        
+
         endpoints.MapGet("vn-pay/{id}", async (
             string id,
             ISender sender) =>
@@ -205,7 +205,8 @@ public class OrderController : IEndpoint
             [FromQuery(Name = "vnp_SecureHash")] string vnp_SecureHash,
             IUnitOfWork unitOfWork,
             IApplicationDbContext context,
-            IFluentEmail fluentEmail) =>
+            IFluentEmail fluentEmail,
+            IConfiguration configuration) =>
         {
             var model = new VnPayReturnModel
             {
@@ -295,8 +296,15 @@ public class OrderController : IEndpoint
             }
             await unitOfWork.SaveChangesAsync();
 
-            return Results.Ok("Payment Success!");
-            // return Results.Redirect("http://localhost:5173/donetransaction");
+            try
+            {
+                return Results.Ok("Payment Success!");
+            }
+            catch (Exception)
+            {
+                return Results.Redirect(configuration["RedirectURL_Orders"]!);
+
+            }
         });
 
         endpoints.MapDelete("remove-transaction/{id}", async (

@@ -164,6 +164,7 @@ public class BookingController : IEndpoint
             [FromQuery(Name = "vnp_TransactionNo")] string vnp_TransactionNo,
             [FromQuery(Name = "vnp_TxnRef")] string vnp_TxnRef,
             [FromQuery(Name = "vnp_SecureHash")] string vnp_SecureHash,
+            IConfiguration configuration,
             IUnitOfWork unitOfWork,
             IApplicationDbContext _context,
             IFluentEmail fluentEmail) =>
@@ -214,7 +215,7 @@ public class BookingController : IEndpoint
                 BookId = booking.BookId,
                 CreatedDate = DateTime.Now,
                 // OrderId = order.OrderId,
-                Total = decimal.Parse(model.vnp_Amount)/100,
+                Total = decimal.Parse(model.vnp_Amount) / 100,
                 PaymentStatus = "BookingPaid",
                 PaymentType = "Cash"
             };
@@ -246,15 +247,20 @@ public class BookingController : IEndpoint
                     if (retryCount >= maxRetries)
                     {
                         return Results.BadRequest("Failed to send email");
-                        // return Results.Redirect("YourSuccessPage");
-
                     }
                 }
             }
             while (!emailSent && retryCount < maxRetries);
 
-            return Results.Ok("Payment Success!");
-            // return Results.Redirect("http://localhost:5173/donetransaction");
+            try
+            {
+                return Results.Redirect(configuration["RedirectURL_Booking"]!);
+            }
+            catch (Exception)
+            {
+                return Results.Ok("Payment Success!");
+            }
+
         });
 
     }

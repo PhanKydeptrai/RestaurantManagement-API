@@ -94,7 +94,9 @@ namespace RestaurantManagement.API.Controllers
                 // using var pdfDocument = renderer.RenderHtmlAsPdf(html);
 
                 // return Results.File(pdfDocument.BinaryData, "application/pdf", "bill.pdf");
-            }).RequireAuthorization().AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+            })
+            .RequireAuthorization()
+            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         }
     }
