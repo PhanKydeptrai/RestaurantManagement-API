@@ -5,10 +5,8 @@ namespace RestaurantManagement.Application.Extentions;
 
 public static class VnPayExtentions
 {
-    private static IConfiguration _configuration;
-
     //OrderInfo: Mã đơn hàng, có thể là transactionId hoặc bookingId nếu là thanh toán order hoặc đặt bàn
-    public static string GetVnPayUrl(string returnUrl, int amount, string orderInfo)
+    public static string GetVnPayUrl(string returnUrl, int amount, string orderInfo, IConfiguration _configuration)
     {
         #region VnPay
         //Get Config Info
@@ -16,7 +14,7 @@ public static class VnPayExtentions
 
         string vnp_Url = _configuration["VNP_URL"]!; //URL thanh toan cua VNPAY 
         string vnp_TmnCode = _configuration["VNP_TMNCODE"]!; //Ma định danh merchant kết nối (Terminal Id)
-        string vnp_HashSecret = _configuration["VNP_TMNCODE"]!; //Secret Key
+        string vnp_HashSecret = _configuration["VNP_HASHSECRET"]!; //Secret Key
 
         //Build URL for VNPAY
         VnPayLibrary vnpay = new VnPayLibrary();

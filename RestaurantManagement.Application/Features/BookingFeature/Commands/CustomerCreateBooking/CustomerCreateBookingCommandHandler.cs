@@ -152,7 +152,8 @@ public class CustomerCreateBookingCommandHandler(
         string paymentUrl = VnPayExtentions.GetVnPayUrl(
             configuration["VNP_RETURNURL_BOOKING"]!,
             (int)bookingPrice,
-            booking.BookId.ToString());
+            booking.BookId.ToString(),
+            configuration);
         #endregion
 
         #region Gửi mail thông báo cho khách hàng
