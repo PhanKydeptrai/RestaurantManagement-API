@@ -21,7 +21,7 @@ public class GlobalExceptionHandling : IExceptionHandler
         var problemDetail = new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
-            Title = "Server error occurred"
+            Title = $"Server error occurred: {exception.Message}"
         };
 
         httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
