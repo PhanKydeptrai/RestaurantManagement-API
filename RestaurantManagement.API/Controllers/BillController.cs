@@ -83,17 +83,17 @@ namespace RestaurantManagement.API.Controllers
                 string id,
                 ISender sender) =>
             {
-                var result = await sender.Send(new GetBillByIdQuery(id));
-                if (!result.IsSuccess)
-                {
-                    return Results.BadRequest(result);
-                }
-                var html = await RazorTemplateEngine.RenderAsync("Views/BillReport.cshtml", result.Value);
-                var renderer = new ChromePdfRenderer();
+                // var result = await sender.Send(new GetBillByIdQuery(id));
+                // if (!result.IsSuccess)
+                // {
+                //     return Results.BadRequest(result);
+                // }
+                // var html = await RazorTemplateEngine.RenderAsync("Views/BillReport.cshtml", result.Value);
+                // var renderer = new ChromePdfRenderer();
 
-                using var pdfDocument = renderer.RenderHtmlAsPdf(html);
+                // using var pdfDocument = renderer.RenderHtmlAsPdf(html);
 
-                return Results.File(pdfDocument.BinaryData, "application/pdf", "bill.pdf");
+                // return Results.File(pdfDocument.BinaryData, "application/pdf", "bill.pdf");
             }).RequireAuthorization().AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         }

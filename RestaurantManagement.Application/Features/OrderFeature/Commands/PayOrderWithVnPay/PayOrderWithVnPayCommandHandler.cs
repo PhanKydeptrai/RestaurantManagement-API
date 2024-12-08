@@ -62,7 +62,8 @@ public class PayOrderWithVnPayCommandHandler : ICommandHandler<PayOrderWithVnPay
         string paymentUrl = VnPayExtentions.GetVnPayUrl(
             _configuration["VNP_RETURNURL_ORDERS"]!,
             (int)order.OrderTransaction.Amount,
-            order.OrderTransaction.TransactionId.ToString());
+            order.OrderTransaction.TransactionId.ToString(),
+            _configuration);
         #endregion
 
         return Result<string>.Success(paymentUrl);
