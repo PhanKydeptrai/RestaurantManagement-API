@@ -27,15 +27,45 @@ public static class DependencyInjection
 
         // Đăng ký FluentEmail
 
-        SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
-        {
-            Port = int.Parse(configuration["Port"]!), // Cổng SMTP cho Gmail với TLS
-            Credentials = new NetworkCredential(configuration["SenderEmail"], configuration["AppPasswords"]),
-            EnableSsl = true // Sử dụng SSL
-        };
+        #region Stable
+        // if (!string.IsNullOrEmpty(configuration["Port"])) // Môi trường production
+        // {
+        //     SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
+        //     {
+        //         Port = int.Parse(configuration["Port"]!),
+        //         Credentials = new NetworkCredential(configuration["SenderEmail"], configuration["AppPasswords"]),
+        //         EnableSsl = true // Sử dụng SSL
+        //     };
 
-        services.AddFluentEmail(configuration["SenderEmail"], configuration["Sender"])
-                .AddSmtpSender(smtpClient);
+        //     services.AddFluentEmail(configuration["SenderEmail"], configuration["Sender"])
+        //             .AddSmtpSender(smtpClient);
+        // }
+        // else // Môi trường dev
+        // {
+        //     services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Email:Sender"])
+        //             .AddSmtpSender(new SmtpClient(configuration["Email:Host"], int.Parse(configuration["Email:Port"])));
+
+        // }
+        #endregion
+
+
+        try
+        {
+            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = int.Parse(configuration["Port"]!),
+                Credentials = new NetworkCredential(configuration["SenderEmail"], configuration["AppPasswords"]),
+                EnableSsl = true // Sử dụng SSL
+            };
+
+            services.AddFluentEmail(configuration["SenderEmail"], configuration["Sender"])
+                    .AddSmtpSender(smtpClient);
+        }
+        catch (Exception)
+        {
+            services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Email:Sender"])
+                    .AddSmtpSender(new SmtpClient(configuration["Email:Host"], int.Parse(configuration["Email:Port"])));
+        }
 
         return services;
     }
