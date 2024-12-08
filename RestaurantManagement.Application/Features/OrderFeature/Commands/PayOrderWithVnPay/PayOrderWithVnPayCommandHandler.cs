@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
-using RestaurantManagement.Application.Services;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
