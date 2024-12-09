@@ -46,7 +46,7 @@ public class GetAllTableTypeQueryHandler(IApplicationDbContext context) : IQuery
             tableTypeQuery = tableTypeQuery.OrderBy(keySelector);
         }
 
-        //Paging    
+        //Paging --Offset-pagination
         var tableTypes = tableTypeQuery
             .Select(a => new TableTypeResponse(
                 a.TableTypeId,

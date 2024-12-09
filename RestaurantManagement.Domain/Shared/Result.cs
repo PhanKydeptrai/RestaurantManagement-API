@@ -1,6 +1,6 @@
 ﻿namespace RestaurantManagement.Domain.Shared;
 
-public class Result
+public class Result //Result pattern
 {
     public Result(bool isSuccess, Error[]? errors)
     {
