@@ -162,7 +162,6 @@ public class TableTypeController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result.Errors);
-        })
-        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+        });
     }
 }

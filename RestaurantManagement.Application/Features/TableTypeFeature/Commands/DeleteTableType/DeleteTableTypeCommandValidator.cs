@@ -2,7 +2,7 @@ using FluentValidation;
 using RestaurantManagement.Domain.IRepos;
 
 namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.DeleteTableType;
-
+//Fluent validation
 public class DeleteTableTypeCommandValidator : AbstractValidator<DeleteTableTypeCommand>
 {
     public DeleteTableTypeCommandValidator(ITableTypeRepository tableTypeRepository)
