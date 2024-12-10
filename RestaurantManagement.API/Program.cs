@@ -586,6 +586,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
+
 app.UseMiddleware<RequestLogContextMiddleware>();
 
 app.UseRateLimiter();

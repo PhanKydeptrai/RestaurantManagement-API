@@ -13,6 +13,7 @@ public class PayOrderCommandHandler(
     IUnitOfWork unitOfWork,
     ITableRepository tableRepository) : ICommandHandler<PayOrderCommand>
 {
+    //Sửa lỗi chưa lấy orderdetail
     public async Task<Result> Handle(PayOrderCommand request, CancellationToken cancellationToken)
     {
         //Validate request

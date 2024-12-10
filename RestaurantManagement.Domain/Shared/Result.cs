@@ -1,6 +1,6 @@
 ﻿namespace RestaurantManagement.Domain.Shared;
 
-public class Result //Result pattern
+public class Result //Result pattern => Đồng bộ hoá định dạng trả về 
 {
     public Result(bool isSuccess, Error[]? errors)
     {
