@@ -159,7 +159,6 @@ public class LoginWithGoogleQueryHandler : IQueryHandler<LoginWithGoogleQuery, L
         }
         catch (Exception)
         {
-            // return Result<LoginResponse>.Failure(new[] { new Error("Login Fail", e.Message) });
             return Result<LoginResponse>.Failure(new[] { new Error("Login Fail", "Token is invalid") });
         }
 

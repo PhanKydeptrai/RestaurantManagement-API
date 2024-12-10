@@ -3,7 +3,7 @@ using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Abtractions;
 
-public interface IQuery<TResponse> : IRequest<Result<TResponse>>
+public interface IQuery<TResponse> : IRequest<Result<TResponse>> //Tối ưu việc viết code
 {
 
 }

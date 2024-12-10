@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RestaurantManagement.Application.Features.Paging;
 
+//offset pagination
 public class PagedList<T>(List<T> items, int page, int pageSize, int totalCount)
 {
     public List<T> Items { get; set; } = items;

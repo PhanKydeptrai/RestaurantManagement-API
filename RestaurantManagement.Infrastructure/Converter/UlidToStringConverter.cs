@@ -9,7 +9,7 @@ public class UlidToStringConverter(ConverterMappingHints mappingHints = null) : 
 {
     private static readonly ConverterMappingHints defaultHints = new ConverterMappingHints(size: 26);
 
-    public UlidToStringConverter() : this(null)
+    public UlidToStringConverter() : this(null) 
     {
     }
 }
