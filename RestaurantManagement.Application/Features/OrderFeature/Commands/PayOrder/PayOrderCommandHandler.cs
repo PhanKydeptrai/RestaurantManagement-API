@@ -26,6 +26,7 @@ public class PayOrderCommandHandler(
         }
 
         //Kiểm tra xem bàn đã có order chưa
+
         var order = await context.Tables
             .Include(a => a.BookingDetails.Where(a => a.Booking.BookingStatus == "Occupied"))
             .Include(a => a.Orders)
@@ -88,6 +89,7 @@ public class PayOrderCommandHandler(
         {
             checkBooking.Booking.Bill.Total += order.OrderTransaction.Amount;
             checkBooking.Booking.Bill.IsVoucherUsed = isVoucherUsed;
+            checkBooking.Booking.Bill.OrderId = order.OrderId;
             checkBooking.Booking.Bill.VoucherId = order.OrderTransaction.VoucherId;
             checkBooking.Booking.Bill.PaymentStatus = "Paid";
             checkBooking.Booking.BookingStatus = "Completed";
@@ -116,7 +118,7 @@ public class PayOrderCommandHandler(
 
         return Result.Success();
     }
-}  
+}
 
 #region Stable code 
 // public class PayOrderCommandHandler(
