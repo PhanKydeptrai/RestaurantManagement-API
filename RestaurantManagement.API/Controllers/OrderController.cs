@@ -274,6 +274,7 @@ public class OrderController : IEndpoint
                 transaction.Bill.Total = decimal.Parse(model.vnp_Amount) / 100;
                 transaction.Bill.PaymentStatus = model.vnp_ResponseCode == "00" ? "Paid" : "Failed";
                 transaction.Bill.IsVoucherUsed = isVoucherUsed;
+                transaction.Bill.OrderId = transaction.OrderId;
                 transaction.Bill.PaymentType = "VNPay";
                 transaction.Bill.CreatedDate = DateTime.Now;
                 transaction.Bill.VoucherId = transaction.VoucherId;
