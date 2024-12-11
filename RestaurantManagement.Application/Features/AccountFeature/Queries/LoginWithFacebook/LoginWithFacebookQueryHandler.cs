@@ -1,4 +1,3 @@
-using Google.Apis.Auth;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
@@ -7,9 +6,9 @@ using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Domain.Shared;
 
-namespace RestaurantManagement.Application.Features.AccountFeature.Queries.LoginWithGoogle;
+namespace RestaurantManagement.Application.Features.AccountFeature.Queries.LoginWithFacebook;
 
-public class LoginWithGoogleQueryHandler : IQueryHandler<LoginWithGoogleQuery, LoginResponse>
+public class LoginWithFacebookQueryHandler : IQueryHandler<LoginWithFacebookQuery, LoginResponse>
 {
     private readonly IApplicationDbContext _context;
     private readonly IJwtProvider _jwtProvider;
@@ -17,36 +16,28 @@ public class LoginWithGoogleQueryHandler : IQueryHandler<LoginWithGoogleQuery, L
     private readonly ICustomerRepository _customerRepository;
     private readonly IUserRepository _userRepository;
 
-    public LoginWithGoogleQueryHandler(
-        IApplicationDbContext context,
-        IJwtProvider jwtProvider,
-        IUnitOfWork unitOfWork,
+    public LoginWithFacebookQueryHandler(
+        IUserRepository userRepository,
         ICustomerRepository customerRepository,
-        IUserRepository userRepository)
+        IUnitOfWork unitOfWork,
+        IJwtProvider jwtProvider,
+        IApplicationDbContext context)
     {
-        _context = context;
-        _jwtProvider = jwtProvider;
-        _unitOfWork = unitOfWork;
-        _customerRepository = customerRepository;
         _userRepository = userRepository;
+        _customerRepository = customerRepository;
+        _unitOfWork = unitOfWork;
+        _jwtProvider = jwtProvider;
+        _context = context;
     }
 
-    public async Task<Result<LoginResponse>> Handle(LoginWithGoogleQuery request, CancellationToken cancellationToken)
+    public async Task<Result<LoginResponse>> Handle(LoginWithFacebookQuery request, CancellationToken cancellationToken)
     {
-
         try
         {
-            var googleUser = await GoogleJsonWebSignature.ValidateAsync(request.token, new GoogleJsonWebSignature.ValidationSettings());
-
-            //TODO: REFACTOR
             var loginResponse = await _context.Customers
                 .Include(a => a.User)
-                .FirstOrDefaultAsync(a => a.User.Email == googleUser.Email);
+                .FirstOrDefaultAsync(a => a.User.Email == request.email);
 
-            //Nếu không tìm thấy khách hàng => tạo mới hoặc từ chối
-            //1 Tài khoản bị xoá (Từ chối) -
-            //2 Tài khoản chưa kích hoạt (Kích hoạt) -
-            //3 chưa đăng ký (Đăng ký dùm) -
             #region Xử lý trường hợp không tìm thấy tài khoản
             if (loginResponse == null) //Không thấy
             {
@@ -55,10 +46,10 @@ public class LoginWithGoogleQueryHandler : IQueryHandler<LoginWithGoogleQuery, L
                 var user = new User
                 {
                     UserId = Ulid.NewUlid(),
-                    FirstName = googleUser.GivenName,
-                    LastName = googleUser.FamilyName ?? string.Empty,
-                    Email = googleUser.Email,
-                    ImageUrl = googleUser.Picture,
+                    FirstName = string.Empty,
+                    LastName = request.userName ?? string.Empty,
+                    Email = request.email,
+                    ImageUrl = request.imageUrl,
                     Phone = null,
                     Password = null,
                     Gender = null,
@@ -80,7 +71,6 @@ public class LoginWithGoogleQueryHandler : IQueryHandler<LoginWithGoogleQuery, L
                 var token = _jwtProvider.GenerateJwtToken(
                     user.UserId.ToString(),
                     user.Email,
-                    // customer.CustomerType
                     "Subscriber"
                 );
 
@@ -126,10 +116,6 @@ public class LoginWithGoogleQueryHandler : IQueryHandler<LoginWithGoogleQuery, L
             }
             #endregion
 
-            //Nếu tìm thấy => login hoặc cập nhật
-            //1 Khách đã đăng ký trước -
-            //2 Khách chỉ đăng ký bằng gg -
-            //3 Là khách hàng cũ từng đến ăn nhưng chưa đăng ký -
             #region Xử lý trường hợp khách đã từng đặt bàn nhưng chưa đăng ký
             if (loginResponse != null && loginResponse.CustomerType == "Normal")
             {
@@ -137,8 +123,8 @@ public class LoginWithGoogleQueryHandler : IQueryHandler<LoginWithGoogleQuery, L
                 loginResponse.CustomerType = "Subscriber";
                 loginResponse.CustomerStatus = "Active";
                 loginResponse.User.Status = "Activated";
-                loginResponse.User.FirstName = googleUser.GivenName;
-                loginResponse.User.LastName = googleUser.FamilyName;
+                loginResponse.User.FirstName = string.Empty;
+                loginResponse.User.LastName = request.userName ?? string.Empty;
 
                 await _unitOfWork.SaveChangesAsync();
 
@@ -152,15 +138,11 @@ public class LoginWithGoogleQueryHandler : IQueryHandler<LoginWithGoogleQuery, L
             }
             #endregion
 
-
-            return Result<LoginResponse>.Failure(new[] { new Error("Login Fail", "Token is invalid") });
+            return Result<LoginResponse>.Failure(new[] { new Error("Login Fail", "Login fail") });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return Result<LoginResponse>.Failure(new[] { new Error("Login Fail", "Token is invalid") });
+            return Result<LoginResponse>.Failure(new[] { new Error("Login Fail", "Login fail") });
         }
-
-
-
     }
 }
