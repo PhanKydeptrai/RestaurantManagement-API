@@ -15,6 +15,7 @@ using RestaurantManagement.Application.Features.AccountFeature.Queries.DecodeTok
 using RestaurantManagement.Application.Features.AccountFeature.Queries.EmployeeLogin;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.GetEmployeeAccountInfo;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.Login;
+using RestaurantManagement.Application.Features.AccountFeature.Queries.LoginWithFacebook;
 using RestaurantManagement.Application.Features.AccountFeature.Queries.LoginWithGoogle;
 using RestaurantManagement.Application.Features.CustomerFeature.Queries.GetCustomerById;
 using RestaurantManagement.Domain.IRepos;
@@ -266,20 +267,20 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            });
+            }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
-            endpoints.MapPost("facebook-login/{token}", async (
-                string token,
+            endpoints.MapPost("facebook-login", async (
+                [FromBody] LoginWithFacebookQuery query,
                 ISender sender) =>
             {
-                var result = await sender.Send(new DecodeTokenQuery(token));
+                var result = await sender.Send(query);
                 if (result.IsSuccess)
                 {
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            });
+            }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
             /* endpoints.MapPost("test", async (
