@@ -1,7 +1,4 @@
-﻿using System.Net;
-using System.Net.Mail;
-using FluentEmail.Core;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.Abstractions;
 using RestaurantManagement.API.Authentication;
@@ -272,7 +269,20 @@ namespace RestaurantManagement.API.Controllers
             });
 
 
-            // endpoints.MapPost("test", async (
+            endpoints.MapPost("facebook-login/{token}", async (
+                string token,
+                ISender sender) =>
+            {
+                var result = await sender.Send(new DecodeTokenQuery(token));
+                if (result.IsSuccess)
+                {
+                    return Results.Ok(result);
+                }
+                return Results.BadRequest(result);
+            });
+
+
+            /* endpoints.MapPost("test", async (
             //     string email,
             //     IFluentEmail fluentEmail) =>
             // {
@@ -290,7 +300,7 @@ namespace RestaurantManagement.API.Controllers
             //     {
             //         return Results.BadRequest("Email not sent!");
             //     }
-            // });
+            // }); */
         }
     }
 }
