@@ -286,42 +286,17 @@ namespace RestaurantManagement.API.Controllers
             }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
-            endpoints.MapPost("test", async (
+            endpoints.MapPost("send-mailtest/{email}", async (
                 string email,
                 IFluentEmail fluentEmail) =>
             {
                 try
                 {
-                    // await fluentEmail
-                    //     .To(email)
-                    //     .Subject("Nhà hàng Nhum Nhum - Thông báo thanh toán thành công")
-                    //     .Body($"Quý khách đã thanh toán thành công. <br> Quý khách vui lòng chú ý email để nhận thông tin khi được xếp bàn. <br> Nhà hàng Nhum Nhum xin chân thành cảm ơn.", isHtml: true)
-                    //     .SendAsync();
-
-                    // Thông tin đăng nhập và cài đặt máy chủ SMTP
-                    string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
-                    string toEmail = "kyp194490@gmail.com";  // Địa chỉ người nhận
-                    string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
-
-                    var smtpClient = new SmtpClient("smtp.gmail.com")
-                    {
-                        Port = 587, // Cổng sử dụng cho TLS
-                        Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
-                        EnableSsl = true // Kích hoạt SSL/TLS
-                    };
-
-                    var mailMessage = new MailMessage
-                    {
-                        From = new MailAddress(fromEmail),
-                        Subject = "Test Email from Gmail",
-                        Body = "This is a test email sent from C# using Gmail SMTP.",
-                        IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
-                    };
-
-                    mailMessage.To.Add(toEmail);
-
-                    // Gửi email
-                    smtpClient.Send(mailMessage);
+                    await fluentEmail
+                        .To(email)
+                        .Subject("Nhà hàng Nhum Nhum")
+                        .Body($"Sendmail services is working!", isHtml: true)
+                        .SendAsync();
 
                     return Results.Ok("Email sent!");
                 }
