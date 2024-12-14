@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
@@ -11,7 +12,8 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Upd
 public class UpdateCategoryCommandHandler(
     ICategoryRepository categoryRepository,
     IUnitOfWork unitOfWork,
-    IApplicationDbContext context) : ICommandHandler<UpdateCategoryCommand>
+    IApplicationDbContext context,
+    IConfiguration configuration) : ICommandHandler<UpdateCategoryCommand>
 {
     public async Task<Result> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
@@ -45,7 +47,7 @@ public class UpdateCategoryCommandHandler(
                 memoryStream.Position = 0;
 
                 //Upload ảnh lên cloudinary
-                var cloudinary = new CloudinaryService();
+                var cloudinary = new CloudinaryService(configuration);
                 var resultUpload = await cloudinary.UploadAsync(memoryStream, request.Image.FileName);
                 newImageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
 
@@ -58,7 +60,7 @@ public class UpdateCategoryCommandHandler(
             if (oldimageUrl != "")
             {
                 //Upload ảnh lên cloudinary
-                var cloudinary = new CloudinaryService();
+                var cloudinary = new CloudinaryService(configuration);
                 var resultDelete = await cloudinary.DeleteAsync(oldimageUrl);
                 //Log
                 Console.WriteLine(resultDelete.JsonObj);

@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Infrastructure.Authentication;
+using RestaurantManagement.Infrastructure.BackgroundJob;
 using RestaurantManagement.Infrastructure.Repos;
 
 namespace RestaurantManagement.Infrastructure;
@@ -36,6 +37,14 @@ public static class DependencyInjection
         services.AddQuartz(options =>
         {
             options.UseMicrosoftDependencyInjectionJobFactory();
+
+            var jobKey = JobKey.Create(nameof(VoucherBackgroundJob));
+            
+            options.AddJob<VoucherBackgroundJob>(jobKey)
+                    .AddTrigger(trigger => 
+                        trigger.ForJob(jobKey)
+                    .WithSimpleSchedule(schedule => schedule.WithIntervalInSeconds(10).RepeatForever()));
+
         });
 
         services.AddQuartzHostedService();

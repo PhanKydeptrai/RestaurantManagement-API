@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Application.Abtractions;
+﻿using Microsoft.Extensions.Configuration;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Services;
@@ -11,7 +12,8 @@ public class UpdateMealCommandHandler(
     IMealRepository mealRepository,
     IUnitOfWork unitOfWork,
     IApplicationDbContext context,
-    ICategoryRepository categoryRepository) : ICommandHandler<UpdateMealCommand>
+    ICategoryRepository categoryRepository,
+    IConfiguration configuration) : ICommandHandler<UpdateMealCommand>
 {
     public async Task<Result> Handle(UpdateMealCommand request, CancellationToken cancellationToken)
     {
@@ -49,7 +51,7 @@ public class UpdateMealCommandHandler(
                 memoryStream.Position = 0;
 
                 //Upload ảnh lên cloudinary
-                var cloudinary = new CloudinaryService();
+                var cloudinary = new CloudinaryService(configuration);
                 var resultUpload = await cloudinary.UploadAsync(memoryStream, request.Image.FileName);
                 newImageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
                 meal.ImageUrl = newImageUrl;
@@ -61,7 +63,7 @@ public class UpdateMealCommandHandler(
             if (oldimageUrl != "")
             {
                 //Upload ảnh lên cloudinary
-                var cloudinary = new CloudinaryService();
+                var cloudinary = new CloudinaryService(configuration);
                 var resultDelete = await cloudinary.DeleteAsync(oldimageUrl);
                 //Log
                 Console.WriteLine(resultDelete.JsonObj);

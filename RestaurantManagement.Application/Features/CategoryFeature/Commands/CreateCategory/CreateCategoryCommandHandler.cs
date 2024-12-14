@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Application.Abtractions;
+﻿using Microsoft.Extensions.Configuration;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Services;
@@ -11,7 +12,8 @@ namespace RestaurantManagement.Application.Features.CategoryFeature.Commands.Cre
 public class CreateCategoryCommandHandler(
     ICategoryRepository categoryRepository,
     IUnitOfWork unitOfWork,
-    IApplicationDbContext context) : ICommandHandler<CreateCategoryCommand>
+    IApplicationDbContext context,
+    IConfiguration configuration) : ICommandHandler<CreateCategoryCommand>
 {
     public async Task<Result> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
@@ -36,7 +38,7 @@ public class CreateCategoryCommandHandler(
             memoryStream.Position = 0;
 
             //Upload ảnh lên cloudinary
-            var cloudinary = new CloudinaryService();
+            var cloudinary = new CloudinaryService(configuration);
             var resultUpload = await cloudinary.UploadAsync(memoryStream, request.Image.FileName);
             imageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
             //Log
