@@ -8,7 +8,7 @@ public record GetAllTableQuery(
     string? filterTableType,
     string? filterActiveStatus,
     string? filterStatus,
-    // string? searchTerm,
+    string? searchTerm,
     string? sortColumn,
     string? sortOrder,
     int? page,

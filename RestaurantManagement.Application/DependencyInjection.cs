@@ -32,7 +32,9 @@ public static class DependencyInjection
             SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
             {
                 Port = int.Parse(configuration["Port"]!),
-                Credentials = new NetworkCredential(configuration["SenderEmail"], configuration["AppPasswords"]),
+                // Credentials = new NetworkCredential(configuration["SenderEmail"], configuration["AppPasswords"]),
+                Credentials = new NetworkCredential("nhumnhumrestaurant@gmail.com", configuration["AppPasswords"]),
+
                 EnableSsl = true // Sử dụng SSL
             };
 
