@@ -32,11 +32,11 @@ public static class DependencyInjection
             SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
             {
                 Port = int.Parse(configuration["Port"]!),
-                // Credentials = new NetworkCredential(configuration["SenderEmail"], configuration["AppPasswords"]),
-                Credentials = new NetworkCredential("nhumnhumrestaurant@gmail.com", configuration["AppPasswords"]),
-
+                Credentials = new NetworkCredential(configuration["SenderEmail"], configuration["AppPasswords"]),
                 EnableSsl = true // Sử dụng SSL
             };
+            // Console.WriteLine("SenderEmail: " + smtpClient.Credentials.GetCredential(smtpClient.Host, smtpClient.Port, "smtp").UserName);
+
 
             services.AddFluentEmail(configuration["SenderEmail"], configuration["Sender"])
                     .AddSmtpSender(smtpClient);
