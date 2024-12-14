@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Mail;
 using FluentEmail.Core;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
@@ -26,7 +28,7 @@ public class DeleteEmployeeCommandHandler(
         {
             return Result.Failure(errors!);
         }
-        
+
 
         #region Decode jwt and system log
         //Decode jwt
@@ -71,9 +73,32 @@ public class DeleteEmployeeCommandHandler(
         {
             try
             {
-                await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo sa thải nhân viên")
-                    .Body("<style>body {font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f9f9f9;} .container {background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);} h2 {color: #333;} p {color: #555;} .footer {margin-top: 20px; font-size: 0.9em; color: #888;}</style> ", isHtml: true)
-                    .SendAsync();
+                #region Send Email using Gmail SMTP
+                // Thông tin đăng nhập và cài đặt máy chủ SMTP
+                string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
+                string toEmail = user.Email;  // Địa chỉ người nhận
+                string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
+
+                var smtpClient = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587, // Cổng sử dụng cho TLS
+                    Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
+                    EnableSsl = true // Kích hoạt SSL/TLS
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(fromEmail),
+                    Subject = "Nhà hàng Nhum nhum - Thông báo sa thải nhân viên",
+                    Body = $"Nhân viên {employee.FirstName + " " + employee.LastName} đã bị sa thải khỏi nhà hàng Nhum nhum",
+                    IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
+                };
+
+                mailMessage.To.Add(toEmail);
+
+                // Gửi email
+                smtpClient.Send(mailMessage);
+                #endregion
                 emailSent = true;
             }
             catch
@@ -86,7 +111,7 @@ public class DeleteEmployeeCommandHandler(
             }
         }
         while (!emailSent && retryCount < maxRetries);
-        
+
         await unitOfWork.SaveChangesAsync();
         return Result.Success();
     }

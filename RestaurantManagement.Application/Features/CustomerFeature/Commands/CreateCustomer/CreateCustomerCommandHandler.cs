@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Mail;
 using FluentEmail.Core;
 using Microsoft.EntityFrameworkCore;
 using NETCore.Encrypt;
@@ -96,9 +98,32 @@ public class CreateCustomerCommandHandler(
         {
             try
             {
-                await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
-                    .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> \n Đây là mật khẩu của bạn: {randomPassword}", isHtml: true)
-                    .SendAsync();
+                #region Send Email using Gmail SMTP
+                // Thông tin đăng nhập và cài đặt máy chủ SMTP
+                string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
+                string toEmail = request.Email;  // Địa chỉ người nhận
+                string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
+
+                var smtpClient = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587, // Cổng sử dụng cho TLS
+                    Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
+                    EnableSsl = true // Kích hoạt SSL/TLS
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(fromEmail),
+                    Subject = "Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản",
+                    Body = $"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> <br> Đây là mật khẩu của bạn: {randomPassword}",
+                    IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
+                };
+
+                mailMessage.To.Add(toEmail);
+
+                // Gửi email
+                smtpClient.Send(mailMessage);
+                #endregion
                 emailSent = true;
             }
             catch
