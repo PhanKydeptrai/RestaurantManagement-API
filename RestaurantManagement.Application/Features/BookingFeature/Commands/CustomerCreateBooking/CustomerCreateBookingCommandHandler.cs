@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Mail;
 using FluentEmail.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -146,7 +148,7 @@ public class CustomerCreateBookingCommandHandler(
 
 
         await unitOfWork.SaveChangesAsync();
-        
+
         //NOTE: VNPAY return URL
         #region VnPay
         string paymentUrl = VnPayExtentions.GetVnPayUrl(
@@ -165,10 +167,33 @@ public class CustomerCreateBookingCommandHandler(
         {
             try
             {
-                await fluentEmail.To(userEmail)
-                    .Subject("Nhà hàng Nhum nhum - Thông báo thanh toán phí đặt bàn")
-                    .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> <br> Mã booking của bạn là: {booking.BookId}", isHtml: true)
-                    .SendAsync();
+                //Gửi mail
+                #region Send Email using Gmail SMTP
+                // Thông tin đăng nhập và cài đặt máy chủ SMTP
+                string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
+                string toEmail = userEmail;  // Địa chỉ người nhận
+                string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
+
+                var smtpClient = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587, // Cổng sử dụng cho TLS
+                    Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
+                    EnableSsl = true // Kích hoạt SSL/TLS
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(fromEmail),
+                    Subject = "Nhà hàng Nhum nhum - Thông báo thanh toán phí đặt bàn",
+                    Body = $"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> <br> Mã booking của bạn là: {booking.BookId}",
+                    IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
+                };
+
+                mailMessage.To.Add(toEmail);
+
+                // Gửi email
+                smtpClient.Send(mailMessage);
+                #endregion
                 emailSent = true;
             }
             catch
@@ -339,7 +364,7 @@ public class CustomerCreateBookingCommandHandler(
 
 //         await unitOfWork.SaveChangesAsync();
 //         //NOTE: VNPAY return URL
-        
+
 //         #region VnPay
 //         //Get Config Info
 //         string vnp_Returnurl = "https://localhost:7057/api/booking/ReturnUrl"; //URL nhan ket qua tra ve 
@@ -347,7 +372,7 @@ public class CustomerCreateBookingCommandHandler(
 //         string vnp_TmnCode = configuration["VNP_TMNCODE"]!; //Ma định danh merchant kết nối (Terminal Id)
 //         string vnp_HashSecret = configuration["VNP_TMNCODE"]!; //Secret Key
 
-        
+
 
 //         //Build URL for VNPAY
 //         VnPayLibrary vnpay = new VnPayLibrary();
