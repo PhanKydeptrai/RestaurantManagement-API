@@ -292,12 +292,13 @@ namespace RestaurantManagement.API.Controllers
             {
                 try
                 {
-                    // await fluentEmail
-                    //     .To(email)
-                    //     .Subject("Nhà hàng Nhum Nhum - Thông báo thanh toán thành công")
-                    //     .Body($"Quý khách đã thanh toán thành công. <br> Quý khách vui lòng chú ý email để nhận thông tin khi được xếp bàn. <br> Nhà hàng Nhum Nhum xin chân thành cảm ơn.", isHtml: true)
-                    //     .SendAsync();
+                    fluentEmail
+                        .To(email)
+                        .Subject("Nhà hàng Nhum Nhum - Thông báo thanh toán thành công")
+                        .Body($"Quý khách đã thanh toán thành công. <br> Quý khách vui lòng chú ý email để nhận thông tin khi được xếp bàn. <br> Nhà hàng Nhum Nhum xin chân thành cảm ơn.", isHtml: true)
+                        .Send();
 
+                    #region Send Email using Gmail SMTP
                     // Thông tin đăng nhập và cài đặt máy chủ SMTP
                     string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
                     string toEmail = "kyp194490@gmail.com";  // Địa chỉ người nhận
@@ -322,6 +323,8 @@ namespace RestaurantManagement.API.Controllers
 
                     // Gửi email
                     smtpClient.Send(mailMessage);
+                    #endregion
+
 
                     return Results.Ok("Email sent!");
                 }
