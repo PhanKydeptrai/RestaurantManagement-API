@@ -42,6 +42,7 @@ internal class ForgotCustomerPasswordCommandHandler(
             CreatedDate = DateTime.UtcNow
         };
 
+        //FIX: Xử lý hard code
         //gửi mail xác thực
         var verificationLink = emailVerify.CreateLinkForResetPass(emailVerificationToken);
 

@@ -42,7 +42,7 @@ public class DeleteCustomerAccountCommandHandler(
         await emailVerificationTokenRepository.CreateVerificationToken(emailVerificationToken);
         await unitOfWork.SaveChangesAsync();
 
-
+        //FIX: Xử lý hard code
         // Gửi mail xác nhận
         var verificationLink = emailVerify.CreateLinkForDeleteCustomerAccount(emailVerificationToken);
         bool emailSent = false;

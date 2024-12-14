@@ -52,8 +52,8 @@ public class ChangeCustomerPasswordCommandHandler(
         await emailVerificationTokenRepository.CreateVerificationToken(token);
 
         string verificationLink = emailVerify.CreateLinkForChangePass(token);
-        //Gửi mail xác thực 
-
+        //FIX: Xử lý hard code 
+        //Gửi mail
         bool emailSent = false;
         int retryCount = 0;
         int maxRetries = 5;

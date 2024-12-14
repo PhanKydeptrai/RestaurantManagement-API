@@ -76,10 +76,12 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Ok(result);
                 }
                 return Results.BadRequest(result);
-            }).RequireRateLimiting("AntiSpamEmplyeeLogin");
-            // .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+            }).RequireRateLimiting("AntiSpamEmplyeeLogin")
+            .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
 
+
+            //NOTE: Add return url
             //reset customer password 
             endpoints.MapPost("customer-password",
             async (
@@ -93,12 +95,10 @@ namespace RestaurantManagement.API.Controllers
                 }
                 return Results.BadRequest(result);
             }).RequireRateLimiting("AntiSpamCustomerResetPass");
-
-
-
-
             //.RequireRateLimiting("ResetPass");
+            
 
+            //NOTE: Add return url
             //reset employee password 
             endpoints.MapPost("employee-password",
             async (
@@ -113,7 +113,8 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result);
             }).RequireRateLimiting("AntiSpamEmployeeResetPass");
             // .RequireRateLimiting("ResetPass");
-
+            
+            //NOTE: Add return url
             //verify email (Active account for customer)
             endpoints.MapGet("verify-email", async (Ulid token, ISender sender) =>
             {
@@ -126,7 +127,8 @@ namespace RestaurantManagement.API.Controllers
                 return Results.BadRequest(result.Errors[0].Message);
 
             }).WithName("verify-email");
-
+            
+            //NOTE: Add return url
             //verify email to reset pass
             endpoints.MapGet("verify-reset-password", async (Ulid token, ISender sender) =>
             {
@@ -196,6 +198,7 @@ namespace RestaurantManagement.API.Controllers
             .RequireRateLimiting("AntiSpamDeActiveCustomerAccount")
             .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
+            //NOTE: Add return url
             //verify delete customer account
             endpoints.MapGet("customer/confirm-delete-account", async (
                 Ulid token,

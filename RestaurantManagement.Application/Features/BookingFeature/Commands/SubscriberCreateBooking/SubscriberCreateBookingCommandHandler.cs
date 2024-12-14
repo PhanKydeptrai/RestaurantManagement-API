@@ -117,6 +117,7 @@ public class SubscriberCreateBookingCommandHandler(
             configuration);
         #endregion
 
+        //FIX: Xử lý hard code
         //  Gửi mail thông báo cho khách hàng
         bool emailSent = false;
         int retryCount = 0;

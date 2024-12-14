@@ -60,6 +60,7 @@ public class RegisterCommandHandler(
 
             await unitOfWork.SaveChangesAsync();
 
+            //FIX: Xử lý hard code
             //gửi mail kích hoạt tài khoản
             var verifiCationLink = emailVerify.Create(emailverificationToken);
             // Gửi email thông báo
@@ -148,7 +149,7 @@ public class RegisterCommandHandler(
         await userRepository.CreateUser(user);
         await customerRepository.CreateCustomer(customer);
 
-
+        //FIX: Xử lý hard code
         //gửi mail kích hoạt tài khoản
         var verificationLink = emailVerify.Create(emailVerificationToken);
 

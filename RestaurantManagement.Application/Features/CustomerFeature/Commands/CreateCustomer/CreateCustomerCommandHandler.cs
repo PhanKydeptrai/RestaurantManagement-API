@@ -85,7 +85,8 @@ public class CreateCustomerCommandHandler(
             CreatedDate = DateTime.UtcNow
         };
         //End
-
+        
+        //FIX: Xử lý hard code
         //gửi mail kích hoạt tài khoản
 
         var verificationLink = emailVerify.Create(emailVerificationToken);

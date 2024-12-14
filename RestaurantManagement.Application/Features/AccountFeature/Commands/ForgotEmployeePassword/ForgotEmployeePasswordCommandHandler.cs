@@ -44,6 +44,7 @@ public class ForgotEmployeePasswordCommandHandler(
             CreatedDate = DateTime.UtcNow
         };
 
+        //FIX: Xử lý hard code
         //gửi mail xác thực
         var verificationLink = emailVerify.CreateLinkForResetPass(emailVerificationToken);
 

@@ -64,6 +64,8 @@ public class DeleteEmployeeCommandHandler(
 
         //Delete employee
         await employeeRepository.DeleteEmployee(Ulid.Parse(request.id));
+        
+        //FIX: Xử lý hard code
         //gửi mail kích hoạt tài khoản
         bool emailSent = false;
         int retryCount = 0;

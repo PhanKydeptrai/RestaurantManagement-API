@@ -158,6 +158,7 @@ public class CustomerCreateBookingCommandHandler(
             configuration);
         #endregion
 
+        //FIX: Xử lý hard code
         #region Gửi mail thông báo cho khách hàng
         bool emailSent = false;
         int retryCount = 0;
