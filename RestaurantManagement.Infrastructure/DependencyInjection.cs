@@ -43,7 +43,7 @@ public static class DependencyInjection
             options.AddJob<VoucherBackgroundJob>(jobKey)
                     .AddTrigger(trigger => 
                         trigger.ForJob(jobKey)
-                    .WithSimpleSchedule(schedule => schedule.WithIntervalInSeconds(10).RepeatForever()));
+                    .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(12).RepeatForever()));
 
         });
 
