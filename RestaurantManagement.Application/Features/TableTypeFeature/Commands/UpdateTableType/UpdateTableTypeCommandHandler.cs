@@ -1,4 +1,5 @@
 using System.Security.Principal;
+using Microsoft.Extensions.Configuration;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
@@ -12,7 +13,8 @@ namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.Up
 public class UpdateTableTypeCommandHandler(
     IApplicationDbContext context,
     ITableTypeRepository tableTypeRepository,
-    IUnitOfWork unitOfWork) : ICommandHandler<UpdateTableTypeCommand>
+    IUnitOfWork unitOfWork,
+    IConfiguration configuration) : ICommandHandler<UpdateTableTypeCommand>
 {
     public async Task<Result> Handle(UpdateTableTypeCommand request, CancellationToken cancellationToken)
     {
@@ -48,7 +50,7 @@ public class UpdateTableTypeCommandHandler(
                 memoryStream.Position = 0;
 
                 //Upload ảnh lên cloudinary
-                var cloudinary = new CloudinaryService();
+                var cloudinary = new CloudinaryService(configuration);
                 var resultUpload = await cloudinary.UploadAsync(memoryStream, request.Image.FileName);
                 newImageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
                 tableType.ImageUrl = newImageUrl;
@@ -60,7 +62,7 @@ public class UpdateTableTypeCommandHandler(
             if (oldimageUrl != "")
             {
                 //Upload ảnh lên cloudinary
-                var cloudinary = new CloudinaryService();
+                var cloudinary = new CloudinaryService(configuration);
                 var resultDelete = await cloudinary.DeleteAsync(oldimageUrl);
                 //Log
                 Console.WriteLine(resultDelete.JsonObj);

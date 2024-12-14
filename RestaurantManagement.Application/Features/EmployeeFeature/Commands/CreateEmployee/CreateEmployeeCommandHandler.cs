@@ -1,4 +1,5 @@
 ﻿using FluentEmail.Core;
+using Microsoft.Extensions.Configuration;
 using NETCore.Encrypt;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
@@ -16,7 +17,8 @@ public class CreateEmployeeCommandHandler(
     IUserRepository userRepository, 
     IUnitOfWork unitOfWork, 
     IFluentEmail fluentEmail,
-    IApplicationDbContext context) : ICommandHandler<CreateEmployeeCommand>
+    IApplicationDbContext context,
+    IConfiguration configuration) : ICommandHandler<CreateEmployeeCommand>
 {
     public async Task<Result> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {
@@ -42,7 +44,7 @@ public class CreateEmployeeCommandHandler(
             memoryStream.Position = 0;
 
             //Upload ảnh lên cloudinary
-            var cloudinary = new CloudinaryService();
+            var cloudinary = new CloudinaryService(configuration);
             var resultUpload = await cloudinary.UploadAsync(memoryStream, request.Image.FileName);
             imageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
             //Log

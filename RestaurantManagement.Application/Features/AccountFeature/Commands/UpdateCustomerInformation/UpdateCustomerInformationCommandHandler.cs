@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
@@ -12,7 +13,8 @@ namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Upda
 public class UpdateCustomerInformationCommandHandler(
     IUnitOfWork unitOfWork,
     ICustomerRepository customerRepository,
-    IApplicationDbContext context) : ICommandHandler<UpdateCustomerInformationCommand>
+    IApplicationDbContext context,
+    IConfiguration configuration) : ICommandHandler<UpdateCustomerInformationCommand>
 {
     public async Task<Result> Handle(UpdateCustomerInformationCommand request, CancellationToken cancellationToken)
     {
@@ -60,7 +62,7 @@ public class UpdateCustomerInformationCommandHandler(
                 memoryStream.Position = 0;
 
                 //Upload ảnh lên cloudinary
-                var cloudinary = new CloudinaryService();
+                var cloudinary = new CloudinaryService(configuration);
                 var resultUpload = await cloudinary.UploadAsync(memoryStream, request.UserImage.FileName);
                 newImageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
                 //Log                                              
@@ -72,7 +74,7 @@ public class UpdateCustomerInformationCommandHandler(
             if (oldimageUrl != "")
             {
                 //Upload ảnh lên cloudinary
-                var cloudinary = new CloudinaryService();
+                var cloudinary = new CloudinaryService(configuration);
                 var resultDelete = await cloudinary.DeleteAsync(oldimageUrl);
                 //Log
                 Console.WriteLine(resultDelete.JsonObj);

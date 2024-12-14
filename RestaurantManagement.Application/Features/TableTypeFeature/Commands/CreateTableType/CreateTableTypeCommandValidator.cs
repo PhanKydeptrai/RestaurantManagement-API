@@ -27,7 +27,8 @@ public class CreateTableTypeCommandValidator : AbstractValidator<CreateTableType
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
             .Must(p => p != null && int.TryParse(p, out _))
-            .WithMessage("{PropertyName} must be an integer.");
-            
+            .WithMessage("{PropertyName} must be an integer.")
+            .Must(p => int.Parse(p) > 0)
+            .WithMessage("{PropertyName} must be greater than 0.");
     }
 }

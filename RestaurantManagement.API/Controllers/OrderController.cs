@@ -299,12 +299,11 @@ public class OrderController : IEndpoint
 
             try
             {
-                return Results.Ok("Payment Success!");
+                return Results.Redirect(configuration["RedirectURL_Orders"]!);
             }
             catch (Exception)
             {
-                return Results.Redirect(configuration["RedirectURL_Orders"]!);
-
+                return Results.Ok("Payment Success!");
             }
         });
 

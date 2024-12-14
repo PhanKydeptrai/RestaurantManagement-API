@@ -8,8 +8,9 @@ public class CloudinaryService
 {
     private readonly Cloudinary _cloudinary;
     private readonly IConfiguration _configuration;
-    public CloudinaryService()
+    public CloudinaryService(IConfiguration configuration)
     {
+        _configuration = configuration;
         _cloudinary = new Cloudinary(_configuration["Cloudinary"]);
         _cloudinary.Api.Secure = true;
     }

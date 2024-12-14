@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Application.Abtractions;
+﻿using Microsoft.Extensions.Configuration;
+using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Application.Services;
@@ -11,7 +12,8 @@ namespace RestaurantManagement.Application.Features.TableTypeFeature.Commands.Cr
 public class CreateTableTypeCommandHandler(
     IUnitOfWork unitOfWork,
     ITableTypeRepository tableTypeRepository,
-    IApplicationDbContext context) : ICommandHandler<CreateTableTypeCommand>
+    IApplicationDbContext context,
+    IConfiguration configuration) : ICommandHandler<CreateTableTypeCommand>
 {
     public async Task<Result> Handle(CreateTableTypeCommand request, CancellationToken cancellationToken)
     {
@@ -36,7 +38,7 @@ public class CreateTableTypeCommandHandler(
             memoryStream.Position = 0;
 
             //Upload ảnh lên cloudinary
-            var cloudinary = new CloudinaryService();
+            var cloudinary = new CloudinaryService(configuration);
             var resultUpload = await cloudinary.UploadAsync(memoryStream, request.Image.FileName);
             imageUrl = resultUpload.SecureUrl.ToString(); //Nhận url ảnh từ cloudinary
             //Log
