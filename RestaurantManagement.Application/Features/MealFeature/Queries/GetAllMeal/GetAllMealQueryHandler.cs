@@ -42,7 +42,7 @@ public class GetAllMealQueryHandler(IApplicationDbContext context) : IQueryHandl
 
         if (!string.IsNullOrEmpty(request.filterCategory)) //Lọc theo category
         {
-            mealQuery = mealQuery.Where(x => x.CategoryId == Ulid.Parse(request.filterCategory));
+            mealQuery = mealQuery.Where(x => x.Category.CategoryName == request.filterCategory);
         }
 
         //sort
