@@ -28,7 +28,7 @@ public class GetAllTableQueryHandler(IApplicationDbContext context) : IQueryHand
         //Search
         if (!string.IsNullOrEmpty(request.searchTerm))
         {
-            tableQuery = tableQuery.Where(x => x.TableId.ToString().Contains(request.searchTerm));
+            tableQuery = tableQuery.Where(x => x.TableId == int.Parse(request.searchTerm));
         }
         //Filter
         if (!string.IsNullOrEmpty(request.filterTableType))
