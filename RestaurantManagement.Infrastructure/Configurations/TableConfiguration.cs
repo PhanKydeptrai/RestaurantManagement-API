@@ -10,8 +10,7 @@ internal sealed class TableConfiguration : IEntityTypeConfiguration<Table>
     public void Configure(EntityTypeBuilder<Table> builder)
     {
         builder.HasKey(a => a.TableId);
-        // builder.Property(a => a.TableId).IsRequired().HasConversion<UlidToStringConverter>();
-        builder.Property(a => a.TableId).IsRequired().HasColumnType("int").ValueGeneratedNever();
+        builder.Property(a => a.TableId).IsRequired().HasColumnType("int").ValueGeneratedOnAdd();
         builder.Property(a => a.TableTypeId).IsRequired().HasConversion<UlidToStringConverter>();
         builder.Property(a => a.TableStatus).IsRequired().HasColumnType("varchar(20)");
         builder.Property(a => a.ActiveStatus).IsRequired().HasColumnType("varchar(20)");

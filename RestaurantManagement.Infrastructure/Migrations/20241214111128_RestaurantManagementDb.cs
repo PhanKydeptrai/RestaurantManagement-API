@@ -111,7 +111,8 @@ namespace RestaurantManagement.Infrastructure.Migrations
                 name: "Tables",
                 columns: table => new
                 {
-                    TableId = table.Column<int>(type: "int", nullable: false),
+                    TableId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TableTypeId = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     TableStatus = table.Column<string>(type: "varchar(20)", nullable: false),
                     ActiveStatus = table.Column<string>(type: "varchar(20)", nullable: false)

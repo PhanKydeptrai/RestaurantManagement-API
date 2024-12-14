@@ -32,7 +32,7 @@ public class CreateTableCommandHandler(
         {
             tableArray[i] = new Table
             {
-                TableId = PrimaryKeyGenerator.GeneratePrimaryKey(),
+                // TableId = PrimaryKeyGenerator.GeneratePrimaryKey(),
                 TableTypeId = tableTypeId,
                 TableStatus = "Active",
                 ActiveStatus = "Empty"
