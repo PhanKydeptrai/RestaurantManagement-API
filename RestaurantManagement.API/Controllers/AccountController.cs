@@ -86,12 +86,14 @@ namespace RestaurantManagement.API.Controllers
             endpoints.MapPost("customer-password",
             async (
                 ForgotCustomerPasswordCommand command,
+                IConfiguration configuration,
                 ISender sender) =>
             {
                 var result = await sender.Send(command);
                 if (result.IsSuccess)
                 {
                     return Results.Ok("Check your email!");
+                    // return Results.Ok(configuration[""]);
                 }
                 return Results.BadRequest(result);
             }).RequireRateLimiting("AntiSpamCustomerResetPass");
