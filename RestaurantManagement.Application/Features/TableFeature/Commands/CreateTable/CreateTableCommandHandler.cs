@@ -46,7 +46,7 @@ public class CreateTableCommandHandler(
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
-
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
         //Lấy tên loại bàn //NOTE: Refactor
         var tableType = await context.TableTypes.FindAsync(Ulid.Parse(request.tableTypeId));
 
@@ -55,7 +55,7 @@ public class CreateTableCommandHandler(
         {
             TableLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetails = $"Tạo {request.quantity} bàn loại {tableType.TableTypeName}",
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} tạo {request.quantity} bàn loại {tableType.TableTypeName}",
             UserId = Ulid.Parse(userId)
         });
         #endregion

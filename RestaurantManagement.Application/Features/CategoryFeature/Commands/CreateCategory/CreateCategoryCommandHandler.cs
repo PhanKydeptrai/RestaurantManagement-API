@@ -60,13 +60,13 @@ public class CreateCategoryCommandHandler(
         //Decode
         var claims = JwtHelper.DecodeJwt(request.Token);
         claims.TryGetValue("sub", out var userId);
-
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
         //Create System Log
         await context.CategoryLogs.AddAsync(new CategoryLog
         {
             CategoryLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetails = $"Tạo danh mục {request.Name}",
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} tạo danh mục {request.Name}",
             UserId = Ulid.Parse(userId)
         });
         #endregion

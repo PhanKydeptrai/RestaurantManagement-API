@@ -42,13 +42,13 @@ public class GetTableForCustomerCommandHandler(
         //decode token
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
-
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
         //Create System Log
         await context.BookingLogs.AddAsync(new BookingLog
         {
             BookingLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetails = $"Cho khách nhận bàn {request.id}",
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} cho khách nhận bàn {request.id}",
             UserId = Ulid.Parse(userId)
         });
         #endregion

@@ -22,19 +22,22 @@ public class RemoveCategoryCommandHandler(
         //delete
         await categoryRepository.SoftDeleteCategory(Ulid.Parse(request.Id));
 
+        
         #region Decode jwt and system log
+        
         //Decode
-        // var claims = JwtHelper.DecodeJwt(request.Token);
-        // claims.TryGetValue("sub", out var userId);
-
-        // //Create System Log
-        // await context.CategoryLogs.AddAsync(new CategoryLog
-        // {
-        //     UserId = Ulid.Parse(userId),
-        //     CategoryLogId = Ulid.NewUlid(),
-        //     LogDate = DateTime.Now,
-        //     LogDetails = $"Xóa danh mục {request.Id}"
-        // });
+        var claims = JwtHelper.DecodeJwt(request.Token);
+        claims.TryGetValue("sub", out var userId);
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
+        var categoryInfo = await context.Categories.FindAsync(Ulid.Parse(request.Id));
+        //Create System Log
+        await context.CategoryLogs.AddAsync(new CategoryLog
+        {
+            UserId = Ulid.Parse(userId),
+            CategoryLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} xóa danh mục {categoryInfo.CategoryName}"
+        });
         #endregion
         await unitOfWork.SaveChangesAsync();
         return Result.Success();

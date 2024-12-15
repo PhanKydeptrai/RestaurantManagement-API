@@ -26,18 +26,20 @@ public class RemoveMealCommandHandler(
         await mealRepository.DeleteMeal(Ulid.Parse(request.id));
 
         #region Decode jwt and system log
-        // //Decode jwt
-        // var claims = JwtHelper.DecodeJwt(request.token);
-        // claims.TryGetValue("sub", out var userId);
-        // var meal = await context.Meals.FindAsync(Ulid.Parse(request.id));
-        // //Create System Log
-        // await context.MealLogs.AddAsync(new MealLog
-        // {
-        //     MealLogId = Ulid.NewUlid(),
-        //     LogDate = DateTime.Now,
-        //     LogDetails = $"Cập nhật meal status món {meal.MealName} thành ngừng kinh doanh",
-        //     UserId = Ulid.Parse(userId)
-        // });
+        //Decode jwt
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
+        var meal = await context.Meals.FindAsync(Ulid.Parse(request.id));
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
+        
+        //Create System Log
+        await context.MealLogs.AddAsync(new MealLog
+        {
+            MealLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} xoá món {meal.MealName} thành ngừng kinh doanh",
+            UserId = Ulid.Parse(userId)
+        });
         #endregion
         
 

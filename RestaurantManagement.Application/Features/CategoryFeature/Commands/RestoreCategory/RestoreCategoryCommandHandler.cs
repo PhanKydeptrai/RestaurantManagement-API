@@ -29,18 +29,18 @@ public class RestoreCategoryCommandHandler(
 
         #region Decode jwt and system log
         //Decode token
-        // var claims = JwtHelper.DecodeJwt(request.token);
-        // claims.TryGetValue("sub", out var userId);
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
+        //Create System Log
+        await context.CategoryLogs.AddAsync(new CategoryLog
+        {
+            UserId = Ulid.Parse(userId),
+            CategoryLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} khôi phục danh mục {category.CategoryName}",
 
-        // //Create System Log
-        // await context.CategoryLogs.AddAsync(new CategoryLog
-        // {
-        //     UserId = Ulid.Parse(userId),
-        //     CategoryLogId = Ulid.NewUlid(),
-        //     LogDate = DateTime.Now,
-        //     LogDetails = $"khôi phục danh mục {category.CategoryName}",
-
-        // });
+        });
         #endregion
         await unitOfWork.SaveChangesAsync();
         return Result.Success();

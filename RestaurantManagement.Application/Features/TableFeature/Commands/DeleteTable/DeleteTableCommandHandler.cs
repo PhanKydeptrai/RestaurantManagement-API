@@ -31,13 +31,13 @@ public class DeleteTableCommandHandler(
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
-
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
         //Create System Log
         await context.TableLogs.AddAsync(new TableLog
         {
             TableLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetails = $"Đã xoá bàn {request.id}",
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} đã xoá bàn {request.id}",
             UserId = Ulid.Parse(userId)
         });
         #endregion

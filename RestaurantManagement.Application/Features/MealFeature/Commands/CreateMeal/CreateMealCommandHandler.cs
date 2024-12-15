@@ -70,7 +70,7 @@ public class CreateMealCommandHandler(
         await context.MealLogs.AddAsync(new MealLog
         {
             LogDate = DateTime.Now,
-            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName}Tạo món {request.MealName}",
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} Tạo món {request.MealName}",
             MealLogId = Ulid.NewUlid(),
             UserId = Ulid.Parse(userId)
         });

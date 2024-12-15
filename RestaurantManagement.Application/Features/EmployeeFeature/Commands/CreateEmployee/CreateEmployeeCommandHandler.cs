@@ -78,18 +78,18 @@ public class CreateEmployeeCommandHandler(
         await employeeRepository.CreateEmployee(employee);
 
         #region Decode jwt and system log
-        // //Deocde jwt
-        // var claims = JwtHelper.DecodeJwt(request.token);
-        // claims.TryGetValue("sub", out var userId);
-
-        // //Create System Log
-        // await context.EmployeeLogs.AddAsync(new EmployeeLog
-        // {
-        //     LogDate = DateTime.Now,
-        //     LogDetails = $"Thêm nhân viên {request.FirstName} {request.LastName} chức vụ {request.Role}",
-        //     EmployeeLogId = Ulid.NewUlid(),
-        //     UserId = Ulid.Parse(userId)
-        // });
+        //Deocde jwt
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
+        //Create System Log
+        await context.EmployeeLogs.AddAsync(new EmployeeLog
+        {
+            LogDate = DateTime.Now,
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} thêm nhân viên {request.FirstName} {request.LastName} chức vụ {request.Role}",
+            EmployeeLogId = Ulid.NewUlid(),
+            UserId = Ulid.Parse(userId)
+        });
         #endregion
 
         // Gửi email thông báo

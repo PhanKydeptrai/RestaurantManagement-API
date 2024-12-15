@@ -62,13 +62,13 @@ public class CreateVoucherCommandHanler(
         //decode token
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
-
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
         //Create System Log
         await context.VoucherLogs.AddAsync(new VoucherLog
         {
             VoucherLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetails = $"Tạo voucher {request.VoucherName}",
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} tạo voucher {request.VoucherName}",
             UserId = Ulid.Parse(userId)
         });
         #endregion

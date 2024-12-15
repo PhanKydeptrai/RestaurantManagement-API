@@ -148,7 +148,7 @@ public class CreateCustomerCommandHandler(
         {
             CustomerLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName}Tạo tài khoản cho khách {request.FirstName + " " + request.LastName + "." + $"ID: {user.UserId}"}",
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} tạo tài khoản cho khách {request.FirstName + " " + request.LastName + "." + $"ID: {user.UserId}"}",
             UserId = Ulid.Parse(userId)
         });
         #endregion

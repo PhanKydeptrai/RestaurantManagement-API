@@ -8,6 +8,7 @@ using RestaurantManagement.Domain.Shared;
 namespace RestaurantManagement.Application.Features.VoucherFeature.Commands.DeleteVoucher;
 
 public class DeleteVoucherCommandHandler(
+    IApplicationDbContext context,
     IVoucherRepository voucherRepository,
     IUnitOfWork unitOfWork) : ICommandHandler<DeleteVoucherCommand>
 {
@@ -25,21 +26,21 @@ public class DeleteVoucherCommandHandler(
 
         //Delete Voucher
         await voucherRepository.DeleteVoucher(Ulid.Parse(request.id));
-
+        
         //TODO: Cập nhật system log
         #region Decode jwt and system log
-        // //Decode jwt
-        // var claims = JwtHelper.DecodeJwt(request.token);
-        // claims.TryGetValue("sub", out var userId);
-
-        // //Create System Log
-        // await systemLogRepository.CreateSystemLog(new SystemLog
-        // {
-        //     SystemLogId = Ulid.NewUlid(),
-        //     LogDate = DateTime.Now,
-        //     LogDetail = $"Cập nhật thông tin trạng thái bán của {request.id} thành bán",
-        //     UserId = Ulid.Parse(userId)
-        // });
+        //Decode jwt
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
+        var voucherInfo = await context.Vouchers.FindAsync(Ulid.Parse(request.id));
+        await context.VoucherLogs.AddAsync(new VoucherLog
+        {
+            VoucherLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} xoá voucher {voucherInfo.VoucherName}",
+            UserId = Ulid.Parse(userId)
+        });
         #endregion
 
         await unitOfWork.SaveChangesAsync();
