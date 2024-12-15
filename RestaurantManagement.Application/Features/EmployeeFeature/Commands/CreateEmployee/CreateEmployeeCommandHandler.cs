@@ -1,4 +1,6 @@
-﻿using FluentEmail.Core;
+﻿using System.Net;
+using System.Net.Mail;
+using FluentEmail.Core;
 using Microsoft.Extensions.Configuration;
 using NETCore.Encrypt;
 using RestaurantManagement.Application.Abtractions;
@@ -13,9 +15,9 @@ using RestaurantManagement.Domain.Shared;
 namespace RestaurantManagement.Application.Features.EmployeeFeature.Commands.CreateEmployee;
 
 public class CreateEmployeeCommandHandler(
-    IEmployeeRepository employeeRepository, 
-    IUserRepository userRepository, 
-    IUnitOfWork unitOfWork, 
+    IEmployeeRepository employeeRepository,
+    IUserRepository userRepository,
+    IUnitOfWork unitOfWork,
     IFluentEmail fluentEmail,
     IApplicationDbContext context,
     IConfiguration configuration) : ICommandHandler<CreateEmployeeCommand>
@@ -78,7 +80,7 @@ public class CreateEmployeeCommandHandler(
         await employeeRepository.CreateEmployee(employee);
 
         #region Decode jwt and system log
-        //Deocde jwt
+        //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
         var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
@@ -92,6 +94,7 @@ public class CreateEmployeeCommandHandler(
         });
         #endregion
 
+        //FIX: Gửi mail
         // Gửi email thông báo
         bool emailSent = false;
         int retryCount = 0;
@@ -99,19 +102,66 @@ public class CreateEmployeeCommandHandler(
 
         do
         {
-            try
+            //Kiểm tra môi trường
+            if (configuration["Environment"] == "Development")
             {
-                await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo thông tin tài khoản")
-                    .Body($"Thông tin tài khoản nhân viên của bạn: {request.Email} <br> Mật Khẩu mặc định: {password}")
-                    .SendAsync();
-                emailSent = true;
-            }
-            catch
-            {
-                retryCount++;
-                if (retryCount >= maxRetries)
+                try
                 {
-                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo thông tin tài khoản")
+                        .Body($"Thông tin tài khoản nhân viên của bạn: {request.Email} <br> Mật Khẩu mặc định: {password}", isHtml: true)
+                        .SendAsync();
+
+                    emailSent = true;
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    #region Send Email using Gmail SMTP
+                    // Thông tin đăng nhập và cài đặt máy chủ SMTP
+                    string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
+                    string toEmail = user.Email;  // Địa chỉ người nhận
+                    string passwordMail = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
+
+                    var smtpClient = new SmtpClient("smtp.gmail.com")
+                    {
+                        Port = 587, // Cổng sử dụng cho TLS
+                        Credentials = new NetworkCredential(fromEmail, passwordMail), // Đăng nhập vào Gmail
+                        EnableSsl = true // Kích hoạt SSL/TLS
+                    };
+
+                    var mailMessage = new MailMessage
+                    {
+                        From = new MailAddress(fromEmail),
+                        Subject = "Nhà hàng Nhum nhum - Thông báo thông tin tài khoản",
+                        Body = $"Thông tin tài khoản nhân viên của bạn: {request.Email} <br> Mật Khẩu mặc định: {password}",
+                        IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
+                    };
+
+                    mailMessage.To.Add(toEmail);
+
+                    // Gửi email
+                    smtpClient.Send(mailMessage);
+                    #endregion
+
+                    emailSent = true;
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
                 }
             }
         }

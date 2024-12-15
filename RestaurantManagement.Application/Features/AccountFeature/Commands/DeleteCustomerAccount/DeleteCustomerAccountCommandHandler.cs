@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Mail;
 using FluentEmail.Core;
+using Microsoft.Extensions.Configuration;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
 using RestaurantManagement.Domain.Entities;
@@ -14,7 +15,8 @@ public class DeleteCustomerAccountCommandHandler(
     IUnitOfWork unitOfWork,
     IEmailVerificationTokenRepository emailVerificationTokenRepository,
     IEmailVerify emailVerify,
-    IFluentEmail fluentEmail) : ICommandHandler<DeleteCustomerAccountCommand>
+    IFluentEmail fluentEmail,
+    IConfiguration configuration) : ICommandHandler<DeleteCustomerAccountCommand>
 {
     public async Task<Result> Handle(DeleteCustomerAccountCommand request, CancellationToken cancellationToken)
     {
@@ -51,45 +53,68 @@ public class DeleteCustomerAccountCommandHandler(
 
         do
         {
-            try
+            if (configuration["Environment"] == "Development")
             {
-                #region Send Email using Gmail SMTP
-                // Thông tin đăng nhập và cài đặt máy chủ SMTP
-                string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
-                string toEmail = customer.Email;  // Địa chỉ người nhận
-                string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
-
-                var smtpClient = new SmtpClient("smtp.gmail.com")
+                try
                 {
-                    Port = 587, // Cổng sử dụng cho TLS
-                    Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
-                    EnableSsl = true // Kích hoạt SSL/TLS
-                };
+                    await fluentEmail.To(customer.Email).Subject("Nhà hàng Nhum nhum - Xác nhận huỷ tài khoản")
+                        .Body($"Vui lòng xác nhận để huỷ tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> <br> Quý khách vui lòng xác nhận trong 24h, sau thời gian này, yêu cầu sẽ tự huỷ.", isHtml: true)
+                        .SendAsync();
 
-                var mailMessage = new MailMessage
+                    emailSent = true;
+                }
+                catch
                 {
-                    From = new MailAddress(fromEmail),
-                    Subject = "Nhà hàng Nhum nhum - Xác nhận huỷ tài khoản",
-                    Body = $"Vui lòng xác nhận để huỷ tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> <br> Quý khách vui lòng xác nhận trong 24h, sau thời gian này, yêu cầu sẽ tự huỷ.",
-                    IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
-                };
-
-                mailMessage.To.Add(toEmail);
-
-                // Gửi email
-                smtpClient.Send(mailMessage);
-                #endregion
-
-                emailSent = true;
-            }
-            catch
-            {
-                retryCount++;
-                if (retryCount >= maxRetries)
-                {
-                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
                 }
             }
+            else
+            {
+                try
+                {
+                    #region Send Email using Gmail SMTP
+                    // Thông tin đăng nhập và cài đặt máy chủ SMTP
+                    string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
+                    string toEmail = customer.Email;  // Địa chỉ người nhận
+                    string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
+
+                    var smtpClient = new SmtpClient("smtp.gmail.com")
+                    {
+                        Port = 587, // Cổng sử dụng cho TLS
+                        Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
+                        EnableSsl = true // Kích hoạt SSL/TLS
+                    };
+
+                    var mailMessage = new MailMessage
+                    {
+                        From = new MailAddress(fromEmail),
+                        Subject = "Nhà hàng Nhum nhum - Xác nhận huỷ tài khoản",
+                        Body = $"Vui lòng xác nhận để huỷ tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a> <br> Quý khách vui lòng xác nhận trong 24h, sau thời gian này, yêu cầu sẽ tự huỷ.",
+                        IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
+                    };
+
+                    mailMessage.To.Add(toEmail);
+
+                    // Gửi email
+                    smtpClient.Send(mailMessage);
+                    #endregion
+
+                    emailSent = true;
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
+                }
+            }
+
         }
         while (!emailSent && retryCount < maxRetries);
 

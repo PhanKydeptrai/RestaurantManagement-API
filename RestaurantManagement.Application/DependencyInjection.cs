@@ -27,25 +27,27 @@ public static class DependencyInjection
 
         // Đăng ký FluentEmail
 
-        try
-        {
-            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
-            {
-                Port = int.Parse(configuration["Port"]!),
-                Credentials = new NetworkCredential(configuration["SenderEmail"], configuration["AppPasswords"]),
-                EnableSsl = true // Sử dụng SSL
-            };
-            // Console.WriteLine("SenderEmail: " + smtpClient.Credentials.GetCredential(smtpClient.Host, smtpClient.Port, "smtp").UserName);
+        services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Email:Sender"])
+                .AddSmtpSender(new SmtpClient(configuration["Email:Host"], int.Parse(configuration["Email:Port"])));
+        // try
+        // {
+        //     SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
+        //     {
+        //         Port = int.Parse(configuration["Port"]!),
+        //         Credentials = new NetworkCredential(configuration["SenderEmail"], configuration["AppPasswords"]),
+        //         EnableSsl = true // Sử dụng SSL
+        //     };
+        //     // Console.WriteLine("SenderEmail: " + smtpClient.Credentials.GetCredential(smtpClient.Host, smtpClient.Port, "smtp").UserName);
 
 
-            services.AddFluentEmail(configuration["SenderEmail"], configuration["Sender"])
-                    .AddSmtpSender(smtpClient);
-        }
-        catch (Exception)
-        {
-            services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Email:Sender"])
-                    .AddSmtpSender(new SmtpClient(configuration["Email:Host"], int.Parse(configuration["Email:Port"])));
-        }
+        //     services.AddFluentEmail(configuration["SenderEmail"], configuration["Sender"])
+        //             .AddSmtpSender(smtpClient);
+        // }
+        // catch (Exception)
+        // {
+        //     services.AddFluentEmail(configuration["Email:SenderEmail"], configuration["Email:Sender"])
+        //             .AddSmtpSender(new SmtpClient(configuration["Email:Host"], int.Parse(configuration["Email:Port"])));
+        // }
 
         return services;
     }

@@ -2,6 +2,7 @@
 using System.Net.Mail;
 using FluentEmail.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using NETCore.Encrypt;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
@@ -18,7 +19,8 @@ public class RegisterCommandHandler(
     IUserRepository userRepository,
     IApplicationDbContext context,
     IFluentEmail fluentEmail,
-    IEmailVerify emailVerify) : ICommandHandler<RegisterCommand>
+    IEmailVerify emailVerify,
+    IConfiguration configuration) : ICommandHandler<RegisterCommand>
 {
     public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
@@ -70,42 +72,64 @@ public class RegisterCommandHandler(
 
             do
             {
-                try
+                if (configuration["Environment"] == "Development")
                 {
-                    #region Send Email using Gmail SMTP
-                    // Thông tin đăng nhập và cài đặt máy chủ SMTP
-                    string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
-                    string toEmail = normalCustomer.User.Email;  // Địa chỉ người nhận
-                    string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
-
-                    var smtpClient = new SmtpClient("smtp.gmail.com")
+                    try
                     {
-                        Port = 587, // Cổng sử dụng cho TLS
-                        Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
-                        EnableSsl = true // Kích hoạt SSL/TLS
-                    };
+                        await fluentEmail.To(normalCustomer.User.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
+                            .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verifiCationLink}'>Click me</a>", isHtml: true)
+                            .SendAsync();
 
-                    var mailMessage = new MailMessage
+                        emailSent = true;
+                    }
+                    catch
                     {
-                        From = new MailAddress(fromEmail),
-                        Subject = "Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản",
-                        Body = $"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verifiCationLink}'>Click me</a>",
-                        IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
-                    };
-
-                    mailMessage.To.Add(toEmail);
-
-                    // Gửi email
-                    smtpClient.Send(mailMessage);
-                    #endregion
-                    emailSent = true;
+                        retryCount++;
+                        if (retryCount >= maxRetries)
+                        {
+                            return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                        }
+                    }
                 }
-                catch
+                else
                 {
-                    retryCount++;
-                    if (retryCount >= maxRetries)
+                    try
                     {
-                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                        #region Send Email using Gmail SMTP
+                        // Thông tin đăng nhập và cài đặt máy chủ SMTP
+                        string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
+                        string toEmail = normalCustomer.User.Email;  // Địa chỉ người nhận
+                        string password = "ekgh lntd brrv bdyj";  
+
+                        var smtpClient = new SmtpClient("smtp.gmail.com")
+                        {
+                            Port = 587, // Cổng sử dụng cho TLS
+                            Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
+                            EnableSsl = true // Kích hoạt SSL/TLS
+                        };
+
+                        var mailMessage = new MailMessage
+                        {
+                            From = new MailAddress(fromEmail),
+                            Subject = "Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản",
+                            Body = $"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verifiCationLink}'>Click me</a>",
+                            IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
+                        };
+
+                        mailMessage.To.Add(toEmail);
+
+                        // Gửi email
+                        smtpClient.Send(mailMessage);
+                        #endregion
+                        emailSent = true;
+                    }
+                    catch
+                    {
+                        retryCount++;
+                        if (retryCount >= maxRetries)
+                        {
+                            return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                        }
                     }
                 }
             }
@@ -159,42 +183,64 @@ public class RegisterCommandHandler(
 
         do
         {
-            try
+            if (configuration["Environment"] == "Development")
             {
-                #region Send Email using Gmail SMTP
-                // Thông tin đăng nhập và cài đặt máy chủ SMTP
-                string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
-                string toEmail = user.Email;  // Địa chỉ người nhận
-                string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
-
-                var smtpClient = new SmtpClient("smtp.gmail.com")
+                try
                 {
-                    Port = 587, // Cổng sử dụng cho TLS
-                    Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
-                    EnableSsl = true // Kích hoạt SSL/TLS
-                };
+                    await fluentEmail.To(user.Email).Subject("Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản")
+                        .Body($"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>", isHtml: true)
+                        .SendAsync();
 
-                var mailMessage = new MailMessage
+                    emailSent2 = true;
+                }
+                catch
                 {
-                    From = new MailAddress(fromEmail),
-                    Subject = "Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản",
-                    Body = $"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>",
-                    IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
-                };
-
-                mailMessage.To.Add(toEmail);
-
-                // Gửi email
-                smtpClient.Send(mailMessage);
-                #endregion
-                emailSent2 = true;
+                    retryCount2++;
+                    if (retryCount2 >= maxRetries2)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
+                }
             }
-            catch
+            else
             {
-                retryCount2++;
-                if (retryCount2 >= maxRetries2)
+                try
                 {
-                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    #region Send Email using Gmail SMTP
+                    // Thông tin đăng nhập và cài đặt máy chủ SMTP
+                    string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
+                    string toEmail = user.Email;  // Địa chỉ người nhận
+                    string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
+    
+                    var smtpClient = new SmtpClient("smtp.gmail.com")
+                    {
+                        Port = 587, // Cổng sử dụng cho TLS
+                        Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
+                        EnableSsl = true // Kích hoạt SSL/TLS
+                    };
+    
+                    var mailMessage = new MailMessage
+                    {
+                        From = new MailAddress(fromEmail),
+                        Subject = "Nhà hàng Nhum nhum - Thông báo kích hoạt tài khoản",
+                        Body = $"Vui lòng kích hoạt tài khoản bằng cách click vào link sau: <a href='{verificationLink}'>Click me</a>",
+                        IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
+                    };
+    
+                    mailMessage.To.Add(toEmail);
+    
+                    // Gửi email
+                    smtpClient.Send(mailMessage);
+                    #endregion
+                    emailSent2 = true;
+                }
+                catch
+                {
+                    retryCount2++;
+                    if (retryCount2 >= maxRetries2)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
                 }
             }
         }

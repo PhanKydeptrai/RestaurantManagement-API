@@ -166,43 +166,65 @@ public class CustomerCreateBookingCommandHandler(
 
         do
         {
-            try
+            if (configuration["Environment"] == "Development")
             {
-                //Gửi mail
-                #region Send Email using Gmail SMTP
-                // Thông tin đăng nhập và cài đặt máy chủ SMTP
-                string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
-                string toEmail = userEmail;  // Địa chỉ người nhận
-                string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
-
-                var smtpClient = new SmtpClient("smtp.gmail.com")
+                try
                 {
-                    Port = 587, // Cổng sử dụng cho TLS
-                    Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
-                    EnableSsl = true // Kích hoạt SSL/TLS
-                };
+                    await fluentEmail.To(userEmail).Subject("Nhà hàng Nhum nhum - Thông báo thanh toán phí đặt bàn")
+                        .Body($"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> <br> Mã booking của bạn là: {booking.BookId}", isHtml: true)
+                        .SendAsync();
 
-                var mailMessage = new MailMessage
+                    emailSent = true;
+                }
+                catch
                 {
-                    From = new MailAddress(fromEmail),
-                    Subject = "Nhà hàng Nhum nhum - Thông báo thanh toán phí đặt bàn",
-                    Body = $"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> <br> Mã booking của bạn là: {booking.BookId}",
-                    IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
-                };
-
-                mailMessage.To.Add(toEmail);
-
-                // Gửi email
-                smtpClient.Send(mailMessage);
-                #endregion
-                emailSent = true;
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
+                }
             }
-            catch
+            else
             {
-                retryCount++;
-                if (retryCount >= maxRetries)
+                try
                 {
-                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    //Gửi mail
+                    #region Send Email using Gmail SMTP
+                    // Thông tin đăng nhập và cài đặt máy chủ SMTP
+                    string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
+                    string toEmail = userEmail;  // Địa chỉ người nhận
+                    string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
+    
+                    var smtpClient = new SmtpClient("smtp.gmail.com")
+                    {
+                        Port = 587, // Cổng sử dụng cho TLS
+                        Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
+                        EnableSsl = true // Kích hoạt SSL/TLS
+                    };
+    
+                    var mailMessage = new MailMessage
+                    {
+                        From = new MailAddress(fromEmail),
+                        Subject = "Nhà hàng Nhum nhum - Thông báo thanh toán phí đặt bàn",
+                        Body = $"Quý khách vui lòng thanh toán phí đặt bàn tại đây để hoàn thành thủ tục: <a href='{paymentUrl}'>Click me</a> <br> Mã booking của bạn là: {booking.BookId}",
+                        IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
+                    };
+    
+                    mailMessage.To.Add(toEmail);
+    
+                    // Gửi email
+                    smtpClient.Send(mailMessage);
+                    #endregion
+                    emailSent = true;
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
                 }
             }
         }
