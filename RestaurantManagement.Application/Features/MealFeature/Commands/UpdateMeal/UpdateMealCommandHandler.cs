@@ -75,13 +75,13 @@ public class UpdateMealCommandHandler(
         //Deocde jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
-
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
         //Create System Log
         await context.MealLogs.AddAsync(new MealLog
         {
             MealLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetails = $"Cập nhật thông tin món {request.MealName}",
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} cập nhật thông tin món {request.MealName}",
             UserId = Ulid.Parse(userId)
         });
         #endregion

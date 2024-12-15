@@ -74,7 +74,7 @@ public class UpdateTableTypeCommandHandler(
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
-
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
         
 
         //Create System Log
@@ -82,7 +82,7 @@ public class UpdateTableTypeCommandHandler(
         {
             TableTypeLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetails = $"Cập nhật {request.TableTypeName}",
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} cập nhật {request.TableTypeName}",
             UserId = Ulid.Parse(userId)
         });
         #endregion

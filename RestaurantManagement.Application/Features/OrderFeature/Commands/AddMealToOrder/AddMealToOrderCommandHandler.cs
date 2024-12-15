@@ -133,13 +133,13 @@ public class AddMealToOrderCommandHandler(
         //decode token
         var claims = JwtHelper.DecodeJwt(request.Token);
         claims.TryGetValue("sub", out var userId);
-
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
         //Create System Log
         await context.OrderLogs.AddAsync(new OrderLog
         {
             OrderLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetails = $"Thêm món {request.MealId} vào order {order.OrderId}",
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} thêm món {request.MealId} vào order {order.OrderId}",
             UserId = Ulid.Parse(userId)
         });
         #endregion

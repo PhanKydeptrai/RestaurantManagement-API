@@ -87,13 +87,13 @@ public class ChangeTableCommandHandler : ICommandHandler<ChangeTableCommand>
         //Decode jwt
         var claims = JwtHelper.DecodeJwt(request.token);
         claims.TryGetValue("sub", out var userId);
-
+        var userInfo = await _context.Users.FindAsync(Ulid.Parse(userId));
         //Create System Log
         await _context.TableLogs.AddAsync(new TableLog
         {
             TableLogId = Ulid.NewUlid(),
             LogDate = DateTime.Now,
-            LogDetails = $"Tạo {userId} dời bàn {request.oldtableId} sang bàn {request.newTableId} với lý do {request.note}",
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName} dời bàn {request.oldtableId} sang bàn {request.newTableId} với lý do {request.note}",
             UserId = Ulid.Parse(userId)
         });
         #endregion
