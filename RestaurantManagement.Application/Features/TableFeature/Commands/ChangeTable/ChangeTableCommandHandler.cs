@@ -44,7 +44,7 @@ public class ChangeTableCommandHandler : ICommandHandler<ChangeTableCommand>
             .FirstOrDefaultAsync();
 
         //TODO: Đổi lại message và mang vào validator
-        if(transactionCheck.OrderTransaction == null)
+        if(transactionCheck.OrderTransaction != null)
         {
             return Result.Failure(new[] { new Error("Transaction", "Bàn này đang thanh toán hong có dời được đâu.") });
         }

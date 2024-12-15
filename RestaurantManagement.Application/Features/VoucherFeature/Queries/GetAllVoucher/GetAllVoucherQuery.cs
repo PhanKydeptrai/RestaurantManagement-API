@@ -1,7 +1,6 @@
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Features.Paging;
 using RestaurantManagement.Domain.DTOs.VoucherDto;
-using RestaurantManagement.Domain.Entities;
 
 namespace RestaurantManagement.Application.Features.VoucherFeature.Queries.GetAllVoucher;
 
