@@ -17,10 +17,13 @@ public class CreateMealCommandValidator : AbstractValidator<CreateMealCommand>
             .WithMessage("{PropertyName} is exist");
 
         RuleFor(p => p.Price)
-        .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotNull().WithMessage("{PropertyName} is required.")
-            .WithMessage("{PropertyName} must be a decimal.");
+            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .Must(p => decimal.TryParse(p.ToString(), out _))
+            .WithMessage("{PropertyName} must be a decimal.")
+            .GreaterThan(0)
+            .WithMessage("{PropertyName} must be greater than 0");
 
         RuleFor(p => p.CategoryId)
             .Must(p => categoryRepository.CheckStatusOfCategory(Ulid.Parse(p)).Result)
