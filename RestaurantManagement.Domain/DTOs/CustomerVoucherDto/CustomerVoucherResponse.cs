@@ -9,8 +9,8 @@ public record CustomerVoucherResponse(
     decimal MaximumDiscountAmount,
     decimal MinimumOrderAmount,
     decimal VoucherConditions,
-    DateTime StartDate,
-    DateTime ExpiredDate,
+    string StartDate,
+    string ExpiredDate,
     string? Description,
     string Status,
     int Quantity

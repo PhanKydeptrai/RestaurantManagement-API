@@ -2,14 +2,15 @@ using System.Linq.Expressions;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Features.Paging;
+using RestaurantManagement.Domain.DTOs.VoucherDto;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Domain.Shared;
 
 namespace RestaurantManagement.Application.Features.VoucherFeature.Queries.GetAllVoucher;
 
-public class GetAllVoucherQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllVoucherQuery, PagedList<Voucher>>
+public class GetAllVoucherQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllVoucherQuery, PagedList<VoucherDto>>
 {
-    public async Task<Result<PagedList<Voucher>>> Handle(GetAllVoucherQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PagedList<VoucherDto>>> Handle(GetAllVoucherQuery request, CancellationToken cancellationToken)
     {
         var voucherQuery = context.Vouchers.AsQueryable();
         
@@ -50,9 +51,21 @@ public class GetAllVoucherQueryHandler(IApplicationDbContext context) : IQueryHa
 
 
         //paged
-        var vouchers = voucherQuery.AsQueryable();
-        var voucherList = await PagedList<Voucher>.CreateAsync(vouchers, request.page ?? 1, request.pageSize ?? 10);
+        var vouchers = voucherQuery.Select(a => new VoucherDto(
+            a.VoucherId, 
+            a.VoucherName, 
+            a.VoucherCode,
+            a.VoucherType,
+            a.PercentageDiscount,
+            a.MaximumDiscountAmount,
+            a.MinimumOrderAmount,
+            a.VoucherConditions,
+            a.StartDate.ToString("dd/MM/yyyy"),
+            a.ExpiredDate.ToString("dd/MM/yyyy"),
+            a.Description,
+            a.Status)).AsQueryable();
+        var voucherList = await PagedList<VoucherDto>.CreateAsync(vouchers, request.page ?? 1, request.pageSize ?? 10);
 
-        return Result<PagedList<Voucher>>.Success(voucherList);
+        return Result<PagedList<VoucherDto>>.Success(voucherList);
     }
 }

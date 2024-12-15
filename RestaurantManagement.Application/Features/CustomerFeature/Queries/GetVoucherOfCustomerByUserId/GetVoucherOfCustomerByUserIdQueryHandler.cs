@@ -77,8 +77,8 @@ public class GetVoucherOfCustomerByUserIdQueryHandler : IQueryHandler<GetVoucher
                 a.MaximumDiscountAmount,
                 a.MinimumOrderAmount,
                 a.VoucherConditions,
-                a.StartDate,
-                a.ExpiredDate,
+                a.StartDate.Date.ToString("dd/MM/yyyy"),
+                a.ExpiredDate.Date.ToString("dd/MM/yyyy"),
                 a.Description,
                 a.Status,
                 a.CustomerVouchers.FirstOrDefault(a => a.Customer.UserId == Ulid.Parse(userId)).Quantity)).AsQueryable();
