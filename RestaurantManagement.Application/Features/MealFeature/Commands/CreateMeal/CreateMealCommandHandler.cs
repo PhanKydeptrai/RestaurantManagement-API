@@ -61,18 +61,19 @@ public class CreateMealCommandHandler(
         });
 
         #region  decode jwt and system log
-        // //Decode jwt
-        // var claims = JwtHelper.DecodeJwt(request.token);
-        // claims.TryGetValue("sub", out var userId);
+        //Decode jwt
+        var claims = JwtHelper.DecodeJwt(request.token);
+        claims.TryGetValue("sub", out var userId);
+        var userInfo = await context.Users.FindAsync(Ulid.Parse(userId));
 
-        // //Create System Log
-        // await context.MealLogs.AddAsync(new MealLog
-        // {
-        //     LogDate = DateTime.Now,
-        //     LogDetails = $"Tạo món {request.MealName}",
-        //     MealLogId = Ulid.NewUlid(),
-        //     UserId = Ulid.Parse(userId)
-        // });
+        //Create System Log
+        await context.MealLogs.AddAsync(new MealLog
+        {
+            LogDate = DateTime.Now,
+            LogDetails = $"{userInfo.FirstName + " " + userInfo.LastName}Tạo món {request.MealName}",
+            MealLogId = Ulid.NewUlid(),
+            UserId = Ulid.Parse(userId)
+        });
         #endregion
         
 

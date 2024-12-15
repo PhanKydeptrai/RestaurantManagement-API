@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Mail;
-using FluentEmail.Core;
+// using FluentEmail.Core;
 using NETCore.Encrypt;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Extentions;
@@ -13,7 +13,7 @@ namespace RestaurantManagement.Application.Features.AccountFeature.Commands.Chan
 public class ChangeCustomerPasswordCommandHandler(
 
     IUserRepository userRepository,
-    IFluentEmail fluentEmail,
+    // IFluentEmail fluentEmail,
     IEmailVerificationTokenRepository emailVerificationTokenRepository,
     IEmailVerify emailVerify,
     IUnitOfWork unitOfWork) : ICommandHandler<ChangePasswordCommand>

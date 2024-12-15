@@ -54,20 +54,21 @@ public class CreateCategoryCommandHandler(
             CategoryStatus = "Active",
             ImageUrl = imageUrl
         });
+
         
         #region decode jwt and system log
         //Decode
-        // var claims = JwtHelper.DecodeJwt(request.Token);
-        // claims.TryGetValue("sub", out var userId);
+        var claims = JwtHelper.DecodeJwt(request.Token);
+        claims.TryGetValue("sub", out var userId);
 
-        // //Create System Log
-        // await context.CategoryLogs.AddAsync(new CategoryLog
-        // {
-        //     CategoryLogId = Ulid.NewUlid(),
-        //     LogDate = DateTime.Now,
-        //     LogDetails = $"Tạo danh mục {request.Name}",
-        //     UserId = Ulid.Parse(userId)
-        // });
+        //Create System Log
+        await context.CategoryLogs.AddAsync(new CategoryLog
+        {
+            CategoryLogId = Ulid.NewUlid(),
+            LogDate = DateTime.Now,
+            LogDetails = $"Tạo danh mục {request.Name}",
+            UserId = Ulid.Parse(userId)
+        });
         #endregion
 
 
