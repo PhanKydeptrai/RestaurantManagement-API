@@ -209,7 +209,6 @@ namespace RestaurantManagement.API.Controllers
                 {
                     return Results.Ok("Account deleted successfully!");
                 }
-
                 return Results.BadRequest(result);
             }).WithName("customer/confirm-delete-account");
 
