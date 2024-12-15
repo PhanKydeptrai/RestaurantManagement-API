@@ -59,9 +59,9 @@ public class LoginWithGoogleQueryHandler : IQueryHandler<LoginWithGoogleQuery, L
                     LastName = googleUser.FamilyName ?? string.Empty,
                     Email = googleUser.Email,
                     ImageUrl = googleUser.Picture,
-                    Phone = null,
-                    Password = null,
-                    Gender = null,
+                    Phone = string.Empty,
+                    Password = string.Empty,
+                    Gender = string.Empty,
                     Status = "Activated"
                 };
                 //Create customer
@@ -80,7 +80,6 @@ public class LoginWithGoogleQueryHandler : IQueryHandler<LoginWithGoogleQuery, L
                 var token = _jwtProvider.GenerateJwtToken(
                     user.UserId.ToString(),
                     user.Email,
-                    // customer.CustomerType
                     "Subscriber"
                 );
 

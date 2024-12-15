@@ -50,9 +50,9 @@ public class LoginWithFacebookQueryHandler : IQueryHandler<LoginWithFacebookQuer
                     LastName = request.userName ?? string.Empty,
                     Email = request.email,
                     ImageUrl = request.imageUrl,
-                    Phone = null,
-                    Password = null,
-                    Gender = null,
+                    Phone = string.Empty,
+                    Password = string.Empty,
+                    Gender = string.Empty,
                     Status = "Activated"
                 };
                 //Create customer
