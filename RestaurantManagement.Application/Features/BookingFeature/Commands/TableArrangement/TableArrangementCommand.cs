@@ -9,12 +9,3 @@ public record TableArrangementCommand(
 
 public record TableArrangementRequest(
     object TableId);
-
-#region Stable code
-// public record TableArrangementCommand(
-//     string BookingId,
-//     string TableId) : ICommand;
-
-// public record TableArrangementRequest(
-//     string TableId);
-#endregion
