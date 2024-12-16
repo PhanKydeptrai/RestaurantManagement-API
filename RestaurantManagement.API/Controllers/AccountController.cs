@@ -151,20 +151,24 @@ namespace RestaurantManagement.API.Controllers
                     return Results.Redirect(configuration["RedirectURL_AccountVerified"]);
                 }
 
-                return Results.BadRequest(result.Errors[0].Message);
+                return Results.Redirect(configuration["RedirectURL_UrlExpired"]);
 
             }).WithName("verify-reset-password");
 
+            //NOTE: Add return url
             //verify email to change pass
-            endpoints.MapGet("verify-change-password", async (Ulid token, ISender sender) =>
+            endpoints.MapGet("verify-change-password", async (
+                Ulid token, 
+                ISender sender,
+                IConfiguration configuration) =>
             {
                 var result = await sender.Send(new VerifyChangeCustomerPasswordCommand(token));
                 if (result.IsSuccess)
                 {
-                    return Results.Ok("Change password successfully!");
+                    return Results.Redirect(configuration["RedirectURL_ChangePassSuccess"]);
                 }
 
-                return Results.BadRequest(result.Errors[0].Message);
+                return Results.Redirect(configuration["RedirectURL_UrlExpired"]);
             }).WithName("verify-change-password");
 
             //Change password 
@@ -215,12 +219,13 @@ namespace RestaurantManagement.API.Controllers
             //verify delete customer account
             endpoints.MapGet("customer/confirm-delete-account", async (
                 Ulid token,
-                ISender sender) =>
+                ISender sender,
+                IConfiguration configuration) =>
             {
                 var result = await sender.Send(new ConfirmDeleteCustomerAccountCommand(token));
                 if (result.IsSuccess)
                 {
-                    return Results.Ok("Account deleted successfully!");
+                    return Results.Redirect(configuration["RedirectURL_UrlExpired"]);
                 }
                 return Results.BadRequest(result);
             }).WithName("customer/confirm-delete-account");
