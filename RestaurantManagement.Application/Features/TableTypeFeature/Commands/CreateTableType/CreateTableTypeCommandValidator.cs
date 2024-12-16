@@ -11,7 +11,8 @@ public class CreateTableTypeCommandValidator : AbstractValidator<CreateTableType
             .NotEmpty()
             .WithMessage("{PropertyName} is required.")
             .NotNull()
-            .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.")
+            .MaximumLength(50)
+            .WithMessage("{PropertyName} must not exceed 50 characters.")
             .Must(a => tableTypeRepository.IsTableTypeNameUnique(a).Result == false)
             .WithMessage("{PropertyName} name is not unique");
 

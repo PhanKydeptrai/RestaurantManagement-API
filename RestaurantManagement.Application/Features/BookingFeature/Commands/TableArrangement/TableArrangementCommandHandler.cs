@@ -47,7 +47,10 @@ public class TableArrangementCommandHandler(
             //Nếu cùng ngày thì kiểm tra giờ
             if (info.BookingDate.ToString("dd/MM/yyyy") == recentBooking.BookingDate.ToString("dd/MM/yyyy"))
             {
-                if (recentBooking.BookingTime < info.BookingTime.AddHours(+4) || recentBooking.BookingTime > info.BookingTime.AddHours(-2)) //Nếu nằm trong khung giờ thì sẽ không xếp bàn
+                var afterBooking = info.BookingTime.AddHours(+4);
+                var beforeBooking = info.BookingTime.AddHours(-2);
+                
+                if (recentBooking.BookingTime >= beforeBooking && recentBooking.BookingTime <= afterBooking)
                 {
                     return Result.Failure(new[] { new Error("Table", "Table is not available") });
                 }

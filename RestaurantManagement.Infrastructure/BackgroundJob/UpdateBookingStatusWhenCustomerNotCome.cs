@@ -20,19 +20,19 @@ public class UpdateBookingStatusWhenCustomerNotCome : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        Booking[]? bookings = await _context.Bookings
-            .Where(b => b.BookingStatus == "Seated")
-            .ToArrayAsync();
+        // Booking[]? bookings = await _context.Bookings
+        //     .Where(b => b.BookingStatus == "Seated")
+        //     .ToArrayAsync();
         
-        foreach(var booking in bookings)
-        {
-            if(booking.BookingDate == DateOnly.FromDateTime(DateTime.Now) && booking.BookingTime.AddHours(2) < TimeOnly.FromDateTime(DateTime.Now))
-            {
-                booking.BookingStatus = "Expired";
-            }
-        }
+        // foreach(var booking in bookings)
+        // {
+        //     if(booking.BookingDate == DateOnly.FromDateTime(DateTime.Now) && booking.BookingTime.AddHours(2) < TimeOnly.FromDateTime(DateTime.Now))
+        //     {
+        //         booking.BookingStatus = "Expired";
+        //     }
+        // }
 
-        await _unitOfWork.SaveChangesAsync();
-        Console.WriteLine("UpdateBookingStatusBackgroundJob is running");
+        // await _unitOfWork.SaveChangesAsync();
+        // Console.WriteLine("UpdateBookingStatusBackgroundJob is running");
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
 using RestaurantManagement.Application.Extentions;
@@ -25,18 +26,32 @@ public class GetTableForCustomerCommandHandler(
         {
             return Result.Failure(errors!);
         }
-        await tableRepository.UpdateActiveStatus(int.Parse(request.id), "Occupied");
+        
+        var bookingInfomation = await context.Bookings.Include(a => a.BookingDetails)
+            .Where(
+                a => a.BookingStatus == "Seated"
+                &&
+                a.BookingDetails.FirstOrDefault().TableId == int.Parse(request.id)) //đã xếp bàn
+            .ToListAsync();
 
-        #region Tạo bill
-        // await context.Bills.AddAsync(new Bill
-        // {
-        //     BillId = Ulid.NewUlid(),
-        //     CreatedDate = DateTime.Now,
-        //     Total = 0,
-        //     PaymentStatus = "Unpaid",
-        //     PaymentType = "Cash"
-        // });
-        #endregion
+
+        foreach (var info in bookingInfomation)
+        {
+            //So sánh ngày book hiện tại với ngaỳ book của booking đã xếp bàn
+            //Nếu cùng ngày thì kiểm tra giờ
+            if (info.BookingDate.ToString("dd/MM/yyyy") == DateTime.Now.ToString("dd/MM/yyyy"))
+            {
+                var afterBooking = info.BookingTime.AddHours(+4);
+                var beforeBooking = info.BookingTime.AddHours(-2);
+                
+                if (TimeOnly.FromDateTime(DateTime.Now) >= beforeBooking && TimeOnly.FromDateTime(DateTime.Now) <= afterBooking)
+                {
+                    return Result.Failure(new[] { new Error("Table", "Table is not available") });
+                }
+            }
+        }
+
+        await tableRepository.UpdateActiveStatus(int.Parse(request.id), "Occupied");
 
         #region Decode jwt and system log
         //decode token
