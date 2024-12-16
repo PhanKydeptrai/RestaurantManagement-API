@@ -12,7 +12,7 @@ public class UpdateTableStatusForBooking : IJob
     private readonly IUnitOfWork _unitOfWork;
 
     public UpdateTableStatusForBooking(
-        IUnitOfWork unitOfWork, 
+        IUnitOfWork unitOfWork,
         IApplicationDbContext context)
     {
         _unitOfWork = unitOfWork;
@@ -25,8 +25,8 @@ public class UpdateTableStatusForBooking : IJob
         Booking[]? bookings = await _context.Bookings.Include(a => a.BookingDetails)
             .Where(a => a.BookingStatus == "Seated" && a.BookingDate == DateOnly.FromDateTime(DateTime.Now))
             .ToArrayAsync();
-        
-        if(bookings.Length > 0)
+
+        if (bookings.Length > 0)
         {
             foreach (var booking in bookings)
             {
@@ -34,11 +34,10 @@ public class UpdateTableStatusForBooking : IJob
                 {
                     var table = await _context.Tables.FirstOrDefaultAsync(a => a.TableId == bookingDetail.TableId);
                     table.ActiveStatus = "Booked";
-
-                    await _unitOfWork.SaveChangesAsync();
                 }
             }
         }
+        await _unitOfWork.SaveChangesAsync();
         Console.WriteLine("UpdateTableStatusForBooking background job is running");
 
     }
