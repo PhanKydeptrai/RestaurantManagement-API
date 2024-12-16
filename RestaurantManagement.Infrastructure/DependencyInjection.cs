@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using Quartz;
 using RestaurantManagement.Domain.IRepos;
 using RestaurantManagement.Infrastructure.Authentication;
@@ -38,12 +39,20 @@ public static class DependencyInjection
         {
             options.UseMicrosoftDependencyInjectionJobFactory();
 
-            var jobKey = JobKey.Create(nameof(VoucherBackgroundJob));
+            var jobKey_VoucherBackgroundJob = JobKey.Create(nameof(VoucherBackgroundJob));
             
-            options.AddJob<VoucherBackgroundJob>(jobKey)
+            options.AddJob<VoucherBackgroundJob>(jobKey_VoucherBackgroundJob)
                     .AddTrigger(trigger => 
-                        trigger.ForJob(jobKey)
+                        trigger.ForJob(jobKey_VoucherBackgroundJob)
                     .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(12).RepeatForever()));
+            
+            var jobKey_UpdateTableStatusForBooking = JobKey.Create(nameof(UpdateTableStatusForBooking));
+
+            options.AddJob<UpdateTableStatusForBooking>(jobKey_UpdateTableStatusForBooking)
+                    .AddTrigger(trigger => 
+                        trigger.ForJob(jobKey_UpdateTableStatusForBooking)
+                    .WithSimpleSchedule(schedule => schedule.WithIntervalInMinutes(5).RepeatForever()));
+
 
         });
 
