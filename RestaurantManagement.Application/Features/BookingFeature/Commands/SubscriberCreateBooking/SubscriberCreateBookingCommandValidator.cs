@@ -34,6 +34,8 @@ public class SubscriberCreateBookingCommandValidator : AbstractValidator<Subscri
             .WithMessage("{PropertyName} is required")
             .Must(a => !string.IsNullOrEmpty(a.ToString()) && int.TryParse(a.ToString(), out _))
             .WithMessage("{PropertyName} must be a number")
+            .Must(a => !string.IsNullOrEmpty(a.ToString()) && int.Parse(a.ToString()) > 0)
+            .WithMessage("{PropertyName} must be greater than 0")
             .Must(a => !string.IsNullOrEmpty(a.ToString()) && bookingRepository.IsCapacityAvailable(int.Parse(a.ToString())).Result == true)
             .WithMessage("Seat is not enough for {PropertyName} customers");
     }
