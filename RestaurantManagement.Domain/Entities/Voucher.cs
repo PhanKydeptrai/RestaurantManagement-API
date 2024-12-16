@@ -4,7 +4,7 @@ namespace RestaurantManagement.Domain.Entities;
 public class Voucher
 {
     public Ulid VoucherId { get; set; }
-    public string VoucherName { get; set; } //Tên voucher, Sử dụng để áp dụng
+    public string VoucherName { get; set; } //Tên voucher
     public string VoucherCode { get; set; } //Sử dụng để áp dụng
     public string VoucherType { get; set; } //Loại voucher 
     public int? PercentageDiscount { get; set; } //Phần trăm giảm giá

@@ -62,7 +62,6 @@ public class GetAllBillByUserIdQueryHandler(IApplicationDbContext context) : IQu
 
         //paged
         var bills = billQuery
-
             .Select(a => new BillResponse(
                 a.Booking.Customer.UserId,
                 a.Booking.Customer.User.LastName,
