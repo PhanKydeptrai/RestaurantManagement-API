@@ -67,6 +67,8 @@ public static class DependencyInjection
                     .AddTrigger(trigger => 
                         trigger.ForJob(jobkey_UpdateBookingStatusWhenCustomerNotCome)
                     .WithSimpleSchedule(schedule => schedule.WithIntervalInMinutes(5).RepeatForever()));
+
+            
         });
 
         services.AddQuartzHostedService();
