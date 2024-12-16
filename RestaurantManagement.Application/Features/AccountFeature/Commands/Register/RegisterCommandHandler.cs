@@ -39,7 +39,20 @@ public class RegisterCommandHandler(
         var normalCustomer = await context.Customers.Include(a => a.User)
             .FirstOrDefaultAsync(a => a.User.Email == request.Email || a.User.Phone == request.Phone);
 
-
+        if(normalCustomer != null && normalCustomer.CustomerType == "Subscriber" && string.IsNullOrEmpty(normalCustomer.User.Password))
+        {
+            //Update tài khoản
+            normalCustomer.CustomerType = "Subscriber";
+            normalCustomer.CustomerStatus = "Active";
+            // normalCustomer.User.Status = "NotActivated";
+            normalCustomer.User.FirstName = request.FirstName;
+            normalCustomer.User.LastName = request.LastName;
+            normalCustomer.User.Gender = request.Gender;
+            normalCustomer.User.Password = EncryptProvider.Sha256(request.Password);
+            
+            await unitOfWork.SaveChangesAsync();
+            return Result.Success();
+        }
 
         if (normalCustomer != null && normalCustomer.CustomerType != "Subscriber")
         {
