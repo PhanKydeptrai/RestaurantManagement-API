@@ -118,8 +118,8 @@ public class BookingController : IEndpoint
                 return Results.Ok(result);
             }
             return Results.BadRequest(result);
-        }).RequireAuthorization().RequireRateLimiting("AntiSpamSubscriberCreateBooking")
-        .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
+        }).RequireAuthorization().RequireRateLimiting("AntiSpamSubscriberCreateBooking");
+        // .AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         //Xếp bàn cho khách
         endpoints.MapPost("table-arrange/{BookingId}", async (
@@ -231,6 +231,7 @@ public class BookingController : IEndpoint
 
             do
             {
+                
                 try
                 {
                     await fluentEmail
