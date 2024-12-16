@@ -53,7 +53,12 @@ public static class DependencyInjection
                         trigger.ForJob(jobKey_UpdateTableStatusForBooking)
                     .WithSimpleSchedule(schedule => schedule.WithIntervalInMinutes(5).RepeatForever()));
 
+            var jobkey_UpdateBookingStatusBackgroundJob = JobKey.Create(nameof(UpdateBookingStatusBackgroundJob));
 
+            options.AddJob<UpdateBookingStatusBackgroundJob>(jobkey_UpdateBookingStatusBackgroundJob)
+                    .AddTrigger(trigger => 
+                        trigger.ForJob(jobkey_UpdateBookingStatusBackgroundJob)
+                    .WithSimpleSchedule(schedule => schedule.WithIntervalInMinutes(5).RepeatForever()));
         });
 
         services.AddQuartzHostedService();
