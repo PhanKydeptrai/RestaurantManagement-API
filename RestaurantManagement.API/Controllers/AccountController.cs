@@ -92,8 +92,8 @@ namespace RestaurantManagement.API.Controllers
                 var result = await sender.Send(command);
                 if (result.IsSuccess)
                 {
-                    return Results.Ok("Check your email!");
-                    // return Results.Ok(configuration[""]);
+                    // return Results.Ok("Check your email!");
+                    return Results.Redirect(configuration["RedirectURL_RequestSuccess"]);
                 }
                 return Results.BadRequest(result);
             }).RequireRateLimiting("AntiSpamCustomerResetPass");
@@ -105,12 +105,15 @@ namespace RestaurantManagement.API.Controllers
             endpoints.MapPost("employee-password",
             async (
                 ForgotEmployeePasswordCommand command,
-                ISender sender) =>
+                ISender sender,
+                IConfiguration configuration) =>
             {
                 var result = await sender.Send(command);
                 if (result.IsSuccess)
                 {
-                    return Results.Ok("Check your email!");
+                    // return Results.Ok("Check your email!");
+                    return Results.Redirect(configuration["RedirectURL_RequestSuccess"]);
+
                 }
                 return Results.BadRequest(result);
             }).RequireRateLimiting("AntiSpamEmployeeResetPass");
@@ -118,26 +121,34 @@ namespace RestaurantManagement.API.Controllers
             
             //NOTE: Add return url
             //verify email (Active account for customer)
-            endpoints.MapGet("verify-email", async (Ulid token, ISender sender) =>
+            endpoints.MapGet("verify-email", async (
+                Ulid token, 
+                ISender sender,
+                IConfiguration configuration) =>
             {
                 var result = await sender.Send(new ActivateAccountCommand(token));
                 if (result.IsSuccess)
                 {
-                    return Results.Ok("Email verified successfully!");
+                    // return Results.Ok("Email verified successfully!");
+                    return Results.Redirect(configuration["RedirectURL_VerifyAccount"]);
                 }
-
-                return Results.BadRequest(result.Errors[0].Message);
+                // return Results.BadRequest(result.Errors[0].Message);
+                return Results.Redirect(configuration["RedirectURL_UrlExpired_Reset"]);
 
             }).WithName("verify-email");
             
             //NOTE: Add return url
             //verify email to reset pass
-            endpoints.MapGet("verify-reset-password", async (Ulid token, ISender sender) =>
+            endpoints.MapGet("verify-reset-password", async (
+                Ulid token, 
+                ISender sender,
+                IConfiguration configuration) =>
             {
                 var result = await sender.Send(new ResetPasswordVerifyCommand(token));
                 if (result.IsSuccess)
                 {
-                    return Results.Ok("Email verified successfully!");
+                    // return Results.Ok("Email verified successfully!");
+                    return Results.Redirect(configuration["RedirectURL_AccountVerified"]);
                 }
 
                 return Results.BadRequest(result.Errors[0].Message);

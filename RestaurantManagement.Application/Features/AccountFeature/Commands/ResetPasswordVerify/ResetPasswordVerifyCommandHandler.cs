@@ -1,4 +1,7 @@
-﻿using FluentEmail.Core;
+﻿using System.Net;
+using System.Net.Mail;
+using FluentEmail.Core;
+using Microsoft.Extensions.Configuration;
 using NETCore.Encrypt;
 using RestaurantManagement.Application.Abtractions;
 using RestaurantManagement.Application.Data;
@@ -16,7 +19,8 @@ public class ResetPasswordVerifyCommandHandler(
     IUnitOfWork unitOfWork,
     IApplicationDbContext context,
     IFluentEmail fluentEmail,
-    IUserRepository userRepository) : ICommandHandler<ResetPasswordVerifyCommand>
+    IUserRepository userRepository,
+    IConfiguration configuration) : ICommandHandler<ResetPasswordVerifyCommand>
 {
     public async Task<Result> Handle(ResetPasswordVerifyCommand request, CancellationToken cancellationToken)
     {
@@ -50,21 +54,66 @@ public class ResetPasswordVerifyCommandHandler(
 
         do
         {
-            try
+            if (configuration["Environment"] == "Development")
             {
-
-                await fluentEmail.To(token.User.Email).Subject("Mật khẩu mới")
-                    .Body($"Mật khẩu mới của bạn là: {randomPass}", isHtml: true)
-                    .SendAsync();
-                    
-                emailSent = true;
-            }
-            catch
-            {
-                retryCount++;
-                if (retryCount >= maxRetries)
+                try
                 {
-                    return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+
+                    await fluentEmail.To(token.User.Email).Subject("Nhà hàng Nhum nhum - Thông báo mật khẩu mới")
+                        .Body($"Mật khẩu mới của bạn là: {randomPass}", isHtml: true)
+                        .SendAsync();
+
+                    emailSent = true;
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    #region Send Email using Gmail SMTP
+                    // Thông tin đăng nhập và cài đặt máy chủ SMTP
+                    string fromEmail = "nhumnhumrestaurant@gmail.com"; // Địa chỉ Gmail của bạn
+                    string toEmail = user.Email;  // Địa chỉ người nhận
+                    string password = "ekgh lntd brrv bdyj";   // Mật khẩu ứng dụng (nếu bật 2FA) hoặc mật khẩu của tài khoản Gmail
+
+                    var smtpClient = new SmtpClient("smtp.gmail.com")
+                    {
+                        Port = 587, // Cổng sử dụng cho TLS
+                        Credentials = new NetworkCredential(fromEmail, password), // Đăng nhập vào Gmail
+                        EnableSsl = true // Kích hoạt SSL/TLS
+                    };
+
+                    var mailMessage = new MailMessage
+                    {
+                        From = new MailAddress(fromEmail),
+                        Subject = "Nhà hàng Nhum nhum - Xác nhận thay đổi mật khẩu",
+                        Body = $"Mật khẩu mới của bạn là: {randomPass}",
+                        IsBodyHtml = true // Nếu muốn gửi email ở định dạng HTML
+                    };
+
+                    mailMessage.To.Add(toEmail);
+
+                    // Gửi email
+                    smtpClient.Send(mailMessage);
+                    #endregion
+
+                    emailSent = true;
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= maxRetries)
+                    {
+                        return Result.Failure(new[] { new Error("Email", "Failed to send email") });
+                    }
                 }
             }
         }
