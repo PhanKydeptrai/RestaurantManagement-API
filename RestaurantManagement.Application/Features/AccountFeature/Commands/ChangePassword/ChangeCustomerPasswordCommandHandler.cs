@@ -37,11 +37,16 @@ public class ChangeCustomerPasswordCommandHandler(
 
         //Kiểm tra mật khẩu cũ
         var user = await userRepository.GetUserById(Ulid.Parse(userId));
-        string encryptPass = EncryptProvider.Sha256(request.oldPass);
-        if (encryptPass != user.Password)
+        if (!string.IsNullOrEmpty(user.Password))
         {
-            return Result.Failure(new[] { new Error("OldPassword", "Mật khẩu cũ không đúng") });
+            string encryptPass = EncryptProvider.Sha256(request.oldPass);
+            if (encryptPass != user.Password)
+            {
+                return Result.Failure(new[] { new Error("OldPassword", "Mật khẩu cũ không đúng") });
+            }
         }
+
+
         //Tạo token xác thực 
         var token = new EmailVerificationToken
         {
