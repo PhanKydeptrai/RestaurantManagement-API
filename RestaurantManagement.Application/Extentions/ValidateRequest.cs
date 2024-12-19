@@ -15,7 +15,7 @@ public static class ValidateRequest
                 .ToArray();
             return false;
         }
-        errors = null;
+        errors = null!;
         return true;
     }
 }
